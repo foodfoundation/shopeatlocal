@@ -1,0 +1,33 @@
+{{!-- pScriptUpImg.hbs
+//    ----------------
+//    Image upload script
+//
+// This script adds support for image 'remove' and 'restore' buttons.
+//
+// I would like to clear the 'new image' selection if the user restores the
+// original image, but I cannot find a way to stop the browser from submitting
+// the file selection. Clearing the LblImg text removes the name text, but it
+// does not stop the submission. Neither does removing the Img value, or setting
+// it to 'null' or the empty string. I could add a 'CkRestImg' flag, but I would
+// rather not: [TO DO]
+//
+//   https://stackoverflow.com/questions/1703228/how-can-i-clear-an-html-file-input-with-javascript
+//
+--}}
+
+<script>
+	$("#BtnRemImg").on("click", function () {
+		$("#RowImg").addClass("d-none");
+		$("#BtnRemImg").addClass("d-none");
+		$("#BtnRestImg").removeClass("d-none");
+		// For consistency with checkbox values:
+		$("#CkRemImg").attr("value", "on");
+	});
+
+	$("#BtnRestImg").on("click", function () {
+		$("#RowImg").removeClass("d-none");
+		$("#BtnRemImg").removeClass("d-none");
+		$("#BtnRestImg").addClass("d-none");
+		$("#CkRemImg").removeAttr("value");
+	});
+</script>

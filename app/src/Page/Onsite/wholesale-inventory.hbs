@@ -1,0 +1,138 @@
+{{!-- Wholesale-inventory.hbs
+// ----------------------
+// Wholesale Inventory view
+//
+// We could use HTML validation in forms like this, where no user-friendly
+// validation feedback is needed, but I prefer to block invalid characters
+// altogether, and the browser's validation actually makes that more difficult.
+// In particular, when `type="number"` is added to an `input`, invalid values
+// are treated as blanks when queried with `val()`, which then breaks
+// `Rem_ChNonQty`. --}}
+
+<style>
+	.Product,
+	.Vty {
+		/* This is slightly less annoying when the page is being rendered than
+		// having visible elements disappear. We can't use 'd-none', because that is
+		// '!important': */
+		display: none;
+	}
+
+	.BoxNoteShop {
+		border-color: hsl(0, 0%, 80%) !important;
+		background-color: hsl(45, 90%, 90%);
+	}
+
+	.BoxNoteShop.Denied {
+		background-color: hsl(0, 90%, 90%);
+	}
+</style>
+
+<div class="container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-0">Wholesale inventory</h2>
+	</div>
+
+	<hr>
+	<div class="row mt-2">
+		<div class="col-lg">
+			<div>
+				Use this page to update <em>on-site quantities</em> and the <em>wholesale customer fee</em>
+				per variety.
+				All Wholesale varieties are listed here, grouped by producer and category.
+			</div>
+		</div>
+		<div class="col-lg-4 mt-3 mt-lg-0">
+			<div class="d-flex border border-danger bg-white rounded-sm p-3 mt-2">
+				<div class="d-none d-md-block mr-3">
+					<img src="{{hPrefixStatic 'edit.svg'}}" alt="" width="40" height="40">
+				</div>
+				<div>
+					Be sure to click <span class="font-weight-semi">Save</span> after
+					making changes. This will submit variety edits even if the containing
+					lines have been hidden.
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+	{{>Producer/pFiltProduct DisableHideOrders='true'}}
+
+	<hr>
+
+	<form id="FormInvtProducer" action="/wholesale-inventory" method="POST" novalidate onsubmit="Disab_Form()">
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+		{{#if WholesaleVtys}}
+			{{#each WholesaleVtys}}
+				<div class="HeadSheetGreen border rounded my-3 p-2">
+					<a href="/producer-detail/{{IDProducer}}" class="font-weight-normal">
+						Producer {{hTextIDProducer IDProducer}} - <strong>{{NameProducer}}</strong>
+					</a>
+					{{#each CatSubcats}}
+						<div class="HeadSheet border rounded font-weight-bold my-3 p-2">
+							<div class="d-flex align-items-center">
+								<div class="d-none d-md-block mr-2">
+									<img src="{{hPrefixStatic 'cat.svg'}}" alt="" width="35" height="35">
+								</div>
+								<h3 class="mb-0">{{TextCatSubcat}}</h3>
+							</div>
+						</div>
+						<div id="Products">
+							{{#each Products}}
+								{{>Onsite/pLineWholesaleInvt}}
+							{{/each}}
+						</div>
+					{{/each}}
+				</div>
+			{{/each}}
+			<div class="d-flex mt-3">
+				<div class="flex-shrink-0 ml-auto">
+					<button type="button" class="BtnCancel d-none btn btn-secondary">
+						Cancel
+					</button>
+					<button type="button" class="BtnSave d-none btn btn-primary ml-1">
+						Save
+					</button>
+				</div>
+			</div>
+		{{else}}
+			<div class="jumbotron">
+				<h2 class="display-4 font-size-200">
+					There is no Wholesale varieties.
+				</h2>
+			</div>
+		{{/if}}
+	</form>
+
+	<script src="{{hPrefixStatic 'filt-product-1.js'}}"></script>
+
+	<script>
+		PageFiltProduct = "Invt";
+
+		$(".CtlFilt").on("click", Hand_ChgFilt);
+		$("#BtnShowAll").on("click", Hand_ClickShowAll);
+
+		function Hand_Chg() {
+			ConfirmLeavePage.Set_Main();
+			$(".BtnCancel, .BtnSave").removeClass("d-none");
+		}
+
+		$(".InputQtyOnsite").on("input", Hand_Chg);
+		$(".InputCoopFee").on("input", Hand_Chg);
+		$(".SelCdListVty").on("change", Hand_Chg);
+
+		$(".BtnCancel").on("click", function () {
+			ConfirmLeavePage.Unset_Main();
+			location.replace("/wholesale-inventory");
+		});
+
+		$(".BtnSave").on("click", function () {
+			ConfirmLeavePage.Unset_Main();
+			$("#FormInvtProducer").submit();
+		});
+
+		$(document).ready(Ready_Filt);
+	</script>
+</div>

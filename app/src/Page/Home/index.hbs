@@ -1,0 +1,292 @@
+{{!-- index.hbs
+//    ---------
+//    Market home view --}}
+
+<style>
+	body {
+		background-color: hsl(120, 2%, 60%);
+		background-image: url("{{hPrefixStatic 'back.jpg'}}");
+		background-size: cover;
+	}
+
+	#Banner {
+		box-shadow: 0 0 12px 0 hsla(0, 0%, 0%, 0.4) !important;
+		background-color: hsl(81, 51%, 82%);
+
+		border-top: 2px solid hsl(0, 0%, 90%);
+		border-bottom: 2px solid hsl(0, 0%, 90%);
+	}
+
+	/* Bootstrap 'lg' or larger: */
+	@media (min-width: 992px) {
+		#Banner {
+			background: linear-gradient(150deg, hsl(81, 30%, 55%), hsl(81, 51%, 82%) 80%);
+		}
+	}
+
+	#Banner hr {
+		border-color: hsl(0, 0%, 20%);
+	}
+
+	#Banner a {
+		color: hsl(0, 0%, 10%) !important;
+	}
+
+	#Banner a:active {
+		color: hsl(0, 0%, 60%) !important;
+	}
+
+	#DivJoin {
+		padding: 0.35em 0 0.6em 0;
+		border-top: 1px solid hsl(0, 0%, 10%) !important;
+		border-bottom: 1px solid hsl(0, 0%, 10%) !important;
+	}
+
+	.Box {
+		box-shadow:
+			/* Just increasing the contrast a bit: */
+			inset 0 0 4px rgba(0, 0, 0, 12%),
+			0 0 8px rgba(0, 0, 0, 30%) !important;
+		background-color: hsla(0, 0%, 100%, 0.3);
+
+		border: 2px solid hsla(0, 0%, 100%, 0.4);
+		border-radius: 4px;
+
+		line-height: 150%;
+	}
+
+	#Cats {
+		columns: 3;
+		column-gap: 10px;
+	}
+
+	/* Bootstrap 'lg' or smaller: */
+	@media (max-width: 991px) {
+		#Cats {
+			columns: 2;
+		}
+	}
+
+	/* Bootstrap 'xs' or smaller: */
+	@media (max-width: 575px) {
+		#Cats {
+			columns: 1;
+		}
+	}
+
+	#Cats .Cat {
+		break-inside: avoid;
+
+		box-shadow:
+			/* Just increasing the contrast a bit: */
+			inset 0 0 4px rgba(0, 0, 0, 12%),
+			0 0 8px rgba(0, 0, 0, 30%) !important;
+		background-color: hsla(0, 0%, 100%, 0.3);
+		/* Just increasing the contrast a bit: */
+
+		border: 2px solid hsla(0, 0%, 100%, 0.4);
+		border-radius: 4px;
+
+		margin-bottom: 10px;
+
+		line-height: 120% !important;
+	}
+
+	#Cats .Cat .Title {
+		font-size: 110%;
+	}
+
+	a.Title {
+		color: hsl(0, 0%, 5%) !important;
+	}
+
+	a.Title:active {
+		color: hsl(0, 0%, 80%) !important;
+	}
+
+	#Attrs .LinksPg a, #Cats .LinksPg a {
+		background-color: hsla(0, 0%, 100%, 0.5) !important;
+		color: hsl(0, 0%, 10%) !important;
+	}
+
+	#Attrs .LinksPg a:active, #Cats .LinksPg a:active {
+		color: hsl(0, 0%, 60%) !important;
+	}
+</style>
+
+{{#*inline "pProducersPickup"}}
+{{/inline}}
+
+{{!-- These blocks are repeated below the banner: --}}
+<div class="container d-none d-lg-block pt-3">
+	{{>pProducersPickup}}
+</div>
+
+<div id="Banner" class="py-4 my-3">
+	<div class="container">
+		<div class="row align-items-center">
+			<div class="d-none d-lg-block col-lg-2">
+				<img src="{{CoopParams.HeroLogoPath}}" alt="" width="180">
+			</div>
+			<div class="col-md-8 col-lg-6">
+				<h1 class="text-center text-md-left display-4 font-size-200
+					font-size-lg-300">
+					{{CoopParams.CoopName}}
+				</h1>
+
+				<p class="text-center text-md-left lead font-size-110 font-size-md-125
+					mb-0">
+
+				</p>
+			</div>
+			<div class="col-md-4 d-flex justify-content-center align-items-center">
+				<div id="" class="mt-3 mt-md-0">
+					{{#unless CredUser}}
+					<a href="/member-registration"
+						class="Title lead font-size-150 font-size-md-225">
+						<button id="meet-button" style="color:#fff; background-color: #f5912e; border:1px solid #f5912e; border-radius: 35px; padding:12px; margin-bottom:5px; font-size:27px;">
+							Start Free Trial - Shop Now
+						</button>
+					</a>
+					{{/unless}}
+					<a href="/producers"
+						class="Title lead font-size-150 font-size-md-225">
+						<button id="meet-button" style="color:#fff; background-color: #036667; border:1px solid #036667; border-radius: 35px; padding:12px;">
+							Meet Our Producers
+						</button>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{!-- For aesthetic reasons, I want these blocks to appear above the banner when
+//    the viewport is large, but that does not work on a phone: --}}
+<div class="container d-lg-none">
+	{{>pProducersPickup}}
+</div>
+
+<div class="container pb-4">
+	<div class="Box p-2" id="shop-pane" style="padding-top: 0px !important;">
+		<div class="position-relative d-flex justify-content-center
+			align-items-center" style="top: 5px;">
+			<div class="mr-3">
+				<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+			</div>
+			<div class="font-size-150 font-size-lg-200">
+				<span class="Title">
+					Shop our products
+				</span>
+			</div>
+		</div>
+		
+		<div id="Attrs">
+			<form id="mainSearch">
+			<div class="LinksPg text-center mb-0">
+				<div id="search-container" style="width: 100%; display:flex; flex-direction:row;justify-content: space-evenly; overflow:hidden; ">
+					<span id="button-container" style="width:13%; display:flex; flex-direction:column;">
+						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search'">
+							<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
+							New Products
+						</div>
+						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search?CkPast=true'">
+							<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
+							Past Purchases
+						</div>
+						<div id="prodlist-mobile" style="display:none;">
+							<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList2()">
+								<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
+								Production Type
+							</div>
+							<div id="production-list2" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667; position:absolute; display:none; background-color: #036667;">
+								{{#each AttrsProduct}}						
+									<input class="production-list-noclick" id="Ck{{Cd}}*" name="Ck{{Cd}}*" type="checkbox" >
+									<label class="production-list-noclick" style="color: #fff" for="Ck{{Cd}}*" >
+										{{Text}}
+									</label>
+									<br class="production-list-noclick">
+								{{/each}}
+							</div>
+						</div>
+					</span>
+					<span id="searchbar-container" style="width:60%; display:flex; flex-direction:column; justify-content: center;">
+						<input style="max-height:40px;" id="Terms" name="Terms" type="text" value="" autofocus="" class="form-control flex-grow-1 mr-sm-2">
+					</span>
+					<span id="searchbutton-container" style="width:13%; display:flex; flex-direction:column; justify-content: center;">
+						<button type="submit" class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;">
+							<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">
+							Search
+						</button>
+						<div id="prodlist-full">
+							<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList()">
+								<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
+								Production Type
+							</div>
+							<div id="production-list" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667; position:absolute; display:none; background-color: #036667;">
+								{{#each AttrsProduct}}						
+									<input class="production-list-noclick" id="Ck{{Cd}}" name="Ck{{Cd}}" type="checkbox" >
+									<label class="production-list-noclick" style="color: #fff" for="Ck{{Cd}}" >
+										{{Text}}
+									</label>
+									<br class="production-list-noclick">
+								{{/each}}
+								{{#if CoopParams.isProductTypesPageDefined}}
+								<div style="width: 100%; text-align:center; padding-right: 15px; margin-bottom:10px;">
+									<a href="/production-types" target="_blank"><b>Production Type Info</b></a>
+								</div>
+								{{/if}}
+							</div>
+						</div>
+					</span>
+				</div>
+				<!--
+				<a href="/product-search">New</a>
+				{{#each AttrsProduct}}
+				<a href="/product-search?Ck{{Cd}}=true">{{Text}}</a>
+				{{/each}}-->
+			</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="Cats" class="text-center mt-3">
+		{{#each Cats}}
+		<div class="Cat p-2">
+			<div class="font-weight-semi">
+				<a href="/product-search?IDCat={{IDCat}}" class="Title">{{NameCat}}</a>
+			</div>
+
+			<div class="LinksPg mb-1">
+				{{#each Subcats}}
+				<a href="/product-search?IDSubcat={{IDSubcat}}">{{NameSubcat}}</a>
+				{{/each}}
+			</div>
+		</div>
+		{{/each}}
+	</div>
+</div>
+
+<script>
+	$('#mainSearch').submit(function( event ) {
+		// Get all the forms elements and their values in one step
+		event.preventDefault();
+		var values = $(this).serialize();
+		values = values.replaceAll("*", "");
+		window.location.href = "/product-search?" + values;
+	});
+	function showProdList() {
+		$("#production-list").toggle();
+	}
+	function showProdList2() {
+		$("#production-list2").toggle();
+	}
+
+	$('html').click(function(e) {                    
+		if(!$(e.target).hasClass('production-list-noclick') )
+		{
+			$("#production-list").hide();
+			$("#production-list2").hide();         
+		}
+	}); 
+</script>

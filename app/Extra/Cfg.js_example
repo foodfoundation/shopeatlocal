@@ -1,0 +1,152 @@
+// Cfg.js
+// ------
+// Configuration data
+//
+// This module exports low-level configuration data, plus sensitive data
+// that cannot be trusted to the database. This includes:
+//
+// ~ Basic startup configuration, including database connection settings;
+//
+// ~ 'Advanced' settings that should not be changed by regular staff;
+//
+// ~ Passwords and other secrets.
+//
+// This file should NOT be added to source control.
+
+export const HostServ = "localhost";
+export const PortServ = 3000;
+
+export const URLBase = "http://localhost:" + PortServ;
+
+/** Database connection data. */
+export const Db = {
+  // These names match those used by 'node-mysql' and 'node-mysql2'.
+
+  host: "{db-host}",
+  port: 0,
+  user: "{db-username}",
+  /** The MySQL 'legacy-encrypted' password. */
+  password: "{db-password}",
+  database: "shopeatlocal",
+};
+
+/** The secret used to sign and verify session cookies. */
+export const SecretCookSess = "XXXXXXXX";
+
+/** The default 'from' address for outgoing e-mails. */
+export const EmailFromDef = "noreply@example.com";
+
+/** Outgoing mail server settings. */
+export const ServEmail = {
+  service: "SMTP", // "Gmail" or "SMTP" - SMTP is the recommended email server
+  smtpHost: "smtp.example.com", // set if service is "SMTP"
+  // Set these to 'null' to disable all e-mail:
+  NameUser: "username",
+  Pass: "password",
+};
+
+// Paypal API Secret and Public Key
+export const PayPalBaseUrl = "https://api-m.sandbox.paypal.com";
+export const PayPalClientId = "paypal_client_id";
+export const PayPalClientSecret = "paypal_client_secret";
+
+/** The number of failed logins that will cause an IP to be blocked. */
+export const CtFailLoginBlock = 10;
+
+/** The minimum cycle length, in days. 'Next' cycles are added automatically, so
+ *  this must not be set to a very short value, or a large number of cycles
+ *  could be created in some circumstances. */
+//
+// This same requirement is enforced by a constraint in the database, which must
+// be updated if the minimum changes:
+//
+//   ALTER TABLE Cyc
+//   ADD CONSTRAINT cCyc_OrderDates CHECK (
+//     (WhenStartShop >= WhenStartCyc)
+//     AND (WhenEndShop > WhenStartShop)
+//     AND (WhenStartDeliv >= WhenEndShop)
+//     AND (WhenEndDeliv > WhenStartDeliv)
+//     AND (WhenStartPickup >= WhenEndDeliv)
+//     AND (WhenEndPickup > WhenStartPickup)
+//     AND (WhenEndCyc >= WhenEndPickup)
+//     AND (DATEDIFF(WhenEndCyc, WhenStartCyc) >= 7)
+//   );
+//
+// To drop the original constraint:
+//
+//   ALTER TABLE Cyc
+//   DROP CONSTRAINT cCyc_OrderDates;
+//
+export const MinLenCycDays = 7;
+
+/** The number of non-product search results to display per page. */
+export const CtResultSearchListPage = 20;
+
+/** The number of product search results to display per page. */
+//
+// Products may be displayed in two or three columns, so this number should be
+// divisible by six. If this value changes, the CSS that rounds the grid corners
+// must be updated as well:
+export const CtProductPage = 24;
+
+/** The maximum allowed size for producer or product image uploads, in bytes. */
+export const SizeMaxUploadImg = 512 * 1024;
+
+/** The IANA time zone that will be displayed to the user. The server and the
+    database will use UTC. */
+export const TimeZoneUser = "America/Chicago";
+
+// Set to true for development environment
+export const CkDev = true;
+
+// Set to true for Staging (Test) environment
+export const CkTest = false;
+
+/** The length to use when randomly generating StoreImg filenames. */
+export const LenNameFileStoreImg = 12;
+
+/** The length to use when randomly generating StoreDoc filenames. */
+export const LenNameFileStoreDoc = 12;
+
+//
+// Strorage configuration
+//
+
+// Storage configuration: possible values are "disk" or "S3"
+export const StorageType = "S3";
+
+// S3 configuration
+export const S3Region = "us-east-1"; // Make sure the region matches the bucket's region, all buckets must be in the same region
+export const S3AccessKeyId = "your-key";
+export const S3SecretAccessKey = "your-secret";
+export const S3PublicBucket = "{your-public-bucket-name}";
+export const S3DocumentBucket = "{your-private-bucket-name}";
+export const S3Acl = "public-read"; // Optional: defaults to "public-read" - make sure ACLs are enabled on the bucket
+export const S3ImageStoragePrefix = "user-content"; // Optional: prefix for the image storage bucket
+
+// CDN domains
+export const StaticStorageDomain = "https://public-cdn/static";
+export const ImageStorageDomain = "https://public-cdn/user-content/";
+export const DocumentStorageDomain =
+  "https://private-bucket/sensitive-user-content"; // Make sure this is not public!
+
+// Document storage prefix, set this to where you'll be storing your documents (disk, cloudfront, etc.)
+export const StaticStoragePrefix =
+  StorageType === "disk" ? "/Static" : StaticStorageDomain;
+
+// Image storage prefix, set this to where you'll be storing your images (disk, cloudfront, etc.)
+export const ImageStoragePrefix =
+  StorageType === "disk"
+    ? "/StoreImg"
+    : `${ImageStorageDomain}${
+        S3ImageStoragePrefix ? `/${S3ImageStoragePrefix}` : ""
+      }`;
+
+// Document storage prefix, set this to where you'll be storing your documents (disk, cloudfront, etc.)
+export const DocumentStoragePrefix =
+  StorageType === "disk" ? "StoreDoc" : DocumentStorageDomain;
+
+// Set to true if you want to use express.static to serve files from the disk
+// Only makes sense if StorageType is "disk"
+// Not recommended for production - use a CDN or Nginx instead
+export const UseExpressStatic = false;

@@ -1,0 +1,23 @@
+{{!-- edit-location.hbs
+//    -----------------
+//    Edit Location view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2>Edit location</h2>
+
+	<hr>
+
+	<form id="form-main" class="pb-4" action="/edit-location/{{CdLoc}}"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>SiteAdmin/pCtlsFormLoc}}
+
+		<hr>
+
+		<div class="d-flex justify-content-end">
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+	</form>
+</div>

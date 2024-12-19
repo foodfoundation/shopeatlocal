@@ -1,0 +1,337 @@
+{{!-- pCtlsFormCoopParams.hbs
+//    ----------------
+//    Add/Edit Location form controls --}}
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="CoopName">Name of your market</label>
+		<p class="text-muted font-size-90 mb-2">
+			The name of your market will be displayed in multiple pages on the site, such as the home page.
+		</p>
+		<input name="CoopName" value="{{CoopParams.CoopName}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="CoopNameShort">Short name of your market</label>
+		<p class="text-muted font-size-90 mb-2">
+			Abbreviated version of your market, typically 3-5 characters.
+			This will be used in places where text spaces is limited on the site.
+		</p>
+		<input name="CoopNameShort" value="{{CoopParams.CoopNameShort}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="CoopNameBusiness">Official business name of your market</label>
+		<p class="text-muted font-size-90 mb-2">
+			Official business name of your market, this will show up in the footer and contact forms.
+		</p>
+		<input name="CoopNameBusiness" value="{{CoopParams.CoopNameBusiness}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="Phone">Phone</label>
+		<p class="text-muted font-size-90 mb-2">
+			Phone number of your market.
+		</p>
+		<input name="Phone" value="{{CoopParams.Phone}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="HelpEmail">Help email</label>
+		<p class="text-muted font-size-90 mb-2">
+			Email address for help and support.
+		</p>
+		<input name="HelpEmail" value="{{CoopParams.HelpEmail}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="InfoEmail">Info email</label>
+		<p class="text-muted font-size-90 mb-2">
+			Email address for general information.
+		</p>
+		<input name="InfoEmail" value="{{CoopParams.InfoEmail}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="AddressLine1">Address line 1</label>
+		<p class="text-muted font-size-90 mb-2">
+			First line of your market address.
+		</p>
+		<input name="AddressLine1" value="{{CoopParams.AddressLine1}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="AddressLine2">Address line 2</label>
+		<p class="text-muted font-size-90 mb-2">
+			Second line of your market address.
+		</p>
+		<input name="AddressLine2" value="{{CoopParams.AddressLine2}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="HomeWebsite">Home website</label>
+		<p class="text-muted font-size-90 mb-2">
+			Website address for your business. Mind you this is not the same as the market website.
+		</p>
+		<input name="HomeWebsite" value="{{CoopParams.HomeWebsite}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="PickupWebsite">Pickup website</label>
+		<p class="text-muted font-size-90 mb-2">
+			Website address for your pickup service. And information on how to pick up orders.
+		</p>
+		<input name="PickupWebsite" value="{{CoopParams.PickupWebsite}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="CalendarWebsite">Calendar website</label>
+		<p class="text-muted font-size-90 mb-2">
+			Website address for your calendar of market events.
+		</p>
+		<input name="CalendarWebsite" value="{{CoopParams.CalendarWebsite}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="TermsOfServiceWebsite">Terms of service website</label>
+		<p class="text-muted font-size-90 mb-2">
+			Website address for your terms of service.
+		</p>
+		<input name="TermsOfServiceWebsite" value="{{CoopParams.TermsOfServiceWebsite}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="HeaderLogoPath">Header logo</label>
+		<p class="text-muted font-size-90 mb-2">
+			Your header logo will be displayed at the top of your market website.
+		</p>
+        <div class="custom-file">
+            <label id="LblImgHeaderLogoPath" class="custom-file-label" for="ImgHeaderLogoPath">{{CoopParams.HeaderLogoPath}}</label>
+            <input id="ImgHeaderLogoPath" name="ImgHeaderLogoPath" type="file"
+                accept=".bmp,.gif,.jfif.,.jpg,.jpeg,.pjp,.pjpeg,.png,.svg,.svgz,.tif,.tiff,.webp,.svg"
+                class="custom-file-input">
+            <div class="Explain">
+                Your image must be 1024KB or less in size.
+            </div>
+        </div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="HeroLogoPath">Hero logo</label>
+		<p class="text-muted font-size-90 mb-2">
+			Your hero logo will be displayed on the landing page of the website.
+		</p>
+        <div class="custom-file">
+            <label id="LblImgHeroLogoPath" class="custom-file-label" for="ImgHeroLogoPath">{{CoopParams.HeroLogoPath}}</label>
+            <input id="ImgHeroLogoPath" name="ImgHeroLogoPath" type="file"
+                accept=".bmp,.gif,.jfif.,.jpg,.jpeg,.pjp,.pjpeg,.png,.svg,.svgz,.tif,.tiff,.webp,.svg"
+                class="custom-file-input">
+            <div class="Explain">
+                Your image must be 1024KB or less in size.
+            </div>
+        </div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="FooterLogoPath">Footer logo</label>
+		<p class="text-muted font-size-90 mb-2">
+			Your footer logo will be displayed at the bottom of your market website.
+		</p>
+        <div class="custom-file">
+            <label id="LblImgFooterLogoPath" class="custom-file-label" for="ImgFooterLogoPath">{{CoopParams.FooterLogoPath}}</label>
+            <input id="ImgFooterLogoPath" name="ImgFooterLogoPath" type="file"
+                accept=".bmp,.gif,.jfif.,.jpg,.jpeg,.pjp,.pjpeg,.png,.svg,.svgz,.tif,.tiff,.webp,.svg"
+                class="custom-file-input">
+            <div class="Explain">
+                Your image must be 1024KB or less in size.
+            </div>
+        </div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="TextLogoPath">Text logo</label>
+		<p class="text-muted font-size-90 mb-2">
+			Your text logo will be displayed at the top of your market website.
+		</p>
+        <div class="custom-file">
+            <label id="LblImgTextLogoPath" class="custom-file-label" for="ImgTextLogoPath">{{CoopParams.TextLogoPath}}</label>
+            <input id="ImgTextLogoPath" name="ImgTextLogoPath" type="file"
+                accept=".bmp,.gif,.jfif.,.jpg,.jpeg,.pjp,.pjpeg,.png,.svg,.svgz,.tif,.tiff,.webp,.svg"
+                class="custom-file-input">
+            <div class="Explain">
+                Your image must be 1024KB or less in size.
+            </div>
+        </div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="FaviconPath">Favicon - Main Icon</label>
+		<p class="text-muted font-size-90 mb-2">
+			The favicon appears as the main icon in the browser tab.
+		</p>
+        <div class="custom-file">
+            <label id="LblImgFaviconPath" class="custom-file-label" for="ImgFaviconPath">{{CoopParams.FaviconPath}}</label>
+            <input id="ImgFaviconPath" name="ImgFaviconPath" type="file"
+                accept=".jpg,.jpeg,.png,.svg,.webp,.ico"
+                class="custom-file-input">
+            <div class="Explain">
+                Ensure the image is square, with a maximum size of 512x512 pixels (~128 KB).
+				It is recommended to use a .ico file for optimal compatibility.
+            </div>
+        </div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="FacebookUrl">Facebook</label>
+		<p class="text-muted font-size-90 mb-2">
+			Your Facebook page address.
+		</p>
+		<input name="FacebookUrl" value="{{CoopParams.FacebookUrl}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="InstagramUrl">Instagram</label>
+		<p class="text-muted font-size-90 mb-2">
+			Your Instagram page address.
+		</p>
+		<input name="InstagramUrl" value="{{CoopParams.InstagramUrl}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="SenderEmail">Sender email</label>
+		<p class="text-muted font-size-90 mb-2">
+			Email address that the site can use to send emails on your behalf.
+		</p>
+		<input name="SenderEmail" value="{{CoopParams.SenderEmail}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="SenderEmailDisplayName">Sender email display name</label>
+		<p class="text-muted font-size-90 mb-2">
+			Display name of the email that the site can use to send emails on your behalf.
+		</p>
+		<input name="SenderEmailDisplayName" value="{{CoopParams.SenderEmailDisplayName}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="MembershipNotificationEmail">Membership notification email</label>
+		<p class="text-muted font-size-90 mb-2">
+			Email address for membership notifications to send on your behalf.
+		</p>
+		<input name="MembershipNotificationEmail" value="{{CoopParams.MembershipNotificationEmail}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="ProductStandardsWebsite">Product standards website</label>
+		<p class="text-muted font-size-90 mb-2">
+			Website address for your product standards.
+		</p>
+		<input name="ProductStandardsWebsite" value="{{CoopParams.ProductStandardsWebsite}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="ProducerStandardsWebsite">Producer standards website</label>
+		<p class="text-muted font-size-90 mb-2">
+			Website address for your producer standards.
+		</p>
+		<input name="ProducerStandardsWebsite" value="{{CoopParams.ProducerStandardsWebsite}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="GeneralManager">General manager</label>
+		<p class="text-muted font-size-90 mb-2">
+			Name of the general manager of your market.
+		</p>
+		<input name="GeneralManager" value="{{CoopParams.GeneralManager}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="GeneralManagerTitle">General manager title</label>
+		<p class="text-muted font-size-90 mb-2">
+			Title of the general manager of your market.
+		</p>
+		<input name="GeneralManagerTitle" value="{{CoopParams.GeneralManagerTitle}}" type="text"
+			class="form-control">
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="PaypalEmail">Paypal email</label>
+		<p class="text-muted font-size-90 mb-2">
+			Email address for your Paypal account.
+		</p>
+		<input name="PaypalEmail" value="{{CoopParams.PaypalEmail}}" type="text"
+			class="form-control">
+	</div>
+</div>

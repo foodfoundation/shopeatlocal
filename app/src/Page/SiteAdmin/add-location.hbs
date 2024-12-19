@@ -1,0 +1,33 @@
+{{!-- add-location.hbs
+//    ----------------
+//    Add Location view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2>Add location</h2>
+
+	<div>
+		Use this page to create a new satellite location. You cannot create
+		additional home delivery locations. New central locations must be
+		created by a developer.
+	</div>
+	<div class="mt-2">
+		The location can be edited later, but it cannot be deleted; it can
+		only be deactivated.
+	</div>
+
+	<hr>
+
+	<form id="form-main" class="mt-3 pb-4" action="/add-location" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>SiteAdmin/pCtlsFormLoc}}
+
+		<hr>
+
+		<div class="d-flex justify-content-end">
+			<button type="submit" class="btn btn-primary">Add</button>
+		</div>
+	</form>
+</div>

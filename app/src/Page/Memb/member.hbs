@@ -1,0 +1,415 @@
+{{!-- member.hbs
+//    ----------
+//    Member home view --}}
+
+<div class="container-md py-4">
+
+	<div>
+		<h3 class="display-4 font-size-150 mb-0">{{CredSelImperUser.NameLogin}}</h3>
+		{{>Misc/pIDsLine CredSelImperUser}}
+	</div>
+
+	<hr>
+
+	<div class="row">
+		{{!-- Doesn't seem necessary to hide the border on small displays, or
+		//    possible, without responsive border class: --}}
+		<div class="col-sm pr-sm-4 border-right">
+			<div class="mb-2">
+				<strong>
+					{{Memb.Name1First}} {{Memb.Name1Last}}<br>
+					{{#if Memb.Name2Last}}
+					{{Memb.Name2First}} {{Memb.Name2Last}}<br>
+					{{/if}}
+				</strong>
+				{{#if Memb.NameBus}}{{Memb.NameBus}}<br>{{/if}}
+				{{Memb.Addr1}}<br>
+				{{#if Memb.Addr2}}{{Memb.Addr2}}<br>{{/if}}
+				{{Memb.City}}, {{Memb.St}} {{Memb.Zip}}
+				{{#if Memb.InstructDeliv}}<br><em>{{Memb.InstructDeliv}}</em>{{/if}}
+			</div>
+
+			<div class="mb-2">
+				{{hLinkEmail Memb.Email1}}
+				{{#if Memb.Email2}}<br>{{hLinkEmail Memb.Email2}}{{/if}}
+			</div>
+
+			<div class="mb-2">
+				{{hLinkPhone Memb.Phone1}}
+				{{#if Memb.Phone2}}<br>{{hLinkPhone Memb.Phone2}}{{/if}}
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Home delivery distance
+				</div>
+				<div>
+					<strong>
+						{{#if (hCkNotNull Memb.DistDeliv)}}
+						{{hTextFixedOrOrig Memb.DistDeliv 2}} miles
+						{{else}}
+						Unknown
+						{{/if}}
+					</strong>
+				</div>
+			</div>
+
+			<div class="LinksPg">
+				<a href="/edit-member-registration">Edit member registration</a>
+				{{!-- Staff are not allowed to change passwords for impersonated
+				//    users: --}}
+				<a class="{{hClassDisab CredImper}}" href="/change-password">
+					Change password
+				</a>
+			</div>
+
+			<hr>
+
+			<h5>Status</h5>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Membership status
+				</div>
+				<div>
+					<strong>{{hTextCdReg Memb.CdRegMemb}}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					EBT status
+				</div>
+				<div>
+					<strong>{{hTextCdReg Memb.CdRegEBT}}</strong>
+				</div>
+			</div>
+
+			<div class="mt-2">
+				{{#if (hCkStaffFromUser)}}
+				<div class="d-flex flex-row justify-content-between">
+					<div>
+						Show Producer page
+					</div>
+					<div>
+						<strong>{{hYesNoBlank Memb.CkShowProducer}}</strong>
+					</div>
+				</div>
+				{{/if}}
+
+				<div class="d-flex flex-row justify-content-between">
+					<div>
+						Volunteer status
+					</div>
+					<div>
+						<strong>{{hTextCdReg Memb.CdRegVolun}}</strong>
+					</div>
+				</div>
+
+				<div class="d-flex flex-row justify-content-between">
+					<div>
+						Wholesale Customer status
+					</div>
+					<div>
+						<strong>{{hTextCdReg Memb.CdRegWholesale}}</strong>
+					</div>
+				</div>
+
+				{{#if (hCkStaffFromUser)}}
+				<div class="d-flex flex-row justify-content-between">
+					<div>
+						Staff status
+					</div>
+					<div>
+						<strong>{{hTextCdStaff Memb.CdStaff}}</strong>
+					</div>
+				</div>
+				{{/if}}
+
+				{{#if (hCkAnd (hCkStaffFromUser) Memb.Notes)}}
+				<div class="text-muted font-size-90 font-italic mt-2">
+					{{hHTMLLinesP (hQuoteDbl Memb.Notes)}}
+				</div>
+				{{/if}}
+
+				{{#if (hCkStaffFromUser)}}
+				<div class="LinksPg">
+					<a href="/edit-member-status">Edit member status</a>
+				</div>
+				{{/if}}
+
+				<p class="mt-2 mb-0 text-muted font-size-90">
+					Contact {{CoopParams.CoopNameShort}} to change your EBT status, or to become a producer or
+					volunteer.
+				</p>
+			</div>
+		</div>
+
+		<div class="col-sm pl-md-4">
+			<hr class="d-sm-none">
+
+			<h5>Billing</h5>
+
+			<div class="d-flex flex-row justify-content-between mb-2">
+				<div>
+					Account balance
+				</div>
+				{{#if Memb.BalEBT}}
+				<div>{{>Memb/pTblBalEBT Memb}}</div>
+				{{else}}
+				<div class="text-right font-weight-bold">
+					{{hTextCurrOrOrig Memb.BalMoney}}
+				</div>
+				{{/if}}
+			</div>
+			<p class="text-muted font-size-90 mb-2">
+				Positive balances are owed <em>to</em> the maket. Negative balances are
+				owed <em>by</em> the market. Any payments you send will be subtracted
+				from this balance 7-10 days after {{CoopParams.CoopNameShort}} receives them.
+			</p>
+			<div class="d-flex flex-row justify-content-between mb-2">
+				<div>
+					Last member fee
+				</div>
+				<div class="text-right">
+					<strong>
+					{{#if Memb.WhenFeeMembLast}}
+					{{hTextDateLong Memb.WhenFeeMembLast}}
+					{{else}}
+					Not assessed
+					{{/if}}
+					</strong>
+				</div>
+			</div>
+			<p class="text-muted font-size-90">
+				{{!-- Your initial membership fee of
+				{{hTextCurrOrOrig (hSite "FeeMembInit")}} is due within six months of
+				registration. After that, {{hTextCurrOrOrig (hSite "FeeMembRenew")}} is
+				due yearly. --}}
+
+				Your initial membership fee of {{hTextCurrOrOrig (hSite "FeeMembInit")}}
+				is due when you place your first order{{#if Memb.CkShowProducer}}, or
+				when you sell your first product{{/if}}. After that,
+				{{hTextCurrOrOrig (hSite "FeeMembRenew")}} is due yearly.
+			</p>
+			<div class="LinksPg">
+				<a href="/shopper-invoices">Shopper invoices</a>
+				<a href="/transactions">Transactions</a>
+			</div>
+
+			<hr>
+
+			{{#unless (hCkGreater Bal 0)}}
+			<div class="Explain mb-3 font-size-90">
+				You do not owe a payment at this time.
+			</div>
+			{{/unless}}
+
+			{{#if (hCkFeatureFlag "paypalUpdate")}}
+			<h5>Payment</h5>
+
+			<div class="d-md-flex flex-row justify-content-between">
+				<div>
+					<h6 class="mb-3 text-muted">
+						Mail your payment
+					</h6>
+					<address>
+						{{CoopParams.CoopNameBusiness}}<br>
+						{{CoopParams.AddressLine1}}<br>
+						{{CoopParams.AddressLine2}}
+					</address>
+					<p class="text-muted font-size-90">
+						Please write 'MEMBER {{hTextIDMemb Memb.IDMemb}}' on your check.
+					</p>
+				</div>
+			</div>
+			<div>
+				<h6 class="mb-3 text-muted">
+					Pay online
+				</h6>
+				<div class="d-flex flex-row justify-content-between mb-2">
+					<div class="d-flex align-items-center">
+						Enter the amount (USD):
+					</div>
+					<div class="text-right">
+						<label for="paymentAmount" class="sr-only">Payment amount</label>
+						<input type="number" id="paymentAmount" class="form-control" placeholder="Amount (USD)" {{#if (hCkGreater Bal 0)}}value="{{hTextFixedOrOrig Bal 2}}"{{/if}} required>
+					</div>
+				</div>
+				<div>
+					<div id="paypal-button-container"></div>
+					<div id="paypal-result-message"></div>
+				</div>
+			</div>
+			{{else}} {{!-- else "paypalUpdate" --}}
+			<div class="d-md-flex flex-row justify-content-between">
+				<div>
+					<h6 class="mb-3 text-muted">
+						Mail your payment
+					</h6>
+					<address>
+						{{CoopParams.CoopNameBusiness}}<br>
+						{{CoopParams.AddressLine1}}<br>
+						{{CoopParams.AddressLine2}}
+					</address>
+					<p class="text-muted font-size-90">
+						Please write 'MEMBER {{hTextIDMemb Memb.IDMemb}}' on your check.
+					</p>
+				</div>
+
+				<div class="text-md-right">
+					<h6 class="mb-3 text-muted">Pay with PayPal</h6>
+
+					{{!-- Created with the PayPal 'buy now' button generator at:
+					//
+					//      https://www.paypal.com/buttons/
+					//
+					//    Add 'style="box-shadow: none"' to the button input to hide the
+					//    shadow around the square corners: --}}
+					<form action="https://www.paypal.com/cgi-bin/webscr" method="post"
+						target="_top">
+						<input type="hidden" name="cmd" value="_xclick">
+						<input type="hidden" name="business" value="{{CoopParams.PaypalEmail}}">
+						<input type="hidden" name="lc" value="US">
+						<input type="hidden" name="item_name" value="{{hDescPayPal Memb}}">
+						{{#if (hCkGreater Bal 0)}}
+						<input type="hidden" name="amount" value="{{Bal}}">
+						{{/if}}
+						<input type="hidden" name="currency_code" value="USD">
+						<input type="hidden" name="button_subtype" value="services">
+						<input type="hidden" name="no_note" value="0">
+						<input type="hidden" name="bn"
+							value="PP-BuyNowBF:btn_paynow_LG.gif:NonHostedGuest">
+						<input type="image" border="0" name="submit" alt="PayPal"
+							style="box-shadow: none"
+							src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif">
+						<img src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif"
+							 alt="" border="0" width="1" height="1">
+					</form>
+				</div>
+			</div>
+			{{/if}}
+		</div>
+	</div>
+</div>
+
+{{#if (hCkFeatureFlag "paypalUpdate")}}
+<script src="https://www.paypal.com/sdk/js?client-id={{PayPalClientId}}&currency=USD&enable-funding=venmo&disable-funding=paylater"></script>
+<script>
+	window.paypal
+		.Buttons({
+			style: {
+				height: 40,
+			},
+			async createOrder() {
+				try {
+					const paymentAmount = document.getElementById('paymentAmount').value;
+					const description = '{{hDescPayPal Memb}}';
+					if (!paymentAmount || isNaN(paymentAmount) || paymentAmount <= 0) {
+						alert('Please enter a valid payment amount.');
+						return;
+					}
+					const response = await fetch("/payment/create-paypal-orders/", {
+						...OptsFetchCSRF(),
+						method: 'POST',
+						body: JSON.stringify({
+							amount: paymentAmount,
+							description, 
+						}),
+					});
+					
+					const orderData = await response.json();
+					
+					if (orderData.id) {
+						return orderData.id;
+					} else {
+						const errorDetail = orderData?.details?.[0];
+						const errorMessage = errorDetail
+							? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+							: JSON.stringify(orderData);
+						
+						throw new Error(errorMessage);
+					}
+				} catch (error) {
+					console.error(error);
+					resultMessage(true, `Could not initiate checkout: ${error}`);
+				}
+			},
+
+			async onApprove(data, actions) {
+				try {
+					setLoading(true);
+					const response = await fetch(`/payment/capture-paypal-order/${data.orderID}`, {
+						...OptsFetchCSRF(),
+						method: 'POST',
+					});
+					
+					const orderData = await response.json();
+					// Three cases to handle:
+					//   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+					//   (2) Other non-recoverable errors -> Show a failure message
+					//   (3) Successful transaction -> Show confirmation or thank you message
+					const errorDetail = orderData?.details?.[0];
+					
+					setLoading(false);
+
+					if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
+						// (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+						// recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
+						return actions.restart();
+					} else if (errorDetail) {
+						// (2) Other non-recoverable errors -> Show a failure message
+						throw new Error(`${errorDetail.description}`);
+					} else if (!orderData.purchase_units) {
+						throw new Error(JSON.stringify(orderData));
+					} else {
+						// (3) Successful transaction
+						resultMessage();
+					}
+				} catch (error) {
+					console.error(error);
+					setLoading(false);
+					resultMessage(true, `Could not complete transaction: ${error}`);
+				}
+			},
+		}).render("#paypal-button-container");
+	
+	function resultMessage(isError = false, errorMessage = "") {
+		const container = document.querySelector("#paypal-result-message");
+		if (!container) {
+			return;
+		}
+		const message = (isError
+			? `<strong>Payment Failed!</strong> ${errorMessage}`
+			: `<strong>Successful Payment!</strong>`);
+		const alertTypeClass = isError ? "alert-danger" : "alert-success";
+		const innerHTML = 
+			`<div class="alert alert-dismissible mb-0 ${alertTypeClass}" style="border-radius: 5px;" role="alert">
+				${message}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>`;
+		container.innerHTML = innerHTML;
+		if (!isError) {
+			document.getElementById('paymentAmount').value = "";
+		}
+	}
+
+	function setLoading(isLoading = true) {
+		const container = document.querySelector("#paypal-button-container");
+		if (!container) {
+			return;
+		}
+		const loadingHTML = 
+			`<div class="d-flex justify-content-center align-items-center" style="height: 40px;">
+				<div class="spinner-border text-primary" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<span class="ml-2">Do not reload the page, please!</span>
+			</div>`;
+		container.innerHTML = isLoading ? loadingHTML : "";
+	}
+
+</script>
+{{/if}}

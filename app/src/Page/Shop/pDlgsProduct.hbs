@@ -1,0 +1,119 @@
+{{!-- pDlgsProduct.hbs
+//    ----------------
+//    Product dialogs --}}
+
+{{#each Products}}
+{{!-- Why is it 'DlgDtlProduct', rather than 'DlgProduct'? [TO DO] --}}
+<div id="DlgDtlProduct{{IDProduct}}" class="DlgDtlProduct modal" role="dialog"
+	tabindex="-1">
+	<div class="modal-dialog
+		{{!-- The 'xl' dialog looks bad when there is no image: --}}
+		{{#if (hCkOr NameImgProduct NameImgProducer)}}modal-xl{{else}}modal-lg{{/if}}
+		modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header d-flex justify-content-between
+				align-items-start py-2 px-3">
+
+				<div class="d-flex align-items-center mr-2">
+					<div class="d-none d-lg-block mr-3">
+						<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+					</div>
+					<div class="text-sm-left">
+						{{!-- Normally the ID comes first, but I guess we will place the
+						//    name above, since the shopper uses this: --}}
+						<a href="/product/{{IDProduct}}">{{NameProduct}}</a><br>
+						{{>Misc/pLinkIDProduct}}
+					</div>
+				</div>
+
+				<div class="d-flex align-items-center ml-2">
+					<div class="text-right">
+						{{!-- Normally the ID comes first, but I guess we will place the
+						//    name above, since the shopper uses this: --}}
+						<a href="/about-producer/{{IDProducer}}" class="font-weight-semi">
+							{{NameBus}}
+						</a><br>
+						{{>Misc/pLinkIDProducer}}
+					</div>
+					<div class="d-none d-lg-block ml-3">
+						<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+					</div>
+				</div>
+			</div>
+
+			<div id="FlashesProduct{{IDProduct}}">
+				{{!-- At present, this element is used only by the client. --}}
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					{{#if (hCkOr NameImgProduct NameImgProducer)}}
+					<div class="h-50 col-lg-4 mb-2 mb-lg-0">
+						<div class="form-group mb-0">
+							<img src="{{hPrefixImageWithStorage (hCkOr NameImgProduct NameImgProducer)}}"
+								alt="Product or producer image"
+								class="w-100 border rounded p-0">
+						</div>
+					</div>
+					{{/if}}
+
+					<div class="col-md">
+						<div class="text-center">
+							{{#if CkNew}}
+							<div class="mt-0">
+								<a href="/product-search" class="text-danger font-weight-bold">NEW</a>
+							</div>
+							{{/if}}
+
+							{{#if (hCkLessEq QtyOfferWebProduct QtyPromWebProduct)}}
+							<div class="font-weight-bold text-danger">
+								OUT OF STOCK
+							</div>
+							{{/if}}
+
+							<div>
+								<a href="/product-search?IDCat={{IDCat}}" class="text-muted">
+									{{NameCat}}
+								</a>
+							</div>
+
+							<div>
+								<a href="/product-search?IDSubcat={{IDSubcat}}" class="text-muted">
+									{{NameSubcat}}
+								</a>
+							</div>
+
+							<div class="mt-2">
+								{{>Misc/pLinksAttrProduct}}
+							</div>
+						</div>
+
+						<div class="my-3">
+							{{#if Vtys}}
+							{{>Shop/pTblVtyShop Vtys}}
+							{{else}}
+
+							<hr>
+
+							<div class="jumbotron">
+								<h2 class="display-4 font-size-200">No varieties</h2>
+							</div>
+							{{/if}}
+						</div>
+
+						<div class="Descrip MargP-Trim text-center mt-4 mb-2 px-sm-3
+							px-lg-5">
+							{{hHTMLLinesP Descrip}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer p-2">
+				<button type="button" class="btn btn-secondary ml-auto" data-toggle="modal"
+					data-target="#DlgDtlProduct{{IDProduct}}">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+{{/each}}

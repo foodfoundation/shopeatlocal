@@ -1,0 +1,42 @@
+.filterable-table-container nav ul {
+  list-style-type: none;
+  margin: 10px 0;
+}
+
+.filterable-table-container nav ul > li {
+  display: inline-block;
+  margin: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #646cff;
+}
+
+.fa-times::before {
+  content: "remove";
+  font-weight: bold;
+  background-color: lightcoral;
+  border-radius: 4px;
+  padding: 2px;
+  margin-right: 5px;
+}
+
+.filter-item-title {
+  margin-right: 5px;
+}
+
+.filter-item-value {
+  font-style: italic;
+  margin-right: 10px;
+}
+
+thead tr:hover {
+  cursor: pointer;
+}
+
+tbody tr:hover {
+  background-color: lightgray;
+}
+
+tbody td span:hover {
+  cursor: pointer;
+}

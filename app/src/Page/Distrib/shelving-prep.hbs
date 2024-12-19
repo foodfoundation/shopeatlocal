@@ -1,0 +1,133 @@
+{{!-- shelving-prep.hbs
+//    -----------------
+//    Shelving Prep view --}}
+
+<style>
+	.Stor {
+		page-break-after: always;
+	}
+
+	.Producer {
+		page-break-inside: avoid;
+	}
+</style>
+
+<div class="container py-4">
+	<div class="d-md-flex flex-row justify-content-between align-items-baseline
+		mb-2">
+		<h2 class="mb-0">Shelving prep</h2>
+		<h5 class="mt-2 mt-md-0">{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
+	</div>
+
+	<div class="d-print-none Flow-md-2">
+		<p>
+			This page displays promised web order quantities for the current cycle,
+			grouped by producer, so that shelf labels can be placed in distribution
+			storage areas.
+		</p>
+		<p>
+			{{>Misc/pInstructPrint}}
+		</p>
+	</div>
+
+	<hr>
+
+	{{#each Stors}}
+	<div class="Stor mt-4 mb-5">
+		<div class="d-flex align-items-center my-4">
+			<img src="{{hPrefixStatic 'stor.svg'}}" alt=""
+				class="d-none d-lg-block ml-1 mr-3" width="30" height="30">
+			{{!-- Should we do this with all the headings?: [TO DO] --}}
+			<h3 class="font-weight-semi">{{CdStor}}: {{hTextCdStor CdStor}}</h3>
+			<h5 class="font-weight-semi ml-auto">{{QtyProm}} promised</h5>
+		</div>
+
+		{{#each Producers}}
+		<div class="Producer">
+			<div class="d-flex flex-row align-items-end py-1 mb-2x">
+				<div class="d-none d-md-block ml-1 mr-3">
+					<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+				</div>
+				<div class="font-weight-bold">
+					{{>Misc/pLinkProducer}}<br>
+					{{NameBus}}
+				</div>
+				<div class="text-right ml-auto px-0 font-weight-semi">
+					{{QtyProm}} promised
+				</div>
+			</div>
+			<hr class="my-1">
+
+			{{!-- Desktop and print layout: --}}
+			<div class="GridTbl Head d-none d-md-block">
+				<div class="row font-weight-bold">
+					<div class="col">Product</div>
+					<div class="col">Variety</div>
+					<div class="col-1 text-md-right">Mgd</div>
+					<div class="col-1 text-md-right">Prom</div>
+				</div>
+			</div>
+			<div class="GridTbl Body d-none d-md-block mb-4">
+				{{#each Products}}
+				<div class="Row">
+					<div class="row">
+						<div class="col">
+							<a href="/product-detail/{{IDProduct}}">
+								{{hTextIDProduct IDProduct}} {{NameProduct}}
+							</a>
+						</div>
+						<div class="col">
+							{{#each Vtys}}
+							<div>{{hTextIDVty IDVty}} {{hNameVty this}}</div>
+							{{/each}}
+						</div>
+						<div class="col-1 text-right">
+							{{#each Vtys}}
+							<div>{{hYesNoBlank CkInvtMgd}}</div>
+							{{/each}}
+						</div>
+						<div class="col-1 text-right">
+							{{#each Vtys}}
+							<div>{{QtyProm}}</div>
+							{{/each}}
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+
+			{{!-- Mobile layout: --}}
+			<div class="GridTbl Body d-md-none d-print-none mb-4">
+				{{#each Products}}
+				<div class="Row">
+					<div class="row">
+						<div class="col-md">
+							<div>
+								<a href="/product-detail/{{IDProduct}}">
+									{{hTextIDProduct IDProduct}} {{NameProduct}}
+								</a>
+							</div>
+							<hr class="mt-1">
+							{{#each Vtys}}
+							<div class="row px-0">
+								<div class="col">
+									{{hTextIDVty IDVty}} {{hNameVty this}}
+								</div>
+								<div class="col-3 text-center">
+									{{#if CkInvtMgd}}Mgd{{else}}Unmgd{{/if}}
+								</div>
+								<div class="col-3 text-right">
+									{{QtyProm}} prom
+								</div>
+							</div>
+							{{/each}}
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		{{/each}}
+	</div>
+	{{/each}}
+</div>

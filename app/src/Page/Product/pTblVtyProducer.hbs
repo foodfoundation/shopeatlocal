@@ -1,0 +1,119 @@
+{{!-- pTblVtyProducer.hbs
+//    -------------------
+//    Variety table for producers
+//
+//    This does not work well for small display sizes. [TO DO] --}}
+
+<div class="GridTbl Head d-none d-md-block">
+	<div class="row align-items-end font-weight-bold">
+		<div class="col-md">Variety</div>
+		<div class="col-md-1 text-right">Web price</div>
+		<div class="col-md-1 text-center">
+			<span class="Tip"
+				data-toggle="tooltip" data-placement="top" data-html="true"
+				title="The <em>offer quantity</em> is the number you are able to deliver">
+				Offer
+			</span>
+		</div>
+		<div class="col-md-1 text-center">
+			<span class="Tip"
+				data-toggle="tooltip" data-placement="top" data-html="true"
+				title="The <em>order quantity</em> is the number web shoppers placed in carts during this cycle">
+				This<br>order
+			</span>
+		</div>
+		<div class="col-md-1 text-center">
+			<span class="Tip"
+				data-toggle="tooltip" data-placement="top" data-html="true"
+				title="The <em>last order quantity</em> is the number web shoppers placed in carts during the last cycle">
+				Last<br>order
+			</span>
+		</div>
+		<div class="col-md-1 text-center">
+			<span class="Tip"
+				data-toggle="tooltip" data-placement="top" data-html="true"
+				title="The <em>available quantity</em> is the number that can be added to shopper carts">
+				Avail
+			</span>
+		</div>
+		<div class="col-md-1 text-center">Mgd</div>
+		<div class="col-md-1 text-center">
+			<span class="Tip"
+				data-toggle="tooltip" data-placement="top" data-html="true"
+				title="The <em>variety type</em> is either Retail (<em>R</em>) or Wholesale (<em>W</em>)">
+				Type
+			</span>
+		</div>
+		<div class="col-md-1 text-right px-0">Status</div>
+		<div class="col-md-2"></div>
+	</div>
+</div>
+
+<div class="GridTbl Body mb-3">
+	{{#each this}}
+	<div class="Row Vty {{#if QtyOrd}}Green{{/if}} {{hCdListBasicVty this}}
+		{{#if QtyOrd}}Ord{{else}}NoOrd{{/if}}">
+
+		{{!-- Desktop layout
+		//    -------------- --}}
+
+		<div class="d-none d-md-flex row align-items-center">
+			<div class="col-md">
+				{{hTextIDVty IDVty}} {{hNameVty this}}
+			</div>
+			<div class="col-md-1 text-right">
+				{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
+			</div>
+			<div class="col-md-1 text-center">{{QtyOffer}}</div>
+			<div class="col-md-1 text-center">{{QtyOrd}}</div>
+			<div class="col-md-1 text-center">{{QtyOrdCyc}}</div>
+			<div class="col-md-1 text-center">{{hQtyAvailAdd this}}</div>
+			<div class="col-md-1 text-center">{{hYesNoBlank CkInvtMgd}}</div>
+			<div class="col-md-1 text-center">{{hOptsCdVtyTypeAbbrev CdVtyType}}</div>
+			<div class="col-md-1 text-right px-0">{{hTextListVty this}}</div>
+			<div class="col-md-2 text-right pt-0">
+				<a class="btn btn-sm btn-outline-secondary mb-1"
+					href="/variety-order-history/{{IDVty}}" target="_blank">History</a>
+				<a class="btn btn-sm btn-outline-secondary mb-1"
+					href="/variety-labels/{{IDVty}}" target="_blank">Labels</a>
+				<a class="btn btn-sm btn-outline-primary"
+					href="/edit-variety/{{IDVty}}" target="_blank">Edit</a>
+			</div>
+		</div>
+
+		{{!-- Mobile layout
+		//    ------------- --}}
+
+		<div class="d-md-none row align-items-center">
+			<div class="col-6 font-weight-semi">
+				Variety {{hTextIDVty IDVty}}
+			</div>
+			<div class="col-6 text-right font-weight-semi">
+				{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}
+			</div>
+			<div class="col font-weight-semi">
+				{{hNameVty this}}
+			</div>
+			<hr class="col-md my-1 mx-3">
+			<div class="col-6 font-weight-semi">{{QtyOffer}} offer</div>
+			<div class="col-6 text-right font-weight-semi">
+				{{hQtyAvailAdd this}} avail
+			</div>
+			<div class="col-6">This order {{QtyOrd}}</div>
+			<div class="col-6 text-right">Last order {{QtyOrdCyc}}</div>
+			<div class="col-4">{{#if CkInvtMgd}}Managed{{else}}Unmanaged{{/if}}</div>
+			<div class="col-8 text-right">{{CdVtyType}}</div>
+			<div class="col-8">{{hTextListVty this}}</div>
+			<hr class="col-md my-2 mx-3">
+			<div class="col-12 d-flex mb-1">
+				<a class="btn btn-sm btn-outline-secondary"
+					href="/variety-order-history/{{IDVty}}">History</a>
+				<a class="btn btn-sm btn-outline-secondary ml-1"
+					href="/variety-labels/{{IDVty}}">Labels</a>
+				<a class="btn btn-sm btn-outline-primary ml-auto"
+					href="/edit-variety/{{IDVty}}">Edit</a>
+			</div>
+		</div>
+	</div>
+	{{/each}}
+</div>

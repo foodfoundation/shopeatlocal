@@ -1,0 +1,124 @@
+{{!-- pBodyDtlProducer.hbs
+//    --------------------
+//    Producer Detail body --}}
+
+<div class="row">
+	{{!-- Doesn't seem necessary to hide the border on small displays, or
+	//    possible, without responsive border class: --}}
+	<div class="col-lg pr-lg-4 border-lg-right">
+		<div class="mb-2">
+			{{Name1First}} {{Name1Last}}<br>
+			{{#if Name2Last}}
+			{{Name2First}} {{Name2Last}}<br>
+			{{/if}}
+			<strong>{{NameBus}}</strong><br>
+			{{Addr1}}<br>
+			{{#if Addr2}}{{Addr2}}<br>{{/if}}
+			{{City}}, {{St}} {{Zip}}
+			{{#if InstructDeliv}}<br><em>{{InstructDeliv}}</em>{{/if}}
+		</div>
+
+		<div class="mb-2">
+			{{hLinkEmail Email}}
+		</div>
+
+		<div class="mb-2">
+			{{hLinkPhone Phone1}}
+			{{#if Phone2}}<br>{{hLinkPhone Phone2}}{{/if}}
+		</div>
+
+		<div class="LinksPg">
+			<a href="/edit-about-producer/{{IDProducer}}">Edit 'About producer'</a>
+			<a href="/edit-producer-registration/{{IDProducer}}">Edit producer
+				registration</a>
+		</div>
+
+		<hr>
+
+		<h5>Status</h5>
+
+		<div class="d-flex flex-row justify-content-between">
+			<div>
+				Producer status
+			</div>
+			<div>
+				<strong>{{hTextCdReg CdRegProducer}}</strong>
+			</div>
+		</div>
+
+		<div class="d-flex flex-row justify-content-between">
+			<div>
+				Wholesale status
+			</div>
+			<div>
+				<strong>{{hTextCdReg CdRegWholesale}}</strong>
+			</div>
+		</div>
+
+		<div class="d-flex flex-row justify-content-between">
+			<div>
+				Listing status
+			</div>
+			<div>
+				<strong>{{hTextCkListProducer CkListProducer}}</strong>
+			</div>
+		</div>
+
+		<div class="d-flex flex-row justify-content-between mt-2">
+			<div>
+				Producer since
+			</div>
+			<div>
+				<strong>{{hTextWhen WhenRegProducer "Med"}}</strong>
+			</div>
+		</div>
+
+		<div class="LinksPg mb-0">
+			<a href="/edit-producer-status/{{IDProducer}}">Edit producer status</a>
+		</div>
+	</div>
+
+	<div class="col-lg pl-lg-4">
+		<hr class="d-lg-none mb-3">
+
+		<h5>Delivery</h5>
+
+		<div class="LinksPg mb-2">
+			<a href="/producer-check-in/{{IDProducer}}"
+				class="{{hClassDisab (hNot QtyProm)}}">
+				Producer check-in
+			</a>
+		</div>
+		<div>
+			{{#if QtyProm}}
+			<a href="/web-order-summary/{{IDProducer}}">
+				{{QtyProm}} {{hPlural QtyProm "item"}} promised for delivery
+			</a>
+			{{else}}
+			No items promised for delivery
+			{{/if}}
+		</div>
+
+		<hr>
+
+		<h5>Earnings</h5>
+
+		<div class="d-flex flex-row justify-content-between mb-2">
+			<div>
+				Account balance
+			</div>
+			<div class="font-weight-bold">
+				{{hTextCurrOrOrig (hSum BalMoney BalEBT)}}
+			</div>
+		</div>
+
+		<div class="LinksPg mb-0">
+			<a href="/producer-invoices/{{IDProducer}}">Producer invoices</a>
+			<a href="/transactions/{{IDMemb}}">Transactions</a>
+			<a href="/add-producer-transaction/{{IDProducer}}"
+				class="{{hClassDisabLackAccts}}">
+				Add producer transaction
+			</a>
+		</div>
+	</div>
+</div>

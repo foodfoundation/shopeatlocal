@@ -1,0 +1,125 @@
+{{!-- edit-web-order-label-weights.hbs
+//    --------------------------------
+//    Edit Web Order Label Weights view --}}
+
+<style>
+	.BoxNoteShop {
+		border-color: hsl(0, 0%, 80%) !important;
+		background-color: hsl(45, 90%, 90%);
+	}
+</style>
+
+<div class="w-lg-50 container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-0">Edit web order label weights</h2>
+
+		{{#unless CkImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<p class="my-2">
+		Enter your item weights in the boxes below so they can be added to the
+		labels. If any items bear shopper notes, be sure to associate the correct
+		item weights with the correct notes. Enter all weights in pounds.
+	</p>
+	<p class="my-2">
+		Also, if you need to out-of-stock or re-stock items, or deny or un-deny
+		notes, you should do so <em>before</em> enterings weights. Otherwise, you
+		may have to re-enter some of them.
+	</p>
+
+	<form action="/edit-web-order-label-weights" method="POST" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{#each Vtys}}
+
+		{{#hOnChange "IDProduct"}}
+		<div class="HeadSheet border rounded-sm mt-4 mb-2 pl-2 py-1 font-weight-bold">
+			<div class="d-flex">
+				{{!-- Display product thumbnail instead, where possible?: [TO DO] --}}
+				<div class="d-none d-md-block pr-3 mt-1">
+					<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+				</div>
+				<div>
+					{{>Misc/pLinkIDProduct}}<br>
+					{{NameProduct}}
+				</div>
+			</div>
+		</div>
+		{{/hOnChange}}
+
+		<div class="Sheet border rounded mb-2 px-3 pt-2 pb-3">
+			<div class="row">
+				<div class="col-md font-weight-bold">
+					Variety {{hTextIDVty IDVty}}<br>
+					{{hNameVty this}}
+				</div>
+				<div class="col-md-4 mt-1 mt-md-0 text-md-right">
+					{{hTextWgtOrOrig WgtMin}}-{{hTextWgtOrOrig WgtMax}} lbs expected
+				</div>
+			</div>
+
+			{{#each ElsNote}}
+			<div class="BoxNoteShop border rounded-sm p-2 mt-2">
+				<div class="row">
+					<div class="col-md">
+						{{#unless NoteShop}}
+						No shopper note:
+						{{else}}
+						{{hLinkEmailVty this ../NameProduct ../Kind ../Size}}:
+						<em>"{{NoteShop}}"</em>
+						{{/unless}}
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md">
+						{{#each WgtsLbl}}
+						{{!-- Normally, when displaying validation failure feedback, this
+						//    'div' would be set to 'form-group', and this would follow
+						//    it:
+						//
+						//      {{hDivMsgFail (hPropSuffRoot "MsgFailWgtPer" IDWgtLblOrdWeb)}}
+						//
+						//    That won't work with these inline-block elements, and I
+						//    don't want to bother with a group-wide message below the
+						//    inputs, so we will skip the message. The 'is-invalid' class
+						//    displays a red error symbol inside the input, which ought to
+						//    be enough. Failing that, I would prefer simply to convert
+						//    zero values to nulls: --}}
+						<div class="d-inline-block mt-2">
+							<input name="WgtPer{{IDWgtLblOrdWeb}}"
+								value="{{hTextWgtOrOrig WgtPer}}"
+								class="InputWgt form-control form-control-sm
+									{{hClassValidFail "WgtPer" IDWgtLblOrdWeb}}"
+								style="width: 5em;">
+						</div>
+						{{/each}}
+					</div>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+
+		{{else}}
+
+		<p class="lead mt-3">No labels with weights</p>
+
+		{{/each}}
+
+		{{#if Vtys}}
+		<div class="text-right">
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+		{{/if}}
+	</form>
+</div>

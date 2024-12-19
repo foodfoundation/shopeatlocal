@@ -1,0 +1,18 @@
+{{!-- pLinkIDProduct.hbs
+//    ------------------
+//    Product ID with staff-only link to Product Detail
+//
+//    Notice that this partial does not display the link unless the user is
+//    staff. We would sometimes also like to display it if the user is the
+//    producer to whom the product belongs. It's not obvious how to verify
+//    product ownership here, though, and we don't want extra links in forms,
+//    because most forms do not seek confirmation if the user tries to navigate
+//    away before posting. This whole thing should be reconsidered. [TO DO] --}}
+
+{{#if (hCkStaffFromUser)}}
+<a href="/product-detail/{{IDProduct}}" class="font-weight-normal">
+	Product {{hTextIDProduct IDProduct}}
+</a>
+{{else}}
+Product {{hTextIDProduct IDProduct}}
+{{/if}}

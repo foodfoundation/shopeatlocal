@@ -1,0 +1,98 @@
+{{!-- registration-statuses.hbs
+// ----------------------------
+// Registration Statuses view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h3 class="mb-3">Registration statuses</h3>
+
+	<p>
+		A number of member and producer fields use <strong>registration
+		statuses</strong> to indicate the state of the registration, or whether the
+		member is a volunteer, or eligible for EBT. The same four statuses are used
+		in each case:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			<div class="font-weight-bold">
+				Available
+			</div>
+			<div>
+				This status indicates that the member can register for or otherwise
+				request the special state represented by the field. {{CoopParams.CoopNameShort}} staff can also
+				use this status to indicate that the registration or application
+				requires changes, after e-mailing the member with specific directions.
+			</div>
+			<div class="mt-2">
+				Note that the <b>Show Producer page</b> checkbox determines whether the
+				member sees the <b>Producer</b> and <b>Producer registration</b> pages,
+				and this works independently of the <b>Producer status</b>. Therefore,
+				<b>Show Producer</b> must be checked <em>before</em> the member can
+				register as a producer. If <b>Show Producer</b> is later unchecked, the
+				<b>Producer</b> page will be hidden regardless of the current
+				<b>Producer status</b> value.
+			</div>
+		</li>
+		<li>
+			<div class="font-weight-bold">
+				Pending
+			</div>
+			<div>
+				This status indicates that the member has applied for the special state
+				represented by the field, but {{CoopParams.CoopNameShort}} staff have not yet decided whether to
+				approve or deny the application.
+			</div>
+			<div class="mt-2">
+				New member and producer registrations are set to this status when they
+				are first submitted. These registrations also return to this status
+				automatically if the member edits them with <b>Edit member
+				registration</b> or <b>Edit producer registration</b> pages.
+			</div>
+			<div class="mt-2">
+				At present, members with <b>Pending</b> registrations are allowed to
+				shop as usual.
+			</div>
+		</li>
+		<li>
+			<div class="font-weight-bold">
+				Approved
+			</div>
+			<div>
+				This status indicates that {{CoopParams.CoopNameShort}} staff have approved the registration.
+			</div>
+		</li>
+		<li>
+			<div class="font-weight-bold">
+				Suspended
+			</div>
+			<div>
+				This status indicates that {{CoopParams.CoopNameShort}} staff have denied the registration or
+				canceled a previously-approved registration. Moreover, <em>the member is
+				not allowed to re-apply</em> until {{CoopParams.CoopNameShort}} returns the status to
+				<b>Available</b>.
+			</div>
+			<div class="mt-2">
+				To deny or cancel a registration <em>while still allowing the member to
+				re-apply</em>, set the status to <b>Available</b> instead of
+				<b>Suspended</b>.
+			<div>
+		</li>
+	</ul>
+
+	<p>
+		As an example: a member whose <b>EBT status</b> is <b>Available</b> is
+		allowed to apply for EBT eligibility. This is the default EBT status for new
+		registrations. If the member does apply, staff may choose to set the status to
+		<b>Pending</b> while they process the application. If the application
+		requires changes, staff can return the status to <b>Available</b> and
+		then e-mail the member with details.
+	</p>
+	<p>
+		If the application is approved, staff should set the status to
+		<b>Approved</b>. If new documentation is required later, staff can e-mail
+		the member and return the status to <b>Available</b>. They can also use that
+		status if the member wishes to cancel their EBT eligibility while reserving
+		the option to reactivate it later. Staff should not set the EBT status to
+		<b>Suspended</b> unless they wish to prevent the member from re-applying.
+	</p>
+</div>

@@ -1,0 +1,215 @@
+{{!-- member-admin.hbs
+//    ----------------
+//    Member Admin view --}}
+
+<div class="container-lg pt-4 pb-2">
+	<div class="row">
+		<div class="col-md">
+			<h5 class="mb-3">Member stats</h5>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkTrialMemb=true">
+					Current trial members
+				</a>
+				&times; <span class="LblPg">{{trialMembersCount}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkPendMemb=true">
+					Trial completed and pending
+				</a>
+				&times; <span class="LblPg">{{CtMembPend}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkPendEBT=true">
+					Pending EBT registration
+				</a>
+				&times; <span class="LblPg">{{CtEBTPend}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkPendVolun=true">
+					Pending volunteer registration
+				</a>
+				&times; <span class="LblPg">{{CtVolunPend}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg"
+					href="/member-search-results?CkDelivHomeNoDist=true">
+					Home-delivery without distance
+				</a>
+				&times; <span class="LblPg">{{CtMembDelivHomeNoDist}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkWithItsCart=true">
+					With items in cart
+				</a>
+				&times; <span class="LblPg">{{CtMembWithItsCart}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkBalPos=true">
+					With positive balance
+				</a>
+				&times; <span class="LblPg">{{CtMembBalPos}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkBalNeg=true">
+					With negative balance
+				</a>
+				&times; <span class="LblPg">{{CtMembBalNeg}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkEBT=true">
+					EBT
+				</a>
+				&times; <span class="LblPg">{{CtMembEBT}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkProducer=true">
+					Producer
+				</a>
+				&times; <span class="LblPg">{{CtMembProducer}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkWholesale=true">
+					Wholesale
+				</a>
+				&times; <span class="LblPg">{{CtMembWholesale}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkStaff=true">
+					Staff
+				</a>
+				&times; <span class="LblPg">{{CtMembStaff}}</span>
+			</div>
+
+			<hr class="d-block d-md-none">
+		</div>
+
+		<div class="col-md">
+			<h3 class="mb-3">Member search</h3>
+
+			<form id="form-main" class="pb-4" action="/member-admin" method="POST"
+				autocomplete="off" onsubmit="Disab_Form()">
+
+				<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+				<div class="form-row">
+					<div class="form-group col-md-4">
+						<label for="IDMemb">Member ID</label>
+						<input id="IDMemb" name="IDMemb" value="{{IDMemb}}" class="form-control">
+					</div>
+					<div class="form-group col-md-8">
+						<label for="NameBus">Business name</label>
+						<input id="NameBus" name="NameBus" value="{{NameBus}}"
+							class="form-control">
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="NameFirst">First name</label>
+						<input id="NameFirst" name="NameFirst" value="{{NameFirst}}"
+							class="form-control">
+					</div>
+					<div class="form-group col-md-6">
+						<label for="NameLast">Last name</label>
+						<input id="NameLast" name="NameLast" value="{{NameLast}}"
+							class="form-control">
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md-5">
+						<label for="City">City</label>
+						<input id="City" name="City" value="{{City}}" class="form-control">
+					</div>
+					<div class="form-group col-md-3">
+						<label for="St">State</label>
+						<input id="St" name="St" value="{{St}}" class="form-control">
+					</div>
+					<div class="form-group col-md-4">
+						<label for="Zip">Zip</label>
+						<input id="Zip" name="Zip" value="{{Zip}}" inputmode="numeric"
+							class="form-control">
+					</div>
+				</div>
+
+				<p class="text-muted font-size-90">
+					Members matching <em>any</em> of the above criteria will be returned,
+					with records matching more criteria sorted to the front.
+					For fewer results, supply <em>fewer</em> criteria.
+					Leave all fields blank to list all members.
+				</p>
+
+				<div class="form-row mb-md-2">
+					<div class="form-group col-md-6 mb-0">
+						<div class="custom-control custom-checkbox mb-2">
+							<input id="CkWithItsCart" name="CkWithItsCart" type="checkbox"
+								{{hAttrCk CkWithItsCart false}}
+								class="custom-control-input">
+							<label for="CkWithItsCart" class="custom-control-label">
+								With items in cart?
+							</label>
+						</div>
+
+						<div class="custom-control custom-checkbox mb-2">
+							<input id="CkBalPos" name="CkBalPos" type="checkbox"
+								{{hAttrCk CkBalPos false}}
+								class="custom-control-input">
+							<label for="CkBalPos" class="custom-control-label">
+								With positive balances?
+							</label>
+						</div>
+
+						<div class="custom-control custom-checkbox mb-2">
+							<input id="CkBalNeg" name="CkBalNeg" type="checkbox"
+								{{hAttrCk CkBalNeg false}}
+								class="custom-control-input">
+							<label for="CkBalNeg" class="custom-control-label">
+								With negative balances?
+							</label>
+						</div>
+					</div>
+
+					<div class="form-group col-md-6">
+						<div class="custom-control custom-checkbox mb-2">
+							<input id="CkEBT" name="CkEBT" type="checkbox"
+								{{hAttrCk CkEBT false}}
+								class="custom-control-input">
+							<label for="CkEBT" class="custom-control-label">
+								Approved for EBT?
+							</label>
+						</div>
+
+						<div class="custom-control custom-checkbox">
+							<input id="CkProducer" name="CkProducer" type="checkbox"
+								{{hAttrCk CkProducer false}}
+								class="custom-control-input">
+							<label for="CkProducer" class="custom-control-label">
+								Registered as producer?
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<p class="text-muted font-size-90">
+					Members matching <em>all</em> these criteria will be returned.
+					For fewer results, check <em>more</em> boxes.
+				</p>
+
+				<button type="submit" class="btn btn-primary mt-2">Search</button>
+			</form>
+		</div>
+	</div>
+
+</div>

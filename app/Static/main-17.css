@@ -1,0 +1,2052 @@
+/* main.css
+// ========
+//
+// Styles that extend Bootstrap (such as 'modal-xxl') use Kebab case, as
+// Bootstrap does.
+//
+// Custom styles are named with Pascal case. These names are easier for me to
+// read, and they stand out from the Bootstrap styles.
+//
+// Custom styles tied to breakpoints mostly use Pascal case, but include Kebab
+// case Bootstrap breakpoint labels ('-md-') so that these can be found in the
+// page template with a simple text search.
+//
+// Page-specific CSS appears in 'style' tags within the relevant page templates.
+// There is some controversy over whether is technically correct to allow
+// 'style' outside of the page head, but it is working consistently at the
+// moment. Elements (like the cart dialog) that appear in all pages are styled
+// here instead.
+//
+// I am repeating media queries throughout this file so the full behavior of a
+// given style can be seen without lots of scrolling. The print styles are an
+// exception to this, but they should probably be treated the same way.
+//
+// Several 'experimental' properties are used. Those produce CSSTree warnings,
+// and there seems to be easy no way to disable them:
+//
+//   https://github.com/csstree/vscode-plugin/issues/5
+*/
+
+/* ------------
+// Basic styles
+// ------------ */
+
+body {
+  /* This light ivory instead?:
+	//
+	//   background-color: hsl(66, 20%, 96%);
+	//
+	// Various greys would have to be updated with it. */
+  background-color: hsl(0, 0%, 97%);
+}
+
+main {
+  /* Keep the footer at the bottom of the page even when the content is
+	// short: */
+  min-height: calc(100vh - 17.1rem);
+}
+
+/* Bootstrap 'md' or larger: */
+@media (min-width: 768px) {
+  main {
+    /* The navigation bar becomes 0.5rem shorter when the display is large
+		// enough for the full bar: */
+    min-height: calc(100vh - 16.6rem);
+  }
+  #navbar2 {
+    display: block;
+  }
+}
+
+main ul {
+  padding-left: 1.2em !important;
+}
+
+input[readonly],
+textarea[readonly] {
+  background-color: hsl(0, 0%, 92%) !important;
+  color: hsl(0, 0%, 30%) !important;
+}
+
+input,
+select,
+textarea,
+button {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 8%);
+}
+
+/* Let's use this when referencing page and field names within user-visible
+ * text: */
+b {
+  font-weight: 600;
+}
+
+small {
+  font-size: 0.9em;
+}
+
+a {
+  color: hsl(181, 96%, 23%);
+
+  font-weight: 600;
+}
+
+a:hover {
+  color: hsl(181, 90%, 36%);
+}
+
+a:active {
+  color: hsl(0, 0%, 40%);
+}
+
+/* -------------
+// Custom styles
+// ------------- */
+
+/* Utilities
+// --------- */
+
+/* Show the hourglass mouse pointer. */
+.Busy {
+  cursor: wait !important;
+}
+
+/* Bootstrap 'md' or larger: */
+@media (min-width: 768px) {
+  .Flow-md-2 {
+    column-count: 2;
+  }
+
+  .Flow-md-3 {
+    column-count: 3;
+  }
+
+  .Flow-md-2,
+  .Flow-md-3 {
+    column-gap: 1.5em;
+    /* These aren't supported in Firefox: */
+    widows: 10;
+    orphans: 5;
+  }
+
+  /* We don't want trailing margins inside a container: */
+  .Flow-md-2 p:last-of-type,
+  .Flow-md-3 p:last-of-type {
+    margin-bottom: 0 !important;
+  }
+}
+
+/* Bootstrap 'lg' or larger: */
+@media (min-width: 992px) {
+  .Flow-lg-2 {
+    column-count: 2;
+  }
+
+  .Flow-lg-3 {
+    column-count: 3;
+  }
+
+  .Flow-lg-2,
+  .Flow-lg-3 {
+    column-gap: 1.5em;
+    /* These aren't supported in Firefox: */
+    widows: 10;
+    orphans: 5;
+  }
+
+  /* We don't want trailing margins inside a container: */
+  .Flow-lg-2 p:last-of-type,
+  .Flow-lg-3 p:last-of-type {
+    margin-bottom: 0 !important;
+  }
+}
+
+ul.Spread li {
+  margin-bottom: 0.75em;
+}
+
+ul.Spread li:last-child {
+  margin-bottom: 0;
+}
+
+/* Adds an alternating grey background to 'row' elements, like 'table-striped'. */
+.Stripe .row {
+  border-top: 1px solid rgba(0, 0, 0, 10%);
+}
+
+.Stripe .row:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 5%);
+}
+
+.Stripe .row:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 10%);
+}
+
+/* Set width to that of a Bootstrap grid. */
+hr.WthGrid {
+  /* Bootstrap adds negative margins to its grid rows so that the row content
+	// aligns with content outside the row. That looks nice, but it produces a
+	// mismatch between the row borders and nearby rules.
+	//
+	// This produces a mismatch between the rule and any nearby button. I just
+	// don't know: */
+  margin-left: -5px !important;
+  margin-right: -5px !important;
+}
+
+/* Remove vertical margins from all contained paragraphs. */
+.MargP-0 p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Remove the bottom margin from the last contained paragraph. */
+.MargP-Trim p:last-of-type {
+  margin-bottom: 0 !important;
+}
+
+/* Darken the border color. */
+.BordDk {
+  border-color: hsla(0, 0%, 0%, 0.2) !important;
+}
+
+/* Avoid page or column breaks within the element. */
+.NoBreak {
+  break-inside: avoid !important;
+}
+
+@-moz-document url-prefix() {
+  /* 'break-inside: avoid' should work in Firefox, but it is not working in some
+	// pages. Using 'inline-grid' was suggested here:
+	//
+	//   https://stackoverflow.com/a/54400896/3728155
+	//
+	// though I found it necessary to set the card widths as well: */
+  .NoBreak {
+    display: inline-grid;
+    width: 100%;
+  }
+}
+
+/* Change proportional numbers to fixed-width. */
+.WthFix {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Grid table
+// ----------
+// Styles a collection of Bootstrap rows as a table, with short rows, horizontal
+// borders, and alternating grey line backgrounds. This allows the use of
+// Bootstrap columns, which are more responsive than tables.
+//
+// Grid tables are structured like this:
+//
+//   <div class="GridTbl Head">
+//     <div class="row">
+//       ...
+//     </div>
+//   </div>
+//
+//   <div class="GridTbl Body">
+//     {{#each Its}}
+//     <div class="Row">
+//       <div class="row">
+//         ...
+//       </div>
+//     </div>
+//   </div>
+//
+// Note that the Bootstrap row elements are contained by the grid table Head and
+// Row elements. This allows a single Head or Row to contain multiple Bootstrap
+// Rows, along with other elements. */
+
+.GridTbl {
+  /* Change proportional numbers to fixed-width: */
+  font-variant-numeric: tabular-nums;
+}
+
+.GridTbl.Head .row,
+.GridTbl.Body .row,
+.GridTbl.Head .form-row,
+.GridTbl.Body .form-row {
+  padding: 0.25em 0.4rem;
+}
+
+.GridTbl.Head .row div,
+.GridTbl.Body .row div,
+.GridTbl.Head .form-row div,
+.GridTbl.Body .form-row div {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.GridTbl.Body .Row:nth-child(odd) {
+  border-top: 1px solid rgba(0, 0, 0, 5%);
+  border-bottom: 1px solid rgba(0, 0, 0, 5%);
+
+  background-color: rgba(0, 0, 0, 5%);
+}
+
+.GridTbl.Body .Row:hover {
+  background-color: rgba(0, 0, 0, 10%);
+}
+
+.GridTbl.Body .Row:nth-child(odd).Green,
+.table-striped tr:nth-child(odd).Green {
+  background-color: hsl(140, 40%, 83%) !important;
+  color: black !important;
+}
+
+.GridTbl.Body .Row:nth-child(even).Green,
+.table-striped tr:nth-child(even).Green {
+  background-color: hsl(140, 40%, 90%) !important;
+  color: black !important;
+}
+
+.GridTbl.Body .Row.Green:hover,
+.table-striped tr.Green:hover {
+  background-color: hsl(140, 40%, 79%) !important;
+  color: black !important;
+}
+
+.GridTbl.Body .Row hr {
+  /* The rule used to separate the note text area and delete button: */
+  margin: 0.1em 0.4rem;
+}
+
+.GridTbl.Body input {
+  text-align: right;
+}
+
+.GridTbl.Body .OOS {
+  border-top: 1px solid hsl(0, 100%, 39%);
+  border-bottom: 1px solid hsl(0, 100%, 39%);
+  padding: 0.1em 0 0.2em 0;
+  color: hsl(0, 100%, 39%);
+}
+
+.GridTbl.Body .Denied .NoteShop {
+  text-decoration: line-through;
+}
+
+.GridTbl.Body .Denied .WarnNoteShop {
+  display: block;
+  color: hsl(0, 100%, 39%);
+}
+
+.GridTbl.Body .WarnNoteShop {
+  display: none;
+}
+
+/* Styles
+// ------------ */
+
+/* The test server warning label. */
+#WarnTest {
+  position: fixed;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  z-index: 1000;
+
+  pointer-events: none;
+
+  background-color: hsla(0, 100%, 80%, 0.6);
+  border-radius: 0.2rem;
+  padding: 0.2rem 0.4rem 0.3rem 0.4rem;
+
+  font-size: 1.5rem;
+  line-height: 100%;
+  font-weight: bold;
+  text-align: center;
+  color: hsla(0, 0%, 100%, 0.6);
+}
+
+/* A set of elements that should be grouped within the page, a product data is
+ * grouped within the Producer Catalog. */
+.Sheet {
+  background-color: hsl(0, 0%, 95%);
+}
+
+.HeadSheet {
+  background-color: hsl(0, 0%, 90%);
+  border-color: hsl(0, 0%, 83%) !important;
+}
+
+.HeadSheetGreen {
+  background-color: hsl(111deg 21.4% 85.15%);
+  border-color: hsl(0, 0%, 83%) !important;
+}
+
+/* The HTTP response code within error pages. */
+.CdResp {
+  font-weight: bold;
+  color: hsla(0, 0%, 0%, 0.25);
+}
+
+.Explain {
+  font-size: 0.9rem;
+  line-height: 150%;
+  color: hsl(181, 94%, 25%) !important;
+}
+
+.Explain,
+.Explain p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+span.Tip {
+  white-space: nowrap;
+  position: relative;
+}
+
+span.Tip:after {
+  content: "?";
+  font-size: 80%;
+  position: relative;
+  left: -0.15em;
+  top: -0.45em;
+  color: hsl(0, 0%, 53%);
+}
+
+.EBT {
+  color: hsl(192, 50%, 50%);
+}
+
+/* For links that should be displayed, but not usable. Hiding the links would
+ * likely cause confusion. */
+a.Disab {
+  /* This makes the link unclickable: */
+  pointer-events: none;
+  color: hsl(0, 0%, 58%) !important;
+}
+
+img.IconBtn {
+  margin-right: 0.3em;
+  /* The Font Awesome images are black: */
+  filter: invert(100%) brightness(95%);
+}
+
+/* Input icons
+// ----------- */
+
+/* Show input 'type' icon within quantity or weight input. */
+.InputQty.IconShow,
+.InputWgt.IconShow {
+  display: inline-block;
+  width: 6rem;
+  margin-bottom: 0.25rem;
+  text-align: right;
+}
+
+.InputQty.IconShow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath d='M639.21 169.49l-9.89-30.43c-2.73-8.4-11.75-13-20.16-10.27L544 149.88V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v122.59l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v164.01l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v205.43l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v246.86l-84.94 27.49c-8.4 2.73-13.01 11.76-10.27 20.16l9.89 30.43c2.73 8.4 11.76 13 20.16 10.27L96 362.13V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V341.41l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V299.99l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V258.57l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V217.14l84.94-27.49c8.4-2.73 13.01-11.75 10.27-20.16z' fill='%23808080'/%3E%3C/svg%3E");
+  background-position: 0.4em center;
+  background-size: 1.4em;
+  background-repeat: no-repeat;
+}
+
+.InputWgt.IconShow {
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg class='svg-inline--fa fa-weight-hanging fa-w-16' aria-hidden='true' data-icon='weight-hanging' data-prefix='far' focusable='false' role='img' version='1.1' viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg' xmlns:cc='http://creativecommons.org/ns%23' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23'%3E%3Cmetadata%3E%3Crdf:RDF%3E%3Ccc:Work rdf:about=''%3E%3Cdc:format%3Eimage/svg+xml%3C/dc:format%3E%3Cdc:type rdf:resource='http://purl.org/dc/dcmitype/StillImage'/%3E%3C/cc:Work%3E%3C/rdf:RDF%3E%3C/metadata%3E%3Cpath d='M510.28 445.86l-73.03-292.13c-3.8-15.19-16.44-25.72-30.87-25.72h-72.41c6.2-12.05 10.04-25.51 10.04-40 0-48.6-39.4-88-88-88s-88 39.4-88 88c0 14.49 3.83 27.95 10.04 40h-72.41c-14.43 0-27.08 10.54-30.87 25.72L1.72 445.86C-6.61 479.17 16.38 512 48.03 512h415.95c31.64 0 54.63-32.83 46.3-66.14zM216 88c0-22.06 17.94-40 40-40s40 17.94 40 40c0 22.05-17.94 40-40 40s-40-17.95-40-40zm246.72 376H49.28c-.7-.96-1.81-3.23-1-6.5L118.66 176h274.68l70.38 281.5c.81 3.27-.3 5.54-1 6.5z' fill='%23808080'/%3E%3C/svg%3E%0A");
+  background-position: 0.4em center;
+  background-size: 1.4em;
+  background-repeat: no-repeat;
+}
+
+.InputQty.IconShow.is-invalid {
+  /* Bootstrap's 'is-invalid' class adds a red 'error' icon to the rightside of
+	// the input. I don't know how to set two background images without specifying
+	// them together: */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath d='M639.21 169.49l-9.89-30.43c-2.73-8.4-11.75-13-20.16-10.27L544 149.88V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v122.59l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v164.01l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v205.43l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v246.86l-84.94 27.49c-8.4 2.73-13.01 11.76-10.27 20.16l9.89 30.43c2.73 8.4 11.76 13 20.16 10.27L96 362.13V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V341.41l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V299.99l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V258.57l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V217.14l84.94-27.49c8.4-2.73 13.01-11.75 10.27-20.16z' fill='%23808080'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-size:
+    1.4em,
+    calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+  background-position:
+    0.4em center,
+    right calc(0.375em + 0.1875rem) center;
+  background-repeat: no-repeat;
+}
+
+.InputWgt.IconShow.is-invalid {
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg class='svg-inline--fa fa-weight-hanging fa-w-16' aria-hidden='true' data-icon='weight-hanging' data-prefix='far' focusable='false' role='img' version='1.1' viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg' xmlns:cc='http://creativecommons.org/ns%23' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23'%3E%3Cmetadata%3E%3Crdf:RDF%3E%3Ccc:Work rdf:about=''%3E%3Cdc:format%3Eimage/svg+xml%3C/dc:format%3E%3Cdc:type rdf:resource='http://purl.org/dc/dcmitype/StillImage'/%3E%3C/cc:Work%3E%3C/rdf:RDF%3E%3C/metadata%3E%3Cpath d='M510.28 445.86l-73.03-292.13c-3.8-15.19-16.44-25.72-30.87-25.72h-72.41c6.2-12.05 10.04-25.51 10.04-40 0-48.6-39.4-88-88-88s-88 39.4-88 88c0 14.49 3.83 27.95 10.04 40h-72.41c-14.43 0-27.08 10.54-30.87 25.72L1.72 445.86C-6.61 479.17 16.38 512 48.03 512h415.95c31.64 0 54.63-32.83 46.3-66.14zM216 88c0-22.06 17.94-40 40-40s40 17.94 40 40c0 22.05-17.94 40-40 40s-40-17.95-40-40zm246.72 376H49.28c-.7-.96-1.81-3.23-1-6.5L118.66 176h274.68l70.38 281.5c.81 3.27-.3 5.54-1 6.5z' fill='%23808080'/%3E%3C/svg%3E%0A"),
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-size:
+    1.4em,
+    calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+  background-position:
+    0.4em center,
+    right calc(0.375em + 0.1875rem) center;
+  background-repeat: no-repeat;
+}
+
+/* Links
+// ----------- */
+
+/* For blocks that contain links to site pages. */
+div.LinksPg {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+div.LinksPg a,
+div.LinkPg a {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+
+  background-color: hsl(0, 0%, 87%);
+  border-radius: 0.2em;
+  margin-bottom: 0.2em;
+
+  color: hsl(181, 96%, 23%);
+  font-weight: normal;
+}
+
+div.LinksPg a:hover,
+div.LinkPg a:hover {
+  color: hsl(181, 90%, 36%);
+}
+
+/* For labels associated with site page links. */
+span.LblPg {
+  font-size: 110%;
+}
+
+/* For labeled site page links. */
+a.LinkLblPg {
+  display: inline-block;
+
+  margin-bottom: 0.75em;
+  margin-right: 0.1em;
+  padding: 0.1em 0.4em;
+  border-radius: 0.2em;
+  background-color: hsl(0, 0%, 87%);
+
+  font-weight: normal;
+}
+
+/* For blocks that contain links to product attributes. */
+div.LinksAttrProduct {
+  margin-bottom: 0.5em;
+  font-size: 90%;
+}
+
+div.LinksAttrProduct a {
+  display: inline-block;
+
+  padding: 0.1em 0.4em;
+  border-radius: 0.2em;
+  margin-bottom: 0.2em;
+  background-color: hsl(210, 10%, 23%);
+
+  font-weight: normal;
+  color: hsl(0, 0%, 93%);
+}
+
+/* Should these use LinksAttrProduct instead?: */
+#Attrs .LinksPg a {
+  background-color: hsla(0, 0%, 50%, 0.15);
+  color: black !important;
+}
+
+#Attrs .LinksPg a:active {
+  color: hsl(141, 94.3%, 25%) !important;
+}
+
+/* Page header
+// ----------- */
+
+header {
+  background-color: hsl(210, 1.7%, 45.9%);
+
+  border-style: solid;
+  border-color: hsl(0, 0%, 53%);
+  border-width: 0 0 1px 0;
+
+  padding: 0.5rem;
+
+  font-size: 0.9em;
+  line-height: 120%;
+  color: white;
+  /* This greatly improves text contrast: */
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.33) !important;
+}
+
+header img {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.25));
+}
+
+header button,
+header .btn {
+  border-color: hsl(0, 0%, 50%) !important;
+  background-color: hsl(210, 1.7%, 30%) !important;
+  color: white !important;
+}
+
+header button:hover,
+header .btn:hover {
+  background-color: hsl(0, 0%, 35%) !important;
+  color: white;
+}
+
+/* This dialog does not have a header, so the body must be rounded: */
+#DlgLogin .modal-content,
+#DlgLogin .modal-body {
+  border-radius: 12px !important;
+}
+
+#LblBtnCart,
+#LblBtnLogin {
+  font-weight: 600;
+  color: hsl(0, 0%, 93%) !important;
+}
+
+#ColDates {
+  color: hsl(0, 0%, 93%) !important;
+  font-size: 90%;
+}
+
+#ColDates a,
+#LblBtnLogin a {
+  color: hsl(21, 100%, 75%) !important;
+}
+
+/* --------------
+// Navigation bar
+// -------------- */
+
+.navbar {
+  /* This will be reduced slightly when the display is large enough for the
+	// full navigation bar. Don't use 'height' here, or the hamburger menu will
+	// break in a confusing way: */
+  min-height: 3.5rem;
+
+  background-color: hsl(210, 11%, 15%);
+
+  padding: 0;
+}
+
+.navbar button {
+  margin: 0.5rem;
+}
+
+.navbar-toggler-icon {
+  color: white;
+  filter: brightness(100%);
+}
+
+.nav-item {
+  padding: 0.1rem 1rem;
+  background-color: hsl(210, 11%, 15%);
+}
+
+.nav-item:hover {
+  background-color: hsl(210, 1.7%, 30%);
+}
+
+/* Note that 'active' is Bootstrap's class for the 'selected' menu item. It is
+// not the mouse-down item, as the name suggests: */
+.nav-item.active {
+  background-color: hsl(82, 58%, 60%) !important;
+}
+
+.nav-link {
+  color: hsl(0, 0%, 80%) !important;
+}
+
+.nav-item.active .nav-link {
+  color: black !important;
+}
+
+#TitleMob {
+  color: hsl(0, 0%, 90%);
+}
+
+#Nav.show + #TitleMob {
+  /* Hide the mobile page title when the hamburger is open, so it doesn't appear
+	// inside. Displaying the hamburger adds the 'show' class to Nav, this is the
+	// only way I can think to select TitleMob in that situation: */
+  display: none;
+}
+
+#DivJoin {
+  text-align: center;
+}
+#Banner {
+  padding: 5px !important;
+}
+#meet-button {
+  box-shadow:
+    0 8px 16px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+#production-info-link {
+  background-color: hsla(0, 0%, 100%, 0.5) !important;
+  color: hsl(0, 0%, 10%) !important;
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  border-radius: 0.2em;
+  margin-bottom: 0.2em;
+}
+
+/* Bootstrap 'md' or larger: */
+@media (min-width: 768px) {
+  .navbar {
+    /* 'min-height' was set above, so we have to include that here: */
+    min-height: 3rem;
+    height: 3rem;
+  }
+
+  .nav-item {
+    height: 3rem;
+    /* The 'vw' unit seems to seems to disregard the vertical scrollbar. Also,
+		// larger values cause the horizontal scrollbar to appear: */
+    min-width: 9.8vw;
+
+    padding: 0.3rem 0;
+
+    border-width: 0 1px 0 0;
+    border-style: solid;
+    border-color: hsl(0, 0%, 40%);
+  }
+
+  .nav-link {
+    height: 100%;
+    padding: 0 1em;
+    text-align: center;
+  }
+
+  .nav-link.single {
+    line-height: 2.4rem;
+  }
+
+  .nav-link.double {
+    line-height: 1.2em;
+  }
+}
+
+/* Flashes
+// -------
+// It would be nice to display these above (in the z-order) the Bootstrap modal,
+// if one is displayed, but I haven't found an easy way to do that. For the most
+// part, alerts do not appear when modals are active. */
+
+.Flash {
+  border-radius: 0 !important;
+  border-width: 1px 0 !important;
+}
+
+/* Impersonation bar
+// ----------------- */
+
+#BarImper {
+  padding-left: 1.2rem;
+  padding-right: 0.7rem;
+  border-style: solid;
+  border-color: hsl(45, 100%, 86%);
+  border-width: 0 0 1px 0;
+  color: hsl(45, 94%, 27%);
+  font-size: 90%;
+  background-color: hsl(46, 100%, 90%);
+}
+
+#BarImper a {
+  color: hsl(45, 94%, 27%);
+  font-weight: normal;
+}
+
+/* Cart dialog
+// ----------- */
+
+#DlgCart {
+  /* Bootstrap adds a 'style' tag with unwanted right padding, I don't know
+	// why: */
+  padding-right: 0 !important;
+}
+
+#DlgCart hr.RuleNoteShop {
+  width: calc(75% - 0.5em);
+  border-style: dashed;
+  border-color: hsl(0, 0%, 73%);
+}
+
+/* Page footer
+// ----------- */
+
+footer {
+  min-height: 10rem;
+
+  /* This greatly improves text contrast: */
+  text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+}
+
+footer a {
+  color: hsl(0, 0%, 60%);
+}
+
+footer a:hover {
+  color: hsl(210, 17%, 98%);
+}
+
+footer a:active {
+  color: hsl(0, 0%, 60%);
+}
+
+footer img.Seal {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.25));
+}
+
+/* Product search result cards
+// --------------------------- */
+
+.col .CardProduct {
+  /* Stretch the big dots to the edge on mobile: */
+  margin-left: -0.8em;
+  margin-right: -0.8em;
+
+  /* We will use big dots on mobile: */
+  border-bottom: 6px dotted hsl(0, 0%, 70%);
+}
+
+.col:first-of-type .CardProduct {
+  border-top: 6px dotted hsl(0, 0%, 70%);
+}
+
+/* Bootstrap 'sm' or larger: */
+@media (min-width: 576px) {
+  .col .CardProduct {
+    background-color: hsl(0, 0%, 98.5%);
+
+    margin-left: 0;
+    margin-right: 0;
+
+    border-right: 2px dotted hsl(0, 0%, 70%);
+    border-bottom: 2px dotted hsl(0, 0%, 70%);
+
+    /* Unfortunately, this shadow does overlap adjacent CardProduct elements.
+		// I'm not finding that to be too noticeable, however: */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 8%) !important;
+  }
+
+  .col:nth-child(1) .CardProduct,
+  .col:nth-child(2) .CardProduct {
+    border-top: 2px dotted hsl(0, 0%, 70%);
+  }
+
+  .col:first-child .CardProduct {
+    /* Can also do 'border-radius: 10px 0 0 0': */
+    border-top-left-radius: 10px;
+  }
+}
+
+/* Bootstrap 'sm' to 'md': */
+@media (min-width: 576px) and (max-width: 991px) {
+  .col:nth-child(2n + 1) .CardProduct {
+    border-left: 2px dotted hsl(0, 0%, 70%);
+  }
+
+  .col:nth-child(2) .CardProduct {
+    border-top-right-radius: 10px;
+  }
+
+  .CardProduct.CornerBtmLeft2 {
+    border-bottom-left-radius: 10px;
+  }
+
+  .CardProduct.CornerBtmRight2 {
+    border-bottom-right-radius: 10px;
+  }
+}
+
+/* Bootstrap 'md' or smaller: */
+@media (max-width: 991px) {
+  .CardProduct {
+    /* It would be nice to have cards with short descriptions 'collapse' to
+		// their minimum height, but I don't see an easy way to do that: */
+    height: 20rem;
+  }
+}
+@media (max-width: 570px) {
+  #production-list2 {
+    right: 12px !important;
+  }
+  #Terms {
+    margin-top: 10px;
+  }
+}
+
+/* Bootstrap 'lg' or smaller: */
+@media (max-width: 1199px) {
+  #meet-button {
+    font-size: 81%;
+  }
+  .CardProduct .Descrip {
+    font-size: 1.25rem;
+  }
+}
+@media (max-width: 768px) {
+  #meet-button {
+    font-size: 100% !important;
+  }
+  #navbar2 {
+    display: none;
+  }
+  #production-list2 {
+    width: 236px !important;
+    font-size: small !important;
+  }
+  #Terms {
+    margin-bottom: 5px;
+  }
+}
+@media (max-width: 992px) {
+  #meet-button {
+    font-size: 56%;
+  }
+  #prodlist-mobile {
+    display: block !important;
+  }
+  #prodlist-full {
+    display: none !important;
+  }
+  #search-container {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  #button-container {
+    flex-direction: row !important;
+    justify-content: center !important;
+    margin-bottom: 10px !important;
+  }
+  #searchbutton-container {
+    width: 25% !important;
+  }
+  #searchbar-container {
+    margin-bottom: 5px !important;
+  }
+}
+
+/* Bootstrap 'lg' or larger: */
+@media (min-width: 992px) {
+  .CardProduct {
+    height: 28rem;
+  }
+
+  .col:nth-child(3) .CardProduct {
+    border-top: 2px dotted hsl(0, 0%, 70%);
+  }
+
+  .col:nth-child(3n + 1) .CardProduct {
+    border-left: 2px dotted hsl(0, 0%, 70%);
+  }
+
+  .col:nth-child(3) .CardProduct {
+    border-top-right-radius: 10px;
+  }
+
+  .CardProduct.CornerBtmLeft3 {
+    border-bottom-left-radius: 10px;
+  }
+
+  .CardProduct.CornerBtmRight3 {
+    border-bottom-right-radius: 10px;
+  }
+}
+
+.CardProduct:hover {
+  background-color: hsl(0, 0%, 93%);
+}
+
+.CardProduct .Head {
+  line-height: 120%;
+}
+
+.CardProduct .Subcat {
+  font-size: 0.9rem;
+  color: hsl(0, 0%, 30%);
+}
+
+.CardProduct .New {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: hsl(0, 100%, 40%);
+}
+
+.CardProduct .Product {
+  font-weight: 600;
+  color: hsl(181, 94%, 21%);
+}
+
+.CardProduct .Producer {
+  font-size: 0.9rem;
+  color: hsl(0, 0%, 30%);
+}
+
+.CardProduct .Body {
+  position: relative;
+  cursor: pointer;
+}
+
+.CardProduct .Img {
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+
+  /* These images weren't appearing in Safari, even though the same images were
+	// loaded and displayed in the corresponding product dialogs. All other
+	// browsers worked correctly. It turned out that the 'div' using this class
+	// was collapsed, even though its height was set to '100%'. This Stack
+	// Overflow discussion:
+	//
+	// https://stackoverflow.com/questions/19119910/safari-height-100-element-inside-a-max-height-element
+	//
+	// provided the necessary hints. Note that Safari also requires that the width
+	// be set, for who knows what reason: */
+  position: absolute;
+  width: 100%;
+}
+
+.CardProduct .Descrip {
+  /* Setting the body to 'relative' and this element to 'absolute' is the best
+	// method I have found to fill the body with text without causing the body
+	// flex elements to overflow. See:
+	//
+	//   https://stackoverflow.com/a/15389545/3728155
+	*/
+  position: absolute;
+  /* This keeps the text from overlapping the footer, if the text clamping
+	// fails: */
+  max-height: 95%;
+
+  color: hsl(210, 2%, 46%);
+  font-size: 1.33rem;
+  font-weight: bold;
+  line-height: 125%;
+
+  /* It was difficult to get this to work correctly, and it is still a
+	// compromise. MDN says that 'overflow' must be 'hidden', or the ellipsis will
+	// be displayed but 'the contents won't be clipped':
+	//
+	//   https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
+	//
+	// Apparently this works by setting the text box to stop just after the line
+	// containing the ellipsis, so when they speak of clipping, they mean clipping
+	// the text to its container, not its clamp height within the container. As a
+	// result, explicitly setting the container height will cause the clamping to
+	// fail.
+	//
+	// Anyway, it is impossible to know exactly how many lines are available,
+	// because the product name height can vary considerably, and there could be
+	// any number of varieties. The 'max-height' setting above will clip the
+	// description without an ellipsis if there is not enough room, which seems
+	// acceptable for now. What we really want is to truncate the text and add an
+	// ellipsis at the end of the container, regardless of where that happens to
+	// be. There doesn't seem to be a way to do that with CSS.
+	//
+	// These prefixed names are the 'standard', as it stands today: */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 9;
+  overflow: hidden;
+}
+
+/* Bootstrap 'md' or smaller: */
+@media (max-width: 991px) {
+  .CardProduct .Descrip {
+    -webkit-line-clamp: 4;
+  }
+}
+
+.CardProduct .Foot {
+  cursor: pointer;
+
+  padding-top: 0.15rem;
+
+  line-height: 120%;
+}
+
+.CardProduct .OOS {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: hsl(0, 100%, 40%);
+}
+
+/* Product dialog and page
+// ----------------------- */
+
+.DlgDtlProduct .Descrip,
+.PageProduct .Descrip {
+  color: hsl(210, 2%, 46%);
+  font-size: 1.1rem;
+  font-weight: bold;
+  line-height: 125%;
+}
+
+/* --------------------------------------
+// Bootstrap modifications and extensions
+// -------------------------------------- */
+
+.modal-xxl {
+  /* '.modal-dialog' has a left margin of 0.5rem at small sizes. At larger
+	// sizes, the Bootstrap media queries set larger margins: */
+  width: calc(100% - 1rem);
+  max-width: 1200px;
+}
+
+/* Prevents display if the element is contained by a dialog. */
+.modal-dialog .NoDlg {
+  display: none !important;
+}
+
+.modal-header,
+.modal-footer {
+  background-color: hsl(0, 0%, 94%);
+}
+
+.modal-header {
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
+}
+
+.modal-footer {
+  border-bottom-left-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+}
+
+.modal-content,
+.modal-body {
+  background-color: hsl(0, 0%, 97%);
+}
+
+.modal-content {
+  border-radius: 12px !important;
+}
+
+.w-10 {
+  width: 10% !important;
+}
+.w-15 {
+  width: 15% !important;
+}
+.w-20 {
+  width: 20% !important;
+}
+.w-30 {
+  width: 30% !important;
+}
+.w-40 {
+  width: 40% !important;
+}
+.w-60 {
+  width: 60% !important;
+}
+.w-70 {
+  width: 70% !important;
+}
+.w-80 {
+  width: 80% !important;
+}
+.w-90 {
+  width: 90% !important;
+}
+
+/* PELL */
+#cycle-change-button {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* Bootstrap 'md' or larger: */
+@media (min-width: 768px) {
+  .w-md-10 {
+    width: 10% !important;
+  }
+  .w-md-15 {
+    width: 15% !important;
+  }
+  .w-md-20 {
+    width: 20% !important;
+  }
+  .w-md-25 {
+    width: 25% !important;
+  }
+  .w-md-30 {
+    width: 30% !important;
+  }
+  .w-md-40 {
+    width: 40% !important;
+  }
+  .w-md-50 {
+    width: 50% !important;
+  }
+  .w-md-60 {
+    width: 60% !important;
+  }
+  .w-md-70 {
+    width: 70% !important;
+  }
+  .w-md-75 {
+    width: 75% !important;
+  }
+  .w-md-80 {
+    width: 80% !important;
+  }
+  .w-md-90 {
+    width: 90% !important;
+  }
+  .w-md-100 {
+    width: 100% !important;
+  }
+}
+
+/* Bootstrap 'lg' or larger: */
+@media (min-width: 992px) {
+  .w-lg-10 {
+    width: 10% !important;
+  }
+  .w-lg-15 {
+    width: 15% !important;
+  }
+  .w-lg-20 {
+    width: 20% !important;
+  }
+  .w-lg-25 {
+    width: 25% !important;
+  }
+  .w-lg-30 {
+    width: 30% !important;
+  }
+  .w-lg-40 {
+    width: 40% !important;
+  }
+  .w-lg-50 {
+    width: 50% !important;
+  }
+  .w-lg-60 {
+    width: 60% !important;
+  }
+  .w-lg-70 {
+    width: 70% !important;
+  }
+  .w-lg-75 {
+    width: 75% !important;
+  }
+  .w-lg-80 {
+    width: 80% !important;
+  }
+  .w-lg-90 {
+    width: 90% !important;
+  }
+  .w-lg-100 {
+    width: 100% !important;
+  }
+}
+
+/* Bootstrap 'xl' or larger: */
+@media (min-width: 1200px) {
+  .w-xl-10 {
+    width: 10% !important;
+  }
+  .w-xl-15 {
+    width: 15% !important;
+  }
+  .w-xl-20 {
+    width: 20% !important;
+  }
+  .w-xl-25 {
+    width: 25% !important;
+  }
+  .w-xl-30 {
+    width: 30% !important;
+  }
+  .w-xl-40 {
+    width: 40% !important;
+  }
+  .w-xl-50 {
+    width: 50% !important;
+  }
+  .w-xl-60 {
+    width: 60% !important;
+  }
+  .w-xl-70 {
+    width: 70% !important;
+  }
+  .w-xl-75 {
+    width: 75% !important;
+  }
+  .w-xl-80 {
+    width: 80% !important;
+  }
+  .w-xl-90 {
+    width: 90% !important;
+  }
+  .w-xl-100 {
+    width: 100% !important;
+  }
+}
+
+table td.Yellow {
+  background-color: hsla(60, 100%, 80%, 0.4);
+}
+
+table td.Red {
+  background-color: hsla(0, 100%, 80%, 0.4);
+}
+
+.table-striped th {
+  border-top: none !important;
+
+  /* Change proportional numbers to fixed-width: */
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bootstrap 'md' or larger: */
+@media (min-width: 768px) {
+  .border-md-top {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .border-md-right {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .border-md-bottom {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .border-md-left {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Bootstrap 'lg' or larger: */
+@media (min-width: 992px) {
+  .border-lg-top {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .border-lg-right {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .border-lg-bottom {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .border-lg-left {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+.border-light {
+  border-color: hsl(0, 0%, 86%) !important;
+}
+
+.bg-light {
+  /* The origal color was indistinguishable from the new background: */
+  background-color: hsl(0, 0%, 90%) !important;
+}
+
+.bg-off {
+  background-color: hsl(0, 0%, 95%);
+}
+
+.font-weight-semi {
+  font-weight: 600;
+}
+
+.font-size-75 {
+  font-size: 75%;
+}
+.font-size-80 {
+  font-size: 80%;
+}
+.font-size-90 {
+  font-size: 90%;
+}
+.font-size-100 {
+  font-size: 100%;
+}
+.font-size-110 {
+  font-size: 110%;
+}
+.font-size-120 {
+  font-size: 120%;
+}
+.font-size-125 {
+  font-size: 125%;
+}
+.font-size-130 {
+  font-size: 130%;
+}
+.font-size-140 {
+  font-size: 140%;
+}
+.font-size-150 {
+  font-size: 150%;
+}
+.font-size-175 {
+  font-size: 175%;
+}
+.font-size-200 {
+  font-size: 200%;
+}
+.font-size-225 {
+  font-size: 225%;
+}
+.font-size-250 {
+  font-size: 250%;
+}
+.font-size-275 {
+  font-size: 275%;
+}
+.font-size-300 {
+  font-size: 300%;
+}
+
+/* Bootstrap 'md' or larger: */
+@media (min-width: 768px) {
+  .font-size-md-75 {
+    font-size: 75%;
+  }
+  .font-size-md-80 {
+    font-size: 80%;
+  }
+  .font-size-md-90 {
+    font-size: 90%;
+  }
+  .font-size-md-100 {
+    font-size: 100%;
+  }
+  .font-size-md-110 {
+    font-size: 110%;
+  }
+  .font-size-md-120 {
+    font-size: 120%;
+  }
+  .font-size-md-125 {
+    font-size: 125%;
+  }
+  .font-size-md-130 {
+    font-size: 130%;
+  }
+  .font-size-md-140 {
+    font-size: 140%;
+  }
+  .font-size-md-150 {
+    font-size: 150%;
+  }
+  .font-size-md-175 {
+    font-size: 175%;
+  }
+  .font-size-md-200 {
+    font-size: 200%;
+  }
+  .font-size-md-225 {
+    font-size: 225%;
+  }
+  .font-size-md-250 {
+    font-size: 250%;
+  }
+  .font-size-md-275 {
+    font-size: 275%;
+  }
+  .font-size-md-300 {
+    font-size: 300%;
+  }
+
+  .font-weight-md-normal {
+    font-weight: normal !important;
+  }
+}
+
+/* Bootstrap 'lg' or larger: */
+@media (min-width: 992px) {
+  .font-size-lg-75 {
+    font-size: 75%;
+  }
+  .font-size-lg-80 {
+    font-size: 80%;
+  }
+  .font-size-lg-90 {
+    font-size: 90%;
+  }
+  .font-size-lg-100 {
+    font-size: 100%;
+  }
+  .font-size-lg-110 {
+    font-size: 110%;
+  }
+  .font-size-lg-120 {
+    font-size: 120%;
+  }
+  .font-size-lg-125 {
+    font-size: 125%;
+  }
+  .font-size-lg-130 {
+    font-size: 130%;
+  }
+  .font-size-lg-140 {
+    font-size: 140%;
+  }
+  .font-size-lg-150 {
+    font-size: 150%;
+  }
+  .font-size-lg-175 {
+    font-size: 175%;
+  }
+  .font-size-lg-200 {
+    font-size: 200%;
+  }
+  .font-size-lg-225 {
+    font-size: 225%;
+  }
+  .font-size-lg-250 {
+    font-size: 250%;
+  }
+  .font-size-lg-275 {
+    font-size: 275%;
+  }
+  .font-size-lg-300 {
+    font-size: 300%;
+  }
+
+  .font-weight-lg-normal {
+    font-weight: normal !important;
+  }
+}
+
+/* Bootstrap 'xl' or larger: */
+@media (min-width: 1200px) {
+  .font-size-xl-75 {
+    font-size: 75%;
+  }
+  .font-size-xl-80 {
+    font-size: 80%;
+  }
+  .font-size-xl-90 {
+    font-size: 90%;
+  }
+  .font-size-xl-100 {
+    font-size: 100%;
+  }
+  .font-size-xl-110 {
+    font-size: 110%;
+  }
+  .font-size-xl-120 {
+    font-size: 120%;
+  }
+  .font-size-xl-125 {
+    font-size: 125%;
+  }
+  .font-size-xl-130 {
+    font-size: 130%;
+  }
+  .font-size-xl-140 {
+    font-size: 140%;
+  }
+  .font-size-xl-150 {
+    font-size: 150%;
+  }
+  .font-size-xl-175 {
+    font-size: 175%;
+  }
+  .font-size-xl-200 {
+    font-size: 200%;
+  }
+  .font-size-xl-225 {
+    font-size: 225%;
+  }
+  .font-size-xl-250 {
+    font-size: 250%;
+  }
+  .font-size-xl-275 {
+    font-size: 275%;
+  }
+  .font-size-xl-300 {
+    font-size: 300%;
+  }
+
+  .font-weight-xl-normal {
+    font-weight: normal !important;
+  }
+}
+
+.line-height-120 {
+  line-height: 120%;
+}
+.line-height-130 {
+  line-height: 130%;
+}
+.line-height-140 {
+  line-height: 140%;
+}
+.line-height-150 {
+  line-height: 150%;
+}
+
+/* Bootstrap 'md' or larger: */
+@media (min-width: 768px) {
+  .line-height-md-120 {
+    line-height: 120%;
+  }
+  .line-height-md-130 {
+    line-height: 130%;
+  }
+  .line-height-md-140 {
+    line-height: 140%;
+  }
+  .line-height-md-150 {
+    line-height: 150%;
+  }
+}
+
+.text-primary {
+  color: hsl(181, 96%, 23%) !important;
+}
+
+/* Might be good to convert remaining 'text-info' references to 'Explain': */
+.text-info {
+  color: hsl(181, 94%, 25%) !important;
+}
+
+.text-danger a {
+  color: hsl(354, 70%, 54%);
+}
+
+.text-danger a:hover {
+  color: hsl(354, 100%, 65%);
+}
+
+.form-group p {
+  margin-bottom: 0;
+}
+
+.form-control:disabled {
+  /* Make these match the 'disabled' appearance of custom select controls: */
+  opacity: 0.7;
+}
+
+/* This selects custom Bootstrap checkboxes:
+//
+//   https://stackoverflow.com/a/59518756/3728155
+*/
+.custom-control-input ~ .custom-control-label::before {
+  /* 8% does not seem to be enough here: */
+  box-shadow: 0 0 4px rgba(0, 0, 0, 12%);
+}
+
+.btn:focus {
+  /* The focus outline is too strong. It might be nice to base this on the
+	// button color, however, rather than using white: */
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 10%);
+}
+
+button.btn-secondary,
+.btn-secondary {
+  background-color: hsl(210, 1.7%, 40%) !important;
+  border-color: hsl(0, 0%, 30%) !important;
+  color: white !important;
+}
+
+button.btn-secondary:hover,
+.btn-secondary:hover {
+  background-color: hsl(0, 0%, 35%) !important;
+  color: white;
+}
+
+.header-main-text {
+  font-size: 95%;
+  font-weight: 600;
+}
+
+.header-text-link {
+  font-size: 95%;
+  font-weight: 500;
+  color: hsl(21, 100%, 75%);
+}
+
+a:hover.header-text-link {
+  color: hsl(21, 100%, 75%);
+}
+
+.header-text-secondary {
+  font-size: 95%;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.btn.header-button-orange {
+  padding: 6px 10px;
+  min-width: 87px;
+  max-height: 40px;
+  background-color: #f5912e !important;
+  border: 2px solid #212529 !important;
+}
+
+a:hover.btn.header-button-orange {
+  background-color: #ffa640 !important;
+}
+
+/* ------------
+// Print styles
+// ------------ */
+
+@media print {
+  /* Amazingly, if this is not done, the Portrait dropdown (which allows
+	// landscape to be selected) will be hidden in the Chrome Print dialog:
+	//
+	//   https://stackoverflow.com/a/36322827/3728155
+	//
+	// Presumably Bootstrap is setting it to 'portrait': */
+  @page {
+    size: auto !important;
+  }
+
+  body {
+    background-color: white !important;
+  }
+
+  header,
+  footer,
+  .btn,
+  .LinksPg,
+  .LinkPg,
+  #WarnTest {
+    display: none;
+  }
+
+  main {
+    width: 100vw !important;
+  }
+
+  .container,
+  .container-xs,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl {
+    /* Otherwise, less than the full area is used: */
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body,
+  p,
+  div,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: black !important;
+  }
+
+  a,
+  a:hover {
+    font-weight: normal;
+    color: black !important;
+    text-decoration: none !important;
+  }
+
+  hr {
+    color: black !important;
+    border-color: black !important;
+  }
+
+  table,
+  .table-responsive {
+    width: 100% !important;
+  }
+
+  /* Otherwise, pressing Ctrl-p when the pointer happens to be hovering causes
+	// that row to be highlighted in the printout, at least in Chrome: */
+  .GridTbl.Body .Row:hover {
+    background-color: initial;
+  }
+
+  /* Apparently, the pixel sizes of printed pages are very small, and Bootstrap
+	// does nothing to account for that, so mobile layouts are selected when
+	// printing. These redefinitions fix that problem. For this reason, it is
+	// better to implement desktop and print layouts with a single template, while
+	// implementing the mobile layout in separately. As noted in 'README.md', this
+	// prevents mobile-specific classes from being activated when printing, and it
+	// is more flexible in the first place.
+	//
+	//
+	// The column definitions are adapted from:
+	//
+	//   https://gist.github.com/donnierayjones/6fd9802d992b2d8d6cfd
+	//
+	// There are many other classes (including padding and margin classes) that
+	// could be affected, so we will fix them as needed. */
+
+  .d-sm-none,
+  .d-md-none,
+  .d-lg-none {
+    display: none !important;
+  }
+
+  .d-sm-block,
+  .d-md-block,
+  .d-lg-block {
+    display: block !important;
+  }
+
+  .d-sm-inline-block,
+  .d-md-inline-block,
+  .d-lg-inline-block {
+    display: inline-block !important;
+  }
+
+  .d-sm-flex,
+  .d-md-flex,
+  .d-lg-flex {
+    display: flex !important;
+  }
+
+  /* Make sure that 'print-none' overrides other display settings: */
+  .d-sm-block.d-print-none,
+  .d-md-block.d-print-none,
+  .d-lg-block.d-print-none {
+    display: none !important;
+  }
+  .d-sm-inline-block.d-print-none,
+  .d-md-inline-block.d-print-none,
+  .d-lg-inline-block.d-print-none {
+    display: none !important;
+  }
+  .d-sm-flex.d-print-none,
+  .d-md-flex.d-print-none,
+  .d-lg-flex.d-print-none {
+    display: none !important;
+  }
+
+  .text-sm-right,
+  .text-md-right,
+  .text-lg-right {
+    text-align: right !important;
+  }
+
+  .col-1,
+  .col-2,
+  .col-3,
+  .col-4,
+  .col-5,
+  .col-6,
+  .col-7,
+  .col-8,
+  .col-9,
+  .col-10,
+  .col-11,
+  .col-12,
+  .col-sm-1,
+  .col-sm-2,
+  .col-sm-3,
+  .col-sm-4,
+  .col-sm-5,
+  .col-sm-6,
+  .col-sm-7,
+  .col-sm-8,
+  .col-sm-9,
+  .col-sm-10,
+  .col-sm-11,
+  .col-sm-12,
+  .col-md-1,
+  .col-md-2,
+  .col-md-3,
+  .col-md-4,
+  .col-md-5,
+  .col-md-6,
+  .col-md-7,
+  .col-md-8,
+  .col-md-9,
+  .col-md-10,
+  .col-md-11,
+  .col-md-12,
+  .col-lg-1,
+  .col-lg-2,
+  .col-lg-3,
+  .col-lg-4,
+  .col-lg-5,
+  .col-lg-6,
+  .col-lg-7,
+  .col-lg-8,
+  .col-lg-9,
+  .col-lg-10,
+  .col-lg-11,
+  .col-lg-12 {
+    float: left;
+  }
+  .col-12,
+  .col-sm-12,
+  .col-md-12,
+  .col-lg-12 {
+    width: 100%;
+  }
+  .col-11,
+  .col-sm-11,
+  .col-md-11,
+  .col-lg-11 {
+    width: 91.66666667%;
+  }
+  .col-10,
+  .col-sm-10,
+  .col-md-10,
+  .col-lg-10 {
+    width: 83.33333333%;
+  }
+  .col-9,
+  .col-sm-9,
+  .col-md-9,
+  .col-lg-9 {
+    width: 75%;
+  }
+  .col-8,
+  .col-sm-8,
+  .col-md-8,
+  .col-lg-8 {
+    width: 66.66666667%;
+  }
+  .col-7,
+  .col-sm-7,
+  .col-md-7,
+  .col-lg-7 {
+    width: 58.33333333%;
+  }
+  .col-6,
+  .col-sm-6,
+  .col-md-6,
+  .col-lg-6 {
+    width: 50%;
+  }
+  .col-5,
+  .col-sm-5,
+  .col-md-5,
+  .col-lg-5 {
+    width: 41.66666667%;
+  }
+  .col-4,
+  .col-sm-4,
+  .col-md-4,
+  .col-lg-4 {
+    width: 33.33333333%;
+  }
+  .col-3,
+  .col-sm-3,
+  .col-md-3,
+  .col-lg-3 {
+    width: 25%;
+  }
+  .col-2,
+  .col-sm-2,
+  .col-md-2,
+  .col-lg-2 {
+    width: 16.66666667%;
+  }
+  .col-1,
+  .col-sm-1,
+  .col-md-1,
+  .col-lg-1 {
+    width: 8.33333333%;
+  }
+  .offset-12,
+  .offset-sm-12,
+  .offset-md-12,
+  .offset-lg-12 {
+    margin-left: 100%;
+  }
+  .offset-11,
+  .offset-sm-11,
+  .offset-md-11,
+  .offset-lg-11 {
+    margin-left: 91.66666667%;
+  }
+  .offset-10,
+  .offset-sm-10,
+  .offset-md-10,
+  .offset-lg-10 {
+    margin-left: 83.33333333%;
+  }
+  .offset-9,
+  .offset-sm-9,
+  .offset-md-9,
+  .offset-lg-9 {
+    margin-left: 75%;
+  }
+  .offset-8,
+  .offset-sm-8,
+  .offset-md-8,
+  .offset-lg-8 {
+    margin-left: 66.66666667%;
+  }
+  .offset-7,
+  .offset-sm-7,
+  .offset-md-7,
+  .offset-lg-7 {
+    margin-left: 58.33333333%;
+  }
+  .offset-6,
+  .offset-sm-6,
+  .offset-md-6,
+  .offset-lg-6 {
+    margin-left: 50%;
+  }
+  .offset-5,
+  .offset-sm-5,
+  .offset-md-5,
+  .offset-lg-5 {
+    margin-left: 41.66666667%;
+  }
+  .offset-4,
+  .offset-sm-4,
+  .offset-md-4,
+  .offset-lg-4 {
+    margin-left: 33.33333333%;
+  }
+  .offset-3,
+  .offset-sm-3,
+  .offset-md-3,
+  .offset-lg-3 {
+    margin-left: 25%;
+  }
+  .offset-2,
+  .offset-sm-2,
+  .offset-md-2,
+  .offset-lg-2 {
+    margin-left: 16.66666667%;
+  }
+  .offset-1,
+  .offset-sm-1,
+  .offset-md-1,
+  .offset-lg-1 {
+    margin-left: 8.33333333%;
+  }
+  .offset-0,
+  .offset-sm-0,
+  .offset-md-0,
+  .offset-lg-0 {
+    margin-left: 0%;
+  }
+}
+
+/* -----------------
+// Internet Explorer
+// ----------------- */
+
+#WarnIE {
+  display: none;
+}
+
+#WarnIE a {
+  /* font-weight: normal; */
+  color: hsl(45, 94%, 27%);
+  text-decoration: underline;
+}
+
+/* Supposedly, this selects IE 10 and 11:
+//
+// https://stackoverflow.com/a/28419263/3728155
+*/
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  #WarnIE {
+    display: block;
+  }
+}

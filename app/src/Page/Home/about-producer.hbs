@@ -1,0 +1,116 @@
+{{!-- about-producer.hbs
+//    ------------------
+//    About Producer view --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+
+	.fa {
+		padding: 20px;
+		font-size: 30px;
+		width: 50px;
+		text-align: center;
+		text-decoration: none;
+	}
+</style>
+<div class="container-md pt-4 pb-5">
+	<div class="d-md-flex flex-md-row justify-content-between px-1">
+		<div>
+			<h3 class="mb-0">{{NameBus}}</h3>
+
+			{{#if CkShowAddr}}
+			{{Addr1}}<br>
+			{{#if Addr2}}{{Addr2}}<br>{{/if}}
+			{{City}}, {{St}} {{Zip}}
+			{{/if}}
+		</div>
+
+		<div class="mt-2 mt-md-0 text-md-right">
+			<strong>{{Name1First}} {{Name1Last}}</strong><br>
+
+			{{#if CredUser}}
+			{{hLinkEmail Email}}<br>
+			{{#if CkShowPhone1}}{{hLinkPhone Phone1}}<br>{{/if}}
+			{{#if CkShowPhone2}}{{hLinkPhone Phone2}}<br>{{/if}}
+			{{/if}}
+
+			{{!-- Might be nice to format this as a link, but there is no guarantee
+			//    that the field contains a single link. This free-form field could
+			//    be divided into 'Web1', 'Web2', et cetera, but can the producers be
+			//    trusted with this?: --}}
+			{{#if Web}}{{Web}}{{/if}}
+			{{#if (hCkOr Facebook Instagram YourWebsite)}}
+			<div class="row px-1" style="display: flex; justify-content: space-evenly;">
+				{{#if Facebook}}
+				<a href={{Facebook}} class="fa fa-facebook" target="_blank"></a>
+				{{/if}}
+				{{#if Instagram}}
+				<a href={{Instagram}} class="fa fa-instagram" target="_blank"></a>
+				{{/if}}
+				{{#if YourWebsite}}
+				<a href={{YourWebsite}} class="fa fa-external-link-square" target="_blank"></a>
+				{{/if}}
+			</div>
+			{{/if}}
+		</div>
+	</div>
+
+	<div class="row my-3">
+		{{#if NameImgProducer}}
+		<div class="col-md-4">
+			<div class="form-group bg-white">
+				{{!-- Some white-background logos have no padding of their own, and they
+				//    look better with 'p-2' or something similar. Others have dark
+				//    backgrounds, however, and they look worse: --}}
+				<img src="{{hPrefixImageWithStorage NameImgProducer}}" alt="Producer image"
+					class="w-100 border rounded p-0" >
+			</div>
+		</div>
+		{{/if}}
+
+		{{!-- Can't we just do 'col-md' here?: --}}
+		<div class="{{#if NameImgProducer}}col-md-8{{else}}col-md-12{{/if}}">
+			<hr class="d-none d-md-block mt-0">
+
+			{{#if (hCkOr AboutStory AboutPract Facebook Instagram YourWebsite)}}
+			<div class="row px-1">
+				{{#if AboutStory}}
+				<div class="mt-2 mt-md-0 col-md">
+					<h4>Our story</h4>
+
+					<div class="MargP-Trim font-italic">
+						{{hHTMLLinesP AboutStory}}
+					</div>
+				</div>
+				{{/if}}
+
+				{{#if AboutPract}}
+				<div class="mt-3 mt-md-0 col-md">
+					<h4>Our practices and ingredients</h4>
+
+					<div class="MargP-Trim font-italic">
+						{{hHTMLLinesP AboutPract}}
+					</div>
+				</div>
+				{{/if}}
+			</div>
+
+			<hr class="d-none d-md-block mb-0">
+			{{/if}}
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<div class="col-md mx-md-1">
+			<h4>Our products</h4>
+			<div class="MargP-Trim font-italic">
+				{{hHTMLLinesP AboutProducts}}
+			</div>
+		</div>
+	</div>
+
+	{{#if Products}}
+	{{>Shop/pGridSearchProduct}}
+	{{/if}}
+</div>
+
+{{>Shop/pDlgsProduct}}

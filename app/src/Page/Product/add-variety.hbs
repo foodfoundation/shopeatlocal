@@ -1,0 +1,40 @@
+{{!-- add-variety.hbs
+//    ---------------
+//    Add Variety view --}}
+
+<div class="w-lg-50 container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<div class="mb-3">
+			<h2>Add variety</h2>
+			<hr>
+			<div class="font-size-110">
+				{{>Misc/pLinkIDProduct}}<br>
+				<strong>{{NameProduct}}</strong>
+			</div>
+		</div>
+
+		{{#unless CkImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsLine CredImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<form id="form-main" action="/add-variety/{{IDProduct}}" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>Product/pCtlsFormVty aPage='add-variety'}}
+
+		<hr class="mt-2">
+
+		<div class="d-flex flex-row">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>

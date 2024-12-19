@@ -1,0 +1,46 @@
+{{!-- edit-product.hbs
+//    ----------------
+//    Edit Product view --}}
+
+<div class="container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<div class="mb-3">
+			<h2 class="mb-1">Edit product</h2>
+			<div class="font-size-110">{{>Misc/pLinkIDProduct}}</div>
+		</div>
+
+		{{!-- What is the point of this? It's superfluous if you're impersonating
+		//    the producer, and it display's the user's data (rather than the
+		//    producer's) when you're not impersonating. Reconsider this, here and
+		//    elsewhere: [TO DO]
+
+		{{#unless zCkProductOwn}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsLine CredSelImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+
+		 --}}
+	</div>
+
+	{{!-- If the product number is not added to the path, a CSRF failure results.
+	//    Why?: [TO DO] --}}
+	<form id="form-main" action="{{hPathProductSel "/edit-product"}}"
+		method="POST" enctype="multipart/form-data" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>Product/pCtlsFormProduct}}
+
+		<hr class="mt-2">
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>

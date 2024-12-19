@@ -1,0 +1,102 @@
+{{!-- manage-categories.hbs
+//    ---------------------
+//    Manage Categories view --}}
+
+<div class="container py-4">
+	<div class="d-flex align-items-center">
+		<h2 class="mb-0">Manage categories</h2>
+
+		<div class="ml-auto mr-1">
+			<a href="/add-category" class="btn btn-primary">Add category</a>
+		</div>
+		<div>
+			{{!-- At first, I was going to place copies of this button below each
+			//    subcategory list, and pass the containing category ID as a query
+			//    parameter. That doesn't necessarily seem easier for the user,
+			//    however, as they would have to navigate to the desired category
+			//    before adding, and this allows the Edit Subcategory form controls to
+			//    be reused without modification: --}}
+			<a href="/add-subcategory" class="btn btn-primary">Add subcategory</a>
+		</div>
+	</div>
+
+	{{#each Cats}}
+	<div class="d-flex align-items-center mt-4">
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'cat.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div id="Cat{{IDCat}}" class="font-size-120">
+			<div>
+				Category {{hTextIDCat IDCat}}
+			</div>
+			<div class="font-weight-bold">
+				{{NameCat}}
+			</div>
+		</div>
+		<div class="ml-auto">
+			<a href="/edit-category/{{IDCat}}"
+				class="btn btn-outline-primary">
+				Edit category
+			</a>
+		</div>
+	</div>
+
+	<hr class="mt-2 mb-1">
+
+	{{#unless Subcats}}
+	<div class="jumbotron my-3">
+		<h2 class="display-4 font-size-200">No subcategories</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive">
+		<table class="table table-sm table-striped mb-0">
+			<thead>
+				<tr>
+					<th scope="col">Subcategory</th>
+					<th scope="col" class="text-right">Taxable</th>
+					<th scope="col" class="text-right">EBT</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each Subcats}}
+				<tr id="SubCat{{IDSubcat}}">
+					<td class="align-middle">
+						{{hTextIDSubcat IDSubcat}} {{this.NameSubcat}}
+					</td>
+					<td class="align-middle text-right">{{hYesNoBlank CkTaxSale}}</td>
+					<td class="align-middle text-right">{{hYesNoBlank CkEBT}}</td>
+					<td class="align-middle text-right">
+						<a href="/edit-subcategory/{{IDSubcat}}"
+							class="btn btn-sm btn-outline-primary ml-1 mr-md-1">Edit</a>
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/unless}}
+	{{else}}
+	<p class="lead">No categories</p>
+	{{/each}}
+</div>
+
+<div style="display:none;" id="LastCatEdit">{{LastCatEdit}}</div>
+<div style="display:none;" id="LastSubCatEdit">{{LastSubCatEdit}}</div>
+<script>
+	$(document).ready(function(){
+		var lastCatEdit = $("#LastCatEdit").text();
+		var lastSubCatEdit = $("#LastSubCatEdit").text();
+
+		if(lastCatEdit) {
+			$([document.documentElement, document.body]).animate({
+				scrollTop: $("#Cat" + lastCatEdit).offset().top
+			});
+		} else if(lastSubCatEdit) {
+			$([document.documentElement, document.body]).animate({
+				scrollTop: $("#SubCat" + lastSubCatEdit).offset().top
+			});
+		}
+	});
+
+</script>

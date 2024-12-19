@@ -1,0 +1,188 @@
+{{!-- web-order-labels.hbs
+//    --------------------
+//    Web Order Labels view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-2">Web order labels</h2>
+		{{#unless CkImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<div>
+		<p>
+			You must affix QR code labels to your non-managed web sales before bringing them to {{CoopParams.CoopNameShort}} for
+			check-in, unless you have entered the associated UPC into your inventory. If you have entered
+			a UPC code, no labeling is necessary.
+		</p>
+
+		{{#unless FlagAfterShop}}
+		<p>
+			When the shopping window closes, you will use this page to enter weights
+			for items that need them, and to print the finished labels.
+		</p>
+		<p class="font-weight-bold">
+			The shopping window is now open.
+		</p>
+		{{else}}
+		<div class="row my-2">
+			<div class="col-md font-weight-bold">
+				{{#if Qtys.QtyWgt}}
+					{{#if Qtys.QtyWgtUnset}}
+						{{#if (hCkEq Qtys.QtyWgtUnset 1)}}
+							1 label requires a weight
+						{{else}}
+							{{Qtys.QtyWgtUnset}} labels require weights
+						{{/if}}
+					{{else}}
+						All weights have been entered
+					{{/if}}
+				{{else}}				
+					No labels require weights
+				</div>
+				{{/if}}
+			</div>
+			<div class="col-md mt-2 mt-md-0">
+				{{#if Qtys.QtyWgt}}
+				<div class="LinkPg text-md-right">
+					<a href="/edit-web-order-label-weights">
+						Edit web order label weights
+					</a>
+				</div>
+				{{/if}}
+			</div>
+		</div>
+
+		<div class="row">
+			{{#if Qtys.QtyWgtUnset}}
+			<div class="col-md">
+				<div class="d-flex align-items-center border border-danger bg-white
+					rounded-sm p-3 mt-3">
+					<div class="d-none d-md-block mr-3">
+						<img src="{{hPrefixStatic 'scale.svg'}}" alt="" width="40" height="40">
+					</div>
+					<div class="">
+						You must enter all weights before printing labels.
+					</div>
+				</div>
+
+				<div class="mt-3">
+					To out-of-stock a variety, lower its offer quantity <em>before</em>
+					entering label weights. If you change the quantity after, the weights
+					for that variety will be deleted.
+				</div>
+			</div>
+			{{else}}
+			<div class="col-md font-weight-bold">
+				{{#if Qtys.QtyTtl}}
+					{{#if (hCkEq Qtys.QtyTtl 1)}}
+						1 label to be printed
+					{{else}}
+						{{Qtys.QtyTtl}} labels to be printed
+					{{/if}}
+				{{else}}
+					No labels to be printed
+				{{/if}}
+			</div>
+			<div class="col-md mt-2 mt-md-0">
+				{{#if Qtys.QtyTtl}}
+				<!--<div class="LinkPg text-md-right">
+					<input type="checkbox" id="upc-checkbox" name="upc-checkbox"
+							checked>
+					<label for="upc-checkbox">Include UPC labels</label>
+				</div>-->
+				<div class="text-right">
+					<input type = "radio" name="labels" id="14labels" value = "false" checked></input>
+					<label for="14labels">14 Labels Per Page</label>
+					<input type = "radio" name="labels" id="30labels" value = "true"></input>
+					<label for="30labels">30 Labels Per Page</label>
+				</div>
+				<div class="LinkPg text-md-right">
+					<a style="cursor:pointer;" onclick="printLabels()">Print web order QR code labels</a>
+				</div>
+				{{/if}}
+			</div>
+			{{/if}}
+		</div>
+		{{/unless}}
+
+		<div class="d-flex border border-danger bg-white rounded-sm p-3 mt-4 mb-2">
+			<div class="d-none d-md-block mr-3">
+				<img src="{{hPrefixStatic 'printer.svg'}}" alt="" width="40" height="40">
+			</div>
+			<div>
+				<p>
+					Your labels must be printed on 1&#8531;" &times; 4" adhesive stock for 14 labels / page, or 1 &times; 2&#8541;" for 30 labels / page:
+				</p>
+				<ul class="mb-0">
+					<li>
+						Deliveries that include <em>any</em> frozen items must use weatherproof or waterproof
+						labels.
+					</li>
+					<li class="mt-3">
+						Deliveries with <em>no</em> frozen items may use paper labels.
+					</li>
+					<li class="mt-3">
+						Be sure to use labels appropriate for your printer type, whether
+						laser printer or inkjet.
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="d-flex align-items-center border border-danger bg-white
+			rounded-sm p-3">
+			<div class="d-none d-md-block mr-3">
+				<img src="{{hPrefixStatic 'printer.svg'}}" alt="" width="40" height="40">
+			</div>
+			<div>
+				<em>Be sure to check your printer's documentation before printing.</em>
+				Sticky labels can damage your printer if it is not set up correctly.
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function printLabels() {
+	//const oSQL =
+	//	`INSERT INTO ProducerLabelHistory (ProducerId,LabelType)
+	//		VALUES (:aProducerId,:LabelType)`;
+	//const oParams = {
+	//	aProducerId: ProducerId,
+	//	LabelType: 0
+	//};
+	//const [oRows] = await gDb.Conn.wExecPrep(oSQL, oParams);
+	
+	const labelCheck = document.getElementById("30labels");
+	console.log(labelCheck.checked);
+	window.location.href = "/print-web-order-labels-" + labelCheck.checked;
+
+	//oParams.Labels = aReq.body.labels;
+
+	//const oQuery = (new URLSearchParams(oParams)).toString();
+	//const oPath = `/print-web-order-labels/${oQuery}`;
+	//aResp.redirect(303, oPath);
+		//let useUpc = true;
+		//if ($('#upc-checkbox').is(':checked')) {
+			//useUpc = true;
+		//}
+		//else {
+		//	useUpc = false;
+		//}
+		//if (useUpc == true) {
+			//window.location.href = "/print-web-order-labels";
+		//}
+		//else {
+		//	window.location.href = "/print-web-order-labels?upc=no";
+		//}
+	}
+
+</script>

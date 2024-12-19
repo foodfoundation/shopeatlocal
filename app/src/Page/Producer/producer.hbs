@@ -1,0 +1,137 @@
+{{!-- producer.hbs
+// ------------
+// Producer home view --}}
+
+<div class="container-md py-4">
+	<div>
+		<h3 class="display-4 font-size-150 mb-0">{{CredSelImperUser.NameLogin}}</h3>
+		{{>Misc/pIDsLine CredSelImperUser}}
+	</div>
+
+	<hr>
+
+	<div class="row">
+		{{!-- Doesn't seem necessary to hide the border on small displays, or
+		// possible, without responsive border class: --}}
+		<div class="col-sm pr-sm-4 border-right">
+			<div class="mb-2">
+				<strong>
+					{{Producer.NameBus}}<br>
+				</strong>
+				{{Producer.Addr1}}<br>
+				{{#if Producer.Addr2}}{{Producer.Addr2}}<br>{{/if}}
+				{{Producer.City}}, {{Producer.St}} {{Producer.Zip}}
+				{{#if Producer.InstructDeliv}}<br><em>{{Producer.InstructDeliv}}</em>{{/if}}
+			</div>
+
+			<div class="mb-2">
+				{{hLinkEmail Producer.Email}}
+			</div>
+
+			<div class="mb-2">
+				{{hLinkPhone Producer.Phone1}}
+			</div>
+
+			<div class="LinksPg">
+				<a href="/edit-about-producer">Edit 'About producer'</a>
+				<a href="/edit-producer-registration">Edit producer registration</a>
+			</div>
+
+			<hr>
+
+			<h5>Status</h5>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Producer status
+				</div>
+				<div>
+					<strong>{{hTextCdReg Producer.CdRegProducer}}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Wholesale status
+				</div>
+				<div>
+					<strong>{{hTextCdReg Producer.CdRegWholesale}}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Listing status
+				</div>
+				<div>
+					<strong>{{hTextCkListProducer Producer.CkListProducer}}</strong>
+				</div>
+			</div>
+
+			<div class="LinksPg mb-0">
+				<a href="/edit-producer-status">Edit producer status</a>
+			</div>
+
+			<hr>
+
+			<h5>Advanced Producer Reports</h5>
+
+			<div class="LinksPg mb-0">
+				<a href="/producer-reports">Open Reports Table</a>
+			</div>
+		</div>
+
+		<div class="col-sm pl-md-4">
+			<hr class="d-sm-none">
+
+			<h5>Products</h5>
+
+			<div class="LinksPg mb-2">
+				<a href="/producer-catalog">Producer catalog</a>
+				<a href="/producer-inventory">Producer {{#if (hCkProducerWholesale)}}retail {{/if}}inventory</a>
+			</div>
+
+			<p class="text-muted font-size-90 mb-2">
+				Use the <a href="/producer-catalog">catalog</a> to create
+				products and varieties before shopping starts. Use the
+				<a href="/producer-inventory">inventory</a> to manage
+				quantities and shopper notes during shopping.
+			</p>
+
+			<hr>
+
+			<h5>Delivery</h5>
+
+			<div class="LinksPg">
+				<a href="/web-order-summary">Web order summary</a>
+				<a href="/web-order-labels">Web order labels</a>
+			</div>
+
+			<hr>
+
+			<h5>Earnings</h5>
+
+			<div class="d-flex flex-row justify-content-between mb-2">
+				<div>
+					Account balance
+				</div>
+				<div class="font-weight-bold">
+					{{hTextCurrOrOrig (hSum Producer.BalMoney Producer.BalEBT)}}
+				</div>
+			</div>
+			<p class="text-muted font-size-90 mb-2">
+				Positive balances are owed <em>to</em> the market. Negative balances are
+				owed <em>by</em> the market. Any payments you send will be subtracted
+				from this balance 7-10 days after {{CoopParams.CoopNameShort}} receives them.
+			</p>
+
+			<div class="LinksPg mb-2">
+				<a href="/producer-invoices">Producer invoices</a>
+				<a href="/producer-web-sales-by-variety">Producer web sales by variety</a>
+			</div>
+			<p class="text-muted font-size-90 mb-2">
+				Web producer earnings are posted at the end of the delivery window.
+			</p>
+		</div>
+	</div>
+</div>

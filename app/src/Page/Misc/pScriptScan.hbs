@@ -1,0 +1,236 @@
+{{!-- pScriptScan.hbs
+//    ---------------
+//    Barcode scan script
+//
+// This script supports barcode scanning. --}}
+<script>
+	// Barcode definitions
+
+	// General properties
+	// ------------------
+	// All barcodes begin with these values:
+	//
+	//   Length  Content
+	//   ------  -------
+	//   1       Scan prefix
+	//   1       Label type
+	//   1       Label version
+	//
+	// We may want to add human-readable version text to the label, if the version
+	// for the contained barcode ever changes.
+
+	/** Marks the start of barcode text, which appears as ordinary keyboard input in
+	*  the browser. It will not be possible to type this character into any page
+	*  that uses the scanner. */
+	//
+	// This string should not contain more than a single character, or the 'active
+	// scan' check in Read_ScanLblIt will fail:
+	const PrefixScan = "^";
+
+	/** The length of the barcode type code. */
+	const LenCdType = 1;
+	/** The length of the barcode version. */
+	const LenVer = 1;
+
+	// Item barcodes
+	// -------------
+	// Item barcodes also contain:
+	//
+	//   Length  Content
+	//   ------  -------
+	//   7       Variety ID
+	//   4       Fulfilled weight
+	//   7       Cart item ID (zero if there is no shopper note)
+	//
+
+	/** The item barcode type code. */
+	//
+	// Do not exceed the length specified by LenCdType:
+	const CdTypeIt = "I";
+	/** The item barcode version. */
+	//
+	// Do not exceed the length specified by LenVer:
+	const VerIt = "0";
+
+	/** The length of the variety ID. */
+	const LenIDVty = 7;
+	/** The number of whole-number digits in a fulfilled weight. */
+	const LenWgtWhole = 2;
+	/** The number of fractional digits in a fulfilled weight. */
+	const LenWgtFrac = 2;
+	/** The total fulfilled weight length. */
+	const LenWgt = LenWgtWhole + LenWgtFrac;
+	/** The length of the cart item ID. */
+	const LenIDItCart = 7;
+
+	/** The length of the item label content, with the scanner prefix. */
+	// 1 + 1 + 1 + 7 + 4 + 7 = 21
+	const LenScanIt
+		= PrefixScan.length
+		+ LenCdType
+		+ LenVer
+		+ LenIDVty
+		+ LenWgt
+		+ LenIDItCart;
+
+	/** Stores recent keypresses. */
+	let BuffKey = "";
+	/** Set to 'true' if a scan is in progress. */
+	let CkScan = false;
+
+	let hasLetters = false;
+	var regExp = /[a-zA-Z]/i;
+
+	/** Updates BuffKey and CkScan with the specified keyboard input, then returns
+	 *  an object containing the scanned item label data, if the input completes
+	 *  such a scan. Returns 'null' if no item label scan is complete. */
+	function Read_ScanLblIt(aKey, isOnSiteCart = false) {
+		if (!aKey || (aKey === "Shift")) return null;
+
+		let hasLetters = false; //for differentiating QR from UPC
+
+		BuffKey += aKey;
+		if (BuffKey == "000000")
+		{
+			console.log("clearing leftovers from BuffKey");
+			hasLetters = false;
+			BuffKey = "";
+			return null;
+		}
+		console.log(BuffKey);
+		if (BuffKey.length > DefsBarcode.LenScanIt)
+			BuffKey = BuffKey.slice(BuffKey.length - DefsBarcode.LenScanIt);
+
+		CkScan = BuffKey.includes(DefsBarcode.PrefixScan);
+		if (regExp.test(BuffKey)) {
+			hasLetters = true;
+		} 
+
+		console.log(hasLetters);
+
+		if (BuffKey.length < DefsBarcode.LenScanIt && hasLetters == false){
+			let upcFound = null;
+			if (BuffKey.length == 13){
+				console.log("UPC Barcode detected!");
+				/* Barcode Logic */
+
+				BuffKey = BuffKey.substring(1); 
+				if (BuffKey == '888295845755'){
+					//BuffKey = '123456789123';
+				}
+				
+
+				if (isOnSiteCart == true) {
+					console.log("On Site Cart UPC detected.");
+					var vtyId = list.find(o => {
+						return (o.Upc == BuffKey);
+					});
+					if (!vtyId) {
+						if (!isNaN(BuffKey)) {
+							const SoundFail = new Audio("{{hPrefixStatic 'Fail.wav'}}");
+							SoundFail.play();
+						}
+					}
+
+					vtyId = vtyId.IDVty;
+
+					BuffKey = "";
+					upcFound = {
+						IDVty: vtyId,
+						WgtPer: null,
+						IDItCart: null,
+						IsUpc: true
+					};
+				}
+
+				
+				else {
+					var vtyFound = false;
+					list.forEach(function(listVty) { //5/25/22 *** The problem is it's looping the whole thing and for each item in the list it's giving
+						if (listVty.Upc == BuffKey) {
+							console.log("UPC for Variety found!");
+							
+							BuffKey = "";//reset BuffKey for multiple scans
+							vtyFound = true;
+
+							console.log({
+								IDVty: listVty.IDVty,
+								WgtPer: listVty.WgtPer,
+								IDItCart: listVty.IDItCart,
+								IsUpc: true
+							});
+							upcFound = {
+								IDVty: listVty.IDVty,
+								WgtPer: listVty.WgtPer,
+								IDItCart: listVty.IDItCart,
+								IsUpc: true
+							};
+						}
+					});
+					if (!isNaN(BuffKey) && !vtyFound) {
+						const SoundFail = new Audio("{{hPrefixStatic 'Fail.wav'}}");
+						SoundFail.play();
+					}
+				}
+			}
+			if (upcFound != null) {
+				return upcFound;
+			}
+			return null;
+		}
+				
+		if (!BuffKey.startsWith(DefsBarcode.PrefixScan)) {
+			// prefix not detected for QR code
+			//if it's a number, clear leftovers from buffkey (this could be useful in future)
+			return null;
+		} 
+
+		if (BuffKey.length < 21){
+			// Buffkey length too short.
+			return null;
+		}
+
+		const oPosCdType = DefsBarcode.PrefixScan.length;
+		const oCdType = BuffKey.substr(oPosCdType, DefsBarcode.LenCdType);
+		if (oCdType !== DefsBarcode.CdTypeIt) return null;
+
+		const oPosVer = oPosCdType + DefsBarcode.LenCdType;
+		const oVer = BuffKey.substr(oPosVer, DefsBarcode.LenVer);
+		// In the future, we can read different content if a new label version is
+		// encountered:
+		if (oVer !== DefsBarcode.VerIt) return null;
+
+		const oPosIDVty = oPosVer + DefsBarcode.LenVer;
+		const oTextIDVty = BuffKey.substr(oPosIDVty, DefsBarcode.LenIDVty);
+		const oRegNum = /^\d+$/;
+		if (!oTextIDVty.match(oRegNum)) return null;
+		const oIDVty = parseInt(oTextIDVty);
+
+		const oPosWgtPer = oPosIDVty + DefsBarcode.LenIDVty;
+		const oTextWgtPer = BuffKey.substr(oPosWgtPer, DefsBarcode.LenWgt);
+		if (!oTextWgtPer.match(oRegNum)) return null;
+		const oWgtPer = parseInt(oTextWgtPer)
+			/ Math.pow(10.0, DefsBarcode.LenWgtFrac);
+
+		const oPosIDItCart = oPosWgtPer + DefsBarcode.LenWgt;
+		const oTextIDItCart = BuffKey.substr(oPosIDItCart, DefsBarcode.LenIDItCart);
+		if (!oTextIDItCart.match(oRegNum)) return null;
+		const oIDItCart = parseInt(oTextIDItCart) || null;
+
+		BuffKey = "";
+
+		console.log({
+			IDVty: oIDVty,
+			WgtPer: oWgtPer,
+			IDItCart: oIDItCart,
+			IsUpc: false
+		});
+
+		return {
+			IDVty: oIDVty,
+			WgtPer: oWgtPer,
+			IDItCart: oIDItCart,
+			IsUpc: false
+		};
+	}
+</script>

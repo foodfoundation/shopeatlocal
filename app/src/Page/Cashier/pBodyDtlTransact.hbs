@@ -1,0 +1,116 @@
+{{!-- pBodyDtlTransact.hbs
+//    --------------------
+//    Transaction Detail body --}}
+
+<div>
+	{{#if IDProducer}}
+	<div class="d-flex flex-row align-items-center mb-2">
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div>
+			{{>Misc/pLinkIDProducer}}<br>
+			<strong>{{NameBusProducer}}</strong>
+		</div>
+	</div>
+	{{/if}}
+	<div class="d-flex flex-row align-items-center">
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+		</div>
+		{{#if IDMemb}}
+		<div>
+			{{>Misc/pLinkIDMemb}}<br>
+			<strong>{{Name1First}} {{Name1Last}}</strong>
+		</div>
+		{{else}}
+		<div class="font-weight-semi line-height-120">Non-member<br>transaction</div>
+		{{/if}}
+	</div>
+</div>
+
+<hr>
+
+<div class="d-flex flex-row justify-content-between">
+	<div>Type</div>
+	<div class="font-weight-bold">
+		{{hTextCdTypeTransact CdTypeTransact}}
+	</div>
+</div>
+
+{{#if IDInvc}}
+<div class="d-flex flex-row justify-content-between mt-3">
+	<div>Invoice</div>
+	<div class="font-weight-bold">
+		{{hLinkInvcTransact this}}
+	</div>
+</div>
+{{/if}}
+
+{{#if CdMethPay}}
+<div class="d-flex flex-row justify-content-between mt-3">
+	<div>Payment method</div>
+	<div class="font-weight-bold">
+		{{hTextCdMethPay CdMethPay}}
+	</div>
+</div>
+{{/if}}
+
+<div class="d-flex flex-row justify-content-between mt-3">
+	<div>
+		Amount
+	</div>
+	{{#if (hCkAnd AmtMoney AmtEBT)}}
+	<div>
+		<div class="d-flex flex-row justify-content-between">
+			<div>Money</div>
+			<div class="text-right pl-4">{{hTextAmtMoneyTransact this}}</div>
+		</div>
+		<div class="d-flex flex-row justify-content-between">
+			<div class="EBT">EBT</div>
+			<div class="EBT text-right pl-4">{{hTextAmtEBTTransact this}}</div>
+		</div>
+		<hr class="my-1">
+		<div class="d-flex flex-row justify-content-between font-weight-bold">
+			<div>Total</div>
+			<div class="text-right pl-4">{{hTextAmtTransact this}}</div>
+		</div>
+	</div>
+	{{else}}
+	{{#if AmtMoney}}
+	<div class="text-right font-weight-bold">
+		{{hTextAmtMoneyTransact this}}
+	</div>
+	{{else}}
+	<div class="text-right font-weight-semi">
+		<span class="EBT">{{hTextAmtEBTTransact this}} EBT</span>
+	</div>
+	{{/if}}
+	{{/if}}
+</div>
+
+{{#if (hCkStaffFromUser)}}
+{{#if Note}}
+<div class="d-flex flex-row justify-content-between mt-3">
+	<div class="pr-5">Note</div>
+	<div class="MargP-Trim text-right font-weight-bold">
+		{{hHTMLLinesP Note}}
+	</div>
+</div>
+{{/if}}
+{{/if}}
+
+<div class="d-flex flex-row justify-content-between mt-3">
+	<div>Posted</div>
+	<div class="text-right">
+		<strong>{{hTextWhen WhenCreate "Med" "HourMin"}}</strong>
+		{{#if (hCkStaffFromUser)}}
+		by
+		<strong>{{#if IDMembStaffCreate}}
+			{{Name1FirstCreate}} {{Name1LastCreate}}
+			{{else}}
+			{{CoopParams.CoopNameShort}}
+			{{/if}}
+			{{/if}}</strong>
+	</div>
+</div>

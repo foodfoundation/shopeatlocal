@@ -1,0 +1,27 @@
+{{!-- edit-site-configuration.hbs
+//    -----------------
+//    Edit site configurations view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2>Edit site configuration</h2>
+
+    <p>
+        Note: We recommend setting up your site configuration once at the start of your journey and only make modifications here when absolutely necessary.
+    </p>
+
+	<hr>
+
+	<form id="form-main" class="pb-4" action="/edit-site-configuration"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>SiteAdmin/pCtlsFormSiteConfiguration}}
+
+		<hr>
+
+		<div class="d-flex justify-content-end">
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+	</form>
+</div>

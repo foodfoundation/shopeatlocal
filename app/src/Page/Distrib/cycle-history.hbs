@@ -1,0 +1,65 @@
+{{!-- cycle history.hbs
+//    -----------------
+//    Cycle History view --}}
+
+<div class="container-xl py-4">
+	<h2>Cycle history</h2>
+
+	<div class="d-print-none row">
+		<div class="col">
+			This page displays dates and times for the current cycle plus all
+			completed cycles.
+		</div>
+		<div class="col">
+			{{>Misc/pInstructPrint}}
+		</div>
+	</div>
+
+	<hr>
+
+	{{#unless Cycs}}
+	<div class="jumbotron mt-4">
+		<h2 class="display-4 font-size-200">No completed cycles</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Cycle ID</th>
+					<th scope="col">Cycle start</th>
+					<th scope="col" class="text-center">Shopping</th>
+					<th scope="col" class="text-center">Delivery</th>
+					<th scope="col" class="text-center">Pickup</th>
+					<th scope="col" class="text-right">Cycle end</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each Cycs}}
+				<tr>
+					<td class="align-middle">{{hTextIDCyc IDCyc}}</td>
+					<td class="align-middle">
+						{{hTextWhen WhenStartCyc "FullShort" "HourMin"}}
+					</td>
+					<td class="text-center">
+						{{hTextWhen WhenStartShop "FullShort" "HourMin"}}<br>
+						{{hTextWhen WhenEndShop "FullShort" "HourMin"}}
+					</td>
+					<td class="text-center">
+						{{hTextWhen WhenStartDeliv "FullShort" "HourMin"}}<br>
+						{{hTextWhen WhenEndDeliv "FullShort" "HourMin"}}
+					</td>
+					<td class="text-center">
+						{{hTextWhen WhenStartPickup "FullShort" "HourMin"}}<br>
+						{{hTextWhen WhenEndPickup "FullShort" "HourMin"}}
+					</td>
+					<td class="align-middle text-right">
+						{{hTextWhen WhenEndCyc "FullShort" "HourMin"}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/unless}}
+</div>

@@ -1,0 +1,166 @@
+{{!-- edit-member-status.hbs
+//    ----------------------
+//    Edit member status view
+//
+//    I don't understand what is happening with the 'negative margins' in this
+//    form. This is one of the first Bootstrap forms I created, so anything
+//    could be wrong. [TO DO] --}}
+
+<div class="w-lg-40 container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-3">Edit member status</h2>
+
+		{{#unless CkSelImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredSelImperUser}}
+
+			<hr class="mt-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	{{!-- If a member was selected in the GET, forward that selection to the
+	//    POST: --}}
+	<form id="form-main" class="pb-4"
+		action="{{hPathMembSel "/edit-member-status"}}" method="POST" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{!-- There is a negative margin that otherwise causes the dropdown to
+		//    stick out on the right: --}}
+		<div class="form-group row mr-0 mb-0">
+			<label class="col-form-label col-md-7" for="CdRegMemb">
+				Membership status
+			</label>
+
+			<select id="CdRegMemb" name="CdRegMemb" value="{{CdRegMemb}}"
+				{{!-- Had to set these margins to make the mobile layout work: --}}
+				class="custom-select col-md-5 ml-3 ml-md-0 {{#if MsgFailCdReg}}is-invalid{{/if}}">
+				{{hOptsCdReg CdRegMemb}}
+			</select>
+			{{hDivMsgFail MsgFailCdReg}}
+		</div>
+		<div class="Explain text-md-right font-size-90 ml-md-5 mb-3">
+			If the member registration requires changes, e-mail the member and set
+			this status to 'Available'.
+		</div>
+
+		{{!-- There is a negative margin that otherwise causes the dropdown to
+		//    stick out on the right: --}}
+		<div class="form-group row mr-0">
+			<label class="col-form-label col-md-7" for="CdRegEBT">
+				EBT status
+			</label>
+
+			<select id="CdRegEBT" name="CdRegEBT" value="{{CdRegEBT}}"
+				{{!-- Had to set these margins to make the mobile layout work: --}}
+				class="custom-select col-md-5 ml-3 ml-md-0 {{#if MsgFailCdRegEBT}}is-invalid{{/if}}">
+				{{hOptsCdReg CdRegEBT}}
+			</select>
+			{{hDivMsgFail MsgFailCdRegEBT}}
+		</div>
+
+		{{!-- There is a negative margin that otherwise causes the dropdown to
+		//    stick out on the right: --}}
+		<div class="form-group row mr-0 mt-4 mb-3">
+			<div class="col">Producer page</div>
+
+			<div class="custom-control custom-checkbox">
+				<input id="CkShowProducer" name="CkShowProducer" type="checkbox"
+					{{hAttrCk CkShowProducer false}}
+					class="custom-control-input {{#if MsgFailCkShowProducer}}is-invalid{{/if}}">
+				{{!-- Had to set these margins to make the mobile layout work: --}}
+				<label for="CkShowProducer" class="custom-control-label ml-3 ml-md-0">
+					Show
+				</label>
+				{{hDivMsgFail MsgFailCkShowProducer}}
+			</div>
+		</div>
+
+		{{!-- There is a negative margin that otherwise causes the dropdown to
+		//    stick out on the right: --}}
+		<div class="form-group row mr-0">
+			<label class="col-form-label col-md-7" for="CdRegVolun">
+				Volunteer status
+			</label>
+
+			<select id="CdRegVolun" name="CdRegVolun" value="{{CdRegVolun}}"
+				{{!-- Had to set these margins to make the mobile layout work: --}}
+				class="custom-select col-md-5 ml-3 ml-md-0
+					{{#if MsgFailCdRegVolun}}is-invalid{{/if}}">
+				{{hOptsCdReg CdRegVolun}}
+			</select>
+			{{hDivMsgFail MsgFailCdRegVolun}}
+		</div>
+
+		{{!-- There is a negative margin that otherwise causes the dropdown to
+		//    stick out on the right: --}}
+		<div class="form-group row mr-0">
+			<label class="col-form-label col-md-7" for="CdRegWholesale">
+				Wholesale status
+			</label>
+
+			<select id="CdRegWholesale" name="CdRegWholesale" value="{{CdRegWholesale}}"
+				{{!-- Had to set these margins to make the mobile layout work: --}}
+				class="custom-select col-md-5 ml-3 ml-md-0
+					{{#if MsgFailCdRegWholesale}}is-invalid{{/if}}">
+				{{hOptsCdReg CdRegWholesale}}
+			</select>
+			{{hDivMsgFail MsgFailCdRegWholesale}}
+		</div>
+
+		{{!-- There is a negative margin that otherwise causes the dropdown to
+		//    stick out on the right: --}}
+		<div class="form-group row align-items-center mr-0">
+			<label class="col-form-label col-md-7" for="CdStaff">
+				Staff status
+			</label>
+
+			{{!-- We want to display the superuser staff type without offering it as
+			//    a selection in the dropdown: --}}
+			{{#if (hCkStaffSuperFromCd CdStaff)}}
+			<div class="col-md-5 text-right font-weight-semi pr-0">
+				{{hTextCdStaff CdStaff}}
+			</div>
+			{{else}}
+			<select id="CdStaff" name="CdStaff" value="{{CdStaff}}"
+				{{hAttrFldDisab "CdStaff"}}
+				{{!-- Had to set these margins to make the mobile layout work: --}}
+				class="custom-select col-md-5 ml-3 ml-md-0
+					{{#if MsgFailCdStaff}}is-invalid{{/if}}">
+				{{hOptsCdStaffAssign CdStaff}}
+			</select>
+			{{hDivMsgFail MsgFailCdStaff}}
+			{{/if}}
+			<div class="col-md text-md-right pr-0 md-0">
+				{{hDivMsgFldDisab "CdStaff"}}
+			</div>
+		</div>
+
+		{{#if (hCkStaffFromUser)}}
+		<div class="form-row">
+			<div class="form-group col mb-0">
+				<label for="Notes">Notes</label>
+				{{!-- Don't wrap between the two tags, doing so adds whitespace to
+				//    the input: --}}
+				<textarea name="Notes" maxlength="1000" rows="6"
+					class="form-control {{#if MsgFailNotes}}is-invalid{{/if}}">{{Notes}}</textarea>
+				{{hDivMsgFail MsgFailNotes}}
+
+				<div class="Explain text-right">
+					Member notes are hidden from non-staff users.
+				</div>
+			</div>
+		</div>
+		{{/if}}
+
+		<hr>
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>

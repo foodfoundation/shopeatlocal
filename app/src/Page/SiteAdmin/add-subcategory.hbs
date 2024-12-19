@@ -1,0 +1,21 @@
+{{!-- add-subcategory.hbs
+//    -------------------
+//    Add Subcategory view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2 class="mb-3">Add subcategory</h2>
+
+	<form id="form-main" class="pb-4" action="/add-subcategory" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>SiteAdmin/pCtlsFormSubcat}}
+
+		<hr>
+
+		<div class="d-flex justify-content-end">
+			<button type="submit" class="btn btn-primary">Add</button>
+		</div>
+	</form>
+</div>

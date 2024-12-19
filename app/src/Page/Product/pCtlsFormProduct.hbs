@@ -1,0 +1,388 @@
+{{!-- pCtlsFormProduct.hbs
+//    --------------------
+//    Add/Edit Product form controls --}}
+
+<div class="form-row">
+	{{!-- Main column: --}}
+	<div class="form-group col-md-8 pr-md-4">
+
+		<div class="form-row">
+			<div class="form-group col">
+				<label for="NameProduct">Product name *</label>
+				<input id="NameProduct" name="NameProduct" value="{{NameProduct}}"
+					maxlength="50" class="form-control {{#if MsgFailNameProduct}}is-invalid{{/if}}">
+				<div class="Explain">
+					Do <em>not</em> include the size in the product name.
+					{{#if IDProduct}}
+						Instead, define sizes in each of this product's <em>varieties</em>.
+					{{else}}
+						Instead, define the size in the <b>First variety</b> section, below.
+					{{/if}}
+				</div>
+				{{hDivMsgFail MsgFailNameProduct}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<label for="Descrip">Product description</label>
+				{{!-- Don't wrap between the two tags, doing so adds whitespace to
+				//    the input: --}}
+				<textarea name="Descrip" maxlength="1000" rows="6"
+					class="form-control {{#if MsgFailDescrip}}is-invalid{{/if}}">{{Descrip}}</textarea>
+				{{hDivMsgFail MsgFailDescrip}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col mb-2">
+				<label for="IDSubcat">
+					Product category and subcategory *
+				</label>
+				<select id="IDSubcat" name="IDSubcat"
+					value="{{IDSubcat}}" class="custom-select">
+
+					{{#each Subcats}}
+					<option value="{{IDSubcat}}"
+						{{hAttrSel IDSubcat @root.IDSubcat}}>
+						{{NameCat}}: {{NameSubcat}}
+					</option>
+					{{/each}}
+				</select>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-6 mb-0">
+				<label class="col-form-label" for="CdStor">
+					Storage *
+				</label>
+				<select id="CdStor" name="CdStor" value="{{CdStor}}"
+					class="custom-select {{#if MsgFailCdStor}}is-invalid{{/if}}"
+					{{hAttrFldDisab "CdStor"}}>
+					{{hOptsCdStor CdStor}}
+				</select>
+				<div class="Explain">
+					The Storage value cannot be changed during the delivery cycle.
+				</div>
+				{{hDivMsgFail MsgFailCdStor}}
+			</div>
+		</div>
+
+		<div class="form-row" id="fee-checkboxes">
+			<div class="form-group col-md-6 mb-0">
+				<div class="custom-control custom-checkbox">
+					<input id="CkExcludeProducerFee" name="CkExcludeProducerFee" type="checkbox"
+						{{hAttrCk CkExcludeProducerFee false}} class="custom-control-input"
+						{{hAttrFldDisab "CkExcludeProducerFee"}}
+					>
+					<label for="CkExcludeProducerFee" class="custom-control-label">
+						Exclude Producer Fee
+					</label>
+				</div>
+				{{hDivMsgFldDisab "CkExcludeProducerFee"}}
+			</div>
+
+			<div class="form-group col-md-6 mb-0">
+				<div class="custom-control custom-checkbox">
+					<input id="CkExcludeConsumerFee" name="CkExcludeConsumerFee" type="checkbox"
+						{{hAttrCk CkExcludeConsumerFee false}} class="custom-control-input"
+						{{hAttrFldDisab "CkExcludeProducerFee"}}
+					>
+					<label for="CkExcludeConsumerFee" class="custom-control-label">
+						Exclude Consumer Fee
+					</label>
+				</div>
+				{{hDivMsgFldDisab "CkExcludeConsumerFee"}}
+			</div>
+		</div>
+	</div>
+
+	{{!-- Image column: --}}
+	<div class="form-group col-md-4">
+		<hr class="d-block d-md-none mt-0">
+
+		{{#if NameImgProduct}}
+		<input type="hidden" name="NameImgProduct" value="{{NameImgProduct}}">
+		<input type="hidden" id="CkRemImg" name="CkRemImg">
+
+		<div class="form-row">
+			<label class="ml-1">Current product image</label>
+		</div>
+
+		<div class="mb-2">
+			<div id="RowImg" class="form-row">
+				<div class="form-group col mb-2">
+					<img src="{{hPrefixImageWithStorage NameImgProduct}}" alt="Product image"
+						class="w-100 border rounded p-0">
+				</div>
+			</div>
+			<button id="BtnRemImg" type="button" class="btn btn-sm btn-primary">
+				Remove
+			</button>
+			<button id="BtnRestImg" type="button"
+				class="btn btn-sm btn-primary d-none">
+				Restore
+			</button>
+		</div>
+		{{/if}}
+
+		<div class="form-row">
+			<div class="form-group col mb-0">
+				{{#if NameImgProduct}}
+				<label>New product image</label>
+				{{else}}
+				<label>Product image</label>
+				{{/if}}
+				<div class="custom-file">
+					{{!-- We don't want this label, but Bootstrap uses it to render
+					//    the control: --}}
+					<label id="LblImg" class="custom-file-label" for="Img"></label>
+					<input id="Img" name="Img" type="file"
+						accept=".bmp,.gif,.jfif.,.jpg,.jpeg,.pjp,.pjpeg,.png,.svg,.svgz,.tif,.tiff,.webp"
+						class="custom-file-input">
+					<div class="Explain">
+						Your image must be 1024KB or less in size. The JPG and PNG
+						formats are preferable for photographs.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<hr class="mt-0">
+
+<h5 class="mt-4">Product attributes</h5>
+
+<div class="Explain mb-4">
+	These flags are used when shoppers search products by production type and/or attribute. Check the
+	box(es) that applies to <em>all</em> your varieties within a product listing
+</div>
+
+<h5 class="mt-4">Third Party Certifications</h5>
+
+<div class="form-row">
+
+	{{!-- 
+	{{#each AttrsProduct}}
+		<div class="custom-control custom-checkbox">
+			<input id="CkAttr{{Cd}}" name="CkAttr{{Cd}}" type="checkbox"
+				
+					
+
+				class="custom-control-input">
+			<label for="CkAttr{{Cd}}" class="custom-control-label">
+				{{Text}}
+			</label>
+		</div>
+	{{/each}}
+	--}}
+
+	{{!-- Left column --}}
+
+	<div class="form-group col-md-4">
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrOrganCert" name="CkAttrOrganCert" type="checkbox"
+				{{hAttrCk CkAttrOrganCert false}} class="custom-control-input">
+			<label for="CkAttrOrganCert" class="custom-control-label">
+				{{hTextAttrProduct "OrganCert"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrNaturGrownCert" name="CkAttrNaturGrownCert"
+				type="checkbox" {{hAttrCk CkAttrNaturGrownCert false}}
+				class="custom-control-input">
+			<label for="CkAttrNaturGrownCert" class="custom-control-label">
+				{{hTextAttrProduct "NaturGrownCert"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrRealOrganic" name="CkAttrRealOrganic"
+				type="checkbox" {{hAttrCk CkAttrRealOrganic false}}
+				class="custom-control-input">
+			<label for="CkAttrRealOrganic" class="custom-control-label">
+				{{hTextAttrProduct "RealOrganic"}}
+			</label>
+		</div>
+
+		<!--<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrRegenOrganCert" name="CkAttrRegenOrganCert"
+				type="checkbox" {{hAttrCk CkAttrRegenOrganCert false}}
+				class="custom-control-input">
+			<label for="CkAttrRegenOrganCert" class="custom-control-label">
+				{{hTextAttrProduct "RegenOrganCert"}}
+			</label>
+		</div>-->
+
+
+	</div>
+
+	{{!-- Middle column --}}
+
+	<div class="form-group col-md-4">
+		<!--<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrCertBiodynamic" name="CkAttrCertBiodynamic"
+				type="checkbox" {{hAttrCk CkAttrCertBiodynamic false}}
+				class="custom-control-input">
+			<label for="CkAttrCertBiodynamic" class="custom-control-label">
+				{{hTextAttrProduct "CertBiodynamic"}}
+			</label>
+		</div>-->
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrAnimWelfareCert" name="CkAttrAnimWelfareCert"
+				type="checkbox" {{hAttrCk CkAttrAnimWelfareCert false}}
+				class="custom-control-input">
+			<label for="CkAttrAnimWelfareCert" class="custom-control-label">
+				{{hTextAttrProduct "AnimWelfareCert"}}
+			</label>
+		</div>
+
+		<!--<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrCert100GrassFed" name="CkAttrCert100GrassFed"
+				type="checkbox" {{hAttrCk CkAttrCert100GrassFed false}}
+				class="custom-control-input">
+			<label for="CkAttrCert100GrassFed" class="custom-control-label">
+				{{hTextAttrProduct "Cert100GrassFed"}}
+			</label>
+		</div>-->
+	</div>
+
+	{{!-- Right column --}}
+
+	<div class="form-group col-md-4">
+		<!--<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrGlutenFreeCert" name="CkAttrGlutenFreeCert"
+				type="checkbox" {{hAttrCk CkAttrGlutenFreeCert false}}
+				class="custom-control-input">
+			<label for="CkAttrGlutenFreeCert" class="custom-control-label">
+				{{hTextAttrProduct "GlutenFreeCert"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrVeganCert" name="CkAttrVeganCert"
+				type="checkbox" {{hAttrCk CkAttrVeganCert false}}
+				class="custom-control-input">
+			<label for="CkAttrVeganCert" class="custom-control-label">
+				{{hTextAttrProduct "VeganCert"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrFairTradeCert" name="CkAttrFairTradeCert" type="checkbox"
+				{{hAttrCk CkAttrFairTradeCert false}} class="custom-control-input">
+			<label for="CkAttrFairTradeCert" class="custom-control-label">
+				{{hTextAttrProduct "FairTradeCert"}}
+			</label>
+		</div>-->
+	</div>
+</div>
+
+<h5 class="mt-4">Self-declared Practices</h5>
+
+<div class="Explain mb-4">
+	If you have no third party certifications please check the boxes below that apply to you.
+</div>
+<div class="form-row">
+
+	{{!-- Left column --}}
+
+	<div class="form-group col-md-4">
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrLocalSelf" name="CkAttrLocalSelf" type="checkbox"
+				{{hAttrCk CkAttrLocalSelf false}} class="custom-control-input">
+			<label for="CkAttrLocalSelf" class="custom-control-label">
+				{{hTextAttrProduct "LocalSelf"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrFreeRgSelf" name="CkAttrFreeRgSelf" type="checkbox"
+				{{hAttrCk CkAttrFreeRgSelf false}} class="custom-control-input">
+			<label for="CkAttrFreeRgSelf" class="custom-control-label">
+				{{hTextAttrProduct "FreeRgSelf"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrPasturedSelf" name="CkAttrPasturedSelf" type="checkbox"
+				{{hAttrCk CkAttrPasturedSelf false}} class="custom-control-input">
+			<label for="CkAttrPasturedSelf" class="custom-control-label">
+				{{hTextAttrProduct "PasturedSelf"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrGrassFedSelf" name="CkAttrGrassFedSelf" type="checkbox"
+				{{hAttrCk CkAttrGrassFedSelf false}} class="custom-control-input">
+			<label for="CkAttrGrassFedSelf" class="custom-control-label">
+				{{hTextAttrProduct "GrassFedSelf"}}
+			</label>
+		</div>
+	</div>
+
+	{{!-- Middle column --}}
+
+	
+
+	{{!-- Right column --}}
+
+	
+</div>
+<h5 class="mt-4">Other</h5>
+<div class="Explain mb-4">
+	<b>IMPORTANT:</b> In order to retrieve the best search results for our members, 
+	please only mark these attributes if they are applicable and under the following categories.
+	<ul>
+		<li>Baked Goods</li>
+		<li>Grains, Flours, Cereal + Pasta</li>
+		<li>Condiments + Sauces</li>
+		<li>Snacks</li>
+		<li>Prepared Foods</li>
+	</ul>
+</div>
+
+<div class="form-row">
+
+	{{!-- Left column --}}
+
+	<div class="form-group col-md-4">
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrVegan" name="CkAttrVegan" type="checkbox"
+				{{hAttrCk CkAttrVegan false}} class="custom-control-input">
+			<label for="CkAttrVegan" class="custom-control-label">
+				{{hTextAttrProduct "Vegan"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrVeget" name="CkAttrVeget" type="checkbox"
+				{{hAttrCk CkAttrVeget false}} class="custom-control-input">
+			<label for="CkAttrVeget" class="custom-control-label">
+				{{hTextAttrProduct "Veget"}}
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-3">
+			<input id="CkAttrGlutenFree" name="CkAttrGlutenFree" type="checkbox"
+				{{hAttrCk CkAttrGlutenFree false}} class="custom-control-input">
+			<label for="CkAttrGlutenFree" class="custom-control-label">
+				{{hTextAttrProduct "GlutenFree"}}
+			</label>
+		</div>
+	</div>
+
+	{{!-- Middle column --}}
+
+	
+
+	{{!-- Right column --}}
+
+	
+</div>
+
+{{>Misc/pScriptUpImg}}

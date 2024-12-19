@@ -1,0 +1,178 @@
+{{!-- producer-earnings.hbs
+//    ---------------------
+//    Producer Earnings view --}}
+
+<div class="container-xl py-4">
+	<h2>Producer earnings</h2>
+
+	<div class="d-print-none row">
+		<div class="col">
+			This page displays web and on-site earnings for producers in the specified
+			cycle. Current balances are listed; these may not match the balances at
+			the end of the displayed cycle.
+		</div>
+		<div class="col">
+			{{>Misc/pInstructPrint}}
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="d-md-flex flex-row mb-3">
+		{{#with Cyc}}
+		<div class="d-md-flex flex-row mb-1 mb-md-0">
+			<div class="d-none d-md-block mr-3 mt-1">
+				<img src="{{hPrefixStatic 'cyc.svg'}}" alt="" width="40" height="40">
+			</div>
+			<div>
+				<strong>Cycle {{hTextIDCyc IDCyc}}</strong><br>
+				Ending {{hTextWhen WhenEndCyc "Long"}}
+			</div>
+		</div>
+		{{/with}}
+	</div>
+
+	{{#unless ProducersWeb}}
+	<div class="jumbotron mt-4">
+		<h2 class="display-4 font-size-200">No producers with web earnings</h2>
+	</div>
+	{{else}}
+	<h4 class="mt-4">Web earnings</h4>
+
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Producer</th>
+					<th scope="col" class="text-right">Subtot</th>
+					<th scope="col" class="text-right">Market fee</th>
+					<th scope="col" class="text-right">Invt fee</th>
+					<th scope="col" class="text-right pr-4 border-right">Ttl</th>
+					<th scope="col" class="text-right">Bal money</th>
+					<th scope="col" class="text-right pr-2">Bal EBT</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each ProducersWeb}}
+				<tr>
+					<td><a href="/producer-detail/{{IDProducer}}">
+						{{hTextIDProducer IDProducer}} {{NameBus}}
+					</a></td>
+					<td class="text-right">{{hTextCurrOrOrig SaleNom}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeCoop}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeInvt}}</td>
+					<td class="text-right pr-4 border-right">{{hTextCurrOrOrig Ttl}}</td>
+					<td class="text-right">{{hTextCurrOrOrig BalMoney}}</td>
+					<td class="text-right pr-2">
+						{{#if BalEBT}}{{hTextCurrOrOrig BalEBT}}{{else}}&mdash;{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="d-flex">
+		<a class="btn btn-secondary ml-auto"
+			href="/producer-earnings-web-export">
+			Export
+		</a>
+	</div>
+	{{/unless}}
+
+	<hr>
+
+	{{#unless ProducersOnsiteRetail}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No producers with on-site earnings</h2>
+	</div>
+	{{else}}
+	<h4 class="mt-3">On-site retail earnings</h4>
+
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Producer</th>
+					<th scope="col" class="text-right">Subtot</th>
+					<th scope="col" class="text-right">Market fee</th>
+					<th scope="col" class="text-right">Invt fee</th>
+					<th scope="col" class="text-right pr-4 border-right">Ttl</th>
+					<th scope="col" class="text-right">Bal money</th>
+					<th scope="col" class="text-right pr-2">Bal EBT</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each ProducersOnsiteRetail}}
+				<tr>
+					<td><a href="/producer-detail/{{IDProducer}}">
+						{{hTextIDProducer IDProducer}} {{NameBus}}
+					</a></td>
+					<td class="text-right">{{hTextCurrOrOrig SaleNom}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeCoop}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeInvt}}</td>
+					<td class="text-right pr-4 border-right">{{hTextCurrOrOrig Ttl}}</td>
+					<td class="text-right">{{hTextCurrOrOrig BalMoney}}</td>
+					<td class="text-right pr-2">
+						{{#if BalEBT}}{{hTextCurrOrOrig BalEBT}}{{else}}&mdash;{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/unless}}
+	
+	<hr>
+
+	{{#unless ProducersOnsiteWholesale}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No producers with wholesale on-site earnings</h2>
+	</div>
+	{{else}}
+	<h4 class="mt-3">On-site wholesale earnings</h4>
+
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Producer</th>
+					<th scope="col" class="text-right">Subtot</th>
+					<th scope="col" class="text-right">Market fee</th>
+					<th scope="col" class="text-right">Invt fee</th>
+					<th scope="col" class="text-right pr-4 border-right">Ttl</th>
+					<th scope="col" class="text-right">Bal money</th>
+					<th scope="col" class="text-right pr-2">Bal EBT</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each ProducersOnsiteWholesale}}
+				<tr>
+					<td><a href="/producer-detail/{{IDProducer}}">
+						{{hTextIDProducer IDProducer}} {{NameBus}}
+					</a></td>
+					<td class="text-right">{{hTextCurrOrOrig SaleNom}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeCoop}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeInvt}}</td>
+					<td class="text-right pr-4 border-right">{{hTextCurrOrOrig Ttl}}</td>
+					<td class="text-right">{{hTextCurrOrOrig BalMoney}}</td>
+					<td class="text-right pr-2">
+						{{#if BalEBT}}{{hTextCurrOrOrig BalEBT}}{{else}}&mdash;{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/unless}}
+	
+	{{#if (hCkOr ProducersOnsiteRetail ProducersOnsiteWholesale)}}
+	<hr>
+	<div class="d-flex">
+		<a class="btn btn-secondary ml-auto"
+			href="/producer-earnings-onsite-export">
+			Export
+		</a>
+	</div>
+	{{/if}}
+</div>

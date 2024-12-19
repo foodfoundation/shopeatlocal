@@ -1,0 +1,183 @@
+{{!-- site-admin.hbs
+//    --------------
+//    Site Admin home view --}}
+
+<div class="container-md py-4">
+	<div class="row">
+		{{!-- Doesn't seem necessary to hide the border on small displays, or
+		//    possible, without responsive border class: --}}
+		<div class="col-sm pr-sm-4 border-right">
+			<h5>General</h5>
+
+			<div class="LinksPg">
+				<a href="/manage-locations" class="{{hClassDisabLackMgr}}">
+					Manage locations
+				</a>
+				<a href="/manage-categories" class="{{hClassDisabLackMgr}}">
+					Manage categories
+				</a>
+			</div>
+
+			<hr>
+
+			<h5>Security</h5>
+
+			<div class="LinksPg mb-2">
+				<a href="/unblock-ip-address">Unblock IP address</a>
+				<a href="/request-password-reset">Reset Member Password</a>
+			</div>
+
+			<div>
+				{{#if CtBlockIP}}
+
+				{{#if (hCkGreater CtBlockIP 1)}}
+				There are {{CtBlockIP}} blocked IPs.
+				{{else}}
+				There is one blocked IP.
+				{{/if}}
+
+				{{else}}
+				There are no blocked IPs.
+				{{/if}}
+			</div>
+
+			<hr>
+
+			<h5>Market management</h5>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>Member trial length</div>
+				<div>
+					<strong>{{CtMonthTrialMembNew}} month{{#if (hCkGreater CtMonthTrialMembNew 1)}}s{{/if}}{{#if (hCkEq CtMonthTrialMembNew 0)}}s{{/if}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Member fee</div>
+				<div>
+					<strong>${{FeeMembInit}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Member renewal fee</div>
+				<div>
+					<strong>${{FeeMembRenew}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Inventory fee</div>
+				<div>
+					<strong>${{FeeInvtIt}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Producer fee</div>
+				<div>
+					<strong>{{hTextFixedOrOrig FracFeeCoopProducer 2}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Shop fee</div>
+				<div>
+					<strong>{{hTextFixedOrOrig FracFeeCoopShop 2}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Transfer fee</div>
+				<div>
+					<strong>${{FeeTransfer}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Delivery fee base</div>
+				<div>
+					<strong>${{FeeDelivBase}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Delivery fee per mile</div>
+				<div>
+					<strong>${{FeeDelivMile}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Tax</div>
+				<div>
+					<strong>{{hTextFixedOrOrig FracTaxSale 2}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Wholesale shop fee for members</div>
+				<div>
+					<strong>{{hTextFixedOrOrig FracFeeCoopWholesaleMemb 2}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
+				<div>Wholesale shop fee for producers</div>
+				<div>
+					<strong>{{hTextFixedOrOrig FracFeeCoopWholesaleProducer 2}}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-end pt-4">
+				<a class="btn btn-primary" href="/edit-site-configuration">Edit</a>
+			</div>
+		</div>
+
+		<div class="col-sm pl-md-4">
+			<hr class="d-sm-none">
+
+			<h5>Help</h5>
+
+			<div class="LinksPg">
+				<a href="/cycle-events">Cycle events</a>
+				<a href="/registration-statuses">Registration statuses</a>
+				<a href="/staff-types">Staff types</a>
+				<a href="/member-fees">Member fees</a>
+				<a href="/member-balances">Member balances</a>
+				<a href="/scanner-use">Scanner use</a>
+				<a href="/scanner-setup">Scanner setup</a>
+			</div>
+
+			{{#if (hCkDev)}}
+			<hr>
+
+			<h5>Development</h5>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Database
+				</div>
+				<div>
+					<strong>{{NameDB}}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Session ID
+				</div>
+				<div>
+					<strong>{{IDSess}}</strong>
+				</div>
+			</div>
+			{{/if}}
+
+			<hr>
+
+			<h5>Site management</h5>
+
+			<p>Edit your market site parameters, such as name, logo and business information. After you are done with editing, please make sure to press the refresh button in this section for the changes to take action.</p>
+
+			<div class="d-flex flex-row justify-content-between">
+				<a class="btn btn-primary" target="_blank" href="{{sanityUrl}}/structure/coopDetails">Edit</a>
+			</div>
+
+			<form id="form-refresh" class="pb-4" action="/site-admin"
+				method="POST" novalidate onsubmit="Disab_Form()">
+
+				<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+				<button type="submit" class="btn btn-primary mt-3">Refresh</button>
+			</form>
+		</div>
+	</div>
+</div>

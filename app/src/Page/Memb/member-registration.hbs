@@ -1,0 +1,353 @@
+{{!-- member-registration.hbs
+//    -----------------------
+//    Member registration view --}}
+
+<div class="jumbotron py-5">
+	<div class="container">
+		{{{CoopParams.memberRegistrationText}}}
+	</div>
+</div>
+
+<div class="container">
+	<h2 class="mb-3">New member registration</h2>
+
+	<form id="form-main" class="pb-4" action="/member-registration" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			<div class="form-group col-md-4">
+				<label for="NameLogin">Username *</label>
+				<input id="NameLogin" name="NameLogin" value="{{NameLogin}}"
+					maxlength="50" required autocomplete="username"
+					class="form-control {{#if MsgFailNameLogin}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailNameLogin}}
+			</div>
+			<div class="form-group col-md-4">
+				<label for="Pass">Password *</label>
+				<input id="Pass" name="Pass" type="password" value="{{Pass}}"
+					minlength="12" maxlength="50" required
+					class="form-control {{#if MsgFailPass}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailPass}}
+				<p>
+					<small>
+						Be sure to choose a <a
+							href="https://www.howtogeek.com/195430/how-to-create-a-strong-password-and-remember-it/"
+							tabindex="-1">
+							strong password</a>!
+					</small>
+				</p>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="PassConfirm">Confirm password *</label>
+				<input id="PassConfirm" name="PassConfirm" type="password"
+					value="{{PassConfirm}}" minlength="8" maxlength="50" required
+					class="form-control {{#if MsgFailPassConfirm}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailPassConfirm}}
+			</div>
+		</div>
+
+		<h3 class="mb-3">Contact information</h3>
+
+		<div class="form-row">
+			<div class="form-group col-md-4">
+				<label class="float-right text-info d-md-none">
+					<small>Primary contact</small>
+				</label>
+
+				<label for="Name1First">First name *</label>
+				<input id="Name1First" name="Name1First" value="{{Name1First}}"
+					maxlength="50" required autocomplete="given-name"
+					class="form-control {{#if MsgFailName1First}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailName1First}}
+
+				<p class="text-info d-none d-md-block">
+					<small>Primary contact</small>
+				</p>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="Name1Last">Last name *</label>
+				<input id="Name1Last" name="Name1Last" value="{{Name1Last}}"
+					maxlength="50" required autocomplete="family-name"
+					class="form-control {{#if MsgFailName1Last}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailName1Last}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-4">
+				<label class="float-right text-info d-md-none">
+					<small>Alternative contact</small>
+				</label>
+
+				<label for="Name2First">First name</label>
+				<input id="Name2First" name="Name2First" value="{{Name2First}}"
+					maxlength="50" autocomplete="off"
+					class="form-control {{#if MsgFailName2First}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailName2First}}
+
+				<p class="text-info d-none d-md-block">
+					<small>Alternative contact</small>
+				</p>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="Name2Last">Last name</label>
+				<input id="Name2Last" name="Name2Last" value="{{Name2Last}}"
+					maxlength="50" autocomplete="off"
+					class="form-control {{#if MsgFailName2Last}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailName2Last}}
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="form-row">
+			<div class="form-group col-md-8">
+				<label for="NameBus">Business name</label>
+				<input id="NameBus" name="NameBus" value="{{NameBus}}" maxlength="80"
+					autocomplete="organization"
+					class="form-control {{#if MsgFailNameBus}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailNameBus}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-8">
+				<label for="Addr1">Street address 1 *</label>
+				<input id="Addr1" name="Addr1" value="{{Addr1}}" maxlength="80" required
+					autocomplete="address-line1"
+					class="form-control {{#if MsgFailAddr1}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailAddr1}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-8">
+				<label for="Addr2">Street address 2</label>
+				<input id="Addr2" name="Addr2" value="{{Addr2}}" maxlength="80"
+					autocomplete="address-line2"
+					class="form-control {{#if MsgFailAddr2}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailAddr2}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-3">
+				<label for="City">City *</label>
+				<input id="City" name="City" value="{{City}}" maxlength="50" required
+					autocomplete="address-level2"
+					class="form-control {{#if MsgFailCity}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailCity}}
+			</div>
+			<div class="form-group col-md-2">
+				<label for="St">State *</label>
+				<input id="St" name="St" value="{{St}}" maxlength="2"
+					pattern="[A-Za-z]{2}" required autocomplete="address-level1"
+					class="form-control {{#if MsgFailSt}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailSt}}
+			</div>
+			<div class="form-group col-md-3">
+				<label for="Zip">Zip *</label>
+				<input id="Zip" name="Zip" value="{{Zip}}" maxlength="10"
+					pattern="(\d{5}|\d{9}\d{5}[ \-]\d{4})" required
+					autocomplete="postal-code" inputmode="numeric"
+					class="form-control {{#if MsgFailZip}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailZip}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<label for="InstructDeliv">Special delivery instructions</label>
+				{{!-- Don't wrap between the two tags, doing so adds whitespace to the
+				//    input: --}}
+				<textarea name="InstructDeliv" maxlength="200"
+					class="form-control">{{InstructDeliv}}</textarea>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<div class="custom-control custom-checkbox">
+					<input id="CkAllowMail" name="CkAllowMail" type="checkbox"
+						{{hAttrCk CkAllowMail true}} class="custom-control-input">
+					<label for="CkAllowMail" class="custom-control-label">
+						Allow USPS mail at this address?
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="form-row align-items-end">
+			<div class="form-group col-md-4">
+				<label for="Phone1">Phone 1 (with area code) *</label>
+				<input id="Phone1" name="Phone1" type="tel"
+					value="{{hTextPhoneOrOrig Phone1}}" maxlength="30" required
+					autocomplete="tel" inputmode="tel"
+					class="form-control {{#if MsgFailPhone1}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailPhone1}}
+
+				<div class="custom-control custom-checkbox mt-2">
+					<input id="CkAllowPhone1MsgCart" name="CkAllowPhone1MsgCart"
+						type="checkbox" {{hAttrCk CkAllowPhone1MsgCart true}}
+						class="custom-control-input">
+					<label for="CkAllowPhone1MsgCart" class="custom-control-label">
+						Receive cart messages at phone 1?
+					</label>
+				</div>
+			</div>
+			<div class="form-group col-md-4 offset-md-2">
+				<label for="Phone2">Phone 2 (with area code)</label>
+				<input id="Phone2" name="Phone2" type="tel"
+					value="{{hTextPhoneOrOrig Phone2}}" maxlength="30" autocomplete="off"
+					inputmode="tel"
+					class="form-control {{#if MsgFailPhone2}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailPhone2}}
+
+				<div class="custom-control custom-checkbox mt-2">
+					<input id="CkAllowPhone2MsgCart" name="CkAllowPhone2MsgCart"
+						type="checkbox" {{hAttrCk CkAllowPhone2MsgCart true}}
+						class="custom-control-input">
+					<label for="CkAllowPhone2MsgCart" class="custom-control-label">
+						Receive cart messages at phone 2?
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="form-row align-items-end">
+			<div class="form-group col-md-5">
+				<label for="Email1">E-mail 1 *</label>
+				<input id="Email1" name="Email1" type="email" value="{{Email1}}"
+					maxlength="80" required autocomplete="email" inputmode="email"
+					class="form-control {{#if MsgFailEmail1}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailEmail1}}
+
+				<div class="custom-control custom-checkbox mt-2">
+					<input id="CkAllowEmail1RemindShop" name="CkAllowEmail1RemindShop"
+						type="checkbox" {{hAttrCk CkAllowEmail1RemindShop true}}
+						class="custom-control-input">
+					<label for="CkAllowEmail1RemindShop" class="custom-control-label">
+						Receive shopping reminders at e-mail 1?
+					</label>
+				</div>
+				<div class="custom-control custom-checkbox mt-2">
+					<input id="CkAllowEmail1News" name="CkAllowEmail1News" type="checkbox"
+						{{hAttrCk CkAllowEmail1News true}} class="custom-control-input">
+					<label for="CkAllowEmail1News" class="custom-control-label">
+						Receive {{CoopParams.CoopNameShort}} newsletters at e-mail 1?
+					</label>
+				</div>
+			</div>
+			<div class="form-group col-md-5 offset-md-1">
+				<label for="Email2">E-mail 2</label>
+				<input id="Email2" name="Email2" type="email" value="{{Email2}}"
+					maxlength="80" autocomplete="off" inputmode="email"
+					class="form-control {{#if MsgFailEmail2}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailEmail2}}
+
+				<div class="custom-control custom-checkbox mt-2">
+					<input id="CkAllowEmail2RemindShop" name="CkAllowEmail2RemindShop"
+						type="checkbox" {{hAttrCk CkAllowEmail2RemindShop true}}
+						class="custom-control-input">
+					<label for="CkAllowEmail2RemindShop" class="custom-control-label">
+						Receive shopping reminders at e-mail 2?
+					</label>
+				</div>
+				<div class="custom-control custom-checkbox mt-2">
+					<input id="CkAllowEmail2News" name="CkAllowEmail2News" type="checkbox"
+						{{hAttrCk CkAllowEmail2News true}} class="custom-control-input">
+					<label for="CkAllowEmail2News" class="custom-control-label">
+						Receive {{CoopParams.CoopNameShort}} newsletters at e-mail 2?
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<h3 class="mb-3">Additional information</h3>
+
+		<div class="form-row align-items-end">
+			<div class="form-group col-md-4">
+				<label for="HowHear">How did you hear about {{CoopParams.CoopNameShort}}?</label>
+				<select id="HowHear" name="HowHear" value="{{HowHear}}"
+					class="custom-select">
+					{{hOptsHowHear HowHear}}
+				</select>
+			</div>
+			<div class="form-group col-md-8">
+				<label for="DtlHowHear">Please tell us more* - referrals will receive a thank you coupon</label>
+				<input id="DtlHowHear" name="DtlHowHear" required value="{{DtlHowHear}}"
+					maxlength="200" autocomplete="off" class="form-control {{#if MsgFailDtlHowHear}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailDtlHowHear}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<div class="custom-control custom-checkbox">
+					<input id="CkApplyEBT" name="CkApplyEBT" type="checkbox"
+						{{hAttrCk CkApplyEBT false}} class="custom-control-input">
+					<label for="CkApplyEBT" class="custom-control-label">
+						I would like to make {{CoopParams.CoopNameShort}} purchases with
+						<!-- TODO: Akos extract this? -->
+						<a href="https://dhs.iowa.gov/food-assistance/eligibility"
+							tabindex="-1">EBT</a>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<div class="custom-control custom-checkbox">
+					<input id="CkApplyVolun" name="CkApplyVolun" type="checkbox"
+						{{hAttrCk CkApplyVolun false}} class="custom-control-input">
+					<label for="CkApplyVolun" class="custom-control-label">
+						I would like to volunteer at {{CoopParams.CoopNameShort}}
+					</label>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-row">
+			<div class="form-group col">
+				<div class="custom-control custom-checkbox">
+					<input id="CkAllowPublicName" name="CkAllowPublicName" type="checkbox" 
+						 {{hAttrCk CkAllowPublicName true}} class="custom-control-input">
+					<label for="CkAllowPublicName" class="custom-control-label">
+						In order to encourage a food community, allow producers to see your Name and Email when you order products from them.
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<div class="custom-control custom-checkbox">
+					<input id="CkReadTOS" name="CkReadTOS" type="checkbox"
+						{{hAttrCk CkReadTOS false}} required
+						class="custom-control-input {{#if MsgFailCkReadTOS}}is-invalid{{/if}}">
+					<label for="CkReadTOS" class="custom-control-label">
+						I have read and understood the {{CoopParams.CoopName}}
+						<a href="/terms-and-conditions"
+							tabindex="-1">
+							Terms of Service
+						</a> *
+					</label>
+					{{hDivMsgFail MsgFailCkReadTOS}}
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,49 @@
+{{!-- pLinksAttrProduct.hbs
+//    ---------------------
+//    Product attribute links --}}
+
+<div class="LinksAttrProduct">
+	{{#if CkAttrVegan}}{{hLinkAttrProduct "Vegan"}}{{/if}}
+	{{#unless CkAttrVegan}}
+	{{#if CkAttrVeget}}{{hLinkAttrProduct "Veget"}}{{/if}}
+	{{/unless}}
+	{{#if CkAttrGlutenFreeCert}}{{hLinkAttrProduct "GlutenFreeCert"}}{{/if}}
+	{{#if CkAttrFairTradeCert}}{{hLinkAttrProduct "FairTradeCert"}}{{/if}}
+	{{#if CkAttrOrganCert}}{{hLinkAttrProduct "OrganCert"}}{{/if}}
+	{{#if CkAttrNaturGrownCert}}{{hLinkAttrProduct "NaturGrownCert"}}{{/if}}
+
+
+	{{#if CkAttrAnimWelfareCert}}{{hLinkAttrProduct "AnimWelfareCert"}}{{/if}}
+	{{#if CkAttrFreeRgSelf}}{{hLinkAttrProduct "FreeRgSelf"}}{{/if}}
+
+	{{#if CkAttrGrassFedSelf}}{{hLinkAttrProduct "GrassFedSelf"}}{{/if}}
+	{{#if CkAttrRealOrganic}}{{hLinkAttrProduct "RealOrganic"}}{{/if}}
+	{{#if CkAttrRegenOrganCert}}{{hLinkAttrProduct "RegenOrganCert"}}{{/if}}
+	{{#if CkAttrCertBiodynamic}}{{hLinkAttrProduct "CertBiodynamic"}}{{/if}}
+	{{#if CkAttrCert100GrassFed}}{{hLinkAttrProduct "Cert100GrassFed"}}{{/if}}
+	{{#if CkAttrVeganCert}}{{hLinkAttrProduct "VeganCert"}}{{/if}}
+	{{#if CkAttrLocalSelf}}{{hLinkAttrProduct "LocalSelf"}}{{/if}}
+	{{#if CkAttrPasturedSelf}}{{hLinkAttrProduct "PasturedSelf"}}{{/if}}
+	{{#if CkAttrGlutenFree}}{{hLinkAttrProduct "GlutenFree"}}{{/if}}
+</div>
+
+<!--
+
+			CkAttrOrganCert: { Store: "Product" },
+		CkAttrNaturGrownCert: { Store: "Product" },
+		CkAttrRealOrganic: { Store: "Product" },
+		CkAttrRegenOrganCert: { Store: "Product" },
+		CkAttrCertBiodynamic: { Store: "Product" },
+		CkAttrAnimWelfareCert: { Store: "Product" },
+		CkAttrCert100GrassFed: { Store: "Product" },
+		CkAttrGlutenFreeCert: { Store: "Product" },
+		CkAttrVeganCert: { Store: "Product" },
+		CkAttrFairTradeCert: { Store: "Product" },
+		CkAttrLocalSelf: { Store: "Product" },
+		CkAttrFreeRgSelf: { Store: "Product" },
+		CkAttrPasturedSelf: { Store: "Product" },
+		CkAttrGrassFedSelf: { Store: "Product" },
+		CkAttrVegan: { Store: "Product" },
+		CkAttrVeget: { Store: "Product" },
+		CkAttrGlutenFree: { Store: "Product" },
+ -->

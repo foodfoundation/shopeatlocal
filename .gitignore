@@ -1,0 +1,17 @@
+# This folder is for developer use, to store alternative configuration files, or
+# other files containing secrets. It is not used by the app. Do not delete this
+# entry, or another developer could accidentally commit sensitive files:
+Secret/
+node_modules/
+.vscode/
+.idea
+
+StoreImg*/
+StoreDoc*/
+Cfg.js
+desktop.ini
+debug.log
+.DS_Store
+producers-report/dist
+.turbo
+

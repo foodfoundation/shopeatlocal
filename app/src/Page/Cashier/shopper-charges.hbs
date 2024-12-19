@@ -1,0 +1,193 @@
+{{!-- shopper-charges.hbs
+//    -------------------
+//    Shopper Charges view --}}
+
+<div class="container-xl py-4">
+	<h2>Shopper charges</h2>
+
+	<div class="d-print-none row">
+		<div class="col-md">
+			This page displays web and on-site shopper charges for shoppers in the
+			specified cycle. Current balances are listed; these may not match the
+			balances at the end of the displayed cycle.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			{{>Misc/pInstructPrint}}
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="d-md-flex flex-row mb-3">
+		{{#with Cyc}}
+		<div class="d-md-flex flex-row mb-1 mb-md-0">
+			<div class="d-none d-md-block mr-3 mt-1">
+				<img src="{{hPrefixStatic 'cyc.svg'}}" alt="" width="40" height="40">
+			</div>
+			<div>
+				<strong>Cycle {{hTextIDCyc IDCyc}}</strong><br>
+				Ending {{hTextWhen WhenEndCyc "Long"}}
+			</div>
+		</div>
+		{{/with}}
+	</div>
+
+	{{#unless MembsWeb}}
+	<div class="jumbotron mt-4">
+		<h2 class="display-4 font-size-200">No members with web charges</h2>
+	</div>
+	{{else}}
+	<h4 class="mt-4">Web charges</h4>
+
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Member</th>
+					<th scope="col" class="text-right">Subtot</th>
+					<th scope="col" class="text-right">Market fee</th>
+					<th scope="col" class="text-right">Tax</th>
+					<th scope="col" class="text-right">Trans/deliv</th>
+					<th scope="col" class="text-right">Ttl money</th>
+					<th scope="col" class="text-right pr-4 border-right">Ttl EBT</th>
+					<th scope="col" class="text-right">Bal money</th>
+					<th scope="col" class="text-right pr-2">Bal EBT</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each MembsWeb}}
+				<tr>
+					<td><a href="/member-detail/{{IDMemb}}">
+						{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+					</a></td>
+					<td class="text-right">{{hTextCurrOrOrig SaleNom}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeCoopShop}}</td>
+					<td class="text-right">{{hTextCurrOrOrig TaxSale}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeDelivTransfer}}</td>
+					<td class="text-right">{{hTextCurrOrOrig TtlMoney}}</td>
+					<td class="text-right pr-4 border-right">
+						{{#if TtlEBT}}{{hTextCurrOrOrig TtlEBT}}{{else}}&mdash;{{/if}}
+					</td>
+					<td class="text-right">{{hTextCurrOrOrig BalMoney}}</td>
+					<td class="text-right pr-2">
+						{{#if BalEBT}}{{hTextCurrOrOrig BalEBT}}{{else}}&mdash;{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="d-flex">
+		<a class="btn btn-secondary ml-auto"
+			href="/shopper-charges-web-export">
+			Export
+		</a>
+	</div>
+
+	{{/unless}}
+
+	<hr>
+
+	{{#unless MembsOnsiteRetail}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No members with on-site retail charges</h2>
+	</div>
+	{{else}}
+	<h4 class="mt-3">On-site retail charges</h4>
+
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Member</th>
+					<th scope="col" class="text-right">Subtot</th>
+					<th scope="col" class="text-right">Market fee</th>
+					<th scope="col" class="text-right">Tax</th>
+					<th scope="col" class="text-right">Ttl money</th>
+					<th scope="col" class="text-right pr-4 border-right">Ttl EBT</th>
+					<th scope="col" class="text-right">Bal money</th>
+					<th scope="col" class="text-right pr-2">Bal EBT</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each MembsOnsiteRetail}}
+				<tr>
+					<td><a href="/member-detail/{{IDMemb}}">
+						{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+					</a></td>
+					<td class="text-right">{{hTextCurrOrOrig SaleNom}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeCoopShop}}</td>
+					<td class="text-right">{{hTextCurrOrOrig TaxSale}}</td>
+					<td class="text-right">{{hTextCurrOrOrig TtlMoney}}</td>
+					<td class="text-right pr-4 border-right">
+						{{#if TtlEBT}}{{hTextCurrOrOrig TtlEBT}}{{else}}&mdash;{{/if}}
+					</td>
+					<td class="text-right">{{hTextCurrOrOrig BalMoney}}</td>
+					<td class="text-right pr-2">
+						{{#if BalEBT}}{{hTextCurrOrOrig BalEBT}}{{else}}&mdash;{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/unless}}
+
+	<hr>
+
+	{{#unless MembsOnsiteWholesale}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No members with on-site wholesale charges</h2>
+	</div>
+	{{else}}
+	<h4 class="mt-3">On-site wholesale charges</h4>
+
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Member</th>
+					<th scope="col" class="text-right">Subtot</th>
+					<th scope="col" class="text-right">Market fee</th>
+					<th scope="col" class="text-right">Tax</th>
+					<th scope="col" class="text-right">Ttl money</th>
+					<th scope="col" class="text-right pr-4 border-right">Ttl EBT</th>
+					<th scope="col" class="text-right">Bal money</th>
+					<th scope="col" class="text-right pr-2">Bal EBT</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each MembsOnsiteWholesale}}
+				<tr>
+					<td><a href="/member-detail/{{IDMemb}}">
+						{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+					</a></td>
+					<td class="text-right">{{hTextCurrOrOrig SaleNom}}</td>
+					<td class="text-right">{{hTextCurrOrOrig FeeCoopShop}}</td>
+					<td class="text-right">{{hTextCurrOrOrig TaxSale}}</td>
+					<td class="text-right">{{hTextCurrOrOrig TtlMoney}}</td>
+					<td class="text-right pr-4 border-right">
+						{{#if TtlEBT}}{{hTextCurrOrOrig TtlEBT}}{{else}}&mdash;{{/if}}
+					</td>
+					<td class="text-right">{{hTextCurrOrOrig BalMoney}}</td>
+					<td class="text-right pr-2">
+						{{#if BalEBT}}{{hTextCurrOrOrig BalEBT}}{{else}}&mdash;{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/unless}}
+	
+	{{#if (hCkOr MembsOnsiteRetail MembsOnsiteWholesale)}}
+	<hr>
+	<div class="d-flex">
+		<a class="btn btn-secondary ml-auto"
+			href="/shopper-charges-onsite-export">
+			Export
+		</a>
+	</div>
+	{{/if}}
+</div>

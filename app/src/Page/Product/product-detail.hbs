@@ -1,0 +1,133 @@
+{{!-- product-detail.hbs
+//    ------------------
+//    Product detail view --}}
+
+{{#with Product}}
+<div class="container-md pt-4 pb-2">
+	<div class="d-md-flex align-items-center text-center">
+		<div class="d-none d-md-block mr-3">
+			<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+		</div>
+
+		<div class="text-md-left">
+			Product {{hTextIDProduct IDProduct}}<br>
+			<a href="/product/{{IDProduct}}">{{NameProduct}}</a>
+		</div>
+
+		<div class="text-md-right ml-auto">
+			{{>Misc/pLinkIDProducer}}<br>
+			<a href="/about-producer/{{IDProducer}}">{{NameBus}}</a>
+		</div>
+
+		<div class="d-none d-md-block ml-3">
+			<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+		</div>
+	</div>
+
+	<div class="py-3">
+		<div class="row">
+			{{#if NameImgProduct}}
+			<div class="col-md-4">
+				<div class="form-group mb-2">
+					<img src="{{hPrefixImageWithStorage NameImgProduct}}" alt="Product image"
+						class="w-100 border rounded p-0 mb-3 mb-md-0">
+				</div>
+			</div>
+			{{/if}}
+
+			<div class="col-md">
+				<hr class="NoDlg d-none d-md-block mt-0">
+
+				<div class="d-flex justify-content-between">
+					<div>
+						Category
+					</div>
+					<div>
+						<a href="/product-search?IDCat={{IDCat}}" class="font-weight-bold">
+							{{NameCat}}
+						</a>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-between">
+					<div>
+						Sub-category
+					</div>
+					<div>
+						<a href="/product-search?IDSubcat={{IDSubcat}}"
+							class="font-weight-bold">
+							{{NameSubcat}}
+						</a>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-between">
+					<div>
+						Storage
+					</div>
+					<div>
+						<strong>{{hTextCdStor CdStor}}</strong>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-between mt-3 mb-2">
+					<div>
+						Attributes
+					</div>
+					<div class="w-75 text-right">
+						{{#if (hCkAttrProduct this)}}
+						{{>Misc/pLinksAttrProduct}}
+						{{else}}
+						<div class="font-weight-bold mb-2">
+							None
+						</div>
+						{{/if}}
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-between">
+					<div>
+						Created
+					</div>
+					<div>
+						<strong>{{hTextDateTimeLong WhenCreate}}</strong>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-end my-3">
+					<a href="/edit-product/{{IDProduct}}"
+						class="btn btn-sm btn-primary">Edit product</a>
+				</div>
+
+				<hr>
+
+				<div class="Flow-md-2 font-italic">
+					{{#if Descrip}}
+					{{hHTMLLinesP Descrip}}
+					{{else}}
+					(no description)
+					{{/if}}
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md mt-3">
+				{{#if Vtys}}
+				{{>Product/pTblVtyProducer Vtys}}
+				{{else}}
+				<div class="jumbotron">
+					<h2 class="display-4 font-size-200">No varieties</h2>
+				</div>
+				{{/if}}
+
+				<div class="d-flex justify-content-end">
+					<a href="/add-variety/{{IDProduct}}" class="btn btn-sm btn-primary">
+						Add variety
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{/with}}

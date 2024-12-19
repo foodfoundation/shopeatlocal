@@ -1,0 +1,91 @@
+{{!-- pInputsCyc.hbs
+//    --------------
+//    Cycle input elements --}}
+
+{{!-- Cycle start --}}
+
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="WhenStartCyc{{IDCyc}}">Cycle start</label>
+		<input name="WhenStartCyc{{IDCyc}}" id="WhenStartCyc{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" {{#if CkPastStartCyc}}disabled{{/if}}
+			value="{{hTextDateTimeInput WhenStartCyc}}"
+			class="WhenStartCyc form-control {{#if MsgFailWhenStartCyc}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenStartCyc}}
+	</div>
+</div>
+
+{{!-- Shopping --}}
+
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="WhenStartShop{{IDCyc}}">Shopping start</label>
+		<input name="WhenStartShop{{IDCyc}}" id="WhenStartShop{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" {{#if CkPastStartShop}}disabled{{/if}}
+			value="{{hTextDateTimeInput WhenStartShop}}"
+			class="form-control {{#if MsgFailWhenStartShop}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenStartShop}}
+	</div>
+	<div class="form-group col-md-6">
+		<label for="WhenEndShop{{IDCyc}}">Shopping end</label>
+		<input name="WhenEndShop{{IDCyc}}" id="WhenEndShop{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" {{#if CkPastEndShop}}disabled{{/if}}
+			value="{{hTextDateTimeInput WhenEndShop}}"
+			class="form-control {{#if MsgFailWhenEndShop}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenEndShop}}
+	</div>
+</div>
+
+{{!-- Delivery --}}
+
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="WhenStartDeliv{{IDCyc}}">Delivery start</label>
+		<input name="WhenStartDeliv{{IDCyc}}" id="WhenStartDeliv{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" {{#if CkPastStartDeliv}}disabled{{/if}}
+			value="{{hTextDateTimeInput WhenStartDeliv}}"
+			class="form-control {{#if MsgFailWhenStartDeliv}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenStartDeliv}}
+	</div>
+	<div class="form-group col-md-6">
+		<label for="WhenEndDeliv{{IDCyc}}">Delivery end</label>
+		<input name="WhenEndDeliv{{IDCyc}}" id="WhenEndDeliv{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" {{#if CkPastEndDeliv}}disabled{{/if}}
+			value="{{hTextDateTimeInput WhenEndDeliv}}"
+			class="form-control {{#if MsgFailWhenEndDeliv}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenEndDeliv}}
+	</div>
+</div>
+
+{{!-- Pickup --}}
+
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="WhenStartPickup{{IDCyc}}">Pickup start</label>
+		<input name="WhenStartPickup{{IDCyc}}" id="WhenStartPickup{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" {{#if CkPastStartPickup}}disabled{{/if}}
+			value="{{hTextDateTimeInput WhenStartPickup}}"
+			class="form-control {{#if MsgFailWhenStartPickup}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenStartPickup}}
+	</div>
+	<div class="form-group col-md-6">
+		<label for="WhenEndPickup{{IDCyc}}">Pickup end</label>
+		<input name="WhenEndPickup{{IDCyc}}" id="WhenEndPickup{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" {{#if CkPastEndPickup}}disabled{{/if}}
+			value="{{hTextDateTimeInput WhenEndPickup}}"
+			class="form-control {{#if MsgFailWhenEndPickup}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenEndPickup}}
+	</div>
+</div>
+
+{{!-- Cycle end --}}
+
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="WhenEndCyc{{IDCyc}}">Cycle end</label>
+		<input name="WhenEndCyc{{IDCyc}}" id="WhenEndCyc{{IDCyc}}" type="datetime-local"
+			placeholder="yyyy-mm-ddTHH:mm" value="{{hTextDateTimeInput WhenEndCyc}}"
+			class="WhenEndCyc form-control {{#if MsgFailWhenEndCyc}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailWhenEndCyc}}
+	</div>
+</div>

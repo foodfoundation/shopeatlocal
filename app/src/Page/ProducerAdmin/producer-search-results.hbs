@@ -1,0 +1,108 @@
+{{!-- producer-search-results.hbs
+//    ---------------------------
+//    Producer Search Results view --}}
+
+<div class="container-md pt-4 pb-2">
+	<h2>Producer search results</h2>
+
+	<div class="d-sm-flex flex-row">
+		<div class="lead">
+			{{#each SummsParam}}
+			{{Lbl}}{{#if Val}}
+			<strong>{{Val}}</strong>{{/if}}{{#unless @last}}, {{/unless}}
+			{{else}}
+			All producers
+			{{/each}}
+		</div>
+		<div class="lead ml-auto">
+			{{TextRg}}
+		</div>
+	</div>
+
+	<hr>
+
+	{{#unless Producers}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No matches</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover mb-0">
+			<thead>
+				<tr>
+					<th scope="col">Producer ID</th>
+					<th scope="col">Code</th>
+					<th scope="col">Business</th>
+					<th scope="col">Member name 1</th>
+					<th scope="col">Member name 2</th>
+					<th scope="col" class="text-right">Balance</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each Producers}}
+				<tr style="cursor: pointer" data-toggle="modal"
+					data-target="#DlgDtlProducer{{IDProducer}}">
+
+					<td>{{hTextIDProducer IDProducer}}</td>
+					<td>{{CdProducer}}</td>
+					<td>{{NameBus}}</td>
+					<td>{{Name1First}} {{Name1Last}}</td>
+					<td>{{Name2First}} {{Name2Last}}</td>
+					<td class="text-right">{{hTextCurrOrOrig (hSum BalMoney BalEBT)}}</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+
+		<hr>
+
+		<div class="d-sm-flex justify-content-between">
+			{{#if Producers}}
+			<div>
+				<a class="btn btn-secondary mb-2" href="{{PathExport}}">
+					Export
+				</a>
+			</div>
+			{{/if}}
+
+			{{#if CkPaging}}
+			<div>
+				{{{hBtnPageSearch PathPagePrev "Previous"}}}
+				{{{hBtnPageSearch PathPageNext "Next"}}}
+			</div>
+			{{/if}}
+		</div>
+	</div>
+	{{/unless}}
+</div>
+
+{{!-- -----------------------
+//    Producer detail dialogs
+//    ----------------------- --}}
+
+{{#each Producers}}
+<div id="DlgDtlProducer{{IDProducer}}" class="modal" tabindex="-1"
+	role="dialog">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			{{!-- 'modal-header' appears to be 'flex', and there isn't room on narrow
+			//    displays for the impersonation button to go in the upper right
+			//    corner: --}}
+			<div class="modal-header d-flex flex-row align-items-center py-2">
+				{{>ProducerAdmin/pHeadDtlProducer}}
+			</div>
+
+			<div class="modal-body">
+				{{>ProducerAdmin/pBodyDtlProducer}}
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary ml-auto"
+					data-toggle="modal" data-target="#DlgDtlProducer{{IDProducer}}">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+{{/each}}

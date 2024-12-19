@@ -1,0 +1,61 @@
+{{!-- scanner-use.hbs
+// ------------------
+// Scanner Use view --}}
+
+<style>
+	main li {
+		margin-bottom: 0.5em;
+	}
+
+	main li:last-child {
+		margin-bottom: 0;
+	}
+</style>
+
+<div class="w-lg-50 container-md py-4">
+	<h3 class="mb-3">Scanner use</h3>
+
+	<p>
+		This app uses a 2D scanner (the <strong>Inateck BCST-51</strong>) to read
+		the QR codes embedded in {{CoopParams.CoopNameShort}} item labels.
+	</p>
+	<p>
+		To use the scanner:
+	</p>
+
+	<ol>
+		<li>
+			Connect the scanner's USB cable to your computer. It is expected that you
+			will use a laptop or desktop PC when scanning items. If you decide to use
+			a mobile device, you will need a <strong>USB On-The-Go</strong> ('USB
+			OTG') <strong>adapter</strong> to connect the scanner. Some devices may
+			not work properly even with this adapter.
+		</li>
+
+		<li>
+			The scanner decodes the QR data and sends it to your computer as a series
+			of keypresses, just as if you had typed them. For this reason, your
+			browser <em>must remain focused</em> while you scan the item.
+		</li>
+
+		<li>
+			Because the scanner acts as a keyboard, it is configured to prefix each
+			scan with a caret character ('<code>^</code>') to help this app distinguish
+			scanner data from characters you have actually typed. If you type a caret
+			while using one of the scanner pages, the app may become confused, and
+			ignore your keyboard input temporarily. If this happens, tap any number
+			key until the app responds.
+		</li>
+
+		<li>
+			You can test the scanner's output by opening a text editor or word
+			processor document and then scanning an {{CoopParams.CoopNameShort}} item. Text similar to
+			<code>^I001509801100000000</code> should appear in your document.
+		</li>
+
+		<li>
+			Newly-purchased scanners must be configured before use. See the <a
+				href="/scanner-setup">scanner setup</a> page for help with this.
+		</li>
+	</ol>
+</div>

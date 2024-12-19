@@ -1,0 +1,25 @@
+{{!-- 401.hbs
+//    -------
+//    Custom '401 Unauthorized' view --}}
+
+<div class="jumbotron">
+	<div class="container">
+		<div class="d-md-flex flex-row">
+			<h1 class="display-4 CdResp mb-0 pr-3">
+				401
+			</h1>
+			<div class="BordDk border-md-left pl-md-3">
+				<h1 class="display-4">
+					Unauthorized
+				</h1>
+				<div class="lead">
+					{{#if Msg}}
+					{{Msg}}
+					{{else}}
+					You must login to view that page.
+					{{/if}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

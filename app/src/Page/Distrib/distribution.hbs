@@ -1,0 +1,132 @@
+{{!-- distribution.hbs
+//    ----------------
+//    Distribution home view --}}
+
+<div class="container-md py-4">
+	<div class="row">
+		{{!-- Doesn't seem necessary to hide the border on small displays, or
+		//    possible, without responsive border class: --}}
+		<div class="col-sm pr-sm-4 border-right mb-0">
+
+			<h5>Cycle management</h5>
+
+			<div class="d-md-flex flex-row justify-content-between mt-3">
+				<div>
+					Current cycle
+				</div>
+				<div class="text-md-right font-weight-bold">
+					{{hTextIDCyc CycCurr.IDCyc}}
+				</div>
+			</div>
+
+			<div class="LinksPg mb-2">
+				<a href="/cycle-summary">Cycle summary</a>
+				<a href="/cart-summary">Cart summary</a>
+			</div>
+
+			<div class="d-md-flex flex-row justify-content-between">
+				<div>
+					Shopping window
+				</div>
+				<div class="text-md-right font-weight-bold">
+					{{#if FlagBeforeShop}}{{hTextWhen WhenStartShopNext "FullMed" "HourMin"}}{{/if}}
+					{{#if FlagShop}}Open{{/if}}
+					{{#if FlagAfterShop}}Closed{{/if}}
+				</div>
+			</div>
+			<div class="d-md-flex flex-row justify-content-between mt-2 mt-md-0">
+				<div>
+					Delivery window
+				</div>
+				<div class="text-md-right font-weight-bold">
+					{{#if FlagBeforeDeliv}}{{hTextWhen WhenStartDelivNext "FullMed" "HourMin"}}{{/if}}
+					{{#if FlagDeliv}}Open{{/if}}
+					{{#if FlagAfterDeliv}}Closed{{/if}}
+				</div>
+			</div>
+			<div class="d-md-flex flex-row justify-content-between mt-2 mt-md-0">
+				<div>
+					Pickup window
+				</div>
+				<div class="text-md-right font-weight-bold">
+					{{#if FlagBeforePickup}}{{hTextWhen WhenStartPickupNext "FullMed" "HourMin"}}{{/if}}
+					{{#if FlagPickup}}Open{{/if}}
+					{{#if FlagAfterPickup}}Closed{{/if}}
+				</div>
+			</div>
+
+			<div class="LinksPg">
+				<a href="/edit-cycle-times" class="{{hClassDisabLackSuper}}">
+					Edit cycle times
+				</a>
+				<a href="/cycle-history">Cycle history</a>
+			</div>
+
+			<hr>
+
+			<h5>Producer delivery</h5>
+
+			<div class="LinksPg">
+				<a href="/shelving-prep">Shelving prep</a>
+				<a href="/delivery-progress">Delivery progress</a>
+			</div>
+
+			{{#if LocsPickup}}
+			<h6>Location fulfillment</h6>
+
+			<div class="LinksPg">
+				{{#each LocsPickup}}
+				<a href="/location-fulfillment/{{CdLoc}}">{{NameLoc}}</a>
+				{{/each}}
+			</div>
+			{{/if}}
+		</div>
+
+		<div class="col-sm pl-md-4">
+			<hr class="d-sm-none mt-0">
+
+			<h5>Shopper pickup</h5>
+
+			<div class="LinksPg">
+				<a href="/shopper-summary">Shopper summary</a>
+			</div>
+
+			{{#if LocsPickupPend}}
+			<h6>Pickup progress pending</h6>
+
+			<div class="LinksPg">
+				{{#each LocsPickupPend}}
+				<a href="/pickup-progress/{{CdLoc}}">{{NameLoc}}</a>
+				{{/each}}
+			</div>
+			{{/if}}
+
+			{{#if LocsPickupDone}}
+			<h6>Pickup progress complete</h6>
+
+			<div class="LinksPg mb-2">
+				{{#each LocsPickupDone}}
+				<a href="/pickup-progress/{{CdLoc}}">{{NameLoc}}</a>
+				{{/each}}
+			</div>
+			{{/if}}
+
+			<div class="text-muted font-size-90">
+				Delivery distances should be set for
+				<a href="/member-search-results?CkWithItsCart=true&CkDelivHomeNoDist=true">
+				home-delivery shoppers</a> before they are checked-out. No mileage fees
+				will be assessed to shoppers with unset distances.
+			</div>
+
+			<hr>
+
+			<h5>Transfer loading</h5>
+
+			<div class="LinksPg mb-0">
+				{{#each LocsSatel}}
+				<a href="/transfer-loading/{{CdLoc}}">{{NameLoc}}</a>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+</div>

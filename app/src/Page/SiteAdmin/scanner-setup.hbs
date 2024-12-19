@@ -1,0 +1,122 @@
+{{!-- scanner-setup.hbs
+// -----------------
+// Scanner Setup view --}}
+
+<style>
+	main li {
+		margin-bottom: 0.5em;
+	}
+
+	main li:last-child {
+		margin-bottom: 0;
+	}
+</style>
+
+<div class="w-lg-50 container-md py-4">
+	<h3 class="mb-3">Scanner setup</h3>
+
+	<p>
+		This app uses a 2D scanner to read {{CoopParams.CoopNameShort}} item labels. The scanner must be
+		specially configured before use.
+	</p>
+
+	<h5>Inateck BCST-51 setup</h5>
+
+	<p>
+		The BCST-51 is configured by scanning QR codes in several Inateck manuals:
+	</p>
+
+	<ul>
+		<li><a href="{{hPrefixStatic 'Inateck_BCST-51_User_Guide.pdf'}}">
+			Inateck BCST-51 User Guide
+		</a></li>
+		<li><a href="{{hPrefixStatic 'Inateck_BCST-51_Prefix_and_Suffix_Appendix_II.docx'}}">
+			Inateck BCST-51 Prefix and Suffix Appendix II
+		</a></li>
+		<li><a href="{{hPrefixStatic 'Inateck_BCST-52_User_Guide.pdf'}}">
+			Inateck BCST-52 User Guide
+		</a></li>
+	</ul>
+
+	<p>
+		The <em>Inateck BCST-51 User Guide</em> can also be obtained in PDF form
+		from the Inateck site, and a small printed version accompanies the scanner
+		itself. The other two were obtained from Inateck customer support. QR codes
+		in the PDF can be scanned directly from your display, so there is no need to
+		print the PDFs. When scanning the codes, it is often necessary to mask
+		nearby codes with a piece of paper.
+	</p>
+
+	<p>
+		To configure the scanner, start with the <em>Inateck BCST-51 User
+			Guide</em>:
+	</p>
+
+	<ol>
+		<li>
+			If the scanner's configuration is unknown, scan the <strong>Restore
+				Factory</strong> code.
+		</li>
+		<li>
+			Scan <strong>Disable Suffix</strong> to prevent carriage returns from
+			submitting the site's web forms that accept scanner input.
+		</li>
+	</ol>
+
+	<p>
+		You can also set the scanner 'beep' volume, as desired.
+	</p>
+	<p>
+		Next you must use the <em>Inateck BCST-52 User Guide.pdf</em> and
+		<em>Inateck BCST-51 Prefix and Suffix Appendix II.docx</em> documents to add
+		a caret character ('<code>^</code>') to the start of every scan:
+	</p>
+
+	<ol start="3">
+		<li>
+			Scan <strong>Prefix Setting</strong> in <em>Appendix II</em>.
+		</li>
+		<li>
+			Go to <em>Appendix 1</em> in <em>BCST-52 User Guide</em> and scan codes
+			<strong>1</strong>, <strong>0</strong>, <strong>9</strong>, and
+			<strong>4</strong>, in order.
+		</li>
+		<li>
+			Return to <em>Appendix II</em> and scan <strong>Prefix/Suffix Settings
+				Complete</strong>.
+		</li>
+		<li>
+			Then scan <strong>Output Prefix</strong> in <em>Appendix II</em>.
+		</li>
+	</ol>
+
+	<p>
+		The prefix sequence <code>1094</code> is specified in the table at the end
+		of <em>Appendix II</em>.
+	</p>
+
+	<p>
+		Finally, test the scanner to make sure the prefix is working:
+	</p>
+
+	<ol start="7">
+		<li>
+			Open a text editor or word processor document, and leave it focused.
+		</li>
+		<li>
+			Scan an {{CoopParams.CoopNameShort}} item label. Text similar to <code>^I001509801100000000</code>
+			should appear in your document. The number digits will vary, but the caret
+			should appear at the beginning. If it does not, return to step three and
+			try again.
+		</li>
+	</ol>
+
+	<p>
+		Other 2D scanners can be used with the site (assuming they can be set to prefix
+		their output with a caret) but their configuration details will differ.
+	</p>
+	<p>
+		For help using the scanner, see the <a href="/scanner-use">scanner use</a>
+		page.
+	</p>
+</div>

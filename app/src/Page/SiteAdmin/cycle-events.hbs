@@ -1,0 +1,209 @@
+{{!-- cycle-events.hbs
+// -------------------
+// Cycle Events view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h3 class="mb-3">Cycle events</h3>
+
+	<p>
+		The cycle is divided into a number of <em>phases</em>, which determine
+		whether certain actions (such as shopping, producer delivery, or shopper
+		checkout) are allowed. The timing of these phases is controlled by the
+		<a href="/edit-cycle-times">Edit cycle times</a> page. The app also performs
+		operations on the order data when it transitions from one phase to another.
+		This page documents those operations.
+	</p>
+	<p>
+		It is <em>not</em> generally possible to return the app to an earlier phase.
+		It may be possible in some cases by directy manipulating the database, but
+		this is dangerous, and it requires help from a developer.
+	</p>
+
+	<hr>
+
+	<h5>Cycle start</h5>
+
+	<p>
+		When the cycle starts:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			A new 'next' cycle record is added to the database by copying the new
+			current cycle, and adding the current cycle length to each phase start
+			time;
+		</li>
+		<li>
+			The web order label weights entered in the previous cycle are removed from
+			the database.
+		</li>
+	</ul>
+
+	<p>
+		On-site sales can be made at any time during the cycle. An on-site shopper
+		invoice is created and a shopper charge transaction is added immediately
+		after each sale.
+	</p>
+
+	<hr>
+
+	<h5>Shopping start</h5>
+
+	<p>
+		When the shopping window starts:
+	</p>
+
+	<ul class="Spread mb-3">
+		<li>
+			Members are able to add items to or remove items from their carts. They
+			can also change their pickup locations.
+		</li>
+	</ul>
+
+	<h5>Shopping end</h5>
+
+	<p>
+		When the shopping window ends:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			Shoppers are no longer able to edit carts or change pickup locations;
+		</li>
+		<li>
+			All empty carts are removed from the database;
+		</li>
+		<li>
+			Member fees are assessed to <a href="member-fees">members who owe
+			them</a>;
+		</li>
+		<li>
+			The database is readied to accept web order label weights from producers.
+		</li>
+	</ul>
+
+	<hr>
+
+	<h5>Delivery start</h5>
+
+	<p>
+		When the delivery window starts:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			The database is readied to accept producer delivery quantities;
+		</li>
+		<li>
+			Staff are able to check producer deliveries in.
+		</li>
+	</ul>
+
+	<p>
+		A given producer can be checked-in any number of times during the delivery
+		window, with each check-in overwriting the results of the previous one. A
+		new web producer invoice is generated each time, and the previous invoice is
+		discarded by the app.
+	</p>
+	<p>
+		After being checked-in, the producer is no longer able to change offer
+		quantities for this cycle. As a result, they cannot out-of-stock or restock
+		items. They are able to change next-cycle offer quantities when the
+		delivery window ends.
+	</p>
+
+	<h5>Delivery end</h5>
+
+	<p>
+		When the delivery window ends:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			Staff are no longer able to check producer deliveries in;
+		</li>
+		<li>
+			Producers with promised items who have not already been checked-in are
+			automatically checked-in as no-show producers;
+		</li>
+		<li>
+			Web producer earnings transactions are added for all producers who
+			delivered items;
+		</li>
+		<li>
+			All delivered quantities are subtracted from the variety offer quantities;
+		</li>
+		<li>
+			Certain producer operations (including offer quantity changes) are made
+			to reference the next cycle, so that producers can prepare for that cycle
+			without interfering with this one.
+		</li>
+	</ul>
+
+	<hr>
+
+	<h5>Pickup start</h5>
+
+	<p>
+		When the pickup window starts:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			The database is readied to accept shopper checkout quantities;
+		</li>
+		<li>
+			Carts consisting solely of undelivered items are marked 'undelivered', and
+			the affected shoppers are e-mailed by the app;
+		</li>
+		<li>
+			Staff are able to check shoppers out.
+		</li>
+	</ul>
+
+	<p>
+		A given shopper can check-out only once. The web shopper invoice and its
+		corresponding shopper charge transaction are added immediately after
+		checkout.
+	</p>
+
+	<h5>Pickup end</h5>
+
+	<p>
+		When the pickup window ends:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			Staff are no longer able to check shoppers out;
+		</li>
+		<li>
+			Shoppers who failed to pick up their orders and who were not checked-out
+			as no-show shoppers are checked-out automatically. All items are
+			considered 'lost' and the carts are marked 'missed'.
+		</li>
+	</ul>
+
+	<hr>
+
+	<h5>Cycle end</h5>
+
+	<p>
+		When the cycle ends:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			On-site producer invoices are created for all producers with on-site sales
+			in the cycle. On-site producer earnings transactions are then added;
+		</li>
+		<li>
+			Variety prices and managed inventory flags are advanced to their
+			next-cycle values;
+		</li>
+		<li>
+			Pickup locations for which the request deactivation flag is set are made
+			inactive.
+		</li>
+	</ul>
+</div>

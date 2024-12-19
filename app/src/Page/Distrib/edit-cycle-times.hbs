@@ -1,0 +1,368 @@
+{{!-- edit-cycle-times.hbs
+//    --------------------
+//    Edit Cycle Times view --}}
+
+<style>
+	input.form-control {
+		/* The padding seems excessive here, not a lot of room to begin with: */
+		padding: 0 0.4em;
+	}
+
+	div.Cyc.Curr {
+		background-color: hsla(45, 80%, 90%, 1.0);
+	}
+
+	div.Cyc.Next {
+		background-color: hsl(0, 0%, 88%);
+	}
+</style>
+
+<div class="container-xl py-4">
+	<h2>Edit cycle times</h2>
+
+	<div class="row mb-3">
+		<div class="col-lg mb-2 mb-lg-0">
+			You may not edit times that have already passed. If you set any value to
+			a past time, the corresponding cycle event will be processed immediately,
+			and you will not be able to change the value again.
+		</div>
+
+		<div class="col-lg">
+			<div class="mb-2">
+				Click <span class="font-weight-semi">Reload</span> to return all fields
+				to their original values and restart the edit. Visit the
+				<a href="\cycle-events">Cycle events</a> page to learn the effect of
+				your changes here.
+			</div>
+			<div>
+				The server time is
+				<span class="font-weight-semi">{{hTextDateTimeLong WhenNow}}</span>.
+			</div>
+		</div>
+
+		<div class="col-lg-5 mt-3 mt-lg-0">
+			<div class="d-flex border border-danger bg-white rounded-sm p-3">
+				<div class="d-none d-md-block mr-3">
+					<img src="{{hPrefixStatic 'bomb.svg'}}" alt="" width="40" height="40">
+				</div>
+				<div>
+					<strong>Beware!</strong> If you enter a time that has already passed,
+					the associated window will start or end <em>immediately</em>. It is
+					not possible to restart a closed window, so this can ruin the current
+					cycle. Double-check all changes before clicking
+					<span class="font-weight-semi">Save</span>.
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<hr>
+	<div>
+		
+	</div>
+	<div id="cycle-change-button">
+		<button id="change-cycle" class="btn btn-primary" onclick="doubleCheck({{{json this}}}); ">Advance to Next Phase</button>
+	</div>
+	<form id="cycle-change-form" action="/edit-cycle-times" method="POST" novalidate {{!-- {{goes to the httppost in the js file}} --}}
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="row mb-0">
+			{{#each Cycs}} {{!-- {{the locals.Cycs array from js, contains 2 items -- the current an next cycle data objects}} --}}
+			<div class="col-md-9 col-lg-7 col-xl-6
+				{{#unless @first}}mt-3 mt-xl-0{{/unless}}">
+				<div class="Cyc {{#if @first}}Curr{{else}}Next{{/if}} border rounded-lg {{!-- {{first appears to check if it's the first item in an array}} --}}
+					pt-2 px-3">
+
+					<div class="d-flex flex-row justify-content-between">
+						<h4 class="mb-0">
+							Cycle {{IDCyc}}
+						</h4>
+
+						<div class="font-size-120 mb-0">
+							({{#if @first}}current{{else}}next{{/if}})
+						</div>
+					</div>
+
+					<hr class="my-2"> {{!-- {{the header ends here}} --}}
+
+					{{>Distrib/pInputsCyc this}} {{!-- {{This *includes* another handlebare module/partial pInputsCyc.hbs -- Since this is in the foreach
+					it renders for both current and next cycles }} --}}
+				</div>
+			</div>
+			{{/each}}
+		</div>
+
+		<div id="InstructWhen" class="d-none row mt-3">
+			<div class="col-lg mb-2 mb-lg-0">
+				Your browser does not implement a date/time picker, so you must enter
+				these values as text. Type the four-digit year, two-digit month, and
+				two-digit date, separated by dashes, followed by an uppercase 'T', then
+				the two-digit hour and minute, separated by a colon. Hour values use the
+				24-hour clock, so <em>5:00 pm</em> is entered as <em>17:00</em>.
+			</div>
+			<div class="col-lg mb-0">
+				Chrome provides a date/time picker. You may prefer that browser when
+				using this page.
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex flex-row justify-content-between">
+			{{!-- I'm adding this because the user may want to start from scratch
+			//    after an unsuccessful update, yet the browser's refresh would repeat
+			//    the POST, which would not give the desired result, and would also
+			//    cause the 'confirm form resubmission' dialog to appear: --}}
+			<a class="btn btn-secondary" href="/edit-cycle-times">Reload</a>
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+	</form>
+</div>
+
+<script src="{{hPrefixStatic 'modernizr.js'}}"></script>
+
+<script>
+
+	function doubleCheck(data) {
+		if(confirm("Are you sure?"))
+		{
+			getCurrentData(data)
+		}
+	}
+	var cycles = ['StartCyc', 'StartShop', 'EndShop', 'StartDeliv', 'EndDeliv', 'StartPickup', 'EndPickup'];//, 'EndCyc'];
+	/* //Leaving this in case we want to add a way to "jump" between phases
+	$(".cycle-changer").click(function() {
+		var id = $(this).attr('id');
+		console.log(id);
+	})*/ 
+
+	//10-27 I want to rework this to only use 3 cycles. Skip Cycle Start and "end" cycles
+	function getCurrentData(data) {
+		var currentPhase = data.StApp.CdPhaseCyc;
+		var currentCycle = data.StApp.IDCyc;
+		var currTime = new Date().toLocaleString();
+		console.log(`You are currently in phase ${currentPhase} of cycle ${currentCycle}. The time is ${currTime}`);
+		
+
+		switch (currentPhase){
+			case 'StartCyc':
+				updateFormValues(currentPhase, ['StartShop'], currentCycle);
+				break;
+			case 'StartShop':
+				updateFormValues(currentPhase, ['EndShop', 'StartDeliv'], currentCycle);
+				break;
+			case 'EndShop':
+				updateFormValues(currentPhase, ['StartDeliv'], currentCycle);
+				break;
+			case 'StartDeliv':
+				updateFormValues(currentPhase, ['EndDeliv', 'StartPickup'], currentCycle);
+				break;
+			case 'EndDeliv':
+				updateFormValues(currentPhase, ['StartPickup'], currentCycle);
+				break;
+			case 'StartPickup':
+				updateFormValues(currentPhase, ['EndPickup', 'EndCyc', 'StartCyc', 'StartShop'], currentCycle);
+				break;
+			case 'EndPickup':
+				updateFormValues(currentPhase, ['EndCyc', 'StartCyc', 'StartShop'], currentCycle);
+				break;
+			case 'EndCyc': //did some testing - it never hits EndCyc. it goes straight from Endpickup to StartCyc
+				updateFormValues(currentPhase, ['EndCyc', 'StartCyc', 'StartShop']);
+				break;
+		}
+		
+		//The only restraints seem to be the "end" cycles need to be 1 minute after the start cycles
+		//The start dates can be the same as the previous end date.
+		//Ahh... the cycle must be at least 7 days long... but this is controlled by a variable in cfg.js
+		//Once this is set to 0, you can go through the entire cycle in 3 minutes
+		//might be able to use seconds as well to do it in less than a minute
+
+
+		//aResp.locals seems to be used to get variables over to the view
+	}
+
+	function updateFormValues(currentPhase, nextPhaseArray, currentCycle) {
+		console.log(`Current phase is ${currentPhase}. Updating form dates to ${nextPhaseArray.at(-1)}`);
+		//get current existing time value, then update the next one
+		var currId = "When" + currentPhase + currentCycle;
+
+		nextPhaseArray.forEach(phase => {
+			var nextId = "When" + phase + currentCycle;
+			if (phase == 'StartCyc') {
+				nextId = "When" + phase + (currentCycle + 1);
+			}
+			if (phase == 'StartShop') {
+				if (currentPhase == 'StartPickup' || currentPhase == 'EndCyc' || currentPhase == 'EndPickup') {
+					nextId = "When" + phase + (currentCycle + 1);
+				}
+			}
+
+			var previousIdTimeValue = $(`#${currId}`).val();
+			//FOR TESTING
+			//previousIdTimeValue = "2021-10-29T00:00";
+			console.log("previous time: ", previousIdTimeValue);
+
+			var currentHour = parseInt(previousIdTimeValue.slice(11, -3));
+			var newHour = null;
+			console.log("previous Hour: ", currentHour);
+			var currTimeWithoutMinutes = previousIdTimeValue.slice(0, -2);
+			var currentMinute = parseInt(previousIdTimeValue.slice(-2));
+			console.log("previous Minute: ", currentMinute);
+
+			var previousDate = previousIdTimeValue.slice(0, -6);
+
+			if (currentMinute != 0) {
+				var newMinute = currentMinute + 1;
+				console.log(newMinute);
+				newMinute = addZero(newMinute);
+				console.log(newMinute);
+			}
+			else {
+				var newMinute = "01";
+			}
+
+			//if (newMinute == )
+			
+			if (newMinute > 59) {
+				newMinute = "00";
+				//increase hour by 1
+				newHour = currentHour + 1;
+				if (currentHour == 23) {
+
+					newHour = "00";
+					previousDate = new Date(previousDate);
+					previousDate.setDate(previousDate.getDate() + 2);
+					previousDate = formatDate(previousDate);
+					console.log("Previous Date: ", previousDate);
+				}
+			}
+
+			console.log("New Minute: ", newMinute);
+			console.log("New Hour: ", newHour);
+
+			var newTimeToAdd = currTimeWithoutMinutes + newMinute;
+			
+
+			if (newHour) {
+				newTimeToAdd = previousDate + "T" + addZero(newHour) + ":" + newMinute;
+			}
+			console.log("FINAL TIME: ", newTimeToAdd);
+
+			$(`#${nextId}`).val(newTimeToAdd);
+
+			$("#cycle-change-form").submit();
+		})
+	}
+
+	function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+
+	function getMilitaryHours(m) {
+		var startHours = m.getUTCHours() - 5;
+		console.log(startHours);
+		switch (startHours) {
+			case 0:
+				startHours = "00";
+				break;
+			case 1:
+				startHours = "01";
+				break;
+			case 2:
+				startHours = "02";
+				break;
+			case 3:
+				startHours = "03";
+				break;
+			case 4:
+				startHours = "04";
+				break;
+			case 5:
+				startHours = "05";
+				break;
+			case 6:
+				startHours = "06";
+				break;
+			case 7:
+				startHours = "07";
+				break;
+			case 8:
+				startHours = "08";
+				break;
+			case 9:
+				startHours = "09";
+				break;
+			
+		}
+		return startHours;
+	}
+
+	function addZero(number) {
+		if (number == "00") {
+			return "00";
+		}
+		if (number.toString().length == 1) {
+			number = "0" + number;
+			return number;
+		}
+		else {
+			return number;
+		}
+	}
+
+
+
+
+	// The desktop versions of Firefox and Safari fail to provide pickers for the
+	// 'datetime-local' input type:
+	//
+	//   https://caniuse.com/input-datetime
+	//
+	// Firefox does offer 'date' and 'time' pickers, but it would be a nuisance to
+	// split those fields, and that would do nothing for Safari. 'jQuery UI'
+	// provides a date picker, but not a time picker. This jQuery plugin is very
+	// popular, but I do not like the UI:
+	//
+	//   https://trentrichardson.com/examples/timepicker/
+	//
+	// There are lots of other plugins, but I have no time for the inevitable
+	// bugs.
+	//
+	// Firefox and Safari are widely used, and date/time values are collected only
+	// from staff, so I will add 'placeholder' to the inputs, and display
+	// special instructions to those users.
+	//
+	// Other references:
+	//
+	//   https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local
+	//
+	//   http://html5doctor.com/the-woes-of-date-input/
+	//
+	if (!Modernizr.inputtypes["datetime-local"]) {
+		$("#InstructWhen").removeClass("d-none");
+	}
+
+	$("div.Curr input.WhenEndCyc").on("input", function (aEvt) {
+		const oEdEndCurr = $(this);
+		const oEdStartNext = $("div.Next input.WhenStartCyc");
+		oEdStartNext.val(oEdEndCurr.val());
+	});
+	$("div.Next input.WhenStartCyc").on("input", function (aEvt) {
+		const oEdStartNext = $(this);
+		const oEdEndCurr = $("div.Curr input.WhenEndCyc");
+		oEdEndCurr.val(oEdStartNext.val());
+	});
+</script>

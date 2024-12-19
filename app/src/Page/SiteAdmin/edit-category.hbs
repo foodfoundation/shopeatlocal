@@ -1,0 +1,38 @@
+{{!-- edit-category.hbs
+//    -----------------
+//    Edit Category view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2>Edit category</h2>
+
+	<hr class="my-2">
+
+	<div class="font-weight-semi font-size-120 mb-3">
+		Category {{hTextIDCat IDCat}}
+	</div>
+
+	<form id="form-main" class="pb-4" action="/edit-category/{{IDCat}}"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			<div class="form-group col-md mb-0">
+				<label for="NameCat">Name</label>
+				<input name="NameCat" value="{{NameCat}}" maxlength="50"
+					class="form-control {{#if MsgFailNameCat}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailNameCat}}
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex justify-content-between">
+			<a href="/delete-category/{{IDCat}}" class="btn btn-danger">
+				Delete
+			</a>
+
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+	</form>
+</div>

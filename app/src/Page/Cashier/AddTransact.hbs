@@ -1,0 +1,294 @@
+{{!-- AddTransact.hbs
+//    ---------------
+//    Add Member or Producer Transaction view
+//
+// This view is used for both 'Add member transaction' and 'Add producer
+// transaction', with the second being displayed if the Producer context
+// property is defined. --}}
+
+<div class="w-lg-50 container-md py-4">
+	{{#if Producer}}
+		{{#if AmtReverse}}
+		<h2>Reverse producer transaction</h2>
+		{{else}}
+		<h2>Add producer transaction</h2>
+		{{/if}}
+	{{else}}
+		{{#if AmtReverse}}
+		<h2>Reverse member transaction</h2>
+		{{else}}
+		<h2>Add member transaction</h2>
+		{{/if}}
+	{{/if}}
+
+	{{#if (hCkOr Producer Memb.IDProducer)}}
+	<p>
+		Member and producer transactions are displayed together in the
+		<a href="/transactions/{{hCkOr Producer.IDMemb Memb.IDMemb}}">Transactions</a>
+		page, and combined to produce a single account balance.
+		{{#if Producer}}
+			Some reports may distinguish between between the two, however, so if a
+			member transaction is intended, use
+			<a href="/add-member-transaction/{{Producer.IDMemb}}"
+				class="{{hClassDisabLackAccts}}">Add member transaction</a> instead.
+		{{else}}
+			Some reports may distinguish between between the two, however, so if a
+			producer transaction is intended, use
+			<a href="/add-producer-transaction/{{Memb.IDProducer}}"
+				class="{{hClassDisabLackAccts}}">Add producer transaction</a> instead.
+		{{/if}}
+	</p>
+	{{/if}}
+
+	<hr>
+
+	<div class="d-flex font-size-110 mb-3">
+		{{#if Producer}}
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div>
+			{{>Misc/pLinkIDProducer Producer}}<br>
+			<strong>{{Producer.NameBus}}</strong><br>
+			{{Producer.Addr1}}<br>
+			{{#if Producer.Addr2}}{{Producer.Addr2}}<br>{{/if}}
+			{{Producer.City}}, {{Producer.St}} {{Producer.Zip}}
+		</div>
+		{{/if}}
+
+		{{#unless Producer}}
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+		</div>
+		{{/unless}}
+		<div {{#if Producer}}class="text-right ml-auto"{{/if}}>
+			{{>Misc/pLinkIDMemb Memb}}<br>
+			<strong>
+				{{Memb.Name1First}} {{Memb.Name1Last}}<br>
+				{{#if Memb.Name2Last}}
+				{{Memb.Name2First}} {{Memb.Name2Last}}<br>
+				{{/if}}
+			</strong>
+			{{#if Memb.NameBus}}{{Memb.NameBus}}<br>{{/if}}
+			{{Memb.Addr1}}<br>
+			{{#if Memb.Addr2}}{{Memb.Addr2}}<br>{{/if}}
+			{{Memb.City}}, {{Memb.St}} {{Memb.Zip}}
+		</div>
+		{{#if Producer}}
+		<div class="d-none d-md-block ml-3">
+			<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+		</div>
+		{{/if}}
+	</div>
+
+	<hr class="mt-4 mb-2">
+	<div class="d-flex bg-light font-size-110 p-2">
+		<div class="font-weight-semi">
+			Account balance
+		</div>
+		<div class="ml-auto">
+			<a href="/transactions/{{Memb.IDMemb}}">
+				{{hTextCurrOrOrig Memb.BalMoney}}{{#if Memb.BalEBT}} Money{{/if}}
+			</a>
+		</div>
+		{{#if Memb.BalEBT}}
+		<div class="ml-3">
+			<a href="/transactions/{{Memb.IDMemb}}">
+				{{hTextCurrOrOrig Memb.BalEBT}} EBT
+			</a>
+		</div>
+		{{/if}}
+	</div>
+	<hr class="mt-2">
+
+	<form action="{{URLPost}}" method="POST" novalidate onsubmit="Disab_Form()">
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label class="col-form-label" for="CdTypeTransact">
+					Transaction type *
+				</label>
+				{{#if AmtReverse}}
+				<select value="{{CdTypeTransactVal}}" id="CdTypeTransact" name="CdTypeTransact" class="custom-select {{#if MsgFailCdTypeTransact}}is-invalid{{/if}}">
+					<option value="{{CdTypeTransactVal}}" selected="">{{CdTypeTransactText}}</option>
+					<option value="RefundFeeMembInit">Refund</option>
+					<option value="PayRecv">Payment receipt</option>
+					<option value="PaySent">Payment disbursement</option>
+					<option value="Adj">Adjustment</option>
+				</select>
+				{{else}}
+				<select id="CdTypeTransact" name="CdTypeTransact"
+					value="{{CdTypeTransact}}"
+					class="custom-select {{#if MsgFailCdTypeTransact}}is-invalid{{/if}}">
+					{{hOptsCdTypeTransactStaff CdTypeTransact}}
+				</select>
+				{{/if}}
+				{{hDivMsgFail MsgFailCdTypeTransact}}
+			</div>
+
+			<div class="form-group col-md-6">
+				<label class="col-form-label" for="CdMethPay">
+					Payment method *
+				</label>
+				<select id="CdMethPay" name="CdMethPay" value="{{CdMethPay}}"
+					class="custom-select {{#if MsgFailCdMethPay}}is-invalid{{/if}}">
+					{{hOptsCdMethPay CdMethPay}}
+				</select>
+				{{hDivMsgFail MsgFailCdMethPay}}
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label for="AmtMoney">Money amount *</label>
+				{{#if AmtReverse}}
+				<input id="AmtMoney" name="AmtMoney" value="{{hTextFixedOrOrig AmtReverse 2}}"
+				maxlength="20"
+				class="form-control w-md-50 {{#if MsgFailAmtMoney}}is-invalid{{/if}}">
+				{{else}}
+				<input id="AmtMoney" name="AmtMoney" value="{{hTextFixedOrOrig AmtMoney 2}}"
+					maxlength="20"
+					class="form-control w-md-50 {{#if MsgFailAmtMoney}}is-invalid{{/if}}">
+				{{/if}}
+				{{hDivMsgFail MsgFailAmtMoney}}
+
+				<div id="LblAmtMoneyPayRecv"
+					class="Explain d-none font-size-90 pr-2 mt-2">
+					Enter the <em>positive</em> payment value. Because the payment is
+					being received, it will appear as a <em>negative</em> value
+					in the transaction list.
+				</div>
+				<div id="LblAmtMoneyPaySent"
+					class="Explain d-none font-size-90 pr-2 mt-2">
+					Enter the <em>positive</em> payment value. Because the payment is
+					being issued, it will appear as a <em>positive</em> value in
+					the transaction list.
+				</div>
+				<div id="LblAmtMoneyRefundFeeMembInit"
+					class="Explain d-none font-size-90 pr-md-2 mt-2">
+					Enter the <em>positive</em> refund value. The refund will appear as a
+					<em>negative</em> value in the transaction list.
+				</div>
+				<div id="LblAmtMoneyAdj"
+					class="Explain d-none font-size-90 pr-md-2 mt-2">
+					Enter a positive value to <em>increase</em> the amount the
+					member owes. Enter a negative value to <em>decrease</em> the amount.
+					The same sign will be displayed in the transaction list.
+				</div>
+			</div>
+
+			<div class="form-group col-md-6 text-md-right">
+				<label for="AmtEBT">EBT amount *</label>
+				<input id="AmtEBT" name="AmtEBT" value="{{hTextFixedOrOrig AmtEBT 2}}"
+					maxlength="7"
+					class="form-control w-md-50 ml-md-auto {{#if MsgFailAmtEBT}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailAmtEBT}}
+
+				<div id="LblAmtEBT" class="Explain font-size-90 pl-md-2 mt-2">
+					Members should not be allowed to make EBT payments that exceed their
+					EBT balances. Enter equal but opposite money/EBT amounts to change
+					an EBT balance without changing the total balance.
+				</div>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<label for="Note">Note</label>
+				{{!-- Don't wrap between the two tags, doing so adds whitespace to the
+				//    input: --}}
+				{{#if AmtReverse}}
+				<textarea name="Note" maxlength="1000" rows="6" id="Note"
+					class="form-control {{#if MsgFailNote}}is-invalid{{/if}}">{{TransactionNote}}</textarea>
+				{{hDivMsgFail MsgFailNote}}
+				{{else}}
+				<textarea name="Note" maxlength="1000" rows="6" id="Note"
+					class="form-control {{#if MsgFailNote}}is-invalid{{/if}}">{{Note}}</textarea>
+				{{hDivMsgFail MsgFailNote}}
+				{{/if}}
+
+				<div class="Explain mt-2">
+					Transaction notes are hidden from non-staff users.
+				</div>
+			</div>
+		</div>
+
+		<hr class="mt-0">
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>
+
+<script>
+	function Set_Vis(aID, aCk) {
+		if (aCk) $(aID).removeClass("d-none");
+		else $(aID).addClass("d-none");
+	}
+
+	function Upd() {
+		const oCdType = $("#CdTypeTransact").val();
+
+		Set_Vis("#LblAmtMoneyPayRecv", (oCdType === "PayRecv"));
+		Set_Vis("#LblAmtMoneyPaySent", (oCdType === "PaySent"));
+		Set_Vis("#LblAmtMoneyRefundFeeMembInit", (oCdType === "RefundFeeMembInit"));
+		Set_Vis("#LblAmtMoneyAdj", (oCdType === "Adj"));
+
+		if (oCdType === "RefundFeeMembInit") {
+			$("#CdMethPay").prop("disabled", true);
+			$("#AmtMoney").prop("disabled", false);
+			$("#AmtEBT").prop("disabled", true);
+		}
+		else if (oCdType === "Adj") {
+			$("#CdMethPay").prop("disabled", true);
+			$("#AmtMoney").prop("disabled", false);
+			$("#AmtEBT").prop("disabled", false);
+		}
+		else {
+			$("#CdMethPay").prop("disabled", false);
+
+			const oCdMethPay = $("#CdMethPay").val();
+			switch (oCdMethPay) {
+				case "EBTElec":
+				case "EBTVouch":
+					$("#AmtMoney").prop("disabled", true);
+					$("#AmtEBT").prop("disabled", false);
+					break;
+
+				default:
+					$("#AmtMoney").prop("disabled", false);
+					$("#AmtEBT").prop("disabled", true);
+					break;
+			}
+		}
+	}
+	$("#CdTypeTransact").on("change", Upd);
+	$("#CdMethPay").on("change", Upd);
+
+	$(document).ready(Upd);
+</script>
+
+<script>
+	$(document).ready(function () {
+				
+		if (window.location.search.includes("reverse=yes")) {
+			$("#CdMethPay").prop("disabled", true);
+			$("#AmtMoney").prop("disabled", true);
+			$("#AmtEBT").prop("disabled", true);
+			$("#CdTypeTransact").prop("disabled", true);
+			$("#Note").prop("disabled", true);
+			$("#Note").append(" -- This is a transaction reversal");
+		}
+
+		$("form").submit(function() {
+			$("#CdMethPay").prop("disabled", false);
+			$("#AmtMoney").prop("disabled", false);
+			$("#AmtEBT").prop("disabled", false);
+			$("#CdTypeTransact").prop("disabled", false);
+			$("#Note").prop("disabled", false);
+		});
+
+	})
+</script>

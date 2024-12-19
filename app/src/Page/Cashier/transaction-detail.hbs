@@ -1,0 +1,20 @@
+{{!-- transaction-detail.hbs
+//    ----------------------
+//    Transaction detail view --}}
+
+<div class="w-lg-40 container pt-4 pb-2">
+	<div class="d-flex flex-row align-items-center">
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'transact.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div class="font-weight-semi font-size-120">
+			Transaction {{hTextIDTransact Transact.IDTransact}}
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="pb-3">
+		{{>Cashier/pBodyDtlTransact Transact}}
+	</div>
+</div>

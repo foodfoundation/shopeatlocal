@@ -1,0 +1,320 @@
+{{!-- accounting-summary.hbs
+//    ----------------------
+//    Accounting Summary view --}}
+
+<style>
+	tbody tr th {
+		font-weight: 600;
+	}
+</style>
+
+{{!-- We will skip the 'container' class to get more horizonal space: --}}
+<div class="p-4">
+	<h2>Accounting summary</h2>
+
+	<div class="Flow-md-2 pr-4">
+		<p>
+			This page displays various sales totals, fees, taxes, producer earnings,
+			and shopper charges, by cycle ID and cycle end date, over the past six
+			months. Export to see the same totals over the past year.
+		</p>
+		<p>
+			Nominal sale amounts are 'in cart' values, before producer or shopper fees
+			have been assessed. Producer earnings and shopper charges are
+			'transaction' values which include fees and taxes.
+		</p>
+	</div>
+
+	<hr>
+
+	{{#unless Cycs}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No completed cycles</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive">
+		<table class="table table-sm table-striped table-hover mb-0">
+			<thead>
+				<tr>
+					<th scope="col"></th>
+					{{#each Cycs}}
+					<th class="text-center" scope="col">
+						{{hTextIDCyc IDCyc}}<br>
+						{{hTextWhen WhenEndCyc "Short" ""}}
+					</th>
+					{{/each}}
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>Initial member fees assessed</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeMembInit}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Renewal member fees assessed</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeMembRenew}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Initial member fees refunded</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig RefundFeeMembInit}}</td>
+					{{/each}}
+				</tr>
+
+				<tr>
+					<th>Nominal producer web sales</th>
+							{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomProducerWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer web sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopProducerWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer web sale managed inventory fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeInvtProducerWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer web sale earnings</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig EarnProducerWeb}}</td>
+					{{/each}}
+				</tr>
+
+				<tr>
+					<th>Nominal lost or rejected web sales</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomLostRejectWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Nominal non-taxable shopper web sales</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomNontaxabWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Nominal taxable shopper web sales</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomTaxabWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper web sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopShopWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Forgiven shopper web sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopShopForgivWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper web sale delivery/transfer fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeDelivTransferShopWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper web sale sales tax</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig TaxSaleShopWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper web sale money charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeMoneyShopWeb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper web sale EBT charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeEBTShopWeb}}</td>
+					{{/each}}
+				</tr>
+
+				<tr>
+					<th>Nominal producer on-site retail sales</th>
+							{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomProducerOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer on-site retail sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopProducerOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer on-site retail sale managed inventory fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeInvtProducerOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer on-site retail sale earnings</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig EarnProducerOnsite}}</td>
+					{{/each}}
+				</tr>
+
+				<tr>
+					<th>Nominal non-taxable shopper on-site retail sales</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomNontaxabOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Nominal taxable shopper on-site retail sales</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomTaxabOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site retail sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopShopOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Forgiven shopper on-site retail sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopShopForgivOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site retail sale sales tax</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig TaxSaleShopOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site retail sale money charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeMoneyShopOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site retail sale EBT charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeEBTShopOnsite}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Member on-site retail shopper charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeShopOnsiteMemb}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Non-member on-site retail shopper charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeShopOnsiteNonmemb}}</td>
+					{{/each}}
+				</tr>
+
+				<tr>
+					<th>Nominal producer on-site wholesale sales</th>
+							{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomProducerOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer on-site wholesale sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopProducerOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer on-site wholesale sale managed inventory fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeInvtProducerOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Producer on-site wholesale sale earnings</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig EarnProducerOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Nominal non-taxable shopper on-site wholesale sales</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomNontaxabOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Nominal taxable shopper on-site wholesale sales</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig SaleNomTaxabOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site wholesale sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopShopOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Forgiven shopper on-site wholesale sale market fees</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig FeeCoopShopForgivOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site wholesale sale sales tax</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig TaxSaleShopOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site wholesale sale money charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeMoneyShopOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Shopper on-site wholesale sale EBT charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeEBTShopOnsiteWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Member on-site wholesale shopper charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeShopOnsiteMembWholesale}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>Non-member on-site wholesale shopper charges</th>
+					{{#each Cycs}}
+					<td class="text-center">{{hTextCurrOrOrig ChargeShopOnsiteNonmembWholesale}}</td>
+					{{/each}}
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<hr>
+	{{/unless}}
+
+	{{#if Cycs}}
+	<div class="d-flex flex-row">
+		<a class="btn btn-secondary ml-auto" href="/accounting-summary-export">
+			Export
+		</a>
+	</div>
+	{{/if}}
+</div>

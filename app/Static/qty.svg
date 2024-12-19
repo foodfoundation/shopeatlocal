@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   aria-hidden="true"
+   focusable="false"
+   data-prefix="fas"
+   data-icon="tally"
+   class="svg-inline--fa fa-tally fa-w-20"
+   role="img"
+   viewBox="0 0 640 512"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="qty.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1830"
+     inkscape:window-height="1051"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="-45.559322"
+     inkscape:cy="256"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <path
+     fill="currentColor"
+     d="M639.21 169.49l-9.89-30.43c-2.73-8.4-11.75-13-20.16-10.27L544 149.88V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v122.59l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v164.01l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v205.43l-64 20.71V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v246.86l-84.94 27.49C2.65 325.08-1.95 334.11.79 342.51l9.89 30.43c2.73 8.4 11.76 13 20.16 10.27L96 362.13V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V341.41l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V299.99l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V258.57l64-20.71V464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V217.14l84.94-27.49c8.4-2.73 13.01-11.75 10.27-20.16z"
+     id="path2"
+     style="fill:#808080;fill-opacity:1" />
+</svg>

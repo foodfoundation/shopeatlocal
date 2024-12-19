@@ -1,0 +1,132 @@
+{{!-- producer-admin.hbs
+//    ------------------
+//    Producer Admin view --}}
+
+<div class="container-lg pt-4 pb-2">
+	<div class="row">
+		<div class="col-md">
+			<h5 class="mb-3">Producer stats</h5>
+
+			<div>
+				<a class="LinkLblPg" href="/producer-search-results?CkPendProducer=true">
+					Pending producer registration
+				</a>
+				&times; <span class="LblPg">{{CtProducerPend}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/producer-search-results?CkList=true">
+					Listed
+				</a>
+				&times; <span class="LblPg">{{CtProducerList}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/producer-search-results?CkWithSale=true">
+					With sales this cycle
+				</a>
+				&times; <span class="LblPg">{{CtProducerWithSale}}</span>
+			</div>
+
+			<div>
+				<a class="LinkLblPg" href="/producer-search-results?CkIsWholesale=true">
+					Wholesale
+				</a>
+				&times; <span class="LblPg">{{CtProducerIsWholesale}}</span>
+			</div>
+
+			<h5 class="my-3">Product stats</h5>
+
+			<div>
+				<a class="LinkLblPg" href="/edited-products">
+					Edited
+				</a>
+				&times; <span class="LblPg">{{CtProductEdit}}</span>
+			</div>
+
+			{{!-- <div class="LinksPg">
+				<a href="/edited-products">Edited Products</a>
+			</div> --}}
+
+			<hr class="d-block d-md-none">
+		</div>
+
+		<div class="col-md">
+			<h3 class="mb-3">Producer search</h3>
+
+			<form id="form-main" class="pb-4" action="/producer-admin" method="POST"
+				autocomplete="off" onsubmit="Disab_Form()">
+
+				<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+				<div class="form-row">
+					<div class="form-group col-md-4">
+						<label for="IDProducer">Producer ID</label>
+						<input id="IDProducer" name="IDProducer" value="{{IDProducer}}"
+							class="form-control">
+					</div>
+					<div class="form-group offset-md-4 col-md-4">
+						<label for="CdProducer">Producer code</label>
+						<input id="CdProducer" name="CdProducer" value="{{CdProducer}}"
+							class="form-control">
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md">
+						<label for="NameBus">Business name</label>
+						<input id="NameBus" name="NameBus" value="{{NameBus}}"
+							class="form-control">
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="NameFirst">Member first name</label>
+						<input id="NameFirst" name="NameFirst" value="{{NameFirst}}"
+							class="form-control">
+					</div>
+					<div class="form-group col-md-6">
+						<label for="NameLast">Member last name</label>
+						<input id="NameLast" name="NameLast" value="{{NameLast}}"
+							class="form-control">
+					</div>
+				</div>
+
+				<p class="text-muted font-size-90">
+					Producers matching <em>any</em> of the above criteria will be returned,
+					with records matching more criteria sorted to the front.
+					For fewer results, supply <em>fewer</em> criteria.
+					Leave all fields blank to list all producers.
+				</p>
+
+				<div class="form-row align-items-end">
+					<div class="form-group col-md-12">
+						<div class="custom-control custom-checkbox mb-2">
+							<input id="CkList" name="CkList" type="checkbox"
+								{{hAttrCk CkList false}} class="custom-control-input">
+							<label for="CkList" class="custom-control-label">
+								Listed?
+							</label>
+						</div>
+
+						<div class="custom-control custom-checkbox">
+							<input id="CkWithSale" name="CkWithSale" type="checkbox"
+								{{hAttrCk CkWithSale false}} class="custom-control-input">
+							<label for="CkWithSale" class="custom-control-label">
+								With sales this cycle?
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<p class="text-muted font-size-90">
+					Producers matching <em>all</em> these criteria will be returned.
+					For fewer results, check <em>more</em> boxes.
+				</p>
+
+				<button type="submit" class="btn btn-primary mt-2">Search</button>
+			</form>
+		</div>
+	</div>
+</div>

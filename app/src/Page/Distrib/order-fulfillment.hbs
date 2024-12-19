@@ -1,0 +1,124 @@
+{{!-- order-fulfillment.hbs
+//    ---------------------
+//    Order Fulfillment view --}}
+
+<div class="container py-4">
+	<div class="d-md-flex flex-row justify-content-between align-items-baseline
+		mb-2">
+		<h2 class="mb-0">Order fulfillment</h2>
+		<h5>{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
+	</div>
+
+	<div class="d-print-none Flow-md-2">
+		<p class="mb-2">
+			Print this page, tape it to a bin or cart, and use it to pick the
+			shopper's order. When you are done, bring the bin or cart (with this page
+			attached) to a checkout station.
+		</p>
+		<p>
+			{{>Misc/pInstructPrint}}
+		</p>
+	</div>
+
+	<hr>
+
+	<div class="d-md-flex flex-row font-size-110">
+		<div class="d-none d-lg-block mr-3 mt-1">
+			<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+		</div>
+
+		{{#with Memb}}
+		<div class="mb-3 mb-md-0">
+			<div>
+				{{>Misc/pLinkIDMemb}}
+				<strong>
+					<br>{{Name1First}} {{Name1Last}}
+					{{#if Name2Last}}<br>{{Name2First}} {{Name2Last}}{{/if}}
+				</strong>
+				<br>{{Addr1}}
+				{{#if Addr2}}<br>{{Addr2}}{{/if}}
+				<br>{{City}}, {{St}} {{Zip}}
+			</div>
+			<div class="mt-2">
+				{{hLinkEmail Email1}}
+				{{#if Email2}}<br>{{hLinkEmail Email2}}{{/if}}
+				<br>{{hLinkPhone Phone1}}
+				{{#if Phone2}}<br>{{hLinkPhone Phone2}}{{/if}}
+			</div>
+		</div>
+		{{/with}}
+
+		<div class="text-md-right line-height-140 mb-1 mb-md-0 ml-auto">
+			<div class="font-size-120 font-weight-semi">
+				{{Loc.CdLoc}}
+			</div>
+			<div class="font-size-120">
+				{{Loc.NameLoc}}
+			</div>
+		</div>
+
+		<div class="d-none d-lg-block ml-2 mt-1">
+			<img src="{{hPrefixStatic 'loc.svg'}}" alt="" width="40" height="40">
+		</div>
+	</div>
+
+	{{#each Stors}}
+		<div>
+			<div class="d-flex align-items-end mt-4">
+				<img src="{{hPrefixStatic 'stor.svg'}}" alt=""
+					class="d-none d-lg-block ml-1 mr-3" width="30" height="30">
+				<h3 class="mb-0">
+					{{CdStor}}: {{hTextCdStor CdStor}}
+				</h3>
+			</div>
+
+			<hr class="mt-2 mb-2 mb-md-1">
+
+			<div class="GridTbl Head d-none d-md-block">
+				<div class="row font-weight-bold">
+					<div class="col-3">Producer</div>
+					<div class="col-5">Product</div>
+					<div class="col-3">Variety</div>
+					<div class="col-1 text-right">Deliv</div>
+				</div>
+			</div>
+
+			<div class="GridTbl Body mb-3">
+				{{#each Its}}
+				<div class="Row">
+					<div class="row">
+						<div class="col-md-3">
+							<a href="/producer-detail/{{IDProducer}}">
+								{{hTextIDProducer IDProducer}} {{NameBus}}
+							</a>
+						</div>
+						<div class="col-md-5">
+							<a href="/product-detail/{{IDProduct}}">
+								{{hTextIDProduct IDProduct}} {{NameProduct}}
+							</a>
+						</div>
+						<div class="col-md-3">
+							{{hTextIDVty IDVty}} {{hNameVty this}}
+						</div>
+						<div class="col-md-1 mb-1 mb-md-0 text-md-right">
+							{{QtyDeliv}}<span class="d-md-none"> deliv</span>
+						</div>
+					</div>
+					{{#if NoteShop}}
+					<div class="row pt-0">
+						<div class="col-md font-italic">
+							"{{NoteShop}}"
+						</div>
+					</div>
+					{{/if}}
+				</div>
+				{{/each}}
+			</div>
+		</div>
+	{{else}}
+		<hr>
+		<div class="jumbotron">
+			<h2 class="display-4 font-size-200">No items delivered</h2>
+		</div>
+	{{/each}}
+</div>

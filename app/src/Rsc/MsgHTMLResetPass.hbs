@@ -1,0 +1,15 @@
+{{!-- MsgHTMLResetPass.hbs
+//    --------------------
+//    HTML version of password reset e-mail --}}
+<p>
+	{{CoopParams.CoopNameShort}} received a password reset request for your login name '{{NameLogin}}'.
+	Click <a href="{{PathReset}}">here</a> to continue.
+</p>
+<p>
+	You can disregard this e-mail if you did not request a reset.
+</p>
+<p>
+	{{CoopParams.CoopName}}<br>
+	{{CoopParams.HelpEmail}}<br>
+	{{CoopParams.Phone}}
+</p>

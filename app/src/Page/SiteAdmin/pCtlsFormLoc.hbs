@@ -1,0 +1,78 @@
+{{!-- pCtlsFormLoc.hbs
+//    ----------------
+//    Add/Edit Location form controls --}}
+
+<div class="form-row">
+	<div class="form-group col-md-4">
+		<label for="CdLoc">Code</label>
+		<input name="CdLoc" value="{{CdLoc}}" maxlength="50"
+			{{#if CkEdit}}disabled{{/if}}
+			class="form-control {{#if MsgFailCdLoc}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailCdLoc}}
+		<div class="Explain">
+			After the location is created, this code cannot be changed.
+		</div>
+	</div>
+
+	<div class="form-group col-md">
+		<label for="NameLoc">Name</label>
+		<input name="NameLoc" value="{{NameLoc}}" maxlength="50"
+			class="form-control {{#if MsgFailNameLoc}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailNameLoc}}
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
+		<label for="Addr">Address</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="Addr" maxlength="200" rows="6"
+			class="form-control">{{Addr}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md mb-0">
+		<label for="Instruct">Pickup instructions</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="Instruct" maxlength="1000" rows="6"
+			class="form-control">{{Instruct}}</textarea>
+	</div>
+</div>
+
+<div class="form-group d-flex justify-content-between align-items-end mt-3 mb-1">
+	<div>Active</div>
+
+	<div class="custom-control custom-checkbox">
+		<input id="CkActiv" name="CkActiv" type="checkbox" {{hAttrCk CkActiv false}}
+			{{#if (hCkAnd CkEdit CkActiv)}}disabled{{/if}} class="custom-control-input">
+		<label for="CkActiv" class="custom-control-label mr-1">Yes</label>
+	</div>
+</div>
+
+{{#unless (hCkAnd CkEdit CkActiv)}}
+<div class="text-danger font-size-90 mt-2" style="width: 80%">
+	Beware! If you activate this location, you will not be able to deactivate it until the
+	end of the cycle.
+</div>
+{{/unless}}
+
+{{#if (hCkAnd CkEdit CkActiv)}}
+<div class="form-group d-flex justify-content-between align-items-end mt-3 mb-1">
+	<div>Deactivate at end of cycle</div>
+
+	<div class="custom-control custom-checkbox">
+		<input id="CkReqDeactiv" name="CkReqDeactiv" type="checkbox"
+			{{hAttrCk CkReqDeactiv false}} class="custom-control-input">
+		<label for="CkReqDeactiv" class="custom-control-label mr-1">Yes</label>
+	</div>
+</div>
+
+<div class="Explain mt-1" style="width: 80%">
+	Locations can be activated at any time, but they cannot be deactivated during
+	a cycle. If you request deactivation, it will be performed automatically
+	when the cycle ends.
+</div>
+{{/if}}

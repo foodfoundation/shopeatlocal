@@ -1,0 +1,84 @@
+{{!-- co-op-web-sales-by-subcategory.hbs
+//    ----------------------------------
+//    Co-op Web Sales By Subcategory view --}}
+
+{{!-- We will skip the 'container' class to get more horizonal space: --}}
+<div class="p-4">
+	<h2>Market web sales by subcategory</h2>
+
+	<div class="row">
+		<div class="col-md">
+			This page shows web sale quantities and nominal sale amounts by cycle ID
+			and cycle end date, over the past six months. Export to see the same
+			totals over the past year. Nominal sale amounts are 'in cart' values,
+			before producer or shopper fees have been assessed. All subcategories are
+			displayed.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			These totals document <em>completed</em> web sales (as opposed to item
+			orders or deliveries) so they correspond to web shopper invoices, not web
+			producer invoices. In particular, lost or rejected items are not included.
+		</div>
+	</div>
+
+	<hr>
+
+	{{#unless Cycs}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No completed cycles</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover mb-0">
+			<thead>
+				<tr>
+					<th scope="col">Category / Subcategory</th>
+					{{#each Cycs}}
+					<th class="text-center" scope="col">
+						{{hTextIDCyc IDCyc}}<br>
+						{{hTextWhen WhenEndCyc "Short" ""}}
+					</th>
+					{{/each}}
+				</tr>
+			</thead>
+			<tbody>
+				{{#each Subcats}}
+				<tr>
+					<td>
+						{{hTextIDCat IDCat}} {{NameCat}}<br>
+						{{hTextIDSubcat IDSubcat}} {{NameSubcat}}
+					</td>
+					{{!-- This Cyc is contained by the Subcat record. It must not be
+					//    confused with the Cyc in the context root: --}}
+					{{#each Cycs}}
+					<td class="text-center align-middle">
+						{{#if QtySold}}
+						{{QtySold}}<br>
+						{{hTextCurrOrOrig SaleNom}}
+						{{else}}
+						&mdash;
+						{{/if}}
+					</td>
+					{{/each}}
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+
+	<hr>
+	{{/unless}}
+
+	{{#if Cycs}}
+	<div class="d-flex flex-row">
+		<a class="btn btn-secondary ml-auto"
+			href="/co-op-web-sales-by-subcategory-export-quantities">
+			Export quantities
+		</a>
+		<a class="btn btn-secondary ml-2"
+			href="/co-op-web-sales-by-subcategory-export-sales">
+			Export sales
+		</a>
+	</div>
+	{{/if}}
+</div>

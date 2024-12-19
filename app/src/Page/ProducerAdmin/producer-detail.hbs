@@ -1,0 +1,17 @@
+{{!-- producer-detail.hbs
+//    -------------------
+//    Producer detail view --}}
+
+<div class="container-md pt-4 pb-2">
+	{{!-- There isn't room on narrow displays for the impersonate button to go in
+	//    the upper right corner: --}}
+	<div class="d-sm-flex flex-row align-items-center">
+		{{>ProducerAdmin/pHeadDtlProducer Producer}}
+	</div>
+
+	<hr>
+
+	<div class="pb-3">
+		{{>ProducerAdmin/pBodyDtlProducer Producer}}
+	</div>
+</div>

@@ -1,0 +1,158 @@
+{{!-- managed-catalog.hbs
+//    -------------------
+//    On-site Catalog view --}}
+
+<div class="container py-4">
+	<div class="d-md-flex flex-row align-items-end">
+		<h2>Managed catalog</h2>
+
+		<h5 class="ml-auto">{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
+	</div>
+
+	<p class="d-print-none">
+		This page displays all listed managed varieties, with web inventory
+		quantities and prices.
+	</p>
+
+	<hr>
+
+	{{!-- Desktop layout
+	//    -------------- --}}
+
+	<div class="d-none d-md-block">
+		{{#each Stors}}
+		<div class="mt-5">
+			<div class="d-flex align-items-center mt-4">
+				<img src="{{hPrefixStatic 'stor.svg'}}" alt="" class="d-none d-lg-block ml-1 mr-3"
+					width="30" height="30">
+				<h3 class="mb-0">
+					{{CdStor}}: {{hTextCdStor CdStor}}
+				</h3>
+			</div>
+
+			<hr class="mt-2 mb-1">
+
+			<div class="GridTbl Head">
+				<div class="row font-weight-bold align-items-end">
+					{{!-- The button column needs extra width on medium layouts: --}}
+					<div class="col">Producer / Product / Variety</div>
+					<div class="col-2 text-right">Web price</div>
+					<div class="col-1 text-right">Offer</div>
+					<div class="col-1 text-right">Prom</div>
+					<div class="col-1 text-right">Avail</div>
+					<div class="d-print-none col-1"></div>
+				</div>
+			</div>
+
+			<div class="GridTbl Body">
+				{{#each Vtys}}
+				<div class="Row">
+					<div class="row align-items-center py-1">
+						<div class="col">
+							<a href="/producer-detail/{{IDProducer}}">
+								{{hTextIDProducer IDProducer}} {{NameBus}}
+							</a><br>
+							<a href="/product-detail/{{IDProduct}}">
+								{{hTextIDProduct IDProduct}} {{NameProduct}}
+							</a><br>
+							{{hTextIDVty IDVty}} {{hNameVty this}}
+						</div>
+
+						<div class="col-2 text-right">
+							{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
+						</div>
+						<div class="col-1 text-right">{{QtyOffer}}</div>
+						<div class="col-1 text-right">{{QtyProm}}</div>
+						<div class="col-1 text-right">{{hQtyAvailAdd this}}</div>
+
+						<div class="d-print-none col-1 d-flex flex-column align-items-end
+							pl-0">
+							<a href="/variety-labels/{{IDVty}}"
+								class="btn btn-sm btn-outline-secondary">
+								Labels
+							</a>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		{{else}}
+		<div class="jumbotron">
+			<h2 class="display-4 font-size-200">No managed items</h2>
+		</div>
+		{{/each}}
+	</div>
+
+	{{!-- Mobile layout
+	//    -------------
+	//    This page is more likely to be used on a mobile device, so we will
+	//    spend a little more time here. --}}
+
+	<div class="d-md-none">
+		{{#each Stors}}
+		<div class="mt-5">
+			<h3 class="mt-4 mb-3">
+				{{CdStor}}: {{hTextCdStor CdStor}}
+			</h3>
+
+			<div class="GridTbl Body">
+				{{#each Vtys}}
+				<div class="Row p-2">
+					<div>
+						<a href="/producer-detail/{{IDProducer}}">
+							{{hTextIDProducer IDProducer}} {{NameBus}}
+						</a><br>
+						<a href="/product-detail/{{IDProduct}}">
+							{{hTextIDProduct IDProduct}} {{NameProduct}}
+						</a><br>
+						{{hTextIDVty IDVty}} {{hNameVty this}}
+					</div>
+
+					<div>
+						<hr class="my-2 mx-0">
+
+						<div class="row px-0">
+							<div class="col-3 font-weight-semi">
+								{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
+							</div>
+							<div class="col-3 text-center">
+								<span class="font-weight-semi">{{QtyOffer}}</span> offer
+							</div>
+							<div class="col-3 text-center">
+								<span class="font-weight-semi">{{QtyProm}}</span> prom
+							</div>
+							<div class="col-3 text-right">
+								<span class="font-weight-semi">{{hQtyAvailAdd this}}</span> avail
+							</div>
+						</div>
+
+						<hr class="mt-2 mb-1 mx-0">
+					</div>
+
+					<div class="d-flex justify-content-end mt-2">
+						<a href="/variety-labels/{{IDVty}}"
+							class="btn btn-sm btn-outline-secondary">
+							Labels
+						</a>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		{{else}}
+		<div class="jumbotron">
+			<h2 class="display-4 font-size-200">No managed items</h2>
+		</div>
+		{{/each}}
+	</div>
+
+	{{#if Stors}}
+	<hr>
+	<div class="d-flex">
+		<a class="btn btn-secondary ml-auto" href="/managed-catalog-export">
+			Export
+		</a>
+	</div>
+	{{/if}}
+</div>

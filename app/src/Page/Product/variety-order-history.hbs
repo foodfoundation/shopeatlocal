@@ -1,0 +1,219 @@
+{{!-- variety-order-history.hbs
+//    -------------------------
+//    Variety Order History view --}}
+
+<div class="container my-4">
+	<h2>Variety order history</h2>
+
+	<p>
+		This page lists sales of the specified variety in the last 12 cycles.
+	</p>
+
+	<hr>
+
+	{{!-- Desktop and print layout
+	//    ------------------------ --}}
+
+	<div class="d-none d-md-block">
+		<div class="d-flex font-size-110 mb-4">
+			<div class="mr-3">
+				<img class="mt-1" src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+			</div>
+			<div>
+				<a href="/product-detail/{{Product.IDProduct}}">
+					Product {{hTextIDProduct Product.IDProduct}}
+				</a><br>
+				<strong>{{Product.NameProduct}}</strong><br>
+				Variety {{hTextIDVty VtySel.IDVty}}<br>
+				{{hNameVty VtySel}}
+			</div>
+		</div>
+
+		{{#each Cycs}}
+		<div class="d-flex align-items-end mt-4">
+			<img class="mr-2" src="{{hPrefixStatic 'cyc.svg'}}" alt="" width="30" height="30">
+			<h4 class="mb-0">Cycle {{hTextIDCyc IDCyc}}</h4>
+			<h5 class="ml-auto mb-0">{{hTextWhen WhenStartCyc "Med"}}</h5>
+		</div>
+
+		<hr class="mt-2 mb-0">
+
+		<div class="GridTbl Head">
+			<div class="row font-weight-bold">
+				<div class="col-4">Shopper</div>
+				<div class="col-3">E-mail</div>
+				<div class="col-2">Phone</div>
+				<div class="col-1 text-right">Order</div>
+				<div class="col-1 text-right">Prom</div>
+				<div class="col-1 text-right">Deliv</div>
+			</div>
+		</div>
+
+		<div class="GridTbl Body mb-2">
+			{{#each Membs}}
+			<div class="Row">
+
+				<div class="row d-flex">
+					<div class="col-4">
+						{{#if (hCkStaffFromUser)}}
+						<a href="/member-detail/{{IDMemb}}">
+							{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+						</a>
+						{{else}}
+						{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+						{{/if}}
+					</div>
+					<div class="col-3">
+						{{hLinkEmail Email1}}
+					</div>
+					<div class="col-2">
+						{{hLinkPhone Phone1}}
+					</div>
+					<div class="col-1 text-right">
+						{{QtyOrd}}
+					</div>
+					<div class="col-1 text-right">
+						{{QtyProm}}
+					</div>
+					<div class="col-1 text-right">
+						{{QtyDeliv}}
+					</div>
+				</div>
+
+				{{#if NoteShop}}
+				<div class="row pt-0">
+					<div class="col font-size-90 font-italic">"{{NoteShop}}"</div>
+				</div>
+				{{/if}}
+			</div>
+			{{/each}}
+		</div>
+
+		<hr class="mb-2">
+
+		<div class="Row pr-1">
+			<div class="row font-weight-semi">
+				<div class="col-9">
+					TOTAL CYCLE {{IDCyc}}
+				</div>
+				<div class="col text-right">
+					{{QtyOrd}}
+				</div>
+				<div class="col text-right">
+					{{QtyProm}}
+				</div>
+				<div class="col text-right">
+					{{QtyDeliv}}
+				</div>
+			</div>
+		</div>
+
+		{{else}}
+
+		<hr>
+		<div class="jumbotron">
+			<h2 class="display-4 font-size-200">No recent orders for this variety</h2>
+		</div>
+		{{/each}}
+	</div>
+
+	{{!-- Mobile layout
+	//    ------------- --}}
+
+	<div class="d-md-none">
+		<div class="font-size-110 font-weight-semi mb-4">
+			<div>
+				<a href="/product-detail/{{Product.IDProduct}}">
+					Product {{hTextIDProduct Product.IDProduct}}
+				</a><br>
+				{{Product.NameProduct}}
+			</div>
+			<div class="ml-auto">
+				Variety {{hTextIDVty VtySel.IDVty}}<br>
+				{{hNameVty VtySel}}
+			</div>
+		</div>
+
+		{{#each Cycs}}
+		<div class="d-flex align-items-end mt-4">
+			<h4 class="mb-0">Cycle {{hTextIDCyc IDCyc}}</h4>
+			<h5 class="ml-auto mb-0">{{hTextWhen WhenStartCyc "Med"}}</h5>
+		</div>
+
+		<hr class="mt-2 mb-0">
+
+		<div class="GridTbl Body mb-2">
+			{{#each Membs}}
+			<div class="Row">
+				<div class="pt-1">
+					<div class="font-weight-semi px-2">
+						{{#if (hCkStaffFromUser)}}
+						<a href="/member-detail/{{IDMemb}}">
+							{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+						</a>
+						{{else}}
+						{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+						{{/if}}
+					</div>
+					<div class="px-2">
+						{{hLinkEmail Email1}}
+					</div>
+					<div class="px-2">
+						{{hLinkPhone Phone1}}
+					</div>
+
+					<hr class="mt-2 mb-1 mx-2">
+
+					<div class="row pt-0 mt-0">
+						<div class="col">
+							{{QtyOrd}} order
+						</div>
+						<div class="col text-center">
+							{{QtyProm}} prom
+						</div>
+						<div class="col text-right">
+							{{QtyDeliv}} deliv
+						</div>
+					</div>
+				</div>
+
+				{{#if NoteShop}}
+				<div class="row pt-0">
+					<div class="col text-center font-size-90 font-italic">
+						"{{NoteShop}}"
+					</div>
+				</div>
+				{{/if}}
+			</div>
+			{{/each}}
+		</div>
+
+		<div class="Row bg-light mt-2 mb-4 border-top border-bottom">
+			<div class="text-center font-weight-semix">
+				TOTAL CYCLE {{IDCyc}}
+			</div>
+
+			<hr class="mt-1 mb-1 mx-2">
+
+			<div class="row font-weight-semix px-2 pb-1">
+				<div class="col">
+					{{QtyOrd}} order
+				</div>
+				<div class="col text-center">
+					{{QtyProm}} prom
+				</div>
+				<div class="col text-right">
+					{{QtyDeliv}} deliv
+				</div>
+			</div>
+		</div>
+
+		{{else}}
+
+		<hr>
+		<div class="jumbotron">
+			<h2 class="display-4 font-size-200">No recent orders for this variety</h2>
+		</div>
+		{{/each}}
+	</div>
+</div>

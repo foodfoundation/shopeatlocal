@@ -1,0 +1,82 @@
+{{!-- edit-producer-status.hbs
+//    ------------------------
+//    Edit producer status view
+//
+//    I don't understand what is happening with the 'negative margins' in this
+//    form. This is one of the first Bootstrap forms I created, so anything
+//    could be wrong. [TO DO] --}}
+
+<div class="w-lg-40 container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-3">Edit producer status</h2>
+
+		{{#unless CkSelImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredSelImperUser}}
+
+			<hr>
+		</div>
+		{{/unless}}
+	</div>
+
+	{{!-- If a producer was selected in the GET, forward that selection to the
+	//    POST: --}}
+	<form id="form-main" class="pb-4"
+		action="{{hPathProducerSel "/edit-producer-status"}}" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{#if (hCkStaffFromUser)}}
+		{{!-- There is a negative margin that otherwise causes the dropdown to
+		//    stick out on the right: --}}
+		<div class="form-group row mr-0">
+			<label class="col-form-label col-md-7" for="CdRegProducer">
+				Producer status
+			</label>
+
+			<select id="CdRegProducer" name="CdRegProducer" value="{{CdRegProducer}}"
+				class="custom-select col-md-5 ml-3 ml-md-0 {{#if MsgFailCdReg}}is-invalid{{/if}}">
+				{{hOptsCdReg CdRegProducer}}
+			</select>
+			{{hDivMsgFail MsgFailCdReg}}
+		</div>
+
+		<div class="form-group row mr-0">
+			<label class="col-form-label col-md-7" for="CdRegProducer">
+				Wholesale status
+			</label>
+
+			<select id="CdRegWholesale" name="CdRegWholesale" value="{{CdRegWholesale}}"
+				class="custom-select col-md-5 ml-3 ml-md-0 {{#if MsgFailCdRegWholesale}}is-invalid{{/if}}"
+			>
+				{{hOptsCdReg CdRegWholesale}}
+			</select>
+			{{hDivMsgFail MsgFailCdRegWholesale}}
+		</div>
+		{{/if}}
+
+		<div class="form-group row mt-4 mb-3">
+			<div class="col">Listed</div>
+
+			<div class="custom-control custom-checkbox">
+				<input id="CkListProducer" name="CkListProducer" type="checkbox"
+					{{hAttrCk CkListProducer false}}
+					class="custom-control-input {{#if MsgFailCkListProducer}}is-invalid{{/if}}">
+				{{!-- Had to set these margins to make the mobile layout work: --}}
+				<label for="CkListProducer" class="custom-control-label ml-3 ml-md-0">
+					Yes
+				</label>
+			</div>
+			<div class="ml-4">{{hDivMsgFailForm MsgFailCkListProducer}}</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>

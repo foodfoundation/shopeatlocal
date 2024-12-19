@@ -1,0 +1,180 @@
+{{!-- pLineWholesaleInvt.hbs
+//    ---------------------
+//    Producer Wholesale product line --}}
+
+<div class="Sheet border rounded mb-2 p-3">
+
+	<div class="row">
+		{{#if NameImgProduct}}
+		<div class="col-md-1 pt-1 pr-0">
+			<img src="{{hPrefixImageWithStorage NameImgProduct}}" alt="Product image"
+				class="w-100 border rounded d-none d-md-inline">
+		</div>
+		{{/if}}
+		<div class="d-flex col-md">
+			{{#unless NameImgProduct}}
+			<div class="d-none d-md-block pr-3 mt-1">
+				<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+			</div>
+			{{/unless}}
+
+			<div class="font-size-110">
+				<a href="/product-detail/{{IDProduct}}" class="font-weight-normal">
+					Product {{hTextIDProduct IDProduct}}
+				</a><br>
+				<strong>{{NameProduct}}</strong>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mt-3">
+		<div class="col-md">
+			{{#unless Vtys}}
+			<div class="jumbotron mb-0">
+				<h2 class="display-4 font-size-200">No varieties</h2>
+			</div>
+			{{else}}
+
+			{{!-- Variety heading
+			//    ---------------
+			//    This ridiculous structure is used so that the quantity row headings
+			//    can be repeated in each entry in the mobile layout. Should we use a
+			//    different template instead? --}}
+
+			<div class="GridTbl Head d-none d-md-block">
+				<div class="form-row align-items-center font-weight-bold">
+					<div class="col-md-4">
+						<div class="form-row pl-0 align-items-center">
+							<div class="form-group col-md-4">
+								Variety
+							</div>
+							<div class="form-group col-md-8">
+								Size / kind
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2 form-group pr-2 text-center">
+						Wholesale Price
+					</div>
+					<div class="col-md-2 form-group pr-2 text-center">
+						Quantity
+					</div>
+					<div class="col-md-2 form-group pr-2 text-center">
+						Customer Fee
+					</div>
+					<div class="col-md-2 form-group  pr-2 text-center">
+						Status
+					</div>
+				</div>
+			</div>
+
+			{{!-- Variety entries
+			//    --------------- --}}
+
+			<div class="GridTbl Body">
+				{{#each Vtys}}
+				<div class="Row Vty {{#if QtyOrd}}Green{{/if}} {{hCdListBasicVty this}}
+					{{#if QtyOrd}}Ord{{else}}NoOrd{{/if}}">
+
+					{{!-- Variety data
+					//    ------------ --}}
+
+					<div id="Vty{{IDVty}}">
+						<div class="form-row py-0 align-items-center">
+							<div class="col-md-4">
+								<div class="form-row pl-0 align-items-center">
+									<div class="d-none d-md-flex form-group col-md-4">
+										{{hTextIDVty IDVty}}
+									</div>
+									<div class="d-md-none form-group col-md-4 font-weight-semi">
+										<span class="d-md-none">Variety </span>{{hTextIDVty IDVty}}
+									</div>
+									<div class="d-none d-md-flex form-group col-md-8">
+										{{hNameVty this}}
+									</div>
+									<div class="d-md-none form-group col-md-8 font-weight-semi">
+										{{hNameVty this}}
+									</div>
+								</div>
+							</div>
+
+							{{!-- The 'col' style does something to make this visible in the
+							//    row, but we don't want it to act as a column in the mobile
+							//    layout, so we disable it until the 'md' size, where it won't
+							//    even be displayed: --}}
+							<hr class="d-md-none col-md">
+
+							<div class="d-md-none col font-weight-semi">
+								<div class="form-row pl-0 pb-0">
+									<div class="form-group col text-center">
+										Wholesale Price
+									</div>
+									<div class="form-group col text-center">
+										Quantity
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="form-row pl-0 align-items-center">
+									<div class="form-group col text-center">
+										{{hTextCurrOrOrig PriceNomOnsite}}
+									</div>
+									<div class="form-group col text-center">
+										<input name="QtyOnsite{{IDVty}}" value="{{QtyOnsite}}"
+											class="InputQtyOnsite InputQty form-control form-control-sm"
+											{{hAttrFldDisab "QtyOnsite" IDVty}}>
+									</div>
+								</div>
+							</div>
+
+							<hr class="d-md-none col-md">
+
+							<div class="d-md-none col-md form-group col font-weight-semi text-center">
+								Customer Fee
+							</div>
+
+							<div class="form-group col-md-2 text-md-center">
+								<div class="form-group col text-center">
+									<input name="FracFeeCoopWholesaleMemb{{IDVty}}" 
+										{{#if CkFracFeeCoopWholesaleSet}}
+											value="{{FracFeeCoopWholesaleMemb}}"
+										{{else}}
+											style="background-color: rgba(255, 243, 207);"
+											placeholder="{{FracFeeCoopWholesaleMemb}}"
+										{{/if}}
+										class="InputCoopFee InputFee form-control form-control-sm"
+										{{hAttrFldDisab "FracFeeCoopWholesaleMemb" IDVty}}
+									>
+								</div>
+							</div>
+
+							{{!-- <hr class="d-md-none col-md"> --}}
+
+							<div class="d-md-none col-md form-group col font-weight-semi text-center">
+								Status
+							</div>
+
+							<div class="form-group col-md-2 pt-1 mb-2 mb-md-1">
+								{{!-- See the 'Variety listing status' comments in 'Db.js' to
+								//    understand why this dropdown is used, rather than the
+								//    CkListWeb, CkListOnsite, and CkArchiv checkboxes one would
+								//    expect: --}}
+								<select id="CdListVty{{IDVty}}" name="CdListVty{{IDVty}}"
+									value="{{CdListVty}}"
+									class="SelCdListVty custom-select custom-select-sm
+									{{#if MsgFailCdListVty}}is-invalid{{/if}}"
+									{{hAttrFldDisab "CdListVty" IDVty}}>
+									{{hOptsCdListWholesaleVty this}}
+								</select>
+								{{hDivMsgFail MsgFailCdListVty}}
+							</div>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+			{{/unless}}
+		</div>
+	</div>
+</div>

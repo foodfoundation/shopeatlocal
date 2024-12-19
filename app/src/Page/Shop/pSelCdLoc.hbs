@@ -1,0 +1,14 @@
+{{!-- pSelCdLoc.hbs
+//    -------------
+//    Pickup location selector content
+//
+// Notice that the alternative, 'closed cart' content is not included here, even
+// though it is included in 'pSummCart.hbs'. The containing form must check the
+// cart state and embed the alternative itself. --}}
+
+{{#each LocsActiv}}
+<option value="{{CdLoc}}"
+	{{hAttrSel CdLoc @root.SummCartImperUser.CdLoc}}>
+	{{NameLoc}}
+</option>
+{{/each}}

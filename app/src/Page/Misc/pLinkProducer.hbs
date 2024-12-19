@@ -1,0 +1,19 @@
+{{!-- pLinkProducer.hbs
+//    -----------------
+//    Producer ID, code, and name with staff-only link to Producer Detail --}}
+
+{{#if (hCkStaffFromUser)}}
+<a href="/producer-detail/{{IDProducer}}">
+	Producer {{hTextIDProducer IDProducer}}
+	{{#if CdProducer}}'{{CdProducer}}'{{/if}}
+	{{NameProducer}}
+</a>
+{{else}}
+{{!-- Note that 'strong' would increase the weight if the containing block were
+//    already bold: --}}
+<span class="font-weight-semi">
+	Producer {{hTextIDProducer IDProducer}}
+	{{#if CdProducer}}'{{CdProducer}}'{{/if}}
+	{{NameProducer}}
+</span>
+{{/if}}

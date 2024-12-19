@@ -1,0 +1,319 @@
+{{!-- pLineProducerInvt.hbs
+//    ---------------------
+//    Producer Inventory product line --}}
+
+{{#hOnChange "TextCatSubcat"}}
+<div class="HeadSheet border rounded font-weight-bold my-3 p-2">
+	<div class="d-flex align-items-center">
+		<div class="d-none d-md-block mr-2">
+			<img src="{{hPrefixStatic 'cat.svg'}}" alt="" width="35" height="35">
+		</div>
+		<h3 class="mb-0">{{TextCatSubcat}}</h3>
+	</div>
+</div>
+{{/hOnChange}}
+
+<div class="Product Sheet border rounded mb-2 p-3
+	{{#if CkContainList}}CkContainList{{/if}}
+	{{#if CkContainUnlist}}CkContainUnlist{{/if}}
+	{{#if CkContainArchiv}}CkContainArchiv{{/if}}
+	{{#if QtyOrd}}Ord{{else}}NoOrd{{/if}}">
+
+	<div class="row">
+		{{#if NameImgProduct}}
+		<div class="col-md-1 pt-1 pr-0">
+			<img src="{{hPrefixImageWithStorage NameImgProduct}}" alt="Product image"
+				class="w-100 border rounded d-none d-md-inline">
+		</div>
+		{{/if}}
+		<div class="d-flex col-md">
+			{{#unless NameImgProduct}}
+			<div class="d-none d-md-block pr-3 mt-1">
+				<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+			</div>
+			{{/unless}}
+
+			<div class="font-size-110">
+				<a href="/product-detail/{{IDProduct}}" class="font-weight-normal">
+					Product {{hTextIDProduct IDProduct}}
+				</a><br>
+				<strong>{{NameProduct}}</strong>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mt-3">
+		<div class="col-md">
+			{{#unless Vtys}}
+			<div class="jumbotron mb-0">
+				<h2 class="display-4 font-size-200">No varieties</h2>
+			</div>
+			{{else}}
+
+			{{!-- Variety heading
+			//    ---------------
+			//    This ridiculous structure is used so that the quantity row headings
+			//    can be repeated in each entry in the mobile layout. Should we use a
+			//    different template instead? --}}
+
+			<div class="GridTbl Head d-none d-md-block">
+				<div class="form-row align-items-center font-weight-bold">
+					<div class="col-md-4">
+						<div class="form-row pl-0 align-items-center">
+							<div class="form-group col-md-4">
+								Variety
+							</div>
+							<div class="form-group col-md-8">
+								Size / kind
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md">
+						<div class="form-row pl-0 align-items-center">
+							<div class="form-group col text-center">
+								<span class="Tip"
+									data-toggle="tooltip" data-placement="top" data-html="true"
+									title="The price of the product.">
+									Price
+								</span>
+							</div>
+							<div class="form-group col text-center">
+								<span class="Tip"
+									data-toggle="tooltip" data-placement="top" data-html="true"
+									title="The <em>offer quantity</em> is the number you are able
+										to deliver">
+									Offer
+								</span>
+							</div>
+							<div class="form-group col text-center">
+								<span class="Tip"
+									data-toggle="tooltip" data-placement="top" data-html="true"
+									title="The <em>order quantity</em> is the number web shoppers
+										have placed in carts">
+									Order
+								</span>
+							</div>
+							<!--<div class="form-group col text-center">
+								<span class="Tip"
+									data-toggle="tooltip" data-placement="top" data-html="true"
+									title="The <em>promise quantity</em> is the number you are
+										expected to deliver">
+									Prom
+								</span>
+							</div>-->
+							<!--<div class="form-group col text-center">
+								<span class="Tip"
+									data-toggle="tooltip" data-placement="top" data-html="true"
+									title="The <em>withdrawn quantity</em> is the number that were
+										out-of-stocked when (and if) you lowered the offer
+										quantity">
+									Wthd
+								</span>
+							</div>-->
+							<div class="form-group col text-center">
+								<span class="Tip"
+									data-toggle="tooltip" data-placement="top" data-html="true"
+									title="The <em>available quantity</em> is the number that can
+										be added to shopper carts">
+									Avail
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group col-md-1 text-center">
+						Mgd*
+					</div>
+					<div class="form-group col-md-2 pr-2 text-right">
+						Status
+					</div>
+				</div>
+			</div>
+
+			{{!-- Variety entries
+			//    --------------- --}}
+
+			<div class="GridTbl Body">
+				{{#each Vtys}}
+				<div class="Row Vty {{#if QtyOrd}}Green{{/if}} {{hCdListBasicVty this}}
+					{{#if QtyOrd}}Ord{{else}}NoOrd{{/if}}">
+
+					{{!-- Variety data
+					//    ------------ --}}
+
+					<div id="Vty{{IDVty}}">
+						<div class="form-row py-0 align-items-center">
+							<div class="col-md-4">
+								<div class="form-row pl-0 align-items-center">
+									<div class="d-none d-md-flex form-group col-md-4">
+										{{hTextIDVty IDVty}}
+									</div>
+									<div class="d-md-none form-group col-md-4 font-weight-semi">
+										<span class="d-md-none">Variety </span>{{hTextIDVty IDVty}}
+									</div>
+									<div class="d-none d-md-flex form-group col-md-8">
+										{{hNameVty this}}
+									</div>
+									<div class="d-md-none form-group col-md-8 font-weight-semi">
+										{{hNameVty this}}
+									</div>
+								</div>
+							</div>
+
+							{{!-- The 'col' style does something to make this visible in the
+							//    row, but we don't want it to act as a column in the mobile
+							//    layout, so we disable it until the 'md' size, where it won't
+							//    even be displayed: --}}
+							<hr class="d-md-none col-md">
+
+							<div class="d-md-none col font-weight-semi">
+								<div class="form-row pl-0 pb-0">
+									<div class="form-group col text-center">
+										Price
+									</div>
+									<div class="form-group col text-center">
+										Offer
+									</div>
+									<div class="form-group col text-center">
+										Order
+									</div>
+									<!--<div class="form-group col text-center">
+										Prom
+									</div>-->
+									<!--<div class="form-group col text-center">
+										Wthd
+									</div>-->
+									<div class="form-group col text-center">
+										Avail
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md">
+								<div class="form-row pl-0 align-items-center">
+									<div class="form-group col text-center">
+										{{hTextCurrOrOrig PriceNomWeb}}
+									</div>
+									<div class="form-group col text-center">
+										<input name="QtyOffer{{IDVty}}" value="{{QtyOffer}}"
+											class="InputQtyOffer InputQty form-control form-control-sm"
+											{{hAttrFldDisab "QtyOffer" IDVty}}>
+									</div>
+									<div class="form-group col text-center">
+										{{QtyOrd}}
+									</div>
+									<!--<div class="form-group col text-center">
+										{{QtyProm}}
+									</div>-->
+									<!--<div class="form-group col text-center">
+										{{QtyWithdr}}
+									</div>-->
+									<div class="form-group col text-center">
+										{{hQtyAvailAdd this}}
+									</div>
+								</div>
+							</div>
+
+							<hr class="d-md-none col-md">
+
+							<div class="form-group col-md-1 text-md-center">
+								<div class="d-none d-md-block pr-2">
+									{{hYesNoBlank CkInvtMgd}}
+								</div>
+								{{!-- Would be nicer to share the line with the listing status: --}}
+								<div class="d-md-none font-italic">
+									{{#if CkInvtMgd}}Managed*{{else}}Unmanaged{{/if}}
+								</div>
+							</div>
+
+							<div class="form-group col-md-2 pt-1 mb-2 mb-md-1">
+								{{!-- See the 'Variety listing status' comments in 'Db.js' to
+								//    understand why this dropdown is used, rather than the
+								//    CkListWeb, CkListOnsite, and CkArchiv checkboxes one would
+								//    expect: --}}
+								<select id="CdListVty{{IDVty}}" name="CdListVty{{IDVty}}"
+									value="{{CdListVty}}"
+									class="SelCdListVty custom-select custom-select-sm
+									{{#if MsgFailCdListVty}}is-invalid{{/if}}"
+									{{hAttrFldDisab "CdListVty" IDVty}}>
+									{{hOptsCdListVty this}}
+								</select>
+								{{hDivMsgFail MsgFailCdListVty}}
+							</div>
+						</div>
+					</div>
+
+					{{!-- Shopper note entries
+					//    -------------------- --}}
+
+					{{#if NotesShop}}
+					<div class="px-2 pt-2 pt-md-0 pb-2">
+						{{#each NotesShop}}
+						<div class="BoxNoteShop {{#if NoteShopDenied}}Denied{{/if}}
+							d-flex justify-content-between align-items-start border rounded-sm
+							pl-2 pr-1 py-1 mt-1">
+
+							<div class="pr-md-4">
+								<span class="align-middle">
+									{{hLinkEmailVty this ../../NameProduct ../Kind ../Size}}:
+									<em>"{{NoteShop}}{{NoteShopDenied}}"</em> ({{QtyProm}} promised)
+								</span>
+							</div>
+
+							{{!-- After check-in, we disable this hidden input so the value
+							//    won't be submitted. We also disable the buttons, so the user
+							//    won't be confused.  --}}
+							<input id="CkDenyNoteShop{{IDItCart}}"
+								name="CkDenyNoteShop{{IDItCart}}" type="hidden"
+								value="{{hJSONBool NoteShopDenied}}"
+								{{hAttrFldDisab "CkDenyNoteShop" IDItCart}}>
+
+							<button id="BtnDeny{{IDItCart}}" type="button"
+								class="BtnDeny {{#if NoteShopDenied}}d-none{{/if}}
+									btn btn-sm btn-outline-danger float-right"
+									{{hAttrFldDisab "CkDenyNoteShop" IDItCart}}>
+								Deny
+							</button>
+							<button id="BtnDenied{{IDItCart}}" type="button"
+								class="BtnDenied {{#unless NoteShopDenied}}d-none{{/unless}}
+									btn btn-sm btn-danger float-right"
+									{{hAttrFldDisab "CkDenyNoteShop" IDItCart}}>
+								Denied
+							</button>
+						</div>
+
+						<script>
+							// Use event bubbling, instead of repeating these. [TO DO]
+
+							$("#BtnDeny{{IDItCart}}").on("click", function (aEvt) {
+								$("#CkDenyNoteShop{{IDItCart}}").attr("value", "true");
+
+								const oBtn = $(this);
+								oBtn.addClass("d-none");
+								$("#BtnDenied{{IDItCart}}").removeClass("d-none");
+
+								oBtn.parent().addClass("Denied");
+							});
+
+							$("#BtnDenied{{IDItCart}}").on("click", function (aEvt) {
+								$("#CkDenyNoteShop{{IDItCart}}").attr("value", "false");
+
+								const oBtn = $(this);
+								oBtn.addClass("d-none");
+								$("#BtnDeny{{IDItCart}}").removeClass("d-none");
+
+								oBtn.parent().removeClass("Denied");
+							});
+						</script>
+						{{/each}}
+					</div>
+					{{/if}}
+				</div>
+				{{/each}}
+			</div>
+
+			{{/unless}}
+		</div>
+	</div>
+</div>

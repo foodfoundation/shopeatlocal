@@ -1,0 +1,45 @@
+{{!-- pCtlsFormSubcat.hbs
+//    -------------------
+//    Add/Edit Subcategory form controls --}}
+
+<div class="form-row">
+	<div class="form-group col mb-3">
+		<label for="IDCat">Category</label>
+		<select name="IDCat" value="{{IDCat}}" class="custom-select">
+
+			{{#each Cats}}
+			<option value="{{IDCat}}"
+				{{hAttrSel IDCat @root.IDCat}}>
+				{{NameCat}}
+			</option>
+			{{/each}}
+		</select>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col mb-0">
+		<label for="NameSubcat">Subcategory name</label>
+		<input name="NameSubcat" value="{{NameSubcat}}" maxlength="50"
+			class="form-control {{#if MsgFailNameSubcat}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailNameSubcat}}
+	</div>
+</div>
+
+<div class="form-group d-flex justify-content-between my-4">
+	<div>Taxable</div>
+	<div class="custom-control custom-checkbox">
+		<input id="CkTaxSale" name="CkTaxSale" type="checkbox"
+			{{hAttrCk CkTaxSale false}} class="custom-control-input">
+		<label for="CkTaxSale" class="custom-control-label mr-1">Yes</label>
+	</div>
+</div>
+
+<div class="form-group d-flex justify-content-between mt-4">
+	<div>EBT-eligible</div>
+	<div class="custom-control custom-checkbox">
+		<input id="CkEBT" name="CkEBT" type="checkbox" {{hAttrCk CkEBT false}}
+			class="custom-control-input">
+		<label for="CkEBT" class="custom-control-label mr-1">Yes</label>
+	</div>
+</div>

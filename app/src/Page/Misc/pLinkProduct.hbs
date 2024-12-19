@@ -1,0 +1,15 @@
+{{!-- pLinkProduct.hbs
+//    ----------------
+//    Product ID and name with staff-only link to Product Detail --}}
+
+{{#if (hCkStaffFromUser)}}
+<a href="/product-detail/{{IDProduct}}">
+	Product {{hTextIDProduct IDProduct}} {{NameProduct}}
+</a>
+{{else}}
+{{!-- Note that 'strong' would increase the weight if the containing block were
+//    already bold: --}}
+<span class="font-weight-semi">
+	Product {{hTextIDProduct IDProduct}} {{NameProduct}}
+</span>
+{{/if}}

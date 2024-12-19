@@ -1,0 +1,54 @@
+{{!-- delete-category.hbs
+//    -------------------
+//    Delete Category view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2 class="mb-3">Delete category</h2>
+
+	<p>
+		Specify a new category for subcategories that are currently assigned to this
+		one, then click <strong>Delete</strong>. Once deleted, the category cannot
+		be restored.
+	</p>
+
+	<hr class="mb-2">
+	<div class="d-flex align-items-center bg-light font-size-120 py-1 px-2">
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'cat.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div>
+			Category {{hTextIDCat IDCat}}<br>
+			<strong>{{NameCat}}</strong>
+		</div>
+	</div>
+	<hr class="mt-2">
+
+	<form id="form-main" class="pb-4" action="/delete-category/{{IDCat}}"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			<div class="form-group col mb-0">
+				<label for="IDCatReplace">Replacement category</label>
+				<select name="IDCatReplace" value="{{IDCatReplace}}"
+					class="custom-select">
+
+					{{#each CatsExcept}}
+					<option value="{{IDCat}}">
+						{{NameCat}}
+					</option>
+					{{/each}}
+				</select>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex justify-content-between">
+			<a href="/manage-categories" class="btn btn-secondary">Cancel</a>
+
+			<button type="submit" class="btn btn-danger">Delete</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,101 @@
+{{!-- producers.hbs
+//    -------------
+//    Producers view --}}
+
+<style>
+	body {
+		/*background: linear-gradient(120deg, hsla(66, 30%, 80%, 0.5),
+			hsla(66, 30%, 80%, 0) 70.71%);*/
+	}
+
+	#CardsProducer {
+		columns: 3;
+		column-gap: 0.5rem;
+	}
+
+	.CardProducer {
+		/* To support 'stretched-link': */
+		position: relative;
+		break-inside: avoid;
+
+		box-shadow: 0 0 4px rgba(0, 0, 0, 8%);
+		/* Many producer images have white backgrounds. Otherwise, we would match
+		// the product search result card background, which is darker: */
+		background-color: white;
+
+		border: 2px dotted hsl(0, 0%, 70%) !important;
+		border-radius: 0 !important;
+	}
+
+	/* The card columns flow, so we can't round the top-right and bottom-left
+	// corners the way we do in the product search. Doesn't matter much, just
+	// trying to create something that is stylistically consistent: */
+	.CardProducer:first-child {
+		border-top-left-radius: 10px !important;
+	}
+
+	.CardProducer:last-child {
+		border-bottom-right-radius: 10px !important;
+	}
+
+	.CardProducer:hover {
+		background-color: hsl(0, 0%, 93%);
+	}
+
+	/* Underline the producer name when hovering over any part of the card, which
+	// contains a stretched link: */
+	.CardProducer a:hover ~ .Name {
+		text-decoration: underline;
+	}
+
+	.CardProducer img {
+		max-height: 80px;
+		max-width: 90%;
+	}
+
+	/* Bootstrap 'sm' or small: */
+	@media (max-width: 767px) {
+		#CardsProducer {
+			columns: 2;
+		}
+	}
+
+	/* Bootstrap 'xs' or small: */
+	@media (max-width: 575px) {
+		#CardsProducer {
+			columns: 1;
+		}
+	}
+</style>
+
+<div class="container-md pb-4">
+	<div class="lead text-center font-size-150 mt-3">
+		{{CoopParams.CoopNameShort}} has partnered with <strong>{{Producers.length}} local independent
+		producers</strong> to meet your shopping needs.
+	</div>
+	<div class="lead text-center font-size-140">
+		Click below to learn more about each producer, and to see products.
+	</div>
+
+	<div id="CardsProducer" class="mt-3">
+		{{#each Producers}}
+		<div class="CardProducer border rounded text-center mb-2 px-3 py-2">
+			<a href="/about-producer/{{IDProducer}}" class="stretched-link"></a>
+
+			{{#if NameImgProducer}}
+			<div class="my-1">
+				<img src="{{hPrefixImageWithStorage NameImgProducer}}" alt="Producer image"
+					class="rounded">
+			</div>
+			{{/if}}
+			<div class="Name lead text-primary font-weight-semi">
+				{{NameBus}}
+			</div>
+			<hr class="my-1">
+			<div>
+				{{AboutProducts}}
+			</div>
+		</div>
+		{{/each}}
+	</div>
+</div>

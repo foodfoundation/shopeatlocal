@@ -1,0 +1,118 @@
+{{!-- location-fulfillment.hbs
+//    ------------------------
+//    Location Fulfillment view
+//
+//    It would be nice to group the shopper notes by variety, so that multiple
+//    notes could be displayed in the same variety line, but often the variety
+//    will contain a mix of noted and non-noted orders. Displaying a separate
+//    quantity for each note is simple enough, but the non-noted quantity must
+//    be displayed as well, and I think that would be confusing for the user. --}}
+
+<div class="container py-4">
+	<div class="d-md-flex flex-row justify-content-between align-items-baseline
+		mb-2">
+		<h2 class="mb-0">Location fulfillment</h2>
+		<h5>{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
+	</div>
+
+	<div class="d-print-none row">
+		<div class="col-md-5">
+			This page can be used to pick all items for an entire location. The items
+			can placed on a table and picked from there with the <span
+			class="font-weight-semi">Order fulfillment</span> and <span
+			class="font-weight-semi">Shopper checkout</span> pages, instead of picking
+			them from the distribution storage, as usual. Note that this is
+			<em>not</em> part of the normal fulfillment workflow.
+		</div>
+		<div class="col-md-3 mt-2 mt-md-0">
+			Unlike <span class="font-weight-semi">Order fulfillment</span>, this page
+			can be viewed while the delivery window is open. If an item has not
+			been checked-in, its delivery quantity will show <span
+			class="font-weight-semi">N/A</span>.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			{{>Misc/pInstructPrint}}
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="d-md-flex flex-row font-size-110">
+		<div class="d-none d-lg-block mr-3 mt-1">
+			<img src="{{hPrefixStatic 'loc.svg'}}" alt="" width="40" height="40">
+		</div>
+
+		<div class="line-height-140">
+			<div class="font-size-120 font-weight-semi">
+				{{Loc.CdLoc}}
+			</div>
+			<div class="font-size-120">
+				{{Loc.NameLoc}}
+			</div>
+		</div>
+	</div>
+
+	{{#each Stors}}
+	<div>
+		<div class="d-flex align-items-center mt-5">
+			<img src="{{hPrefixStatic 'stor.svg'}}" alt=""
+				class="d-none d-lg-block ml-1 mr-3" width="30" height="30">
+			<h3 class="mb-0">
+				{{CdStor}}: {{hTextCdStor CdStor}}
+			</h3>
+		</div>
+
+		<hr class="mt-2 mb-1">
+
+		<div class="GridTbl Head d-none d-md-block">
+			<div class="row font-weight-bold">
+				<div class="col-3">Producer</div>
+				<div class="col-5">Product</div>
+				<div class="col-3">Variety</div>
+				<div class="col-1 text-right">Deliv</div>
+			</div>
+		</div>
+
+		<div class="GridTbl Body mb-3">
+			{{#each Its}}
+			<div class="Row">
+				<div class="row">
+					<div class="col-md-3">
+						<a href="/producer-detail/{{IDProducer}}">
+							{{hTextIDProducer IDProducer}} {{NameBus}}
+						</a>
+					</div>
+					<div class="col-md-5">
+						<a href="/product-detail/{{IDProduct}}">
+							{{hTextIDProduct IDProduct}} {{NameProduct}}
+						</a>
+					</div>
+					<div class="col-md-3">
+						{{hTextIDVty IDVty}} {{hNameVty this}}
+					</div>
+					<div class="col-md-1 text-md-right mb-1 mb-md-0">
+						<span class="d-md-none">Deliv </span>
+						{{hIIf (hCkNull QtyDeliv) "N/A" QtyDeliv}}
+					</div>
+				</div>
+				{{#if NoteShop}}
+				<div class="row pt-0">
+					<div class="col-md">
+						<a href="/member-detail/{{IDMemb}}">
+							{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}</a>:
+							<em>"{{NoteShop}}"</em>
+					</div>
+				</div>
+				{{/if}}
+			</div>
+			{{/each}}
+		</div>
+	</div>
+	{{else}}
+	<hr>
+
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No items delivered</h2>
+	</div>
+	{{/each}}
+</div>

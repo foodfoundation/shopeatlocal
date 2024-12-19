@@ -1,0 +1,57 @@
+{{!-- manage-locations.hbs
+//    --------------------
+//    Manage Locations view --}}
+
+{{#*inline "pLocs"}}
+<div class="Stripe mt-3">
+	{{#each this}}
+	<div class="row py-2 mx-0">
+		<div class="col-md-3 d-flex font-size-110 px-2">
+			<div class="d-none d-md-block mt-1 mr-2">
+				<img src="{{hPrefixStatic 'loc.svg'}}" alt="" width="40" height="40">
+			</div>
+			<div>
+				<strong>{{CdLoc}}</strong><br>
+				{{NameLoc}}<br>
+				{{hTextTypeLoc CdTypeLoc}}
+			</div>
+		</div>
+		<div class="col-md-3 MargP-0 px-2 mt-2 mt-md-0">
+			{{hHTMLLinesP Addr}}
+		</div>
+		<div class="col-md px-2 mt-2 mt-md-0 mb-0">
+			{{hHTMLLinesP Instruct}}
+		</div>
+		<div class="col-md-1 text-right px-2">
+			<hr class="d-md-none mt-0 mb-2">
+			<a href="/edit-location/{{CdLoc}}"
+				class="btn btn-sm btn-outline-primary">Edit</a>
+		</div>
+	</div>
+	{{/each}}
+</div>
+{{/inline}}
+
+<div class="container py-4">
+	<div class="d-flex justify-content-between align-items-start">
+		<h2 class="mb-0">Manage locations</h2>
+
+		<a href="/add-location" class="btn btn-primary">Add location</a>
+	</div>
+
+	<hr>
+
+	{{#unless LocsActiv}}
+	<p class="lead mt-4">No active locations</p>
+	{{else}}
+	<h3 class="mt-4">Active locations</h3>
+	{{>pLocs LocsActiv}}
+	{{/unless}}
+
+	{{#unless LocsInactiv}}
+	<p class="lead mt-5">No inactive locations</p>
+	{{else}}
+	<h3 class="mt-5">Inactive locations</h3>
+	{{>pLocs LocsInactiv}}
+	{{/unless}}
+</div>

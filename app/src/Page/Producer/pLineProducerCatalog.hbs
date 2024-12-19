@@ -1,0 +1,88 @@
+{{!-- pLineProducerCatalog.hbs
+//    ------------------------
+//    Producer Catalog product line --}}
+
+{{#hOnChange "TextCatSubcat"}}
+<div class="HeadSheet border rounded font-weight-bold my-3 p-2">
+	<div class="d-flex align-items-center">
+		<div class="d-none d-md-block mr-2">
+			<img src="{{hPrefixStatic 'cat.svg'}}" alt="" width="25" height="25">
+		</div>
+		<h3 class="mb-0">{{TextCatSubcat}}</h3>
+	</div>
+</div>
+{{/hOnChange}}
+
+<div class="Product Sheet border rounded mb-2 p-3
+	{{#if CkContainList}}CkContainList{{/if}}
+	{{#if CkContainUnlist}}CkContainUnlist{{/if}}
+	{{#if CkContainArchiv}}CkContainArchiv{{/if}}
+	{{#if QtyOrd}}Ord{{else}}NoOrd{{/if}}">
+
+	<div class="row">
+		{{#if NameImgProduct}}
+		<div class="col-md-2 my-2 my-md-0 pr-0">
+			<img src="{{hPrefixImageWithStorage NameImgProduct}}" alt="Product image"
+				class="w-100 border rounded d-none d-md-inline">
+			<img src="{{hPrefixImageWithStorage NameImgProduct}}" alt="Product image"
+				class="w-50 border rounded d-md-none">
+		</div>
+		{{/if}}
+
+		<div class="d-flex {{#if NameImgProduct}}col-md-4{{else}}col-md-6{{/if}}">
+			{{#unless NameImgProduct}}
+			<div class="d-none d-md-block pr-3 mt-1">
+				<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+			</div>
+			{{/unless}}
+
+			<div>
+				<div class="mb-1 font-size-120">
+					<div>
+						<a href="/product-detail/{{IDProduct}}" class="font-weight-normal">
+							Product {{hTextIDProduct IDProduct}}
+						</a>
+					</div>
+					<div class="font-weight-bold">
+						{{NameProduct}}
+					</div>
+					<div>
+						{{hTextCdStor CdStor}}
+					</div>
+				</div>
+
+				<div class="mt-3">
+					{{>Misc/pLinksAttrProduct}}
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4 MargP-Trim font-italic">
+			{{hHTMLLinesP Descrip}}
+		</div>
+
+		<div class="col-md-2 text-md-right mt-2 mt-md-0">
+			<a href="/edit-product/{{IDProduct}}" class="btn btn-outline-primary" target="_blank">
+				Edit product
+			</a>
+		</div>
+	</div>
+
+	<div class="row mt-3">
+		<div class="col-md">
+			{{#if Vtys}}
+			{{>Product/pTblVtyProducer Vtys}}
+			{{else}}
+			<div class="jumbotron mb-3">
+				<h2 class="display-4 font-size-200">No varieties</h2>
+			</div>
+			{{/if}}
+		</div>
+	</div>
+
+	<div class="d-flex">
+		<a href="/add-variety/{{IDProduct}}" class="btn btn-primary ml-auto" target="_blank">
+			Add variety
+		</a>
+	</div>
+</div>

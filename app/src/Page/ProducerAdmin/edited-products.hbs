@@ -1,0 +1,101 @@
+{{!-- edited-products.hbs
+//    -------------------
+//    Edited Products view --}}
+
+<style>
+	.Product .Box {
+		background-color: hsla(0, 0%, 0%, 0.1);
+	}
+</style>
+
+<div class="container-md py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2>Edited products</h2>
+
+		{{#unless CkSelImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredSelImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<div class="mb-3">
+		These product or varieties were created or edited in the last month.
+	</div>
+
+	<hr>
+
+	{{#each Products}}
+	<div class="Sheet border rounded mb-2 pt-2 pl-3 pr-3 pb-3">
+		<div class="Box row rounded-lg py-1 mx-0">
+			<div class="col-md px-1">
+				<div class="d-md-flex">
+					<div class="d-none d-md-block pr-3 mt-1">
+						<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+					</div>
+					<div>
+						{{>Misc/pLinkProduct}}<br>
+						Edited {{hTextWhen WhenEdit "Med" "HourMin"}}
+					</div>
+					<div class="flex-fill text-md-right">
+						{{>Misc/pLinkProducer}}<br>
+						{{NameBus}}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{{#unless Vtys}}
+		<h5 class="font-size-110 mt-2 mb-1 pl-1">No edited varieties</h5>
+		{{else}}
+		<h5 class="font-size-110 mt-3 pl-1">Edited varieties</h5>
+
+		{{!-- Variety heading
+		//    --------------- --}}
+
+		<div class="GridTbl Head d-none d-md-block">
+			<div class="row font-weight-bold">
+				<div class="col-md-1">ID</div>
+				<div class="col-md">Size / kind</div>
+				<div class="col-md-2 text-md-right">Web price</div>
+				<div class="col-md-3 text-md-right">Edited</div>
+			</div>
+		</div>
+
+		{{!-- Variety entries
+		//    --------------- --}}
+
+		<div class="GridTbl Body">
+			{{#each Vtys}}
+			<div class="Row">
+				<div class="row">
+					<div class="col-md-1">
+						<a href="/product-detail/{{../IDProduct}}" class="stretched-link"></a>
+						<span class="d-md-none">ID</span>
+						{{hTextIDVty IDVty}}
+					</div>
+					<div class="col-md">
+						<a href="/product-detail/{{../IDProduct}}" class="stretched-link"></a>
+						{{hNameVty this}}
+					</div>
+					<div class="col-md-2 text-md-right">
+						<a href="/product-detail/{{../IDProduct}}" class="stretched-link"></a>
+						{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
+					</div>
+					<div class="col-md-3 text-md-right">
+						<a href="/product-detail/{{../IDProduct}}" class="stretched-link"></a>
+						<span class="d-md-none">Edited</span>
+						{{hTextWhen WhenEdit "Med" "HourMin"}}
+					</div>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+		{{/unless}}
+	</div>
+	{{/each}}
+</div>

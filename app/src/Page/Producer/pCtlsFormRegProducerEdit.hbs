@@ -1,0 +1,420 @@
+{{!-- pCtlsFormRegProducerEdit.hbs
+//    ------------------------
+//    Producer registration form --}}
+
+<h3 class="mb-3">Contact information</h3>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="NameBus">Business name</label>
+		<input id="NameBus" name="NameBus" value="{{NameBus}}" maxlength="80"
+			autocomplete="organization"
+			class="form-control {{#if MsgFailNameBus}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailNameBus}}
+		<label class="text-info">
+			<small>
+				This does not have to match the business named in your member
+				registration (though it can).
+			</small>
+		</label>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="Addr1">Street address 1 *</label>
+		<input id="Addr1" name="Addr1" value="{{Addr1}}" maxlength="80" required
+			autocomplete="address-line1"
+			class="form-control {{#if MsgFailAddr1}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailAddr1}}
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="Addr2">Street address 2</label>
+		<input id="Addr2" name="Addr2" value="{{Addr2}}" maxlength="80"
+			autocomplete="address-line2"
+			class="form-control {{#if MsgFailAddr2}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailAddr2}}
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-3">
+		<label for="City">City *</label>
+		<input id="City" name="City" value="{{City}}" maxlength="50" required
+			autocomplete="address-level2"
+			class="form-control {{#if MsgFailCity}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailCity}}
+	</div>
+
+	<div class="form-group col-md-2">
+		<label for="St">State *</label>
+		<input id="St" name="St" value="{{St}}" maxlength="2" pattern="[A-Za-z]{2}"
+			required autocomplete="address-level1"
+			class="form-control {{#if MsgFailSt}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailSt}}
+	</div>
+
+	<div class="form-group col-md-3">
+		<label for="Zip">Zip *</label>
+		<input id="Zip" name="Zip" value="{{Zip}}" maxlength="10"
+			pattern="(\d{5}|\d{9}\d{5}[ \-]\d{4})" required autocomplete="postal-code"
+			inputmode="numeric"
+			class="form-control {{#if MsgFailZip}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailZip}}
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="InstructDeliv">Special delivery instructions</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="InstructDeliv" maxlength="200"
+			class="form-control">{{InstructDeliv}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col">
+		<div class="custom-control custom-checkbox">
+			<input id="CkShowAddr" name="CkShowAddr" type="checkbox"
+				{{hAttrCk CkShowAddr false}} class="custom-control-input">
+			<label for="CkShowAddr" class="custom-control-label">
+				Show this address to {{CoopParams.CoopNameShort}} shoppers?
+			</label>
+		</div>
+	</div>
+</div>
+
+<hr>
+
+<div class="form-row align-items-end">
+	<div class="form-group col-md-4">
+		<label for="Phone1">Phone 1 (with area code) *</label>
+		<input id="Phone1" name="Phone1" type="tel"
+			value="{{hTextPhoneOrOrig Phone1}}" maxlength="30" required
+			autocomplete="tel" inputmode="tel"
+			class="form-control {{#if MsgFailPhone1}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailPhone1}}
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkShowPhone1" name="CkShowPhone1" type="checkbox"
+				{{hAttrCk CkShowPhone1 false}} class="custom-control-input">
+			<label for="CkShowPhone1" class="custom-control-label">
+				Show phone 1 to {{CoopParams.CoopNameShort}} shoppers?
+			</label>
+		</div>
+	</div>
+
+	<div class="form-group col-md-4 offset-md-2">
+		<label for="Phone2">Phone 2 (with area code)</label>
+		<input id="Phone2" name="Phone2" type="tel"
+			value="{{hTextPhoneOrOrig Phone2}}" maxlength="30" autocomplete="off"
+			inputmode="tel"
+			class="form-control {{#if MsgFailPhone2}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailPhone2}}
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkShowPhone2" name="CkShowPhone2" type="checkbox"
+				{{hAttrCk CkShowPhone2 false}} class="custom-control-input">
+			<label for="CkShowPhone2" class="custom-control-label">
+				Show phone 2 to {{CoopParams.CoopNameShort}} shoppers?
+			</label>
+		</div>
+	</div>
+</div>
+
+<hr>
+
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="Email">E-mail *</label>
+		<input id="Email" name="Email" type="email" value="{{Email}}" maxlength="80"
+			required autocomplete="email" inputmode="email"
+			class="form-control col-md-8 {{#if MsgFailEmail}}is-invalid{{/if}}">
+		{{hDivMsgFail MsgFailEmail}}
+	</div>
+</div>
+
+<h3 class="mb-3">'About producer'</h3>
+
+<p class="lead">
+	These fields will be displayed on your <strong>About Producer</strong>
+	page. Shoppers will use them to learn about you and your products.
+</p>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="AboutStory">Your story</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="AboutStory" maxlength="1000" rows="6"
+			class="form-control">{{AboutStory}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="AboutProducts">Your products</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="AboutProducts" maxlength="1000" rows="6"
+			class="form-control">{{AboutProducts}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="AboutPract">Your practices and ingredients</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="AboutPract" maxlength="1000" rows="6"
+			class="form-control">{{AboutPract}}</textarea>
+	</div>
+</div>
+
+<h3 class="mb-3">Product categories</h3>
+
+<p class="lead">
+	Please specify the products you would like to sell.
+</p>
+
+{{!-- I would prefer that these columns flow vertically. Probably have to use
+//    CSS columns for that. It would be nice to turn the checkboxes red if they
+//    fail validation, but because these are not validated individually, another
+//    partial would be necessary (with 'is-invalid' set). Adding 'text-danger'
+//    to the containing 'div' changes the text color, but not the checkboxes
+//    themselves: --}}
+<div class="form-row row-cols-1 row-cols-md-2 row-cols-lg-3 pl-2">
+	{{#each Cats}}
+	{{>Producer/pBoxCat this}}
+	{{/each}}
+</div>
+<div class="mt-2">
+	{{hDivMsgFailForm MsgFailCats}}
+</div>
+
+<h3 class="my-3">Production details</h3>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="PractGen">General practices</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="PractGen" maxlength="1000" rows="6"
+			class="form-control">{{PractGen}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-3">
+		<label for="CdProductMeat">Meat product types</label>
+		<select id="CdProductMeat" name="CdProductMeat" value="{{CdProductMeat}}"
+			class="custom-select {{#if MsgFailCdProductMeat}}is-invalid{{/if}}">
+
+			<option value="None" selected>None</option>
+			<option value="Live">Live</option>
+			<option value="Cuts">Cuts</option>
+		</select>
+		{{hDivMsgFail MsgFailCdProductMeat}}
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="DtlProcessMeatCut">Cut meat processing</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="DtlProcessMeatCut" maxlength="1000" rows="6"
+			class="form-control">{{DtlProcessMeatCut}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="DtlPestDiseaseLandSoil">
+			Pest &amp; disease management / Land &amp; soil practices
+		</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="DtlPestDiseaseLandSoil" maxlength="1000" rows="6"
+			class="form-control">{{DtlPestDiseaseLandSoil}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="DtlLivestockFeed">
+			Livestock production &amp; feeding practices
+		</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="DtlLivestockFeed" maxlength="1000" rows="6"
+			class="form-control">{{DtlLivestockFeed}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<div class="custom-control custom-checkbox">
+			<input id="CkFeedsByprodAnimal" name="CkFeedsByprodAnimal" type="checkbox"
+				{{hAttrCk CkFeedsByprodAnimal false}} class="custom-control-input">
+			<label for="CkFeedsByprodAnimal" class="custom-control-label">
+				Feeds include animal by-products
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkHormone" name="CkHormone" type="checkbox"
+				{{hAttrCk CkHormone false}} class="custom-control-input">
+			<label for="CkHormone" class="custom-control-label">
+				Hormone use
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkAntibiotic" name="CkAntibiotic" type="checkbox"
+				{{hAttrCk CkAntibiotic false}} class="custom-control-input">
+			<label for="CkAntibiotic" class="custom-control-label">
+				Antibiotic use
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="DtlAcquisAnimal">Animal acquisition</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="DtlAcquisAnimal" maxlength="1000" rows="6"
+			class="form-control">{{DtlAcquisAnimal}}</textarea>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="DtlInfoAddition">Additional information</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="DtlInfoAddition" maxlength="1000" rows="6"
+			class="form-control">{{DtlInfoAddition}}</textarea>
+	</div>
+</div>
+
+<h3 class="mb-3">Certifications</h3>
+
+<div class="form-row">
+	<div class="form-group col-md-6 mb-2">
+		<div class="custom-control custom-checkbox">
+			<input id="CkCertOrganic" name="CkCertOrganic" type="checkbox"
+				{{hAttrCk CkCertOrganic false}} class="custom-control-input">
+			<label for="CkCertOrganic" class="custom-control-label">
+				Certified organic
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkCertNaturGrown" name="CkCertNaturGrown" type="checkbox"
+				{{hAttrCk CkCertNaturGrown false}} class="custom-control-input">
+			<label for="CkCertNaturGrown" class="custom-control-label">
+				Certified Naturally Grown
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkCertAnimalWelfare" name="CkCertAnimalWelfare" type="checkbox"
+				{{hAttrCk CkCertAnimalWelfare false}} class="custom-control-input">
+			<label for="CkCertAnimalWelfare" class="custom-control-label">
+				Animal Welfare Certified
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkCertFairTrade" name="CkCertFairTrade" type="checkbox"
+				{{hAttrCk CkCertFairTrade false}} class="custom-control-input">
+			<label for="CkCertFairTrade" class="custom-control-label">
+				Fair-trade certified
+			</label>
+		</div>
+	</div>
+
+	<div class="form-group col-md-6">
+		<div class="custom-control custom-checkbox">
+			<input id="CkLicenseEggHand" name="CkLicenseEggHand" type="checkbox"
+				{{hAttrCk CkLicenseEggHand false}} class="custom-control-input">
+			<label for="CkLicenseEggHand" class="custom-control-label">
+				Egg-handler's license
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkLicenseHomeFoodEstab" name="CkLicenseHomeFoodEstab"
+				type="checkbox" {{hAttrCk CkLicenseHomeFoodEstab false}}
+				class="custom-control-input">
+			<label for="CkLicenseHomeFoodEstab" class="custom-control-label">
+				Home Food Establishment license
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkLicenseKitch" name="CkLicenseKitch" type="checkbox"
+				{{hAttrCk CkLicenseKitch false}} class="custom-control-input">
+			<label for="CkLicenseKitch" class="custom-control-label">
+				Licensed kitchen
+			</label>
+		</div>
+
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkInsurLiab" name="CkInsurLiab" type="checkbox"
+				{{hAttrCk CkInsurLiab false}} class="custom-control-input">
+			<label for="CkInsurLiab" class="custom-control-label">
+				Liability insurance
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md-8">
+		<label for="DtlCertOther">Other certifications</label>
+		{{!-- Don't wrap between the two tags, doing so adds whitespace to
+		//    the input: --}}
+		<textarea name="DtlCertOther" maxlength="1000"
+			class="form-control">{{DtlCertOther}}</textarea>
+	</div>
+</div>
+
+{{#unless IDProducer}}
+<h3 class="mb-3">Terms and agreements</h3>
+
+<p>
+	I affirm that all statements made about my farm and products in this
+	application are true, correct, and complete, and I have given a truthful
+	representation of my operation, practices, and origin of products. I
+	understand that if questions arise about my operation I may be inspected
+	(unannounced) by {{CoopParams.CoopName}}. If I stated that my operation
+	is Certified Organic, Certified Naturally Grown, or Animal Welfare
+	Approved, I affirm that I am complying with the program of my certifier,
+	and I will send a copy of my certification. I have read all of {{CoopParams.CoopName}}'s
+	<a href="{{CoopParams.ProducerStandardsWebsite}}">Producer Standards</a>
+	and fully understand and am willing to comply with them.
+</p>
+
+<div class="form-row">
+	<div class="form-group col">
+		<div class="custom-control custom-checkbox">
+			<input id="CkAffirmTerms" name="CkAffirmTerms" type="checkbox"
+				{{hAttrCk CkAffirmTerms false}} required
+				class="custom-control-input {{#if MsgFailCkAffirmTerms}}is-invalid{{/if}}">
+			<label for="CkAffirmTerms" class="custom-control-label">
+				I agree *
+			</label>
+			{{hDivMsgFail MsgFailCkAffirmTerms}}
+		</div>
+	</div>
+</div>
+{{/unless}}

@@ -1,0 +1,100 @@
+{{!-- pLineProducerCheckIn.hbs
+//    ------------------------
+//    Producer Check-in product line --}}
+
+<div class="row HeadSheet border rounded-sm py-1 mx-0">
+	<div class="col-md pl-2">
+		<div class="d-flex">
+			{{!-- Without the icon, these blocks run together with everything else.
+			//    Display product thumbnail instead, where possible?: [TO DO] --}}
+			<div class="d-none d-md-block pr-3 mt-1">
+				<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
+			</div>
+			<div>
+				<span class="font-weight-semi">
+					Product {{hTextIDProduct IDProduct}}
+				</span><br>
+				{{NameProduct}}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="Vtys mt-2">
+	{{#each Vtys}}
+
+	<div id="Vty{{IDVty}}-{{IDItCart}}" class="Vty border rounded p-2 mb-2"
+		data-qty-prom="{{QtyProm}}">
+		<div class="form-row">
+			<div class="form-group col-md-4 mb-0">
+				<span class="font-weight-semi">Variety {{hTextIDVty IDVty}}</span><br>
+				{{hNameVty this}}
+			</div>
+
+			<div class="form-group col-md-8 mb-0 text-md-right">
+				{{#if CkInvtMgd}}
+					Managed
+				{{else}}
+					{{#if NoteShop}}
+					<span class="font-weight-semi">
+						{{hTextIDMemb IDMembShop}} {{NameFirstShop}} {{NameLastShop}}
+					</span><br>
+					"<em>{{NoteShop}}</em>"
+					{{else}}
+					No note
+					{{/if}}
+				{{/if}}
+			</div>
+		</div>
+
+		<hr class="RuleFulf my-2">
+
+		<div class="form-row align-items-center px-1">
+			<div class="form-group font-weight-bold mb-0">
+				{{!-- Splitting the variable-price quantities into separate records
+				//    produces unit quantities: --}}
+				{{#if CkPriceVar}}{{Its.length}}{{else}}{{QtyProm}}{{/if}} promised
+			</div>
+
+			<div class="form-group border-left BordDk ml-2 mb-0 pl-2">
+				<input id="QtyTruant{{IDItDeliv}}" name="QtyTruant{{IDItDeliv}}"
+					value="{{QtyTruant}}" data-id-it-vty="{{IDVty}}"
+					class="QtyTruant InputQty d-inline form-control form-control-sm">
+				<span class="font-weight-bold ml-1">truant</span>
+			</div>
+
+			<div class="form-group flex-fill d-flex flex-wrap justify-content-end
+				align-items-center mt-0 mb-0">
+				{{#if CkPriceVar}}
+					<span class="mr-auto mr-md-2 pl-3 font-weight-bold">
+						Wgts delivered
+					</span>
+					{{#each Its}}
+						<input id="WgtPer{{IDItDeliv}}" name="WgtPer{{IDItDeliv}}"
+							{{#unless @root.CkAllowKbd}}readonly{{/unless}}
+							value="{{hTextWgtOrOrig WgtPer}}"
+							class="WgtPer InputWgt form-control form-control-sm mt-1 mt-md-0
+								ml-1">
+					{{/each}}
+				{{else}}
+					<span class="mr-auto mr-sm-2 pl-3 font-weight-bold">
+						Qty delivered
+					</span>
+					{{#each Its}}
+						<input id="QtyDeliv{{IDItDeliv}}" name="QtyDeliv{{IDItDeliv}}"
+							{{#unless @root.CkAllowKbd}}readonly{{/unless}}
+							value="{{QtyDeliv}}" data-id-it-deliv="{{IDItDeliv}}"
+							class="QtyDeliv InputQty form-control form-control-sm">
+
+						<button type="button" data-id-it-deliv="{{IDItDeliv}}"
+							class="BtnAddDeliv {{#unless @root.CkAllowKbd}}d-none{{/unless}}
+							btn btn-sm btn-outline-primary ml-2 font-weight-bold">
+							+1
+						</button>
+					{{/each}}
+				{{/if}}
+			</div>
+		</div>
+	</div>
+	{{/each}}
+</div>

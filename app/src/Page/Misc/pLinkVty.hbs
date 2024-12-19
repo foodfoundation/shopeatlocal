@@ -1,0 +1,12 @@
+{{!-- pLinkVty.hbs
+//    ------------
+//    Variety label --}}
+
+{{#if (hCkStaffFromUser)}}
+{{!-- There is no 'variety detail', so I guess this makes sense: --}}
+<a href="/product-detail/{{IDProduct}}">Variety {{hTextIDVty IDVty}}</a>
+{{else}}
+<span class="font-weight-semi">
+	Variety {{hTextIDVty IDVty}}
+</span>
+{{/if}}

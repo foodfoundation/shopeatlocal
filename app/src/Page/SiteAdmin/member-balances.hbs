@@ -1,0 +1,577 @@
+{{!-- member-balances.hbs
+// ----------------------
+// Member Balances view --}}
+
+<style>
+	h4 {
+		margin: 0;
+	}
+
+	h5 {
+		margin: 0.25em 0 0.75em 0;
+		font-size: 110%;
+	}
+
+	table {
+		background-color: #F0F0F0;
+	}
+
+	table.Trans {
+		margin: 1.25em 0 0 0;
+	}
+
+	table.Bal {
+		margin: 1.25em 0;
+	}
+
+	table thead {
+		font-weight: 600;
+	}
+
+	table thead td {
+		vertical-align: bottom !important;
+	}
+
+	table td {
+		text-align: right;
+	}
+
+	table td:first-child {
+		text-align: left;
+		font-weight: 600;
+	}
+
+	table.Trans td:nth-child(3),
+	table.Trans td:nth-child(5) {
+		padding-right: 0.5em;
+	}
+
+	table.Trans td:nth-child(4),
+	table.Trans td:nth-child(6) {
+		border-left: 1px solid #DDD;
+	}
+</style>
+
+<div class="w-lg-50 container-md py-4">
+	<h3 class="mb-3">Member balances</h3>
+
+	<p>
+		Non-EBT members have a single <strong>money balance</strong>. This is the
+		sum of all their transaction values, including producer earnings, if they
+		have them.
+	</p>
+	<p>
+		EBT members have a money balance, but they also have an <strong>EBT
+		balance</strong>, which is the sum of their EBT-approved shopper charges,
+		EBT payments, and EBT adjustments. They have a <strong>total
+		balance</strong> as well, this being the sum of their EBT and money
+		balances. These balances are also displayed for members who were once
+		EBT-approved, but are no longer, if their EBT balance is still non-zero.
+	</p>
+	<p>
+		The EBT balance is used to track <strong>EBT eligibility</strong>,
+		which is the amount the member is allowed (though not required) to pay
+		with EBT. It is also used when granting refunds to EBT members, to ensure
+		they are not given money refunds for items they purchased with EBT, or
+		<em>vice versa</em>.
+	</p>
+
+	<hr>
+	<h4>
+		Correct EBT refund process
+	</h4>
+	<h5>
+		EBT/money payment followed by refund adjustment
+	</h5>
+
+	<p>
+		When EBT-approved members make purchases, their shopper charges are divided
+		into <em>EBT</em> and <em>money</em> values, according to the EBT elibility
+		of the purchased items.
+	</p>
+	<p>
+		When a refund is granted on such a purchase, the refund adjustment <em>must
+		reflect the EBT eligibility of the refunded items</em>. Consider an
+		EBT shopper who purchases <b>$12.00</b> of EBT-eligible items and
+		<b>$4.00</b> of non-eligible items. If the entire purchase is later
+		refunded, the refund adjustment should specify EBT and money values that are <em>equal and opposite to the invoice values</em>. In this case, the
+		adjustment would be <b>-$12.00</b> EBT and <b>-$4.00</b> money.
+	</p>
+	<p>
+		Having done this, if it become necessary to settle the member's balance,
+		that can be accomplished with payments that correspond to current EBT and
+		money balances:
+	</p>
+
+	<table class="Trans table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+				<td>EBT balance</td>
+				<td>Money balance</td>
+				<td>Total balance</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Shopper invoice charge</td>
+				<td class="Yellow">$12.00</td>
+				<td class="Yellow">$4.00</td>
+				<td>$12.00</td>
+				<td>$4.00</td>
+				<td>$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment received (EBT)</td>
+				<td>-$12.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$4.00</td>
+				<td>$4.00</td>
+			</tr>
+			<tr>
+				<td>Payment received (money)</td>
+				<td>$0.00</td>
+				<td>-$4.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+			<tr>
+				<td>Refund adjustment</td>
+				<td class="Yellow">-$12.00</td>
+				<td class="Yellow">-$4.00</td>
+				<td>-$12.00</td>
+				<td>-$4.00</td>
+				<td>-$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment disbursement (EBT)</td>
+				<td>$12.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>-$4.00</td>
+				<td>-$4.00</td>
+			</tr>
+			<tr>
+				<td>Payment disbursement (money)</td>
+				<td>$0.00</td>
+				<td>$4.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="Bal w-50 table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{CoopParams.CoopNameShort}} balance</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		After these transactions, {{CoopParams.CoopNameShort}} has received <b>$12.00</b> EBT
+		and <b>$4.00</b> money, and then paid those same amounts out. No EBT funds
+		have been converted to or from money.
+	</p>
+
+
+	<hr>
+	<h4>
+		Correct EBT refund process
+	</h4>
+	<h5>
+		All-money payment followed by refund adjustment
+	</h5>
+
+	<p>
+		Sometimes members use money payments to purchase EBT-eligible items. In this
+		example, the member pays a <b>$12.00</b> EBT and <b>$4.00</b> money balance
+		with <b>$16.00</b> of money. The member then requests a refund for their
+		entire purchase, and {{CoopParams.CoopNameShort}} correctly adds a refund adjustment with EBT and
+		money values that are equal and opposite to the invoice values, <em>not</em>
+		the value of the <b>$16.00</b> payment:
+	</p>
+
+	<table class="Trans table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+				<td>EBT balance</td>
+				<td>Money balance</td>
+				<td>Total balance</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Shopper invoice charge</td>
+				<td class="Yellow">$12.00</td>
+				<td class="Yellow">$4.00</td>
+				<td>$12.00</td>
+				<td>$4.00</td>
+				<td>$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment received (money)</td>
+				<td>$0.00</td>
+				<td>-$16.00</td>
+				<td>$12.00</td>
+				<td>-$12.00</td>
+				<td>$0.00</td>
+			</tr>
+			<tr>
+				<td>Refund adjustment</td>
+				<td class="Yellow">-$12.00</td>
+				<td class="Yellow">-$4.00</td>
+				<td>$0.00</td>
+				<td>-$16.00</td>
+				<td>-$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment disbursement (money)</td>
+				<td>$0.00</td>
+				<td>$16.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="Bal w-50 table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{CoopParams.CoopNameShort}} balance</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		Once again, after the refund and payments, {{CoopParams.CoopNameShort}}'s EBT receipts and payouts
+		sum to zero (there were none, in fact) as do its money receipts and payouts.
+		No EBT funds have been converted to or from money.
+	</p>
+
+
+	<hr>
+	<h4>
+		Incorrect EBT refund process
+	</h4>
+	<h5>
+		EBT/money payment followed by all-money adjustment
+	</h5>
+
+	<p>
+		Now consider a case where the refund adjustment is <em>incorrectly</em> made
+		with a single money value:
+	</p>
+
+	<table class="Trans table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+				<td>EBT balance</td>
+				<td>Money balance</td>
+				<td>Total balance</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Shopper invoice charge</td>
+				<td class="Yellow">$12.00</td>
+				<td class="Yellow">$4.00</td>
+				<td>$12.00</td>
+				<td>$4.00</td>
+				<td>$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment received (EBT)</td>
+				<td>-$12.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$4.00</td>
+				<td>$4.00</td>
+			</tr>
+			<tr>
+				<td>Payment received (money)</td>
+				<td>$0.00</td>
+				<td>-$4.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+			<tr>
+				<td>Refund adjustment</td>
+				<td class="Red">$0.00</td>
+				<td class="Red">-$16.00</td>
+				<td>$0.00</td>
+				<td>-$16.00</td>
+				<td>-$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment disbursement (money)</td>
+				<td>$0.00</td>
+				<td>$16.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="Bal w-50 table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{CoopParams.CoopNameShort}} balance</td>
+				<td class="Red">$12.00</td>
+				<td class="Red">-$12.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		Though the <em>total</em> balance is correct at every point,
+		{{CoopParams.CoopNameShort}} receives <b>$12.00</b> EBT and <b>$4.00</b> money, and then pays out
+		<b>$16.00</b> money. <b>$12.00</b> has been converted from EBT to money.
+	</p>
+
+
+	<hr>
+	<h4>
+		Incorrect EBT refund process
+	</h4>
+	<h5>
+		All-money payment followed by all-money adjustment
+	</h5>
+
+	<p>
+		Even if the member pays their balance entirely with money, it is
+		<em>incorrect</em> to set a refund adjustment to the value of the payment:
+	</p>
+
+	<table class="Trans table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+				<td>EBT balance</td>
+				<td>Money balance</td>
+				<td>Total balance</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Shopper invoice charge</td>
+				<td class="Yellow">$12.00</td>
+				<td class="Yellow">$4.00</td>
+				<td>$12.00</td>
+				<td>$4.00</td>
+				<td>$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment received (money)</td>
+				<td>$0.00</td>
+				<td>-$16.00</td>
+				<td>$12.00</td>
+				<td>-$12.00</td>
+				<td>$0.00</td>
+			</tr>
+			<tr>
+				<td>Refund adjustment</td>
+				<td class="Red">$0.00</td>
+				<td class="Red">-$16.00</td>
+				<td>$12.00</td>
+				<td>-$28.00</td>
+				<td>-$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment disbursement (money)</td>
+				<td>$0.00</td>
+				<td>$16.00</td>
+				<td class="Yellow">$12.00</td>
+				<td class="Yellow">-$12.00</td>
+				<td>$0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="Bal w-50 table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{CoopParams.CoopNameShort}} balance</td>
+				<td>0.00</td>
+				<td>0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		In the near term, no EBT funds have been converted to or from money.
+		However, the member is left with offsetting EBT/money balances, which could
+		cause money to be converted to EBT at a later date.
+	</p>
+
+
+	<hr>
+	<h4>
+		Incorrect EBT refund process
+	</h4>
+	<h5>
+		All-money payment followed by settlement and refund adjustments
+	</h5>
+
+	<p>
+		Anytime a member pays an EBT balance with money, an offsetting EBT/money
+		balance will be created. This is unavoidable because the entire
+		<em>purpose</em> of the EBT balance is to track the member's EBT-eligible
+		purchases relative to their EBT payments.
+	</p>
+	<p>
+		It may sometimes be desirable to remove these offsetting balances; it
+		seems likely, for instance, that EBT programs will disallow EBT refunds
+		after a certain time has passed. Offsetting balances can
+		be removed with an <strong>EBT settlement adjustment</strong>, this being an
+		adjustment with equal and opposite EBT and money values.
+	</p>
+	<p>
+		In this example, the member pays a <b>$12.00</b> EBT and <b>$4.00</b> money
+		balance with <b>$16.00</b> of money. Their total balance is now zero, but
+		they also have <b>$12.00</b> offsetting EBT/money balances, so a settlement
+		adjustment is added. Note that the settlement adjustment has a total value
+		of zero, so the total member balance does not change.
+	</p>
+	<p>
+		It is acceptable to add these settlement adjustments, however, having added
+		a settlement, <em>it is no longer possible to refund the member's purchase
+		in the usual way</em>. The settlement 'resets' the member's EBT payment
+		eligibility; in this case, the fact that they paid entirely with money:
+	</p>
+
+	<table class="Trans table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+				<td>EBT balance</td>
+				<td>Money balance</td>
+				<td>Total balance</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Shopper invoice charge</td>
+				<td>$12.00</td>
+				<td>$4.00</td>
+				<td>$12.00</td>
+				<td>$4.00</td>
+				<td>$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment received (money)</td>
+				<td>$0.00</td>
+				<td>-$16.00</td>
+				<td class="Yellow">$12.00</td>
+				<td class="Yellow">-$12.00</td>
+				<td>$0.00</td>
+			</tr>
+			<tr>
+				<td>Settlement adjustment</td>
+				<td class="Yellow">-$12.00</td>
+				<td class="Yellow">$12.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+			<tr>
+				<td>Refund adjustment</td>
+				<td class="Red">-$12.00</td>
+				<td class="Red">-$4.00</td>
+				<td>-$12.00</td>
+				<td>-$4.00</td>
+				<td>-$16.00</td>
+			</tr>
+			<tr>
+				<td>Payment disbursement (EBT)</td>
+				<td>$12.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$-4.00</td>
+				<td>$-4.00</td>
+			</tr>
+			<tr>
+				<td>Payment disbursement (money)</td>
+				<td>$0.00</td>
+				<td>$4.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+				<td>$0.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="Bal w-50 table table-sm table-striped table-hover">
+		<thead>
+			<tr>
+				<td></td>
+				<td>EBT</td>
+				<td>Money</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{CoopParams.CoopNameShort}} balance</td>
+				<td class="Red">-$12.00</td>
+				<td class="Red">$12.00</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		Following the usual refund process <em>after the EBT settlement</em>
+		produces a <b>$12.00</b> EBT refund, even though no EBT was used. {{CoopParams.CoopNameShort}} has
+		converted <b>$12.00</b> of money into EBT.
+	</p>
+</div>

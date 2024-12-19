@@ -1,0 +1,54 @@
+{{!-- delete-subcategory.hbs
+//    ----------------------
+//    Delete Subcategory view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2 class="mb-3">Delete subcategory</h2>
+
+	<p>
+		Specify a replacement for products assigned to this subcategory, then
+		click <strong>Delete</strong>. Once deleted, the subcategory cannot be
+		restored.
+	</p>
+
+	<hr class="mb-2">
+	<div class="d-flex align-items-center bg-light font-size-120 py-1 px-2">
+		<div class="d-none d-md-block mr-3">
+			<img src="{{hPrefixStatic 'subcat.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div>
+			Subcategory {{hTextIDSubcat IDSubcat}}<br>
+			<strong>{{NameCat}}: {{NameSubcat}}</strong>
+		</div>
+	</div>
+	<hr class="mt-2">
+
+	<form id="form-main" class="pb-4" action="/delete-subcategory/{{IDSubcat}}"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			<div class="form-group col mb-0">
+				<label for="IDSubcatReplace">Replacement subcategory</label>
+				<select name="IDSubcatReplace" value="{{IDSubcatReplace}}"
+					class="custom-select">
+
+					{{#each CatSubcatsExcept}}
+					<option value="{{IDSubcat}}">
+						{{NameCat}}: {{NameSubcat}}
+					</option>
+					{{/each}}
+				</select>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex justify-content-between">
+			<a href="/manage-categories" class="btn btn-secondary">Cancel</a>
+
+			<button type="submit" class="btn btn-danger">Delete</button>
+		</div>
+	</form>
+</div>

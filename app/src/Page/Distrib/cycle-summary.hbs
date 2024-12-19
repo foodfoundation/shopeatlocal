@@ -1,0 +1,118 @@
+{{!-- cycle-summary.hbs
+//    -----------------
+//    Cycle Summary view --}}
+
+<style>
+	.card {
+		flex: 1 1 0;
+		break-inside: avoid;
+	}
+
+	/* Bootstrap 'md' or smaller: */
+	@media (max-width: 991px) {
+		.card {
+			margin-top: 1rem;
+		}
+	}
+
+	/* Bootstrap 'lg' or larger: */
+	@media (min-width: 992px) {
+		.card+.card {
+			margin-left: 1rem;
+		}
+	}
+
+	.Before,
+	.Before .card {
+		color: gray;
+	}
+
+	.During .card {
+		background-color: hsla(45, 80%, 93%, 1);
+	}
+
+	.After .card {
+		background-color: hsla(140, 50%, 93%);
+	}
+</style>
+
+{{#*inline "pStat"}}
+<div class="card">
+	<div class="card-body text-center py-2">
+		<h3 class="mb-0">{{Qty}}</h3>
+		<div class="card-title mt-0 mb-0">{{hPlural Qty "item"}} {{Name}}</div>
+	</div>
+
+	<div class="card-footer px-2 py-1">
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="font-weight-semi">
+				{{hTextCurrOrOrig SaleNom}}{{#if CkEstim}}*{{/if}}
+			</div>
+			<div class="font-weight-semi">
+				{{hTextPercentOrOrig Percent}}
+			</div>
+		</div>
+	</div>
+</div>
+{{/inline}}
+
+<div class="containerx py-4 px-3 px-xl-5">
+	<div class="d-lg-flex">
+		<div class="w-lg-15 d-lg-flex flex-column text-lg-center mb-3 mb-lg-0 mr-3">
+			<h2 class="mb-0">Cycle summary</h2>
+			<h5 class="mt-2 mb-0">{{CtShop}} {{hPlural CtShop "shopper"}}</h5>
+			<div class="mt-2 mt-lg-auto">
+				This page displays item counts and nominal web sales by item fulfillment
+				status, so that shopping and fulfillment progress can be tracked as
+				the cycle progresses. Nominal sales are 'in cart' values, before
+				producer or shopper fees have been assessed.
+			</div>
+		</div>
+
+		<div class="flex-fill border-lg-left pl-lg-3">
+			<div class="{{#if FlagShop}}During{{else}}After{{/if}} d-lg-flex
+			align-items-center mb-3">
+
+				<h5 class="w-lg-15">Shopping</h5>
+				{{>pStat StatOrd}}
+				<div class="d-none d-lg-block font-size-150 font-weight-bold ml-2">
+					&#x279C;</div>
+			</div>
+
+			<div class="{{#if FlagShop}}During{{else}}After{{/if}} d-lg-flex
+				align-items-center mb-3">
+
+				<h5 class="w-lg-15">Production</h5>
+				{{>pStat StatWithdr}}
+				{{>pStat StatProm}}
+				<div class="d-none d-lg-block font-size-150 font-weight-bold ml-2">
+					&#x279C;</div>
+			</div>
+
+			<div class="{{#if FlagBeforeDeliv}}Before{{else if FlagDeliv}}During{{else}}After{{/if}}
+				d-lg-flex align-items-center mb-3">
+
+				<h5 class="w-lg-15">Delivery</h5>
+				{{>pStat StatCheckin}}
+				{{>pStat StatTruant}}
+				{{>pStat StatDeliv}}
+				<div class="d-none d-lg-block font-size-150 font-weight-bold ml-2">
+					&#x279C;</div>
+			</div>
+
+			<div class="{{#if FlagBeforePickup}}Before{{else if FlagPickup}}During{{else}}After{{/if}}
+				d-lg-flex align-items-center">
+				<h5 class="w-lg-15">Pickup</h5>
+				{{>pStat StatCheckout}}
+				{{>pStat StatLost}}
+				{{>pStat StatReject}}
+				{{>pStat StatSold}}
+			</div>
+
+			<div class="d-lg-flex mt-2">
+				<div class="w-lg-15"></div>
+				<div>* Average item weights are assumed.</div>
+			</div>
+		</div>
+	</div>
+</div>

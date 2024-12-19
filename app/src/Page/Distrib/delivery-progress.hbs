@@ -1,0 +1,129 @@
+{{!-- delivery-progress.hbs
+//    ---------------------
+//    Delivery Progress view --}}
+
+<style>
+	#ProducersPend .card {
+		background-color: hsla(45, 80%, 93%, 1);
+	}
+
+	#ProducersDone .card {
+		background-color: hsla(140, 50%, 93%);
+	}
+</style>
+
+{{#*inline "pProducers"}}
+<div class="Flow-md-2">
+	{{#each this}}
+	<div class="card NoBreak mb-3">
+		<div class="card-body d-flex flex-row px-3">
+			<div class="mr-3">
+				<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+			</div>
+			<div>
+				<h6 class="card-subtitle mb-0">{{hLinkDtlProducer IDProducer}}</h6>
+				<h5 class="card-title mb-2">{{NameBus}}</h5>
+				<h6 class="card-subtitle font-weight-normal">{{City}}</h6>
+
+				<div class="mt-2">
+					{{hLinkEmail Email}}<br>
+					{{hLinkPhone Phone1}}
+				</div>
+			</div>
+		</div>
+
+		<div class="card-footer px-3">
+			{{#if IDInvcProducerWeb}}
+			<div class="d-flex justify-content-between align-items-center">
+				<div>
+					Checked-in <a href="/web-producer-invoice/{{IDInvcProducerWeb}}">
+						{{hTextWhen WhenUpd "Med" "HourMin"}}<br>
+					</a>
+					{{QtyDeliv}} {{hPlural QtyDeliv "item"}} delivered
+				</div>
+				{{#if @root.FlagDeliv}}
+				<div>
+					<a href="/producer-check-in/{{IDProducer}}"
+						class="btn btn-sm btn-outline-primary">Check-in</a>
+				</div>
+				{{/if}}
+			</div>
+			{{else}}
+			<div class="d-flex justify-content-between align-items-center">
+				<div>
+					{{QtyProm}} {{hPlural QtyProm "item"}} promised
+				</div>
+				{{#if @root.FlagDeliv}}
+				<a href="/producer-check-in/{{IDProducer}}"
+					class="btn btn-sm btn-outline-primary">Check-in</a>
+				{{/if}}
+			</div>
+			{{/if}}
+		</div>
+	</div>
+	{{/each}}
+</div>
+{{/inline}}
+
+<div class="container py-4">
+	<h2>Delivery progress</h2>
+	<hr>
+
+	{{#unless FlagDeliv}}
+	<p class="lead">The delivery window has closed</p>
+	{{else}}
+	<div id="ProducersPend">
+		{{#unless Pend.Producers}}
+		<div class="d-md-flex align-items-center HeadSheet border rounded py-2 px-2
+			my-3">
+			<div class="d-none d-md-block mr-2">
+				<img src="{{hPrefixStatic 'question.svg'}}" alt="" width="35" height="35">
+			</div>
+			<h5 class="mb-0">No pending deliveries</h5>
+		</div>
+		{{else}}
+		<div class="d-md-flex align-items-center HeadSheet border rounded py-1 px-2
+			my-3">
+			<div class="d-none d-md-block mr-2">
+				<img src="{{hPrefixStatic 'question.svg'}}" alt="" width="35" height="35">
+			</div>
+			<h5 class="mb-0">Pending deliveries</h5>
+			<div class="font-weight-semi text-md-right ml-auto">
+				{{Pend.Producers.length}}
+				{{hPlural Pend.Producers.length "producer"}}<br>
+				{{Pend.CtIt}} {{hPlural Pend.CtIt "item"}} promised
+			</div>
+		</div>
+
+		{{>pProducers Pend.Producers}}
+		{{/unless}}
+	</div>
+	{{/unless}}
+
+	<div id="ProducersDone">
+		{{#unless Done.Producers}}
+		<div class="d-md-flex align-items-center HeadSheet border rounded py-2 px-2
+			my-3">
+			<div class="d-none d-md-block mr-2">
+				<img src="{{hPrefixStatic 'done.svg'}}" alt="" width="35" height="35">
+			</div>
+			<h5 class="mb-0">No checked-in producers</h5>
+		</div>
+		{{else}}
+		<div class="d-md-flex align-items-center HeadSheet border rounded py-1 px-2
+			my-3">
+			<div class="d-none d-md-block mr-2">
+				<img src="{{hPrefixStatic 'done.svg'}}" alt="" width="35" height="35">
+			</div>
+			<h5 class="mb-0">Checked-in producers</h5>
+			<div class="font-weight-semi text-md-right ml-auto">
+				{{Done.Producers.length}}
+				{{hPlural Done.Producers.length "producer"}}<br>
+				{{Done.CtIt}} {{hPlural Done.CtIt "item"}} delivered
+			</div>
+		</div>
+
+		{{>pProducers Done.Producers}}
+		{{/unless}}
+	</div>
+</div>

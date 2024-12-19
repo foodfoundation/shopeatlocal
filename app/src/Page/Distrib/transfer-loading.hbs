@@ -1,0 +1,135 @@
+{{!-- transfer-loading.hbs
+// -----------------------
+// Transfer Loading view --}}
+
+<style>
+	.Loc {
+		page-break-after: always;
+	}
+
+	.Stor {
+		page-break-inside: avoid;
+	}
+</style>
+
+<div class="container py-4">
+	<div class="d-md-flex flex-row justify-content-between align-items-baseline">
+		<h2 class="mb-0">Transfer loading</h2>
+		<h5 class="mt-2 mt-md-0">{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
+	</div>
+
+	<div class="d-print-none Flow-md-2 mt-2">
+		<p class="mb-2">
+			This page displays orders for one satellite location, so that the bins and
+			coolers used to transfer satellite orders can be checked as they are
+			loaded into the vehicle.
+		</p>
+		<p>
+			{{>Misc/pInstructPrint}}
+		</p>
+	</div>
+
+	<hr class="d-print-none">
+
+	<div class="Loc mt-3 mb-5">
+		<div class="d-flex align-items-center">
+			<div class="d-none d-lg-block mr-3 mt-1x">
+				<img src="{{hPrefixStatic 'loc.svg'}}" alt="" width="40" height="40">
+			</div>
+
+			<div class="line-height-140">
+				<div class="font-size-120 font-weight-semi">
+					{{Loc.CdLoc}}
+				</div>
+				<div class="font-size-120">
+					{{Loc.NameLoc}}
+				</div>
+			</div>
+
+			<h5 class="ml-auto">{{QtySold}} sold</h5>
+		</div>
+
+		{{#each Stors}}
+		<div class="Stor mt-4">
+			<div class="d-flex flex-row align-items-end">
+				<div class="d-none d-md-block ml-1 mr-3">
+					<img src="{{hPrefixStatic 'stor.svg'}}" alt="" width="40" height="40">
+				</div>
+				<h4 class="mb-0">
+					{{CdStor}}: {{hTextCdStor CdStor}}
+				</h4>
+				<div class="font-weight-semi text-right ml-auto px-0">
+					{{QtySold}} sold
+				</div>
+			</div>
+
+			<hr class="mt-2 mb-2 mb-md-1">
+
+			<div class="GridTbl Head d-none d-md-block">
+				<div class="row font-weight-bold">
+					<div class="col">Shopper</div>
+					<div class="col-2 text-md-right">Sold</div>
+				</div>
+			</div>
+
+			{{!-- Probably not necessary to separate these layouts. --}}
+
+			{{!-- Desktop layout: --}}
+			<div class="GridTbl Body d-none d-md-block d-print-none mb-4">
+				{{#each Membs}}
+				<div class="Row">
+					<div class="row">
+						<div class="col">
+							<a href="/member-detail/{{IDMemb}}">
+								{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+							</a>
+						</div>
+						<div class="col-2 text-right">
+							{{QtySold}}
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+
+			{{!-- Mobile layout: --}}
+			<div class="GridTbl Body d-md-none d-print-none mb-4">
+				{{#each Membs}}
+				<div class="Row">
+					<div class="row">
+						<div class="col">
+							<a href="/member-detail/{{IDMemb}}">
+								{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+							</a>
+						</div>
+						<div class="col-3 text-right">
+							<span class="font-weight-semi">{{QtySold}}</span> items
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+
+			{{!-- Print layout: --}}
+			<div class="GridTbl Body d-none d-print-block mb-4">
+				{{#each Membs}}
+				<div class="Row">
+					<div class="row">
+						<div class="col">
+							{{hTextIDMemb IDMemb}} {{Name1First}} {{Name1Last}}
+						</div>
+						<div class="col-2 text-right">
+							{{QtySold}}
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		{{else}}
+		<div class="jumbotron mt-3">
+			<h2 class="display-4 font-size-200">No orders this location</h2>
+		</div>
+		{{/each}}
+	</div>
+</div>

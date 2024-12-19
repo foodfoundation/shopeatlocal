@@ -1,0 +1,76 @@
+{{!-- staff-types.hbs
+// ------------------
+// Staff Types view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h3 class="mb-3">Staff types</h3>
+
+	<p>
+		There are four staff types, each granting access to different parts of
+		the app:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			<div class="font-weight-bold">
+				Superuser
+			</div>
+			<div>
+				This staff type can use any functionality, including <span
+				class="font-weight-semi">Edit Cycle Times</span>. That page is
+				very dangerous, so superuser accounts are <em>not</em>
+				appropriate for day-to-day use at {{CoopParams.CoopNameShort}}. Also, staff members with these
+				accounts must take extra care to keep their computers secure.
+			</div>
+			<div class="mt-2">
+				Superuser status cannot be assigned or removed in the app; a developer
+				must edit the database directly.
+			</div>
+		</li>
+		<li>
+			<div class="font-weight-bold">
+				Manager
+			</div>
+			<div>
+				This staff type can use all functionality except <span
+				class="font-weight-semi">Edit Cycle Times</span>. In particular,
+				managers can assign members as non-superuser staff, they can manage
+				categories and subcategories, they can manage locations, and they can
+				type quantities and weights when checking-out shoppers.
+			</div>
+			<div class="mt-2">
+				Manager status can be assigned by another manager, but it cannot be
+				removed in the app; a developer must edit the database directly.
+			</div>
+		</li>
+		<li>
+			<div class="font-weight-bold">
+				Accounting staff
+			</div>
+			<div>
+				This staff type has access to regular distribution functionality, plus
+				they can create transactions.
+			</div>
+		</li>
+		<li>
+			<div class="font-weight-bold">
+				Distribution staff
+			</div>
+			<div>
+				This staff type can access the
+				<span class="font-weight-semi">Member Admin</span>,
+				<span class="font-weight-semi">Producer Admin</span>,
+				<span class="font-weight-semi">Distribution</span>,
+				<span class="font-weight-semi">Cashier</span>,
+				<span class="font-weight-semi">On-site</span>, and
+				<span class="font-weight-semi">Site Admin</span> pages that are hidden
+				from non-staff users.
+			</div>
+		</li>
+	</ul>
+
+	<p>
+		Staff who are not already {{CoopParams.CoopNameShort}} members should register as usual. Member fees
+		will not be assessed unless they buy or sell items.
+	</p>
+</div>

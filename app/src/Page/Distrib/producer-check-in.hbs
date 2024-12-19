@@ -1,0 +1,516 @@
+{{!-- producer-check-in.hbs
+//    ---------------------
+//    Producer Check-in view
+//
+// This page is very similar to Shopper Checkout, which derives from it. I don't
+// want to abstract and share the code right now, so, when changing things,
+// consider whether changes in that page are also necessary. --}}
+
+<style>
+	/* Would be nice to display icons or text for the 'pending', 'Done', and 'Err'
+	// statuses, in case the user is color blind. */
+
+	div.Flow-md-2 p {
+		/* This fixes a Chrome bug that inserts unwanted space below the second
+		// paragraph: */
+		break-inside: avoid;
+	}
+
+	div.Vty {
+		/* For the scan animation: */
+		position: relative;
+
+		border-color: hsl(0, 0%, 80%) !important;
+		background-color: hsla(45, 90%, 90%, 1);
+	}
+
+	div.Vty.Done {
+		background-color: hsla(130, 60%, 90%, 1);
+	}
+
+	div.Vty.Err {
+		background-color: hsla(0, 90%, 90%, 1);
+	}
+
+	form hr.RuleFulf {
+		border-style: dashed;
+		border-color: hsla(0, 0%, 0%, 0.3);
+	}
+
+	input.QtyDeliv,
+	input.WgtPer {
+		width: 5em;
+	}
+
+	input.QtyTruant {
+		width: 3em;
+	}
+
+	.modal ul {
+		padding-left: 1.5em;
+	}
+
+	.modal ul li {
+		margin-bottom: 0.75em;
+	}
+
+	.modal ul li:last-of-type {
+		margin-bottom: 0;
+	}
+</style>
+
+<div class="container py-4">
+	<h2>Producer check-in</h2>
+
+	<div class="row">
+		<div class="col-md">
+			Scan the {{CoopParams.CoopNameShort}} QR code on each item in the producer delivery. Do not scan
+			UPCs, and do not scan any item more than once. Managers can type
+			delivery quantities and weights, but non-manager staff must use the
+			scanner. All items must have {{CoopParams.CoopNameShort}} labels. Click the
+			<span class="font-weight-semi">Save</span>
+			button at the bottom when the entire delivery has been scanned.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			The browser must remain focused while you are scanning. The
+			scanner will play a sound when it reads the QR code, then your computer
+			will play a sound that tells you whether the item belongs in this delivery.
+			If your computer does not play its sound, focus the browser and try again.
+			For more help, see the <a href="/scanner-use">scanner use</a> page.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			<div>
+				The variety lines are colored to show their check-in status. Green lines
+				have been completely checked-in. Yellow lines are missing one or more
+				items. Red lines contain invalid entries. You cannot
+				<span class="font-weight-semi">Save</span> until all lines are green.
+			</div>
+			<div class="mt-2">
+				Click the <span class="font-weight-semi">Reset</span> button to clear
+				all entries and restart the check-in.
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="d-md-flex font-size-110 mb-3">
+		<div class="d-none d-md-block mr-3">
+			<img class="mt-1" src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40"
+				height="40">
+		</div>
+		<div>
+			<div>
+				Producer {{hTextIDProducer Producer.IDProducer}}<br>
+				<strong>{{Producer.NameBus}}</strong><br>
+				{{Producer.Addr1}}<br>
+				{{#if Producer.Addr2}}{{Producer.Addr2}}<br>{{/if}}
+				{{Producer.City}}, {{Producer.St}} {{Producer.Zip}}
+			</div>
+			<div class="mt-2">
+				{{hLinkEmail Producer.Email}}<br>
+				{{hLinkPhone Producer.Phone1}}<br>
+				{{#if Producer.Phone2}}{{hLinkPhone Producer.Phone2}}{{/if}}
+			</div>
+		</div>
+	</div>
+	{{log Vtylist}}
+	<form id="FormCheckIn" action="{{hPathProducerSel "/producer-check-in"}}"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div id="Products">
+			{{#each Products}}
+			{{>Distrib/pLineProducerCheckIn}}
+			{{else}}
+			<hr>
+			<div class="jumbotron">
+				<h2 class="display-4 font-size-200">No items promised</h2>
+			</div>
+			{{/each}}
+		</div>
+
+		{{#if Products}}
+		<hr>
+
+		<div class="d-flex justify-content-between">
+			<button type="button" class="btn btn-secondary" data-toggle="modal"
+				data-target="#DlgConfirmReset">
+				Reset
+			</button>
+			<button id="BtnCkSave" type="button" class="btn btn-primary">
+				Save
+			</button>
+		</div>
+		{{/if}}
+
+		{{!-- Save dialogs
+		//    ------------ --}}
+
+		<div id="DlgSaveInvalid" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Cannot check-in!</h5>
+					</div>
+
+					<div class="modal-body">
+						<p>
+							The check-in is incomplete, or the page contains errors. Please
+							fix your input and try again:
+						</p>
+
+						<ul class="mb-1">
+							<li>
+								All fields must be filled. <strong>Wgts delivered</strong> are
+								an exception; they can be left blank to represent undelivered
+								weighted items.
+							</li>
+							<li>
+								In each line, the sum of the <strong>truant</strong> and
+								<strong>delivered</strong> quantities must equal the
+								<strong>promised</strong> quantity. For weighted items, the
+								<strong>delivered</strong> quantity is the number of
+								non-blank <strong>Wgts delivered</strong> entries.
+							</li>
+							<li>
+								All <strong>Wgts delivered</strong> values must be greater than
+								zero.
+							</li>
+						</ul>
+
+						<p class="mt-3 mb-0">
+							Incomplete lines are yellow, error lines are red. You can check-in
+							when all lines are green.
+						</p>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">
+							OK
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+{{!-- Reset confirmation dialog
+//    ------------------------- --}}
+
+<div id="DlgConfirmReset" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Reset check-in form?</h5>
+			</div>
+
+			<div class="modal-body">
+				This will set all delivery quantities to zero, and delete all weight
+				entries. Do this if you wish to restart the check-in.
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">
+					Cancel
+				</button>
+				<button id="BtnReset" type="button" class="btn btn-primary">
+					OK
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{!-- Scan error dialog
+//    ----------------- --}}
+
+<div id="DlgErrScan" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Check-in error!</h5>
+			</div>
+
+			<div class="modal-body">
+			</div>
+
+			<div class="modal-footer">
+				<button id="BtnReset" type="button" class="btn btn-primary"
+					data-dismiss="modal">
+					OK
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{!-- Delivery data
+//    ------------- --}}
+
+<script>
+	const Vtys = [
+		{{#each Products}}
+		{{#each Vtys}}
+		{
+			IDVty: {{IDVty}},
+			CkPriceVar: {{hJSONBool CkPriceVar}},
+			IDItCart: {{hJSONValOrNull IDItCart}}
+		},
+		{{/each}}
+		{{/each}}
+	];
+	const list = {{{json2 Vtylist}}};
+</script>
+
+{{!-- Button and scanner handlers
+//    --------------------------- --}}
+
+{{>Misc/pScriptScan}}
+
+<script>
+	/** The number of delivery lines with invalid entries. */
+	let CtInval = 0;
+	/** The number of delivery lines with truant items. */
+	let CtIncomp = 0;
+
+	/** Updates CtInval and CtIncomp, and sets the background color of each
+	 *  variety element to show its status. */
+	function Upd() {
+		CtInval = 0;
+		CtIncomp = 0;
+
+		const oVtys = $("div.Vty");
+		for (const oVty of oVtys) {
+			const oElVty = $(oVty);
+
+			// Set to 'true' if any input contains invalid data:
+			let oCkInvalid = false;
+			// Set to 'true' if the item is not completely delivered:
+			let oCkUnder = false;
+			// Set to 'true' if the quantity delivered input is blank:
+			let oCkBlankDeliv = false;
+
+			let oQtyTruant = 0;
+			let oQtyDeliv = 0;
+
+			// Check truant quantity
+			// ---------------------
+
+			const oInputQtyTruant = oElVty.find("input.QtyTruant");
+			// Should be only one of these, but I don't want to throw:
+			for (const oInput of oInputQtyTruant) {
+				const oVal = $(oInput).val();
+				const oQty = parseInt(oVal);
+				// Zero is a valid entry here, but blank is not:
+				if (isNaN(oQty) || (oQty < 0)) oCkInvalid = true;
+				else oQtyTruant = oQty;
+			}
+
+			// Check delivered quantity
+			// ------------------------
+
+			const oInputsQtyDeliv = oElVty.find("input.QtyDeliv");
+			// Should be only one of these, but I don't want to throw:
+			for (const oInput of oInputsQtyDeliv) {
+				const oVal = $(oInput).val();
+				if (oVal.trim() === "") oCkBlankDeliv = true;
+
+				const oQty = parseInt(oVal);
+				// Zero is a valid entry here, but blank is not:
+				if (isNaN(oQty) || (oQty < 0)) oCkInvalid = true;
+				else oQtyDeliv = oQty;
+			}
+
+			// Check delivered weights
+			// -----------------------
+
+			const oInputsWgtPer = oElVty.find("input.WgtPer");
+			for (const oInput of oInputsWgtPer) {
+				const oWgt = parseFloat($(oInput).val());
+				// Blank is a valid entry here, but zero is not:
+				if (oWgt <= 0) oCkInvalid = true;
+				else if (oWgt) ++oQtyDeliv;
+			}
+
+			// Update counts and variety style
+			// -------------------------------
+
+			const oQtyTtl = oQtyTruant + oQtyDeliv;
+			const oQtyProm = oElVty.data("qty-prom");
+			if (oQtyTtl > oQtyProm) oCkInvalid = true;;
+			if (oQtyTtl < oQtyProm) oCkUnder = true;
+
+			if (oCkInvalid) ++CtInval;
+			if (oCkUnder) ++CtIncomp;
+
+			oElVty.removeClass("Done Err");
+			if (oCkInvalid) oElVty.addClass("Err");
+			else if (!oCkUnder) oElVty.addClass("Done");
+
+			const oBtnAdd = oElVty.find(".BtnAddDeliv");
+			if (oCkBlankDeliv || oCkUnder) oBtnAdd.removeClass("d-none");
+			else oBtnAdd.addClass("d-none");
+		}
+	}
+
+	$("input").on("input", Upd);
+
+	$("button.BtnAddDeliv").on("click", function () {
+		const oBtn = $(this);
+		const oIDItDeliv = oBtn.data("id-it-deliv");
+		const oInputQty = $("#QtyDeliv" + oIDItDeliv);
+		const oQty = parseInt(oInputQty.val()) || 0;
+		oInputQty.val(oQty + 1);
+		Upd();
+	});
+
+	$("#BtnReset").on("click", function () {
+		$("#DlgConfirmReset").modal("toggle");
+
+		$("input.QtyTruant").val("0");
+		$("input.QtyDeliv").val("0");
+		$("input.WgtPer").val("");
+		Upd();
+	});
+
+	$("#BtnCkSave").on("click", function () {
+		if (CtInval || CtIncomp) $("#DlgSaveInvalid").modal();
+		else $("#FormCheckIn").submit();
+	});
+
+	/** Verifies that the scanned item is part of this delivery, scrolls to and
+	 *  animates the relevant variety line if it is, and then fills an empty
+	 *  weight field, or increments the delivery quantity, if possible. Returns
+	 *  'true' if the item was successfully delivered. Returns an object
+	 *  containing an explanation of the failure if not. */
+	function Deliv_ItScan(aDataScan) {
+		const oMsg = "Scanned IDVty " + aDataScan.IDVty
+			+ ", WgtPer " + aDataScan.WgtPer
+			+ ", IDItCart " + aDataScan.IDItCart + "...";
+
+		// Identify scanned item and matching variety element
+		// --------------------------------------------------
+
+		const oVty = Vtys.find(o => {
+			return (o.IDVty === aDataScan.IDVty)
+				&& (o.IDItCart === aDataScan.IDItCart);
+		});
+		if (!oVty) return {
+			MsgFail: "That item is not part of this delivery."
+		};
+
+		const oSelElVty = `#Vty${aDataScan.IDVty}-${aDataScan.IDItCart || ""}`;
+		const oElVty = $(oSelElVty);
+		if (!oElVty.length) throw Error("Line element not found!");
+
+		// Scroll to scanned variety and animate
+		// -------------------------------------
+
+		oElVty[0].scrollIntoView();
+
+		for (let o = 0; o < 2; ++o) {
+			oElVty.animate({ "left": "-0.33%" }, 50);
+			oElVty.animate({ "left": "0.33%" }, 50);
+			oElVty.animate({ "left": 0 }, 50);
+		}
+
+		// Deliver variable-price item
+		// ---------------------------
+
+		if (oVty.CkPriceVar) {
+			const oInputs = oElVty.find("input.WgtPer");
+			if (!oInputs.length) throw Error("Weight elements not found!");
+
+			let oInputBlank;
+			for (let o = 0; o < oInputs.length; ++o) {
+				const oInput = $(oInputs[o]);
+				if (oInput.val().trim() == "") {
+					oInputBlank = oInput;
+					break;
+				}
+			}
+			if (!oInputBlank) return {
+				MsgFail: "The promised quantity for that item has already been scanned."
+			};
+
+			oInputBlank.val(aDataScan.WgtPer);
+		}
+
+		// Deliver fixed-price item
+		// ------------------------
+
+		else {
+			const oInput = oElVty.find("input.QtyDeliv");
+			if (oInput.length !== 1)
+				throw Error("Delivered quantity element not found!");
+
+			const oQtyProm = oElVty.data("qty-prom");
+			if (!oQtyProm) throw Error("Promised quantity not found!");
+
+			const oQtyDeliv = parseInt(oInput.val()) || 0;
+			if (oQtyDeliv >= oQtyProm) return {
+				MsgFail: "The promised quantity for that item has already been delivered."
+			};
+
+			oInput.val(oQtyDeliv + 1);
+		}
+
+		return true;
+	}
+
+	const SoundOK = new Audio("{{hPrefixStatic 'OK.wav'}}");
+	const SoundFail = new Audio("{{hPrefixStatic 'Fail.wav'}}");
+	const SoundDone = new Audio("{{hPrefixStatic 'Done.wav'}}");
+
+	$(document).on("keydown", function (aEvt) {
+		if (!aEvt.key) return true;
+
+		// Forward 'Enter' to Save check handler
+		// -------------------------------------
+		// Otherwise, pressing Enter within any input will submit the form without
+		// checking for errors. Adapted from:
+		//
+		//   https://stackoverflow.com/a/1977126/3728155
+		//
+
+		if (aEvt.key === "Enter") {
+			$("#BtnCkSave").click();
+			return false;
+		}
+
+		// Parse scan data
+		// ---------------
+
+		const oDataScan = Read_ScanLblIt(aEvt.key);
+		
+		if (oDataScan) {
+			try {
+				const oOut = Deliv_ItScan(oDataScan);
+
+				if (oOut.MsgFail) {
+					const oDlg = $("#DlgErrScan");
+					oDlg.find("div.modal-body").text(oOut.MsgFail);
+					oDlg.modal();
+
+					SoundFail.play();
+					return;
+				}
+
+				Upd();
+				if (CtInval || CtIncomp) SoundOK.play();
+				else SoundDone.play();
+			}
+			catch (oErr) {
+				SoundFail.play();
+			}
+		}
+
+		// Don't add scan characters to the focused input, assuming one is focused:
+		return !CkScan;
+	});
+
+	Upd();
+</script>

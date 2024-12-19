@@ -1,0 +1,17 @@
+{{!-- member-detail.hbs
+//    -----------------
+//    Member detail view --}}
+
+<div class="container-md pt-4 pb-2">
+	{{!-- There isn't room on narrow displays for the impersonate button to go in
+	//    the upper right corner: --}}
+	<div class="d-sm-flex flex-row align-items-center">
+		{{>MembAdmin/pHeadDtlMemb Memb}}
+	</div>
+
+	<hr>
+
+	<div class="pb-3">
+		{{>MembAdmin/pBodyDtlMemb Memb}}
+	</div>
+</div>

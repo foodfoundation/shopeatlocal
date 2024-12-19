@@ -1,0 +1,386 @@
+{{!-- on-site-cart.hbs
+//    ----------------
+//    On-site Checkout view --}}
+
+<style>
+	#DlgConfirm #CardMemb {
+		background-color: hsla(0, 0%, 93%);
+	}
+</style>
+
+<div class="container py-4">
+	<h2><strong>{{#if (hIsWholesaleType CdCartType)}}Wholesale{{else}}Retail{{/if}}</strong> On-site checkout</h2>
+
+	<div class="row">
+		<div class="col-lg mb-2 mb-lg-0">
+			Click <strong>Checkout</strong> to complete the sale and generate an
+			on-site shopper invoice. Return to the <a href="/on-site-cart">
+				On-site cart</a> to add or remove items.
+		</div>
+		<div class="col-lg">
+			This cart data is associated with your current login. It is not accessible
+			from a different browser or computer. If you logout, it will be lost.
+		</div>
+	</div>
+
+	<hr>
+
+	{{!-- Shopper selection
+	//    ----------------- --}}
+
+	{{#if MembShop}}
+	<div class="row">
+		{{#with MembShop}}
+		<div class="col-md-3 font-size-110">
+			{{>Misc/pLinkIDMemb}}
+			<strong>
+				<br>{{Name1First}} {{Name1Last}}
+				{{#if Name2Last}}<br>{{Name2First}} {{Name2Last}}{{/if}}
+			</strong>
+			{{#if NameBus}}<br>{{NameBus}}{{/if}}
+			<br>{{Addr1}}
+			{{#if Addr2}}<br>{{Addr2}}{{/if}}
+			<br>{{City}}, {{St}} {{Zip}}
+		</div>
+		{{/with}}
+
+		<div class="col-md text-md-center pt-2 pt-md-0">
+			The purchase will be charged to this member's account. To select a
+			different member, complete a <a href="/member-admin">member search</a>,
+			then click <strong>Associate with on-site cart</strong>.
+		</div>
+
+		<div class="col-md-2 text-md-right pt-3 pt-md-0">
+			<a class="btn btn-outline-primary" href="/associate-member-on-site-cart">
+				Remove
+			</a>
+		</div>
+	</div>
+	{{else if (hIsWholesaleType CdCartType)}}
+	<div class="row">
+		<div class="col-md-3">
+			<div class="font-size-120 line-height-120 font-weight-semi">
+				Non-member cart
+			</div>
+		</div>
+		<div class="col-md-6 text-md-center pt-3 pt-md-0">
+			<div>
+				No member has been associated with this <strong>wholesale</strong> cart. If you wish to charge the
+				purchase to a member's account, complete a <a href="/member-admin">member
+					search</a>, then click <strong>Associate with on-site cart</strong>.
+			</div>
+		</div>
+	</div>
+	{{else}}
+	<div class="row">
+		<div class="col-md-3">
+			<div class="font-size-120 line-height-120 font-weight-semi">
+				Non-member cart
+			</div>
+			<div class="mt-1">
+				{{#if CkEBTElig}}
+				EBT shopper
+				{{else}}
+				Non-EBT shopper
+				{{/if}}
+			</div>
+		</div>
+		<div class="col-md-6 text-md-center pt-3 pt-md-0">
+			<div>
+				No member has been associated with this cart. If you wish to charge the
+				purchase to a member's account, complete a <a href="/member-admin">member
+					search</a>, then click <strong>Associate with on-site cart</strong>.
+			</div>
+			{{#unless CkEBTElig}}
+			<div class="mt-2">
+				To use EBT with a non-member cart, click <strong>Add EBT</strong>.
+			</div>
+			{{/unless}}
+		</div>
+		<div class="col-md-3 text-md-right pt-3 pt-md-0">
+			{{#if CkEBTElig}}
+			<a class="btn btn-outline-primary" href="/associate-member-on-site-cart">
+				Remove EBT
+			</a>
+			{{else}}
+			<a class="btn btn-outline-primary"
+				href="/associate-member-on-site-cart?CkEBTNonMemb=true">
+				Add EBT
+			</a>
+			{{/if}}
+		</div>
+	</div>
+	{{/if}}
+
+	<hr>
+
+	{{!-- Cart contents
+	//    ------------- --}}
+
+	{{#each Producers}}
+	<div class="d-flex align-items-center mt-4">
+		<img src="{{hPrefixStatic 'producer.svg'}}" alt="" class="d-none d-lg-block ml-1 mr-3"
+			width="40" height="40">
+		<div class="mb-0">
+			{{>Misc/pLinkIDProducer this}}<br>
+			<strong>{{NameBus}}</strong>
+		</div>
+	</div>
+
+	<hr class="mt-2 mb-1">
+
+	<div class="GridTbl Head d-none d-lg-block">
+		<div class="row font-weight-bold">
+			<div class="col-8">Product / Variety</div>
+			<div class="col text-right">Price</div>
+			<div class="col text-right">Qty</div>
+			<div class="col text-right">Wgt</div>
+			<div class="col text-right">Subtot</div>
+		</div>
+	</div>
+
+	<div class="GridTbl Body">
+		{{#each Vtys}}
+		<div class="Row">
+			<div class="row">
+				<div class="col-lg-8">
+					{{>Misc/pLinkProduct}}<br>
+					{{hTextIDVty IDVty}} {{hNameVty this}}
+				</div>
+				<hr class="w-100 d-lg-none my-1 mx-3">
+				<div class="col text-lg-right d-flex flex-column
+					justify-content-center">
+					{{hTextCurrOrOrig PriceNomOnsite}}{{#if WgtMin}}/lb{{/if}}
+				</div>
+				<div class="col text-center text-lg-right d-flex flex-column
+					justify-content-center">
+					{{Qty}}
+				</div>
+				<div class="col text-center text-lg-right d-flex flex-column
+					justify-content-center">
+					{{#if WgtTtl}}
+					{{hTextWgtOrOrig WgtTtl}}
+					{{else}}
+					&mdash;
+					{{/if}}
+				</div>
+				<div class="col text-right d-flex flex-column justify-content-center">
+					{{hTextCurrOrOrig SaleNom}}{{#if CkTaxSaleEff}}&dagger;{{/if}}{{#if (hCkAnd @root.CkEBTElig CkEBT)}}&Dagger;{{/if}}
+				</div>
+			</div>
+		</div>
+		{{/each}}
+	</div>
+	{{/each}}
+
+	{{#if CkEBTElig}}
+	<div class="mt-3">
+		&Dagger; EBT-eligible items
+	</div>
+	{{/if}}
+
+	{{!-- Cart totals
+	//    ----------- --}}
+
+	{{#with Ttls}}
+	<h3 class="mt-4 mb-3">Totals</h3>
+
+	<div class="row">
+		<div class="col-md-4 mb-2 mb-md-0">
+			<div class="table-responsive">
+				<table class="table table-sm table-striped mb-0">
+					<tbody>
+						<tr>
+							<td class="font-weight-bold">Non-taxable sales</td>
+							<td class="text-right">{{hTextCurrOrOrig SaleNomNontaxab}}</td>
+						</tr>
+						<tr>
+							<td class="font-weight-bold">Market fee on non-taxable sales
+							</td>
+							<td class="text-right">
+								{{#if @root.CkEBTElig}}
+								EBT
+								{{else}}
+								{{hTextCurrOrOrig FeeCoopShopNontaxab}}
+								{{/if}}
+							</td>
+						</tr>
+						<tr>
+							<td class="font-weight-bold">Non-taxable subtotal</td>
+							<td class="text-right">{{hTextCurrOrOrig SubNontaxab}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-md-4 mb-2 mb-md-0">
+			<div class="table-responsive">
+				<table class="table table-sm table-striped mb-0">
+					<tbody>
+						<tr>
+							<td class="font-weight-bold">&dagger; Taxable sales</td>
+							<td class="text-right">{{hTextCurrOrOrig SaleNomTaxab}}</td>
+						</tr>
+						<tr>
+							<td class="font-weight-bold">Market fee on taxable sales</td>
+							<td class="text-right">
+								{{#if @root.CkEBTElig}}
+								EBT
+								{{else}}
+								{{hTextCurrOrOrig FeeCoopShopTaxab}}
+								{{/if}}
+							</td>
+						</tr>
+						<tr>
+							<td class="font-weight-bold">Taxable subtotal</td>
+							<td class="text-right">{{hTextCurrOrOrig SubTaxab}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="table-responsive">
+				<table class="table table-sm table-striped mb-0">
+					<tbody>
+						<tr>
+							<td class="font-weight-bold">Sales tax</td>
+							<td class="text-right">{{hTextCurrOrOrig TaxSale}}</td>
+						</tr>
+						<tr>
+							<td class="font-weight-bold">Total</td>
+							<td class="text-right">{{hTextCurrOrOrig Ttl}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	{{#if @root.CkEBTElig}}
+	<h4 class="mt-4 mb-3">EBT detail</h4>
+
+	<div class="row">
+		<div class="col-md-4 mb-2 mb-md-0">
+			{{!-- Don't really need tables here, but we will use the same technique
+			//    for consistency: --}}
+			<div class="table-responsive">
+				<table class="table table-sm table-striped mb-0">
+					<tbody>
+						<tr>
+							<td class="font-weight-bold">Money total</td>
+							<td class="text-right">{{hTextCurrOrOrig TtlMoney}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="table-responsive">
+				<table class="table table-sm table-striped mb-0">
+					<tbody>
+						<tr>
+							<td class="font-weight-bold">EBT total</td>
+							<td class="text-right">{{hTextCurrOrOrig TtlEBT}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	{{/if}}
+
+	{{/with}}
+
+	<hr>
+
+	<div class="d-flex flex-row">
+		<button type="button" class="btn btn-primary ml-auto" data-toggle="modal"
+			data-target="#DlgConfirm">
+			Checkout
+		</button>
+	</div>
+</div>
+
+{{!-- Checkout confirmation dialog
+//    ---------------------------- --}}
+
+<div id="DlgConfirm" class="modal" tabindex="-1" role="dialog">
+	<form action="/on-site-checkout" method="POST" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{!-- We don't have any form data here, just want to POST this request, and
+		//    this is the easiest way to do it. --}}
+
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Complete checkout?</h5>
+				</div>
+
+				<div class="modal-body">
+					{{#if MembShop}}
+					<div class="mb-3">
+						This order will be charged to:
+					</div>
+
+					<div id="CardMemb" class="d-flex flex-row border rounded-lg px-3 py-2">
+						<div class="pt-1 pr-3">
+							<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+						</div>
+
+						<div>
+							{{#with MembShop}}
+								Member {{IDMemb}}
+								<strong>
+									<br>{{Name1First}} {{Name1Last}}
+									{{#if Name2Last}}<br>{{Name2First}} {{Name2Last}}{{/if}}
+								</strong>
+								{{#if NameBus}}<br>{{NameBus}}{{/if}}
+							{{/with}}
+
+							<div class="mt-1">
+								{{#if CkEBTElig}}
+								EBT shopper
+								{{else if (hIsWholesaleType CdCartType)}}
+								Wholesale shopper
+								{{else}}
+								Non-EBT shopper
+								{{/if}}
+							</div>
+						</div>
+					</div>
+					{{else}}
+					<div>
+						<div class="d-flex align-items-center border border-danger
+							bg-white rounded-sm p-3 mx-5 mb-2">
+							<div class="d-none d-md-block mr-3">
+								<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+							</div>
+							<div>
+								You have not associated a member with this cart.
+							</div>
+						</div>
+						<div class="mt-3 text-center">
+							If you check out now, the purchase will not be added to any
+							member's balance, nor will it appear in their shopper invoices.
+						</div>
+					</div>
+					{{/if}}
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						Cancel
+					</button>
+					<button type="submit" class="btn btn-primary">
+						OK
+					</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

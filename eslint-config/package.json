@@ -1,0 +1,13 @@
+{
+  "name": "@repo/eslint-config",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    "./base": "./base.js"
+  },
+  "dependencies": {
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-turbo": "^2.3.3"
+  }
+}

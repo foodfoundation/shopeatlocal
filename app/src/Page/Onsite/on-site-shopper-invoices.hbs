@@ -1,0 +1,110 @@
+{{!-- on-site-shopper-invoices.hbs
+//    ----------------------------
+//    On-site Shopper Invoices view --}}
+
+<div class="container-md py-4">
+	<h2>On-site {{#if (hIsWholesaleType CdCartType)}}wholesale{{else}}retail{{/if}} shopper invoices</h2>
+
+	<div class="d-md-flex flex-row mb-3">
+		<div class="w-md-75">
+			This list displays on-site shopper invoices. Click any row to view or
+			download the PDF.
+		</div>
+
+		{{!-- We normally wouldn't bother with this, but it is part of the paging
+		//    system: --}}
+		{{#if Invcs}}
+		<div class="lead ml-md-auto text-md-right">{{TextRg}}</div>
+		{{/if}}
+	</div>
+
+	<hr>
+
+	{{#unless Invcs}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No on-site shopper invoices</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Invoice time</th>
+					<th scope="col">Invoice ID</th>
+					<th scope="col">Cycle ID</th>
+					<th scope="col">Shopper</th>
+					<th scope="col" class="text-right">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each Invcs}}
+				<tr class="position-relative">
+					<td>
+						{{!-- This nonsense is the only way I know to stretch a link within
+						// a table row. See here for more:
+						//
+						// https://github.com/twbs/bootstrap/issues/28608
+						//
+						//--}}
+						<div class="position-relative">
+							<a href="{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{hTextWhen WhenCreate "Med" "HourMin"}}
+						</div>
+					</td>
+					<td>
+						<div class="position-relative">
+							<a href="{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{hTextIDInvcShopOnsite IDInvcShopOnsite}}
+						</div>
+					</td>
+					<td>
+						<div class="position-relative">
+							<a href="{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{hTextIDCyc IDCyc}}
+						</div>
+					</td>
+					<td>
+						<div class="position-relative">
+							<a href="{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{#if IDMembShop}}
+							{{hTextIDMemb IDMembShop}} {{Name1First}} {{Name1Last}}
+							{{else}}
+							&mdash;
+							{{/if}}
+						</div>
+					</td>
+					<td class="text-right">
+						<div class="position-relative">
+							<a href="{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{hTextCurrOrOrig Ttl}}
+						</div>
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+
+		<hr>
+
+		<div class="d-flex">
+			<div>
+				<a class="btn btn-secondary mb-2" href="{{PathExport}}">
+					Export
+				</a>
+			</div>
+
+			{{#if CkPaging}}
+			<div class="ml-auto">
+				{{{hBtnPageSearch PathPagePrev "Previous"}}}
+				{{{hBtnPageSearch PathPageNext "Next"}}}
+			</div>
+			{{/if}}
+		</div>
+	</div>
+	{{/unless}}
+</div>

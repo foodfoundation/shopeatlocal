@@ -1,0 +1,444 @@
+{{!-- on-site-cart.hbs
+//    ----------------
+//    On-site Cart view --}}
+
+<style>
+.Vty:nth-child(odd) {
+	background-color: rgba(0, 0, 0, 5%);
+}
+
+.Vty:hover {
+	background-color: rgba(0, 0, 0, 10%);
+}
+
+/* It would be nice to move this to 'main.css', but it will be necessary first
+// to review other pages that use these class names: */
+.InputWgt, .InputQty {
+	display: inline-block;
+	width: 6rem;
+	margin-bottom: 0.25rem;
+	text-align: right;
+
+	/* Weight inputs are separated by whitespace, which spaces them apart. See the
+	// Add_InputWgt comments for more on that. */
+}
+</style>
+
+<div class="container py-4">
+	{{#if (hIsWholesaleType CdCartType)}}
+		<h2><strong>Wholesale</strong> On-site cart</h2>
+	{{else if (hIsRetailType CdCartType)}}
+		<h2><strong>Retail</strong> On-site cart</h2>
+	{{else}}
+		<h2>On-site cart</h2>
+	{{/if}}
+
+	<div class="row">
+		<div class="col-md mb-2 mb-lg-0">
+			Scan on-site items to add them to the cart, or locate them in the
+			<a href="/on-site-catalog">On-site catalog</a> and click <strong>Add to
+			on-site cart</strong>. To remove an item, set its quantity to zero, or
+			empty its weight fields. Click <strong>Save</strong> to check out. You can
+			associate a member with the cart at any time by completing a
+			<a href="/member-admin">member search</a>, and then clicking
+			<strong>Associate with on-site cart</strong>, but be sure to <strong>
+			Save</strong> before leaving this page.
+		</div>
+		<div class="col-lg">
+			<div class="mb-2">
+				The browser must remain focused while you are scanning. The scanner will
+				play a sound when it reads the QR code, then your computer will play a
+				sound to indicate whether the item was added. If your computer does not
+				play a sound, focus the browser and try again. For more help, see the
+				<a href="/scanner-use">scanner use</a> page.
+			</div>
+			<div>
+				This cart data is associated with your current login. It is not accessible
+				from a different browser or computer. If you logout, it will be lost.
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+	{{!-- Normally, we would exclude the banner or the form altogether with '#if'
+	//    or '#unless', but we will want to display the form if the user scans an
+	//    item. --}}
+
+	<div id="BannerNoIts" class="{{hTextIf "d-none" Vtys}}">
+		<div class="jumbotron">
+			<h2 class="display-4 font-size-200">No on-site cart items</h2>
+		</div>
+	</div>
+
+	<form id="FormCartOnsite" class="{{hTextUnless "d-none" Vtys}} mt-4"
+		action="/on-site-cart" method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="d-none d-md-flex form-row font-weight-bold border-bottom py-1
+			mt-2">
+			<div class="form-group col-md m-0">
+				Producer / Product / Variety
+			</div>
+			<div class="form-group col-md-1 text-md-right m-0">
+				Price
+			</div>
+			<div class="form-group col-md-3 text-md-right pr-3 m-0">
+				Qty / Weights
+			</div>
+		</div>
+
+		<div id="Vtys">
+			{{#each Vtys}}
+			{{>Onsite/pLineCartOnsite this}}
+			{{/each}}
+		</div>
+
+		<hr class="WthGrid">
+
+		<div class="d-flex flex-row">
+			<button type="button" class="btn btn-secondary" data-toggle="modal"
+				data-target="#DlgConfirmEmpty">
+				Empty cart
+			</button>
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>
+
+{{!-- Empty cart confirmation dialog
+//    ------------------------------ --}}
+
+<div id="DlgConfirmEmpty" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Empty on-site cart?</h5>
+			</div>
+
+			<div class="modal-body">
+				Remove all items from this on-site cart?
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">
+					Cancel
+				</button>
+				<button id="BtnEmpty" class="btn btn-primary">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{!-- Variety data
+//    ------------
+//    It would be more elegant to read this from data attributes in the HTML,
+//    and it would eliminate data/HTML mismatches. --}}
+
+<script>
+	const Vtys = [
+		{{#each Vtys}}
+		{
+			IDVty: {{IDVty}},
+			CkPriceVar: {{hJSONBool CkPriceVar}}
+		},
+		{{/each}}
+	];
+	const list = {{{json2 AllVtys}}};
+</script>
+
+{{!-- Button and scanner handlers
+//    --------------------------- --}}
+
+{{>Misc/pScriptScan}}
+
+<script>
+	/** Adds a new, empty weight input to the specified element. */
+	function Add_InputWgt(aContain, aIDVty) {
+		const oRootName = "WgtPer" + aIDVty + "-";
+		const oID = IDInputNext(aContain, oRootName);
+		const oInput = $(
+			`<input name="WgtPer${aIDVty}-${oID}" maxlength="5" class="InputWgt IconShow form-control form-control-sm">`
+		);
+		// For static controls, this is added at the end of 'Main.hbs':
+		oInput
+			.on("input", Rem_ChNonWgt)
+			.on("input", function () { CkAdd_InputsWgt(aContain); });
+
+		// The inputs are inline-block, so breaking the HTML lines between
+		// #InputsWgt and the template input adds whitespace, which alters the
+		// spacing between the elements. Rather than change the template (which
+		// would make it heard to read) we will add the same spacing between all of
+		// them:
+		aContain.append(oInput).append(" ");
+	}
+
+	/** Checks the weight inputs in aContain, and adds a new, empty one if all are
+	 *  filled. */
+	function CkAdd_InputsWgt(aContain) {
+		const oInputs = aContain.find("input");
+		for (const oInput of oInputs) {
+			const oVal = $(oInput).val();
+			if (!oVal) return;
+		}
+
+		const oIDVty = aContain.data("id-vty");
+		Add_InputWgt(aContain, oIDVty);
+	}
+
+	/** Verifies that the scanned item is eligible for on-site sale, adds a new
+	 *  variety line if necessary, scrolls to and animates the relevant line, and
+	 *  then fills an empty weight field, or increments the sold quantity. Returns
+	 *  'true' if the item was added successfully. */
+	async function Add_ItScan(aDataScan) {
+		// The scanned label could contain a web cart item ID. Should we ignore
+		// this, on the general principle that items brought to the on-site checkout
+		// always take precedence over web orders to which they might have been
+		// promised? Also, it is possible that the item was rejected by the original
+		// web shopper. On the other hand, such labels bear the original shopper's
+		// name. Perhaps it would be better to require that rejected items be re-
+		// labeled before resale? Does the shopper note customization limit its
+		// resalability?
+
+		const oMsg = "Scanned IDVty " + aDataScan.IDVty
+			+ ", WgtPer " + aDataScan.WgtPer
+			+ ", IDItCart " + aDataScan.IDItCart + "...";
+		console.log(oMsg);
+
+		// Identify scanned item and matching variety element
+		// --------------------------------------------------
+
+		let oVty = Vtys.find(o => (o.IDVty === aDataScan.IDVty));
+
+		if (!oVty) {
+			console.log('Vty not found on page! Adding line to cart.');
+			try {
+				Busy.Set();
+				oVty = await wReqAdd_Line(aDataScan.IDVty);
+			}
+			finally {
+				Busy.Unset();
+			}
+		}
+
+		if (!oVty) return false;
+
+		const oElVty = $("#Vty" + aDataScan.IDVty);
+		if (!oElVty.length)
+			throw Error("on-site-cart Add_ItScan: Line element not found");
+
+		// Display form
+		// ------------
+
+		$("#BannerNoIts").addClass("d-none");
+		$("#FormCartOnsite").removeClass("d-none");
+
+		// Scroll to scanned variety and animate
+		// -------------------------------------
+
+		oElVty[0].scrollIntoView();
+
+		// 'animate' does not work on the row, for whatever reason:
+		const oContainInputs = oElVty.find(".Inputs");
+		for (let o = 0; o < 2; ++o) {
+			oContainInputs.animate({ "left": "-0.33%" }, 50);
+			oContainInputs.animate({ "left": "0.33%" }, 50);
+			oContainInputs.animate({ "left": 0 }, 50);
+		}
+
+		// Add variable-price item
+		// -----------------------
+
+		if (oVty.CkPriceVar) {
+			const oInputs = oElVty.find("input.InputWgt");
+			if (!oInputs.length)
+				throw Error("on-site-cart Add_ItScan: Weight elements not found");
+
+			let oInputBlank;
+			for (let o = 0; o < oInputs.length; ++o) {
+				const oInput = $(oInputs[o]);
+				if (oInput.val().trim() == "") {
+					oInputBlank = oInput;
+					break;
+				}
+			}
+			if (!oInputBlank)
+				throw Error("on-site-cart Add_ItScan: No empty weight input");
+
+			oInputBlank.val(aDataScan.WgtPer);
+
+			const oContainInputsWgt = oElVty.find(".InputsWgt");
+			CkAdd_InputsWgt(oContainInputsWgt);
+		}
+
+		// Add fixed-price item
+		// --------------------
+
+		else {
+			const oInput = oElVty.find("input.InputQty");
+			if (oInput.length !== 1)
+				throw Error("on-site-cart Add_ItScan: Quantity element not found");
+
+			const oQtyOrig = parseInt(oInput.val()) || 0;
+			oInput.val(oQtyOrig + 1);
+		}
+
+		return true;
+	}
+
+	/** Sends a GET request that obtains HTML and variety data for one new variety
+	 *  line, adds that line to the page, adds the new variety to Vtys, and then
+	 *  returns its data. Returns 'null' instead if the variety could not be
+	 *  obtained. Adds a flash error message if the request failed. */
+	async function wReqAdd_Line(aIDVty) {
+		const oURL = "/svc-on-site-cart/" + aIDVty;
+		const oOptsFetch = { method: "GET" };
+		const oResp = await fetch(oURL, oOptsFetch);
+		if (!oResp.ok) {
+			Add_FlashFailFetch("On-site cart add request", oResp);
+			return null;
+		}
+
+		const oJSONResp = await oResp.json();
+		const oDataResp = JSON.parse(oJSONResp);
+		Upd_Page(oDataResp);
+
+		Ready_InputWgts();
+
+		if (!oDataResp.Data || !oDataResp.Data.Vty) return null;
+
+		Vtys.push(oDataResp.Data.Vty);
+		return oDataResp.Data.Vty;
+	}
+
+	function Hand_Keydown(aEvt) {
+		if (!aEvt.key) return true;
+
+		// Parse scan data
+		// ---------------
+		// Add_ItScan does the work of checking the page for a matching variety,
+		// requesting the variety data if no match is found, and then adding the
+		// variety line to the page as necessary. We cannot invoke that function for
+		// each scan, however, because scanning the same variety very quickly will
+		// cause one invocation to await at the request while later invocations
+		// check the page, fail to find the variety, and then begin their own
+		// requests. This ultimately causes the same line to be added more than once
+		// to the page.
+		//
+		// Instead, we will queue the scan objects synchronously, and then start
+		// Exec_Scans, which handles all scans in the queue. If Exec_Scans is called
+		// while another invocation is still running, it exits instead.
+
+		const oScan = Read_ScanLblIt(aEvt.key, true);
+		if (oScan) {
+			ScansPend.push(oScan);
+			// We can't await this, because we can't assign an 'async' handler
+			// directly to the 'keydown' event. Doing so would cause the promise to be
+			// interpreted as a truthy result (despite the boolean value we return
+			// below) which would allow the scanner output to be written to the
+			// focused input, if any. In this case, we don't need the result of the
+			// asynchronous operation to finish the handler, so we will run it without
+			// awaiting:
+			Exec_Scans();
+		}
+
+		// Don't add scan characters to the focused input, assuming one is focused:
+		return !CkScan;
+	}
+
+	/** Scan objects that are waiting to be processed. */
+	const ScansPend = [];
+	/** Set to 'true' if Exec_Scans is processing ScansPend. */
+	let CkLockScans = false;
+
+	const SoundOK = new Audio("{{hPrefixStatic 'OK.wav'}}");
+	const SoundFail = new Audio("{{hPrefixStatic 'Fail.wav'}}");
+
+	async function Exec_Scans() {
+		// This type of signal would not work in a threaded app, but recall that
+		// JavaScript functions are never interrupted; they lose the CPU only by
+		// explicitly yielding it with 'await':
+		if (CkLockScans) return;
+
+		try {
+			CkLockScans = true;
+
+			Clear_Flashes();
+
+			while (ScansPend.length) {
+				const oScan = ScansPend.shift();
+
+				let oCk = false;
+				try {
+					oCk = await Add_ItScan(oScan);
+				}
+				catch (oErr) {
+					Add_Flash("danger", "Item scan error!", oErr.message);
+				}
+				if (oCk) SoundOK.play();
+				else SoundFail.play();
+			}
+		}
+		finally {
+			CkLockScans = false;
+		}
+	}
+
+	/** Closes the Empty Cart confirmation dialog, then sends an 'empty cart'
+	 *  request, and updates the page. */
+	async function Empty_Cart() {
+		$("#DlgConfirmEmpty").modal("toggle");
+
+		// The POST handler empties the cart before inserting the form items, so
+		// instead of creating a DELETE handler, we will POST an empty form and then
+		// refresh:
+		try {
+			Busy.Set();
+
+			const oOptsFetch = {
+				...OptsFetchCSRF(),
+				method: "POST",
+				body: JSON.stringify({})
+			};
+
+			const oResp = await fetch("/on-site-cart", oOptsFetch);
+			if (!oResp.ok) {
+				Add_FlashFailFetch("On-site cart empty request", oResp);
+				return;
+			}
+		}
+		finally {
+			Busy.Unset();
+		}
+
+		// 'location.reload' fails in Chrome if the form has been submitted and
+		// rejected due to a validation error. Presumably it thinks the form should
+		// be re-submitted, yet it does not know whether the user wants that:
+		await location.replace("/on-site-cart");
+	}
+
+	/** Adds CkAdd_InputsWgt handlers to all weight inputs, and invokes
+	 *  CkAdd_InputsWgt in every variable-price line, to ensure that blank inputs
+	 *  are available. */
+	function Ready_InputWgts() {
+		const oContainsInputWgt = $(".InputsWgt");
+		oContainsInputWgt.each(function (aIdx) {
+			const oContain = $(this);
+			const oInputs = oContain.find("input");
+			oInputs.on("input", function () { CkAdd_InputsWgt(oContain); });
+
+			// The template does not add empty weight inputs, so one may be needed
+			// here:
+			CkAdd_InputsWgt(oContain);
+		});
+	}
+
+	$(document).on("keydown", Hand_Keydown);
+
+	$("#BtnEmpty").on("click", Empty_Cart);
+
+	$(document).ready(() => {
+		Ready_InputWgts();
+	});
+</script>

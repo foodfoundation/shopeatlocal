@@ -1,0 +1,147 @@
+{{!-- transaction-search-results.hbs
+//    ------------------------------
+//    Transaction Search Results view --}}
+
+<div class="container-md pt-4 pb-2">
+	<h2>Transaction search results</h2>
+
+	<div class="d-sm-flex flex-row">
+		<div class="lead">
+			{{#each SummsParam}}
+			{{Lbl}} {{#if Val}}<strong>{{Val}}</strong>{{/if}}{{#unless @last}},
+			{{/unless}}
+			{{else}}
+			All transactions
+			{{/each}}
+		</div>
+
+		<div class="lead ml-auto">{{TextRg}}</div>
+	</div>
+
+	{{#unless Transacts}}
+	<hr>
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No matches</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive mt-3">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Transaction ID</th>
+					<th scope="col">Time</th>
+					<th scope="col">Producer</th>
+					<th scope="col">Member</th>
+					<th scope="col">Type / Method</th>
+					<th scope="col" class="text-right">Amount</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each Transacts}}
+				<tr style="cursor: pointer" data-toggle="modal"
+					data-target="#DlgDtlTransact{{IDTransact}}">
+
+					<td>{{hTextIDTransact IDTransact}}</td>
+					<td>
+						{{hTextWhen WhenCreate "Med" ""}}<br>
+						{{hTextWhen WhenCreate "" "HourMin"}}
+					</td>
+					<td>
+						{{#if IDProducer}}
+						{{hTextIDProducer IDProducer}}<br>
+						{{NameBusProducer}}
+						{{else}}
+						&mdash;
+						{{/if}}
+					</td>
+					<td>
+						{{#if IDMemb}}
+						{{hTextIDMemb IDMemb}}<br>
+						{{Name1First}} {{Name1Last}}
+						{{else}}
+						&mdash;
+						{{/if}}
+					</td>
+					<td>
+						{{hTextCdTypeTransact CdTypeTransact}}<br>
+						{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
+					</td>
+					<td class="text-right">
+						{{#if (hCkOr (hCkEq CdTypeTransact "Adj") (hCkAnd AmtMoney AmtEBT))}}
+						{{hTextAmtMoneyTransact this}}<br>
+						<span class="EBT">{{hTextAmtEBTTransact this}}</span>
+						{{else}}
+						{{#if AmtMoney}}
+						{{hTextAmtMoneyTransact this}}
+						{{/if}}
+						{{#if AmtEBT}}
+						<span class="EBT">{{hTextAmtEBTTransact this}}</span>
+						{{/if}}
+						{{/if}}
+					</td>
+					<td>
+						{{#if (hCkOr (hCkEq CdTypeTransact "Adj") (hCkAnd AmtMoney AmtEBT))}}
+						Money<br>
+						<span class="EBT">EBT</span>
+						{{else}}
+						{{#if AmtMoney}}
+						Money
+						{{/if}}
+						{{#if AmtEBT}}
+						<span class="EBT">EBT</span>
+						{{/if}}
+						{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+
+		<hr>
+
+		<div class="d-sm-flex flex-row">
+			{{#if Transacts}}
+			<div>
+				<a class="btn btn-secondary mb-2" href="{{PathExport}}">Export</a>
+			</div>
+			{{/if}}
+
+			{{#if CkPaging}}
+			<div class="ml-auto">
+				{{{hBtnPageSearch PathPagePrev "Previous"}}}
+				{{{hBtnPageSearch PathPageNext "Next"}}}
+			</div>
+			{{/if}}
+		</div>
+	</div>
+	{{/unless}}
+</div>
+
+{{!-- --------------------------
+//    Transaction detail dialogs
+//    -------------------------- --}}
+
+{{#each Transacts}}
+<div id="DlgDtlTransact{{IDTransact}}" class="modal" tabindex="-1"
+	role="dialog">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				{{>Cashier/pHeadDtlTransact}}
+			</div>
+
+			<div class="modal-body">
+				{{>Cashier/pBodyDtlTransact}}
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary ml-auto"
+					data-toggle="modal" data-target="#DlgDtlTransact{{IDTransact}}">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+{{/each}}

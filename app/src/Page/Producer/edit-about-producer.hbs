@@ -1,0 +1,163 @@
+{{!-- edit-about-producer.hbs
+//    -----------------------
+//    Edit producer 'about' view --}}
+
+<div class="container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-3">Edit 'About producer'</h2>
+
+		{{#unless CkSelImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredSelImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<p>
+		This data will be displayed on your <strong>About Producer</strong>
+		page. Shoppers will use it to learn about you and your products.
+	</p>
+
+	<hr>
+
+	{{!-- If a producer was selected in the GET, forward that selection to the
+	//    POST: --}}
+	<form id="form-main" class="pb-4"
+		action="{{hPathProducerSel "/edit-about-producer"}}" method="POST"
+		enctype="multipart/form-data" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			{{!-- Main column: --}}
+			<div class="form-group col-md-8 pr-md-4 mb-0">
+				<div class="form-row">
+					<div class="form-group col-md">
+						<label for="AboutStory">Your story</label>
+						{{!-- Don't wrap between the two tags, doing so adds whitespace to
+						//    the input: --}}
+						<textarea name="AboutStory" maxlength="1000" rows="6"
+							class="form-control">{{AboutStory}}</textarea>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md">
+						<label for="AboutProducts">Your products</label>
+						{{!-- Don't wrap between the two tags, doing so adds whitespace to
+						//    the input: --}}
+						<textarea name="AboutProducts" maxlength="1000" rows="6"
+							class="form-control">{{AboutProducts}}</textarea>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md mb-0">
+						<label for="AboutPract">Your practices and ingredients</label>
+						{{!-- Don't wrap between the two tags, doing so adds whitespace to
+						//    the input: --}}
+						<textarea name="AboutPract" maxlength="1000" rows="6"
+							class="form-control">{{AboutPract}}</textarea>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md mb-0">
+						<label for="Facebook">Facebook</label>						
+						{{#if Facebook}}
+						<input name="Facebook" type="url" class="form-control {{#if MsgFailFacebook}}is-invalid{{/if}}" placeholder="{{CoopParams.FacebookUrl}}"  value={{Facebook}}/>
+						{{else}}
+						<input name="Facebook" type="url" class="form-control" placeholder="{{CoopParams.FacebookUrl}}"/>		
+						{{/if}}		
+						{{hDivMsgFail MsgFailFacebook}}	
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md mb-0">
+						<label for="Instagram">Instagram</label>						
+						{{#if Instagram}}
+						<input name="Instagram" type="url" class="form-control {{#if MsgFailInstagram}}is-invalid{{/if}}" placeholder="{{CoopParams.InstagramUrl}}" value={{Instagram}} />		
+						{{else}}
+						<input name="Instagram" type="url" class="form-control" placeholder="{{CoopParams.InstagramUrl}}"/>
+						{{/if}}		
+						{{hDivMsgFail MsgFailInstagram}}		
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md mb-0">
+						<label for="YourWebsite">Your Website</label>						
+						{{#if YourWebsite}}
+						<input name="YourWebsite" type="url" class="form-control {{#if MsgFailYourWebsite}}is-invalid{{/if}}" placeholder="{{CoopParams.HomeWebsite}}" value={{YourWebsite}} />		
+						{{else}}
+						<input name="YourWebsite" type="url" class="form-control" placeholder="{{CoopParams.HomeWebsite}}"/>
+						{{/if}}		
+						{{hDivMsgFail MsgFailYourWebsite}}			
+					</div>
+				</div>
+			</div>
+
+			{{!-- Image column: --}}
+			<div class="form-group col-md-4">
+				<hr class="d-block d-md-none mt-0">
+
+				{{#if NameImgProducer}}
+				<input type="hidden" name="NameImgProducer" value="{{NameImgProducer}}">
+				<input type="hidden" id="CkRemImg" name="CkRemImg">
+
+				<div class="form-row">
+					<label class="ml-1">Current producer image</label>
+				</div>
+
+				<div class="mb-2">
+					<div id="RowImg" class="form-row">
+						<div class="form-group col mb-2">
+							<img src="{{hPrefixImageWithStorage NameImgProducer}}" alt="Producer image"
+								class="w-100 border rounded p-0">
+						</div>
+					</div>
+					<button id="BtnRemImg" type="button" class="btn btn-sm btn-primary">
+						Remove
+					</button>
+					<button id="BtnRestImg" type="button"
+						class="btn btn-sm btn-primary d-none">
+						Restore
+					</button>
+				</div>
+				{{/if}}
+
+				<div class="form-row">
+					<div class="form-group col">
+						{{#if NameImgProducer}}
+						<label>New producer image</label>
+						{{else}}
+						<label>Producer image</label>
+						{{/if}}
+						<div class="custom-file">
+							{{!-- We don't want this label, but Bootstrap uses it to render
+							//    the control: --}}
+							<label id="LblImg" class="custom-file-label" for="Img"></label>
+							<input id="Img" name="Img" type="file"
+								accept=".bmp,.gif,.jfif.,.jpg,.jpeg,.pjp,.pjpeg,.png,.svg,.svgz,.tif,.tiff,.webp"
+								class="custom-file-input">
+							<div class="Explain">
+								Your image must be 1024KB or less in size. The JPG and PNG
+								formats are preferable for photographs.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>
+
+{{>Misc/pScriptUpImg}}

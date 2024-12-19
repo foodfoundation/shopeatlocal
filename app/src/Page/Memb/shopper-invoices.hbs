@@ -1,0 +1,99 @@
+{{!-- shopper-invoices.hbs
+//    --------------------
+//    Shopper Invoices view
+//
+// We could replace the table with a GridTable for a better mobile layout, but
+// this pretty much works as-is.
+//
+// No need for paging, there will never be more than a few hundred records. --}}
+
+<style>
+	div.Flow-md-2 p {
+		break-inside: avoid;
+	}
+</style>
+
+<div class="container-md py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-3">Shopper invoices</h2>
+
+		{{#unless CkSelImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredSelImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<div class="mb-3">
+		<p>
+			This list displays your web shopper invoices, plus on-site invoices
+			associated with your account. Your next web shopper invoice will appear
+			here when you pick up your order.
+		</p>
+	</div>
+
+	<hr>
+
+	{{#unless Invcs}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No shopper invoices</h2>
+	</div>
+	{{else}}
+	<div class="table-responsive">
+		<table class="table table-sm table-striped table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Invoice date</th>
+					<th scope="col">Invoice ID</th>
+					<th scope="col">Type</th>
+					<th scope="col" class="text-right">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each Invcs}}
+				<tr class="position-relative">
+					<td>
+						{{!-- This nonsense is the only way I know to stretch a link within
+						//    a table row. See here for more:
+						//
+						//      https://github.com/twbs/bootstrap/issues/28608
+						//
+						//--}}
+						<div class="position-relative">
+							<a href="{{hURLInvcShopWeb IDInvcShopWeb}}{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{hTextWhen zWhen "Med" "HourMin"}}
+						</div>
+					</td>
+					<td>
+						<div class="position-relative">
+							<a href="{{hURLInvcShopWeb IDInvcShopWeb}}{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{hTextIDInvcShopWeb IDInvcShopWeb}}{{hTextIDInvcShopOnsite IDInvcShopOnsite}}
+						</div>
+					</td>
+					<td>
+						<div class="position-relative">
+							<a href="{{hURLInvcShopWeb IDInvcShopWeb}}{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{#if IDInvcShopWeb}}Web{{else if IDInvcShopOnsite}}On-site {{#if (hIsWholesaleType CdInvcType)}}wholesale{{else}}retail{{/if}}{{/if}}
+						</div>
+					</td>
+					<td class="text-right">
+						<div class="position-relative">
+							<a href="{{hURLInvcShopWeb IDInvcShopWeb}}{{hURLInvcShopOnsite IDInvcShopOnsite}}"
+								class="stretched-link"></a>
+							{{hTextCurrOrOrig Ttl}}
+						</div>
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+		{{/unless}}
+	</div>
+</div>

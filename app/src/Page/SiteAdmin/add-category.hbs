@@ -1,0 +1,28 @@
+{{!-- add-category.hbs
+//    ----------------
+//    Add Category view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2 class="mb-3">Add category</h2>
+
+	<form id="form-main" class="pb-4" action="/add-category" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			<div class="form-group col-md mb-0">
+				<label for="NameCat">Name</label>
+				<input name="NameCat" value="{{NameCat}}" maxlength="50"
+					class="form-control {{#if MsgFailNameCat}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailNameCat}}
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex justify-content-end">
+			<button type="submit" class="btn btn-primary">Add</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,25 @@
+{{!-- 404.hbs
+//    -------
+//    Custom '404 Not Found' view --}}
+
+<div class="jumbotron">
+	<div class="container">
+		<div class="d-md-flex flex-row">
+			<h1 class="display-4 CdResp mb-0 pr-3">
+				404
+			</h1>
+			<div class="BordDk border-md-left pl-md-3">
+				<h1 class="display-4">
+					Page not found
+				</h1>
+				<div class="lead">
+					{{#if Msg}}
+					{{Msg}}
+					{{else}}
+					That page does not exist.
+					{{/if}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

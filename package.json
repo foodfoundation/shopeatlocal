@@ -1,0 +1,30 @@
+{
+  "name": "shopeatlocal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:app": "turbo run app#dev",
+    "dev:app:sanity": "turbo run app#dev sanity#dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\"",
+    "lint:fix": "turbo lint -- --fix"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "app",
+    "eslint-config",
+    "producers-report",
+    "sanity"
+  ],
+  "packageManager": "npm@10.2.4"
+}

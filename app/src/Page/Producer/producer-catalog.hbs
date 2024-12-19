@@ -1,0 +1,78 @@
+{{!-- producer-catalog.hbs
+//    --------------------
+//    Producer Catalog view --}}
+
+<style>
+	.Product, .Vty {
+		/* This is slightly less annoying when the page is being rendered than
+		// having visible elements disappear. We can't use 'd-none', because that is
+		// '!important': */
+		display: none;
+	}
+</style>
+
+<div class="container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-0">Producer catalog</h2>
+
+		{{#unless CkImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<div class="row mt-2">
+		<div class="col-md">
+			Use this page to create or edit products and varieties. You can also
+			view the sales history for a single variety, or print replacement
+			labels. Varieties with sales are highlighted in green.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			Though you can use <span class="font-weight-semi">Edit variety</span> to
+			set offer quantities, it is easier to use the
+			<a href="/producer-inventory">Producer inventory</a> when updating
+			multiple varieties.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			When the delivery window ends, your delivery quantities will be subtracted
+			automatically from your offer quantities, and the quantities on this
+			page will begin to reference the <em>next</em> cycle.
+		</div>
+		<div class="col-md-2 text-md-right mt-3 mt-md-0">
+			<a href="/add-product" class="btn btn-primary" target="_blank">Add Product</a>
+		</div>
+	</div>
+
+	<hr>
+
+	{{>Producer/pFiltProduct}}
+
+	<hr>
+
+	<div id="Products">
+		{{#each Products}}
+		{{>Producer/pLineProducerCatalog}}
+		{{else}}
+		<div class="jumbotron">
+			<h2 class="display-4 font-size-200">
+				You have no products
+			</h2>
+		</div>
+		{{/each}}
+	</div>
+
+	<script src="{{hPrefixStatic 'filt-product-1.js'}}"></script>
+
+	<script>
+		PageFiltProduct = "Catalog";
+
+		$(".CtlFilt").on("click", Hand_ChgFilt);
+		$("#BtnShowAll").on("click", Hand_ClickShowAll);
+		$(document).ready(Ready_Filt);
+	</script>
+</div>

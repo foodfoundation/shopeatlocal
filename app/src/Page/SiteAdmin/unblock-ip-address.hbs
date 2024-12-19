@@ -1,0 +1,47 @@
+{{!-- unblock-ip-address.hbs
+//    ----------------------
+//    Unblock IP Address view --}}
+
+<style>
+	.IPText {
+		font-family: monospace;
+	}
+</style>
+
+<div class="w-lg-50 container-md py-4">
+	<h2>Unblock IP address</h2>
+
+	<p>
+		IP addresses are used to identify computers. Each address consists of
+		four short numbers separated by periods, for example
+		<span class="IPText">10.123.20.234</span>. A given address will be blocked
+		if it produces {{CtFailLoginBlock}} login failures in any 24-hour
+		period. When this happens, the address and a warning will be displayed in
+		the user's browser when they attempt to login. The block will be cleared
+		automatically once the first login failure is more than 24 hours old, or you
+		can clear it immediately by entering the address here.
+	</p>
+
+	<hr>
+
+	<form id="form-main" action="/unblock-ip-address" method="POST" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row">
+			<div class="form-group col-md-6 mb-0">
+				<label for="IP">IP address</label>
+				<input id="IP" name="IP" maxlength="45"
+					class="form-control {{#if MsgFailIP}}is-invalid{{/if}}">
+				{{hDivMsgFail MsgFailIP}}
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="text-right">
+			<button type="submit" class="btn btn-primary">Unblock</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,203 @@
+{{!-- web-order-summary.hbs
+//    ---------------------
+//    Web order summary view --}}
+
+<div class="container py-4">
+	<div class="d-md-flex flex-row justify-content-between align-items-baseline
+		mb-2">
+		<h2 class="mb-0">Web order summary</h2>
+		<h5>{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
+	</div>
+
+	<div class="d-print-none row">
+		<div class="col-md">
+			This page lists the quantities {{#if (hCkStaffFromUser)}}the producer is
+			{{else}}you are{{/if}} expected to deliver in the current
+			cycle. Shopper notes are also displayed, if notes have been added. Click
+			the name next to the note to e-mail the shopper. Sales totals are
+			estimates based on current cart quantities and estimated item weights.
+			Producer fees have <em>not</em> been subtracted.
+		</div>
+		<div class="col-md-5 mt-2 mt-md-0">
+			{{>Misc/pInstructPrint}}
+		</div>
+	</div>
+
+	<hr class="d-print-none">
+
+	<div class="d-flex flex-row mx-md-2 mb-4">
+		<div class="d-none d-md-block pt-1 mr-1">
+			<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div class="ml-md-2">
+			<a href="/producer-detail/{{Producer.IDProducer}}">
+				{{hTextIDProducer Producer.IDProducer}} {{Producer.NameBus}}
+			</a><br>
+			{{hLinkEmail Producer.Email}}<br>
+			{{hLinkPhone Producer.Phone1}}
+		</div>
+	</div>
+
+	{{#unless Vtys}}
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No promised varieties</h2>
+	</div>
+	{{else}}
+	{{!-- Desktop and print layout: --}}
+	<div class="mt-3 d-none d-md-block">
+		<div class="GridTbl Head">
+			<div class="row font-weight-bold">
+				<div class="col">Product</div>
+				<div class="col">Variety</div>
+				<div class="col-1 text-right">Price</div>
+				{{!-- We're low on space, so we will cancel the padding in this column: --}}
+				<div class="col-1 px-0 text-right">Prom</div>
+				<div class="col-1 text-right">Mgd</div>
+				<div class="col-1 text-right">Sales</div>
+			</div>
+		</div>
+
+		<div class="GridTbl Body mb-3">
+			{{#each Vtys}}
+			<div class="Row">
+
+				<div class="row">
+					<div class="col">
+						<a href="/product-detail/{{IDProduct}}">
+							{{hTextIDProduct IDProduct}} {{NameProduct}}
+						</a>
+					</div>
+					<div class="col">
+						{{hTextIDVty IDVty}} {{hNameVty this}}
+					</div>
+					<div class="col-1 text-right">
+						{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
+					</div>
+					<div class="col-1 px-0 text-right">
+						{{QtyPromVty}}
+					</div>
+					<div class="col-1 text-right">
+						{{hYesNoBlank CkInvtMgd}}
+					</div>
+					<div class="col-1 text-right">
+						{{hTextCurrOrOrig SaleNom}}
+					</div>
+				</div>
+
+				{{!-- There is always a NotesShop array, but it could contain a single
+				//    record with no note: --}}
+				{{#if CkNotesShop}}
+				<div class="mx-1">
+					<ul class="mb-0">
+						{{#each NotesShop}}
+						<li class="ml-1 mb-2">
+							{{#if Memb}}
+								{{#if Memb.CkAllowPublicName}}
+									{{hLinkEmailVty Memb ../NameProduct ../Kind ../Size}}:
+									{{#if NoteShop}}
+										<em>"{{NoteShop}}"</em>
+									{{/if}}
+								{{else}}
+									{{Memb.IDMemb}}
+								{{/if}}
+							{{/if}}
+							({{QtyPromNote}} promised)
+						</li>
+						{{/each}}
+					</ul>
+				</div>
+				
+				{{/if}}
+			</div>
+			{{/each}}
+		</div>
+
+		<hr class="mb-2">
+
+		<div class="row px-1 font-weight-semi">
+			<div class="col-9">TOTAL</div>
+			<div class="col-1 px-0 text-right">
+				{{QtyPromTtl}}
+			</div>
+			<div class="col"></div>
+			<div class="col-1 text-right">{{hTextCurrOrOrig SaleNomTtl}}</div>
+		</div>
+	</div>
+
+	{{!-- Mobile layout: --}}
+	<div class="mt-3 d-md-none">
+		<div class="GridTbl Body mb-3">
+			{{#each Vtys}}
+			<div class="Row">
+
+				<div class="row">
+					{{!-- Recall that 'col-md' and similar classes style their content
+					//    even when the display size is less than that targeted: --}}
+					<div class="col-md">
+						<a href="/product-detail/{{IDProduct}}">
+							{{hTextIDProduct IDProduct}} {{NameProduct}}
+						</a>
+					</div>
+					<div class="col-md">
+						{{hTextIDVty IDVty}} {{hNameVty this}}
+					</div>
+					<div class="col">
+						{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
+					</div>
+					<div class="col px-0 text-center">
+						{{QtyPromVty}} prom
+					</div>
+					<div class="col text-center">
+						{{#if CkInvtMgd}}Mgd{{else}}Unmgd{{/if}}
+					</div>
+					<div class="col text-right">
+						{{hTextCurrOrOrig SaleNom}}
+					</div>
+				</div>
+
+				{{!-- There is always a NotesShop array, but it could contain a single
+				//    record with no note: --}}
+				{{#if CkNotesShop}}
+				<hr class="my-1">
+
+				<div class="mx-1">
+					<ul class="mb-0">
+						{{#each NotesShop}}
+						<li class="mb-2">
+							{{#if Memb}}
+								{{hLinkEmailVty Memb ../NameProduct ../Kind ../Size}}:
+								{{#if NoteShop}}
+									<em>"{{NoteShop}}"</em>
+								{{/if}}
+							{{else}}
+								<em>No note</em>
+							{{/if}}
+							({{QtyPromNote}} promised)
+						</li>
+						{{/each}}
+					</ul>
+				</div>
+
+				{{/if}}
+			</div>
+			{{/each}}
+		</div>
+
+		<hr class="mb-2">
+
+		<div class="row px-1 font-weight-semi">
+			<div class="col">TOTAL</div>
+			<div class="col px-0 text-center">
+				{{QtyPromTtl}} prom
+			</div>
+			<div class="col"></div>
+			<div class="col text-right">{{hTextCurrOrOrig SaleNomTtl}}</div>
+		</div>
+	</div>
+	{{/unless}}
+	<div>
+		<a class="btn btn-secondary mb-2" href="/web-order-summary-export">
+			Export
+		</a>
+	</div>
+</div>

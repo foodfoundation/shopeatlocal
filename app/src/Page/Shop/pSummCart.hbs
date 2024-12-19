@@ -1,0 +1,360 @@
+{{!-- pSummCart.hbs
+//    -------------
+//    Cart summary content --}}
+
+{{#unless (hCkAnd SummCartImperUser SummCartImperUser.Its.length)}}
+
+{{!-- Empty cart content --}}
+
+<div class="jumbotron py-4 py-md-5 my-3">
+	{{#if FlagShop}}
+		<h1 class="display-4 font-size-200 font-size-md-250">
+			Your cart is empty!
+		</h1>
+		<p class="lead mb-2">
+			<a href="/product-search">Search</a> our products,
+			view <a href="/product-search?CkPast=true">past purchases</a>,
+			shop by <a href="/">product category</a>,
+			or meet <a href="/producers">our producers</a>.
+		</p>
+	{{else}}
+		<h1 class="display-4 font-size-250">The cart is closed</h1>
+		<p class="lead">
+			You will be able to shop when the cart opens on
+			{{hTextDateTimeLong WhenStartShopNext}}.
+		</p>
+	{{/if}}
+</div>
+
+{{else}}
+
+{{!-- Cart list heading
+//    -----------------
+//    I tried using an HTML table here, but I didn't like it, don't remember
+//    why. Possibly I wanted something that would 'collapse' into rows on a
+//    mobile display. --}}
+
+<div class="GridTbl Head d-none d-md-block mt-md-3">
+	<div class="form-row font-weight-bold align-items-center">
+		<div class="form-group col-md d-flex flex-row justify-content-between">
+			<span>Variety</span>
+			<span>Producer</span>
+		</div>
+		<div class="form-group col-md-1 text-right">
+			Price Nominal
+		</div>
+		<div class="form-group col-md-1 text-right">
+			Order
+		</div>
+		{{#if FlagShop}}
+		<div class="form-group col-md-1 text-right">
+			Avail
+		</div>
+		{{/if}}
+		<div class="form-group col-md-1 text-right">
+			Status
+		</div>
+		<div class="form-group col-md-1 text-right">
+			Subtotal Nominal
+		</div>
+		{{#if FlagShop}}
+		<div class="form-group col-md-1">
+		</div>
+		{{/if}}
+	</div>
+</div>
+
+{{!-- Cart list items --}}
+
+<div id="BodySummCart" class="GridTbl Body mb-3">
+	{{#each SummCartImperUser.Its}}
+	<div id="ItCart{{IDItCart}}" class="Row">
+		<div class="form-row align-items-center">
+			{{!-- The variety ID of the item to be updated: --}}
+			<input type="hidden" name="IDVty{{IDItCart}}" value="{{IDVty}}">
+
+			<div class="form-group col-md d-flex flex-column flex-md-row
+				justify-content-between line-height-md-120">
+				<a href="/product/{{IDProduct}}">
+					<span class="WthFix">{{hTextIDVty IDVty}}</span> {{hNameProductVty this this}}
+				</a>
+				<a class="text-md-right ml-md-3" href="/about-producer/{{IDProducer}}">
+					{{NameBus}}
+				</a>
+			</div>
+
+			<div class="form-group col-md-1 mb-1 mb-md-0 text-md-right">
+				{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
+			</div>
+
+			<hr class="d-md-none mb-1" style="width: 100%">
+
+			<div class="form-group col-3 col-md-1">
+				{{!-- There is no reason to enforce a maximum quantity here, and
+				//    neither 'max' nor 'maxlength' prevent over-large numbers from
+				//    being typed. The available quantity could decrease at any time,
+				//    so it will always be necessary to account for shortages.
+				//
+				//    The cart service treats blank QtyOrd values as zeros: --}}
+				<input name="QtyOrd{{IDItCart}}" value="{{QtyOrd}}" maxlength="2"
+					{{#unless @root.FlagShop}}readonly{{/unless}}
+					class="InputQty form-control form-control-sm w-75 w-md-100 w-lg-75
+						ml-md-auto">
+			</div>
+
+			{{#if @root.FlagShop}}
+			<div class="form-group col-3 col-md-1 text-md-right">
+				{{hQtyAvailTtl QtyOffer QtyPromVty QtyProm}}
+				<span class="d-md-none">avail</span>
+			</div>
+			{{/if}}
+
+			<div class="form-group col col-md-1 text-center text-md-right">
+				{{#if (hCkLess QtyProm QtyOrd)}}
+				<span class="OOS">{{hDiff QtyOrd QtyProm}} OOS</span>
+				{{else}}
+				OK
+				{{/if}}
+			</div>
+
+			<div class="form-group col-3 col-md-1 text-right">
+				{{hTextCurrOrOrig SaleNom}}{{#if WgtMin}}*{{/if}}{{#if CkTaxSaleEff}}&dagger;{{/if}}
+			</div>
+
+			<hr class="d-md-none my-1" style="width: 100%">
+
+			{{#if @root.FlagShop}}
+			<div class="form-group col col-sm-2 col-md-1 text-md-right">
+				{{#if CkInvtMgd}}
+				<div class="line-height-120 font-size-80 font-italic mr-1">
+					Cannot note<br>this item
+				</div>
+				{{else}}
+				<button type="button" data-id-it-cart="{{IDItCart}}"
+					id="BtnAddNoteShop{{IDItCart}}"
+					class="BtnAddNoteShop btn btn-sm btn-outline-primary my-1 my-md-0
+						{{#if (hCkOr NoteShop NoteShopDenied)}}d-none{{/if}}">
+					Note
+				</button>
+				{{/if}}
+			</div>
+			{{/if}}
+		</div>
+
+		<div id="LineNoteShop{{IDItCart}}"
+			class="{{#unless (hCkOr NoteShop NoteShopDenied)}}d-none{{/unless}}
+				{{#if NoteShopDenied}}Denied{{/if}}">
+
+			<hr class="RuleNoteShop d-none d-md-block">
+
+			<div class="form-row">
+				<div class="form-group col-md-1 font-size-90">
+					<label for="NoteShop{{IDItCart}}">Note for producer</label>
+				</div>
+
+				<div class="form-group col-md-7">
+					{{!-- Don't wrap between the two tags, doing so adds whitespace to
+					//    the input: --}}
+					<textarea id="NoteShop{{IDItCart}}" name="NoteShop{{IDItCart}}"
+						data-id-it-cart="{{IDItCart}}" maxlength="200"
+						{{#unless @root.FlagShop}}readonly{{/unless}}
+						class="NoteShop form-control font-size-90">{{NoteShop}}{{NoteShopDenied}}</textarea>
+
+					{{#if NoteShopDenied}}
+					<div class="WarnNoteShop font-size-90">
+						Sorry, the producer cannot honor this request.
+						{{#if @root.FlagShop}}
+						You can remove the item, you can delete the note and receive the
+						item without the processing you requested, or you can try a
+						different note.
+						{{/if}}
+					</div>
+					{{/if}}
+				</div>
+
+				<div class="form-group col col-md-2">
+					{{#if @root.FlagShop}}
+					<button type="button" data-id-it-cart="{{IDItCart}}"
+						id="BtnDelNoteShop{{IDItCart}}"
+						class="BtnDelNoteShop btn btn-sm btn-outline-danger mt-1 mt-md-0">
+						Delete note
+					</button>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+	</div>
+	{{/each}}
+</div>
+
+{{#if FlagShop}}
+
+{{!-- Cart list instructions --}}
+
+<div class="form-row">
+	<div class="col-md font-size-90 mb-3 mb-sm-0">
+		Be sure to click the <strong>Save</strong> button after changing location,
+		quantities, or notes. Your order will be placed automatically at
+		<strong>{{hTextWhen WhenEndShopNext "" "HourMin"}}</strong> on
+		<strong>{{hTextWhen WhenEndShopNext "Med" ""}}</strong>. You may not add or
+		remove items after that time.
+	</div>
+	<div class="col-md text-md-right font-size-90 mt-2 mt-md-0">
+		You can add a note to most items to request special processing from
+		the producer, but the note will be 'denied' if the producer cannot meet
+		your request. You must remove the denied item if you no longer want it.
+		Notes create extra work for producers and staff, so please do not use
+		them to say 'thank you'. Click the producer name and send an e-mail instead!
+	</div>
+</div>
+{{/if}}
+
+{{!-- Cart totals --}}
+
+<hr>
+
+<div class="form-row mt-3">
+	<div class="col-md-2">
+		<h4 class="mb-2 mb-sm-0">Totals</h4>
+	</div>
+	<div class="col-md text-md-right font-size-90 mt-2 mt-md-0">
+		* Weighted item subtotals are estimates. The final price will be
+		determined by the actual weight of these items.
+	</div>
+</div>
+<div class="form-row mt-3">
+	<div class="col-md-4">
+		<div class="table-responsive">
+			<table class="table table-sm table-striped">
+				<tbody>
+					<tr>
+						<td class="font-weight-bold">Non-taxable sales</td>
+						<td class="text-right">
+							{{hTextCurrOrOrig SummCartImperUser.SaleNomNontaxab}}
+						</td>
+					</tr>
+					<tr>
+						<td class="font-weight-bold">Market fee on non-taxable sales
+						</td>
+						<td class="text-right">
+							{{#if (hCkRegEBT @root.CredUser)}}
+							EBT
+							{{else}}
+							{{hTextCurrOrOrig SummCartImperUser.FeeCoopShopNontaxab}}
+							{{/if}}
+						</td>
+					</tr>
+					<tr>
+						<td class="font-weight-bold">Non-taxable subtotal</td>
+						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.SubNontaxab}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="table-responsive">
+			<table class="table table-sm table-striped">
+				<tbody>
+					<tr>
+						<td class="font-weight-bold">&dagger; Taxable sales</td>
+						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.SaleNomTaxab}}
+						</td>
+					</tr>
+					<tr>
+						<td class="font-weight-bold">Market fee on taxable sales</td>
+						<td class="text-right">
+							{{#if (hCkRegEBT @root.CredUser)}}
+							EBT
+							{{else}}
+							{{hTextCurrOrOrig SummCartImperUser.FeeCoopShopTaxab}}
+							{{/if}}
+						</td>
+					</tr>
+					<tr>
+						<td class="font-weight-bold">Taxable subtotal</td>
+						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.SubTaxab}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="table-responsive">
+			<table class="table table-sm table-striped">
+				<tbody>
+					<tr>
+						<td class="font-weight-bold">Sales tax</td>
+						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.TaxSale}}</td>
+					</tr>
+					<tr>
+						<td class="font-weight-bold">Transfer/delivery fee</td>
+						<td class="text-right">
+							{{#if (hCkNaN SummCartImperUser.FeeDelivTransfer)}}
+							PENDING
+							{{else}}
+							{{hTextCurrOrOrig SummCartImperUser.FeeDelivTransfer}}
+							{{/if}}
+						</td>
+					</tr>
+					<tr>
+						<td class="font-weight-bold">Estimated total *</td>
+						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.Ttl}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{{!-- Input event handlers
+//    --------------------
+//    Remember that this content is replaced via AJAX, so handlers must be set
+//    here, rather than in the containing template. --}}
+
+<script>
+	$("#BodySummCart input").on("input", OnChg_FormCart);
+	$("#BodySummCart textarea").on("input", OnChg_FormCart);
+
+	$("#BodySummCart .BtnAddNoteShop").on("click", Add_NoteShop);
+	$("#BodySummCart .BtnAddNoteShop").on("click", OnChg_FormCart);
+
+	$("#BodySummCart .BtnDelNoteShop").on("click", Del_NoteShop);
+	$("#BodySummCart .BtnDelNoteShop").on("click", OnChg_FormCart);
+
+	$("#BodySummCart .NoteShop").on("input", Chg_NoteShop);
+
+	/** Displays the note in the line that contains the event-sending element. */
+	function Add_NoteShop(aEvt) {
+		const oBtn = $(this);
+		const oIDItCart = oBtn.data("id-it-cart");
+		$("#LineNoteShop" + oIDItCart).removeClass("d-none");
+		oBtn.addClass("d-none");
+	}
+
+	/** Clears and then hides the note in the line that contains the
+	 *  event-sending element. */
+	function Del_NoteShop(aEvt) {
+		const oBtn = $(this);
+		const oIDItCart = oBtn.data("id-it-cart");
+
+		const oLine = $("#LineNoteShop" + oIDItCart);
+		oLine.removeClass("Denied");
+		oLine.addClass("d-none");
+
+		$("#NoteShop" + oIDItCart).val("");
+		$("#BtnAddNoteShop" + oIDItCart).removeClass("d-none");
+	}
+
+	function Chg_NoteShop(aEvt) {
+		const oEd = $(this);
+		const oIDItCart = oEd.data("id-it-cart");
+
+		const oLine = $("#LineNoteShop" + oIDItCart);
+		oLine.removeClass("Denied");
+	}
+</script>
+
+{{/unless}}

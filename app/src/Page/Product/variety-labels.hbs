@@ -1,0 +1,193 @@
+{{!-- variety-labels.hbs
+//    ------------------
+//    Variety Labels view
+//
+// Instead of adding weight inputs on demand, I could have used a single multi-
+// line edit box for all of them. That would have been easier, and it was
+// specified in the MVP design, but it would not match the delivery and web
+// checkout designs. If the weight inputs cause trouble, consider replacing
+// them.
+//
+// This view is largely identical to 'add-to-on-site-cart'. It doesn't seem
+// worthwhile to combine them just yet, but that is something to consider. --}}
+
+<style>
+#Vty {
+	background-color: rgba(0, 0, 0, 5%);
+}
+
+.InputWgt, .InputQty {
+	display: inline-block;
+	width: 6rem;
+	margin-bottom: 0.25rem;
+
+	/* Weight inputs are separated by whitespace, which spaces them apart. See the
+	// Add_InputWgt comments for more on that. */
+}
+</style>
+
+<div class="container py-4">
+	<h2>Variety labels</h2>
+
+	<div class="row">
+		<div class="col-md">
+			<div>
+				This page generates labels for a single variety. You should <em>not</em>
+				use this page when preparing to deliver web orders to {{CoopParams.CoopNameShort}}. Visit the
+				<a href="/web-order-labels">Web order labels</a> page instead, and
+				follow the instructions there.
+			</div>
+			<div class="mt-2">
+				{{#if VtySel.CkPriceVar}}
+				This is a variable-price item. Enter one fulfilled weight for each label
+				you wish to print, then click <strong>View</strong> to generate the labels. New
+				edit boxes will be added as you use them. Leave boxes empty if you do not
+				need them. If you are printing a large number of labels, enter them in
+				batches of 70 or less. Use multiples of 14 to avoid wasting labels.
+				{{else}}
+				This is a fixed-price item. Enter the number of labels you wish to print,
+				then click <strong>View</strong> to generate them.
+				{{/if}}
+			</div>
+			<div class="mt-2">
+				Your labels must be printed on 1&#8531;" &times; 4" adhesive stock for 14 labels / page, or 1 &times; 2&#8541;" for 30 labels / page:
+			</div>
+
+		</div>
+		<div class="col-md-4 mt-3 mt-md-0">
+			<div class="d-flex border border-danger bg-white rounded-sm px-3 py-3 mb-0">
+				<div class="d-none d-md-block mt-2 mr-3">
+					<img src="{{hPrefixStatic 'printer.svg'}}" alt="" width="40" height="40">
+				</div>
+				<div>
+					{{#if (hCkEq Product.CdStor "FROZ")}}
+					Because this item is frozen, <strong>you must use waterproof
+					labels</strong>. Stock matching <em>Avery Address Labels</em> format
+					<strong>5522</strong> is appropriate.
+					{{else}}
+					Because this item is <em>not</em> frozen, you can use paper labels.
+					Stock matching <em>Avery Address Labels</em> format
+					<strong>5262 (14 labels) or 5160 (30 labels)</strong> is appropriate.
+					{{/if}}
+					Be sure to use labels appropriate for your printer type, whether
+					laser printer or inkjet.
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+	<form id="FormLblsVty" class="mt-4" action="/variety-labels/{{VtySel.IDVty}}"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row font-weight-bold border-bottom py-1 mt-2">
+			<div class="form-group col-md m-0">
+				Producer / Product / Variety
+			</div>
+			{{#if VtySel.CkPriceVar}}
+			<div class="form-group col-md-4 text-md-right pr-3 m-0">
+				Weights
+			</div>
+			{{else}}
+			<div class="form-group col-md-4 text-md-right pr-3 m-0">
+				Qty
+			</div>
+			{{/if}}
+		</div>
+
+		<div id="Vty" class="form-row py-1 pr-1">
+			<div class="form-group col-md m-0">
+				<a href="/producer-detail/{{Producer.IDProducer}}">
+					{{hTextIDProducer Producer.IDProducer}} {{Producer.NameBus}}
+				</a><br>
+				<a href="/product-detail/{{Product.IDProduct}}">
+					{{hTextIDProduct Product.IDProduct}} {{Product.NameProduct}}
+				</a><br>
+				{{hTextIDVty VtySel.IDVty}} {{hNameVty VtySel}}
+			</div>
+
+			<div class="form-group col-md-4 text-md-right pt-2 pr-2 mb-0">
+				{{#if VtySel.CkPriceVar}}
+				<div id="InputsWgt">
+					{{#each WgtsFulf}}
+					{{!-- The weights are passed as an array. The ID suffixes must match
+					//    those array indices, or the MsgFailWgtPer ID will be wrong, and
+					//    the wrong fields will be highlighted on validation failure.
+					//
+					//    Add_InputWgt generates new inputs, so consider updating that
+					//    function after changing this HTML: --}}
+					<input name="WgtPer{{@index}}" value="{{hTextWgtOrOrig this}}"
+						maxlength="5"
+						class="InputWgt IconShow form-control form-control-sm
+							{{hClassValidFail "WgtPer" @index}}">
+					{{/each}}
+				</div>
+				{{hDivMsgFailForm MsgFailWgts}}
+				{{else}}
+				<input name="Qty" value="{{Qty}}" maxlength="3"
+					class="InputQty IconShow form-control form-control-sm
+						{{#if MsgFailQty}}is-invalid{{/if}} ml-auto">
+				{{hDivMsgFail MsgFailQty}}
+				{{/if}}
+			</div>
+		</div>
+
+		<hr class="WthGrid">
+		<div class="text-right">
+				<input type = "radio" name="labels" id="14labels" value = "false" checked></input>
+				<label for="14labels">14 Labels Per Page</label>
+				<input type = "radio" name="labels" id="30labels" value = "true"></input>
+				<label for="30labels">30 Labels Per Page</label>
+		</div>
+		<div class="text-right">
+			<button type="submit" class="btn btn-primary">View</button>
+		</div>
+
+	</form>
+	<a></a>
+</div>
+
+<script>
+	/** Adds a new, empty weight input to the form. */
+	function Add_InputWgt() {
+		const oID = IDInputNext($("#InputsWgt"), "WgtPer");
+		const oInput = $(
+			`<input name="WgtPer${oID}" maxlength="5" class="InputWgt IconShow form-control form-control-sm">`
+		);
+		// For static controls, this is added at the end of 'Main.hbs':
+		oInput
+			.on("input", Rem_ChNonWgt)
+			.on("input", CkAdd_InputsWgt);
+
+		// The inputs are inline-block, so breaking the HTML lines between
+		// #InputsWgt and the template input adds whitespace, which alters the
+		// spacing between the elements. Rather than change the template (which
+		// would make it heard to read) we will add the same spacing between all of
+		// them:
+		$("#InputsWgt").append(oInput).append(" ");
+	}
+
+	/** Checks the weight inputs, and adds a new, empty one if all are filled. */
+	function CkAdd_InputsWgt() {
+		const oInputs = $("#InputsWgt").find("input");
+		for (const oInput of oInputs) {
+			const oVal = $(oInput).val();
+			if (!oVal) return;
+		}
+
+		Add_InputWgt();
+	}
+
+	$(document).ready(() => {
+		const oDivInputsWgt = $("#InputsWgt");
+		if (oDivInputsWgt.length) {
+			$("#InputsWgt .InputWgt").on("input", CkAdd_InputsWgt);
+			// The template does not add empty weight inputs, so one may be needed
+			// here:
+			CkAdd_InputsWgt();
+		}
+	});
+</script>

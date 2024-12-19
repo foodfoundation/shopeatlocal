@@ -1,0 +1,618 @@
+{{!-- shopper-checkout.hbs
+//    --------------------
+//    Shopper Checkout view
+//
+// WARNING: VS Code's 'Format Document' function will break this page!
+//
+// The Bootstrap documentation says 'Bootstrap only supports one modal window at
+// a time', however it is possible to display multiple modals by (for example)
+// clicking the Reset button to display the confirmation dialog, and then
+// scanning an invalid item. So far, I have not been able to break anything by
+// doing this, but it is something to remember.
+//
+// This page is very similar to Producer Check-in, from which it derives. I
+// don't want to abstract and share this code right now, so, when changing
+// things, consider whether changes in that page are also necessary. --}}
+
+<style>
+	/* Would be nice to display icons or text for the 'pending', 'Done', and 'Err'
+	// statuses, in case the user is color blind. */
+
+	div.Flow-md-2 p {
+		/* This fixes a Chrome bug that inserts unwanted space below the second
+		// paragraph: */
+		break-inside: avoid;
+	}
+
+	div.Vty {
+		/* For the scan animation: */
+		position: relative;
+
+		border-color: hsl(0, 0%, 80%) !important;
+		background-color: hsla(45, 90%, 90%, 1);
+	}
+
+	div.Vty.Done {
+		background-color: hsla(130, 60%, 90%, 1);
+	}
+
+	div.Vty.Err {
+		background-color: hsla(0, 90%, 90%, 1);
+	}
+
+	form hr.RuleFulf {
+		border-style: dashed;
+		border-color: hsla(0, 0%, 0%, 0.3);
+	}
+
+	input.QtySold,
+	input.WgtPer {
+		width: 5em;
+	}
+
+	input.QtyLost,
+	input.QtyReject {
+		width: 3em;
+	}
+
+	.modal ul {
+		padding-left: 1.5em;
+	}
+
+	.modal ul li {
+		margin-bottom: 0.75em;
+	}
+
+	.modal ul li:last-of-type {
+		margin-bottom: 0;
+	}
+</style>
+
+<div class="container py-4">
+	<h2>Shopper checkout</h2>
+
+	<div class="row">
+		<div class="col-md">
+			Scan the {{CoopParams.CoopNameShort}} QR code on each item in the fulfilled order. Do not scan
+			UPCs, and do not scan any item more than once. Managers can type
+			sold quantities and weights, but non-manager staff must use the scanner.
+			When the entire order has been scanned, click the
+			<span class="font-weight-semi">Save</span> button at the bottom to
+			complete the checkout.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			The browser must remain focused while you are scanning. The
+			scanner will play a sound when it reads the QR code, then your computer
+			will play a sound that tells you whether the item belongs in this
+			delivery. If your computer does not play its sound, focus the browser and
+			try again. For more help, see the <a href="/scanner-use">scanner use</a>
+			page.
+		</div>
+		<div class="col-md mt-2 mt-md-0">
+			<div>
+				The order lines are colored to show their checkout status. Green lines
+				have been completely checked-out. Yellow lines are missing one or more
+				items. Red lines contain invalid entries. You cannot
+				<span class="font-weight-semi">Save</span> until all lines are green.
+				Any items not listed here were out-of-stocked or truant and will be
+				marked out-of-stock on the invoice.
+			</div>
+			<div class="mt-2">
+				Click <span class="font-weight-semi">Reset</span> to clear
+				all entries and restart the checkout.
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="d-md-flex">
+		<div class="d-none d-md-block mr-3">
+			<img class="mt-1" src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+		</div>
+		<div class="font-size-110">
+			<div>
+				Member {{hTextIDMemb Memb.IDMemb}}
+				<br><strong>{{Memb.Name1First}} {{Memb.Name1Last}}</strong>
+				{{#if Memb.Name2First}}
+					<br><strong>{{Memb.Name2First}} {{Memb.Name2Last}}</strong>
+				{{/if}}
+				<br>{{Memb.Addr1}}
+				{{#if Memb.Addr2}}<br>{{Memb.Addr2}}{{/if}}
+				<br>{{Memb.City}}, {{Memb.St}} {{Memb.Zip}}
+			</div>
+			<div class="mt-2">
+				{{hLinkEmail Memb.Email1}}
+				{{#if Memb.Email2}}<br>{{hLinkEmail Memb.Email2}}{{/if}}
+				<br>{{hLinkPhone Memb.Phone1}}
+				{{#if Memb.Phone2}}<br>{{hLinkPhone Memb.Phone2}}{{/if}}
+			</div>
+		</div>
+
+		<div class="ml-auto">
+			<div class="d-flex align-items-center mt-3 mt-md-0">
+				<div class="font-size-120 text-md-right">
+					<span class="font-weight-semi">{{Loc.CdLoc}}</span><br>
+					{{Loc.NameLoc}}
+				</div>
+				<div class="d-none d-md-block ml-2">
+					<img src="{{hPrefixStatic 'loc.svg'}}" alt="" width="40" height="40">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<form id="FormCheckout" class="mt-4"
+		action="{{hPathMembSel "/shopper-checkout"}}" method="POST" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div id="Stors">
+			{{#each Stors}}
+			{{>Distrib/pLineShopCheckout}}
+			{{else}}
+			<hr>
+			<div class="jumbotron">
+				<h2 class="display-4 font-size-200">No items delivered</h2>
+			</div>
+			{{/each}}
+		</div>
+
+		{{#if Stors}}
+
+		<div class="form-row">
+			<div class="form-group col-md-6 mt-2 mb-0">
+				<div class="custom-control custom-checkbox mt-2">
+					<input id="CkNoShow" name="CkNoShow" type="checkbox"
+						{{hAttrCk CkNoShow false}} class="custom-control-input">
+					<label for="CkNoShow" class="custom-control-label">
+						No-show shopper?
+					</label>
+				</div>
+				<div class="Explain mb-0">
+					Check this box if the shopper did not show up to collect their order.
+					An invoice will be generated and the shopper charged, as usual. A
+					no-show note will be added to the invoice.
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="d-flex justify-content-between">
+			<button type="button" class="btn btn-secondary" data-toggle="modal"
+				data-target="#DlgConfirmReset">
+				Reset
+			</button>
+			<button id="BtnCkSave" type="button" class="btn btn-primary">
+				Save
+			</button>
+		</div>
+		{{/if}}
+
+		{{!-- Save dialogs
+		//    ------------ --}}
+
+		<div id="DlgSaveInvalid" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Cannot check out!</h5>
+					</div>
+
+					<div class="modal-body">
+						<p>
+							The checkout is incomplete, or the page contains errors. Please
+							fix your input and try again:
+						</p>
+
+						<ul class="mb-1">
+							<li>
+								All fields must be filled. <strong>Wgts sold</strong> are an
+								exception; they can be left blank to represent unfulfilled
+								weighted items.
+							</li>
+							<li>
+								In each line, the sum of the <strong>lost</strong>,
+								<strong>rejected</strong>, and <strong>sold</strong> quantities
+								must equal the <strong>delivered</strong> quantity. For weighted
+								items, the <strong>sold</strong> quantity is the number of
+								non-blank <strong>Wgts sold</strong> entries.
+							</li>
+							<li>
+								All <strong>Wgts sold</strong> values must be greater than zero.
+							</li>
+						</ul>
+
+						<p class="mt-3 mb-0">
+							Incomplete lines are yellow, error lines are red. You can check
+							out when all lines are green.
+						</p>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">
+							OK
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+{{!-- Reset confirmation dialog
+//    ------------------------- --}}
+
+<div id="DlgConfirmReset" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Reset checkout form?</h5>
+			</div>
+
+			<div class="modal-body">
+				This will set all quantities to zero, and delete all weight entries. Do
+				this if you wish to restart the checkout.
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">
+					Cancel
+				</button>
+				<button id="BtnReset" type="button" class="btn btn-primary">
+					OK
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{!-- Scan error dialog
+//    ----------------- --}}
+
+<div id="DlgErrScan" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Checkout error!</h5>
+			</div>
+
+			<div class="modal-body">
+			</div>
+
+			<div class="modal-footer">
+				<button id="BtnReset" type="button" class="btn btn-primary"
+					data-dismiss="modal">
+					OK
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function Show_Err(aText) {
+		const oDlg = $("#DlgErrScan");
+		oDlg.find("div.modal-body").text(aText);
+		oDlg.modal();
+	}
+</script>
+
+{{!-- Pickup data
+//    ----------- --}}
+
+<script>
+	const Vtys = [
+		{{#each Stors}}
+		{{#each Vtys}}
+		{
+			IDVty: {{IDVty}},
+			CkPriceVar: {{hJSONBool CkPriceVar}},
+			// The labels use the cart item ID to indicate the presence of a shopper
+			// note, so, although we always know that ID in this page, we should
+			// include it only when there is an actual note:
+			IDItCart: {{#if NoteShop}}{{hJSONValOrNull IDItCart}}{{else}}null{{/if}}
+		},
+		{{/each}}
+		{{/each}}
+	];
+
+	const list = {{{json2 VtyList}}};
+</script>
+
+{{!-- Button and scanner handlers
+//    --------------------------- --}}
+
+{{>Misc/pScriptScan}}
+
+<script>
+	/** The number of order lines with invalid entries. */
+	let CtInval = 0;
+	/** The number of order lines with incomplete counts. */
+	let CtIncomp = 0;
+
+	/** Updates CtInval and CtIncomp, and sets the background color of each
+	 *  variety element to show its status. */
+	function Upd() {
+		CtInval = 0;
+		CtIncomp = 0;
+
+		const oVtys = $("div.Vty");
+		for (const oVty of oVtys) {
+			const oElVty = $(oVty);
+
+			// Set to 'true' if any input contains invalid data:
+			let oCkInvalid = false;
+			// Set to 'true' if the item is not completely sold:
+			let oCkUnder = false;
+			// Set to 'true' if the quantity sold input is blank:
+			let oCkBlankSold = false;
+
+			let oQtyLost = 0;
+			let oQtyReject = 0;
+			let oQtySold = 0;
+
+			// Check lost quantity
+			// -------------------
+
+			const oInputQtyLost = oElVty.find("input.QtyLost");
+			// Should be only one of these, but I don't want to throw:
+			for (const oInput of oInputQtyLost) {
+				const oVal = $(oInput).val();
+				const oQty = parseInt(oVal);
+				// Zero is a valid entry here, but blank is not:
+				if (isNaN(oQty) || (oQty < 0)) oCkInvalid = true;
+				else oQtyLost = oQty;
+			}
+
+			// Check rejected quantity
+			// -----------------------
+
+			const oInputQtyReject = oElVty.find("input.QtyReject");
+			// Should be only one of these, but I don't want to throw:
+			for (const oInput of oInputQtyReject) {
+				const oVal = $(oInput).val();
+				const oQty = parseInt(oVal);
+				// Zero is a valid entry here, but blank is not:
+				if (isNaN(oQty) || (oQty < 0)) oCkInvalid = true;
+				else oQtyReject = oQty;
+			}
+
+			// Check sold quantity
+			// -------------------
+
+			const oInputsQtySold = oElVty.find("input.QtySold");
+			// Should be only one of these, but I don't want to throw:
+			for (const oInput of oInputsQtySold) {
+				const oVal = $(oInput).val();
+				if (oVal.trim() === "") oCkBlankSold = true;
+
+				const oQty = parseInt(oVal);
+				// Zero is a valid entry here, but blank is not:
+				if (isNaN(oQty) || (oQty < 0)) oCkInvalid = true;
+				else oQtySold = oQty;
+			}
+
+			// Check sold weights
+			// ------------------
+
+			const oInputsWgtPer = oElVty.find("input.WgtPer");
+			for (const oInput of oInputsWgtPer) {
+				const oWgt = parseFloat($(oInput).val());
+				// Blank is a valid entry here, but zero is not:
+				if (oWgt <= 0) oCkInvalid = true;
+				else if (oWgt) ++oQtySold;
+			}
+
+			// Update counts and variety style
+			// -------------------------------
+
+			const oQtyTtl = oQtyLost + oQtyReject + oQtySold;
+			const oQtyDeliv = oElVty.data("qty-deliv");
+			if (oQtyTtl > oQtyDeliv) oCkInvalid = true;;
+			if (oQtyTtl < oQtyDeliv) oCkUnder = true;
+
+			if (oCkInvalid) ++CtInval;
+			if (oCkUnder) ++CtIncomp;
+
+			oElVty.removeClass("Done Err");
+			if (oCkInvalid) oElVty.addClass("Err");
+			else if (!oCkUnder) oElVty.addClass("Done");
+
+			const oBtnAdd = oElVty.find(".BtnAddSold");
+			if (oCkBlankSold || oCkUnder) oBtnAdd.removeClass("d-none");
+			else oBtnAdd.addClass("d-none");
+		}
+	}
+
+	$("input").on("input", Upd);
+
+	$("button.BtnAddSold").on("click", function () {
+		const oBtn = $(this);
+		const oIDItPickup = oBtn.data("id-it-pickup");
+		const oInputQty = $("#QtySold" + oIDItPickup);
+		const oQty = parseInt(oInputQty.val()) || 0;
+		oInputQty.val(oQty + 1);
+		Upd();
+	});
+
+	$("#BtnReset").on("click", function () {
+		$("#DlgConfirmReset").modal("toggle");
+
+		$("input.QtyLost").val("0");
+		$("input.QtyReject").val("0");
+		$("input.QtySold").val("0");
+		$("input.WgtPer").val("");
+		$("#CkNoShow").prop("checked", false);
+		Upd();
+	});
+
+	$("#BtnCkSave").on("click", function () {
+		if (CtInval || CtIncomp) $("#DlgSaveInvalid").modal();
+		else $("#FormCheckout").submit();
+	});
+
+	/** Verifies that the scanned item is part of this order, scrolls to and
+	 *  animates the relevant variety line if it is, and then fills an empty
+	 *  weight field, or increments the sold quantity, if possible. Returns 'true'
+	 *  if the item was successfully sold. Returns an object containing an
+	 *  explanation of the failure if not. */
+	function Sell_ItScan(aDataScan) {
+		const oMsg = "Scanned IDVty " + aDataScan.IDVty
+			+ ", WgtPer " + aDataScan.WgtPer
+			+ ", IDItCart " + aDataScan.IDItCart + "...";
+
+		// Identify scanned item and matching variety element
+		// --------------------------------------------------
+		let oVty = null;
+		if (aDataScan.IsUpc == true) {
+			oVty = Vtys.find(o => {
+				return (o.IDVty === aDataScan.IDVty);
+			});
+		}
+		else {
+			oVty = Vtys.find(o => {
+				return (o.IDVty === aDataScan.IDVty)
+				&& (o.IDItCart === aDataScan.IDItCart);
+			});
+		}
+		if (!oVty) {
+			const oCkVty = Vtys.some(o => { return (o.IDVty === aDataScan.IDVty) });
+			if (oCkVty) return {
+				MsgFail: "That variety is part of this order, but the note does not match."
+			};
+			return {
+				MsgFail: "That variety is not part of this order."
+			};
+		}
+
+		// IDItCart is used to identify the presence or absence of a shopper note.
+		// It would be superfluous in this page otherwise:
+		let oElVty = "";
+		if (aDataScan.IsUpc == true) {
+			let oSelElVty = `#Vty${aDataScan.IDVty}-${oVty.IDItCart || ""}`;
+			if (oVty.IDItCart == null) {
+				oSelElVty = `#Vty${aDataScan.IDVty}-`;
+			}
+			oElVty = $(oSelElVty);
+			if (!oElVty.length) throw Error("Line element not found");
+		}
+		else {
+			let oSelElVty = `#Vty${aDataScan.IDVty}-${aDataScan.IDItCart || ""}`;
+			oElVty = $(oSelElVty);
+			if (!oElVty.length) throw Error("Line element not found");
+		}
+
+		// Scroll to scanned variety and animate
+		// -------------------------------------
+
+		oElVty[0].scrollIntoView();
+
+		for (let o = 0; o < 2; ++o) {
+			oElVty.animate({ "left": "-0.33%" }, 50);
+			oElVty.animate({ "left": "0.33%" }, 50);
+			oElVty.animate({ "left": 0 }, 50);
+		}
+
+		// Sell variable-price item
+		// ------------------------
+
+		if (oVty.CkPriceVar) {
+			const oInputs = oElVty.find("input.WgtPer");
+			if (!oInputs.length) throw Error("Weight elements not found");
+
+			let oInputBlank;
+			for (let o = 0; o < oInputs.length; ++o) {
+				const oInput = $(oInputs[o]);
+				if (oInput.val().trim() == "") {
+					oInputBlank = oInput;
+					break;
+				}
+			}
+			// It would be nice, when determining whether another scan is appropriate,
+			// to check the lost and rejected quantities. Not worth it right now,
+			// though: [TO DO]
+			if (!oInputBlank) return {
+				MsgFail: "The delivered quantity for that item has already been scanned."
+			};
+
+			oInputBlank.val(aDataScan.WgtPer);
+		}
+
+		// Sell fixed-price item
+		// ---------------------
+
+		else {
+			const oInput = oElVty.find("input.QtySold");
+			if (oInput.length !== 1)
+				throw Error("Sold quantity element not found");
+
+			const oQtyDeliv = oElVty.data("qty-deliv");
+			if (!oQtyDeliv) throw Error("Delivered quantity not found");
+
+			const oQtySold = parseInt(oInput.val()) || 0;
+			// It would be nice, when determining whether another scan is appropriate,
+			// to check the lost and rejected quantities. Not worth it right now,
+			// though: [TO DO]
+			if (oQtySold >= oQtyDeliv) return {
+				MsgFail: "The delivered quantity for that item has already been scanned."
+			};
+
+			oInput.val(oQtySold + 1);
+		}
+
+		return true;
+	}
+
+	const SoundOK = new Audio("{{hPrefixStatic 'OK.wav'}}");
+	const SoundFail = new Audio("{{hPrefixStatic 'Fail.wav'}}");
+	const SoundDone = new Audio("{{hPrefixStatic 'Done.wav'}}");
+
+	$(document).on("keydown", function (aEvt) {
+		if (!aEvt.key) return true;
+
+		// Forward 'Enter' to Save check handler
+		// -------------------------------------
+		// Otherwise, pressing Enter within any input will submit the form without
+		// checking for errors. Adapted from:
+		//
+		//   https://stackoverflow.com/a/1977126/3728155
+		//
+
+		if (aEvt.key === "Enter") {
+			$("#BtnCkSave").click();
+			return false;
+		}
+
+		// Parse scan data
+		// ---------------
+
+		const oDataScan = Read_ScanLblIt(aEvt.key);
+		if (oDataScan) {
+			try {
+				const oOut = Sell_ItScan(oDataScan);
+
+				if (oOut.MsgFail) {
+					Show_Err(oOut.MsgFail);
+					SoundFail.play();
+					return;
+				}
+
+				Upd();
+				if (CtInval || CtIncomp) SoundOK.play();
+				else SoundDone.play();
+			}
+			catch (oErr) {
+				Show_Err(oErr.message);
+				SoundFail.play();
+			}
+		}
+
+		// Don't add scan characters to the focused input, assuming one is focused:
+		return !CkScan;
+	});
+
+	Upd();
+</script>

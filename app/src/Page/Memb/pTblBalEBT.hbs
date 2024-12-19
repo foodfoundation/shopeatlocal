@@ -1,0 +1,23 @@
+{{!-- pTblBalEBT.hbs
+//    --------------
+//    Money/EBT balance table
+//
+//    Similar tables are found in a number of places (such as the checkout
+//    summaries) but they do not use this partial. That should perhaps be
+//    changed. [TO DO] --}}
+
+<div class="d-flex flex-row justify-content-between">
+	<div>Money</div>
+	<div class="text-right pl-4">{{hTextCurrOrOrig BalMoney}}</div>
+</div>
+<div class="d-flex flex-row justify-content-between">
+	<div class="EBT">EBT</div>
+	<div class="EBT text-right pl-4">{{hTextCurrOrOrig BalEBT}}</div>
+</div>
+<hr class="my-1">
+<div class="d-flex flex-row justify-content-between font-weight-bold">
+	<div>Total</div>
+	<div class="text-right pl-4">
+		{{hTextCurrOrOrig (hSum BalMoney BalEBT)}}
+	</div>
+</div>

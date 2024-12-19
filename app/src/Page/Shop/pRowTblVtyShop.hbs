@@ -1,0 +1,47 @@
+{{!-- pRowTblVtyShop.hbs
+//    ------------------
+//    Variety table row for shoppers --}}
+
+<div class="row align-items-center">
+	<div class="col-md-6 col-lg-7 font-weight-semi font-weight-md-normal
+		mb-1 mb-md-0">
+		{{hTextIDVty IDVty}} {{hNameVty this}}
+	</div>
+	<div class="col-5 col-sm-6 col-md text-md-right">
+		{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}
+	</div>
+	<div class="col text-right">
+		{{hQtyAvailAdd this}}<span class="d-md-none"> avail</span>
+	</div>
+	{{#if (hPropCurrOrRoot "CredUser")}}
+	{{!-- For some reason, this column wraps in the Product Search result dialogs
+	//    when an image is displayed, and when the browser is in the 'lg' range.
+	//    This does not happen in the Product page. When the column wraps, the
+	//    other two columns receive more space, and as a result, fail to align
+	//    with the data. I could not fix it no matter how similar I made the
+	//    styles in the header and the body: --}}
+	<div class="col-3 col-sm-2 text-right">
+		<button id="BtnAddCartVty{{IDVty}}" type="button"
+			{{#unless (hCkAnd (hPropCurrOrRoot "FlagShop")
+			(hCkAvailVty this))}}disabled{{/unless}}
+			data-id-product={{IDProduct}} data-id-vty={{IDVty}}
+			class="btn btn-sm btn-primary font-weight-bold">
+			<img src="{{hPrefixStatic 'cart_outline.svg'}}" alt="" height="18px"
+				class="IconBtn d-none d-xl-inline align-text-top">
+			+1
+		</button>
+
+		<script>
+			// This button is replaced when the available quantity is updated, so we
+			// will assign the handler here:
+			$("#BtnAddCartVty{{IDVty}}").on("click", OnClick_BtnAddCartVty);
+		</script>
+	</div>
+	{{else}}
+	<div class="col-3 col-sm-2 text-right">
+		<button class="btn btn-secondary" style="font-size:12px;" disabled>
+			Login to Purchase
+		</button>
+	</div>
+	{{/if}}
+</div>

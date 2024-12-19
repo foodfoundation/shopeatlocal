@@ -1,0 +1,66 @@
+{{!-- pFiltProduct.hbs
+//    ----------------
+//    Product filter controls --}}
+
+<div class="d-lg-flex">
+	<div class="w-lg-25 w-xl-20 pr-lg-3">
+		<div class="custom-control custom-checkbox">
+			<input id="CkShowList" name="CkShowList" type="checkbox"
+				class="CtlFilt custom-control-input">
+			<label for="CkShowList" class="custom-control-label">
+				Show listed?
+				<div class="Explain mb-lg-0">
+					Listed varieties appear in the product search, if they have an
+					available quantity.
+				</div>
+			</label>
+		</div>
+	</div>
+	<div class="w-lg-25 w-xl-20 pr-lg-3">
+		<div class="custom-control custom-checkbox">
+			<input id="CkShowUnlist" name="CkShowUnlist" type="checkbox"
+				class="CtlFilt custom-control-input">
+			<label for="CkShowUnlist" class="custom-control-label">
+				Show unlisted?
+				<div class="Explain mb-lg-0">
+					Unlisted varieties do not appear in the search, but items remain in
+					shopper carts, if placed there earlier.
+				</div>
+			</label>
+		</div>
+	</div>
+	<div class="w-lg-25 w-xl-20 pr-lg-3">
+		<div class="custom-control custom-checkbox">
+			<input id="CkShowArchiv" name="CkShowArchiv" type="checkbox"
+				class="CtlFilt custom-control-input">
+			<label for="CkShowArchiv" class="custom-control-label">
+				Show archived?
+				<div class="Explain mb-lg-0">
+					Archived varieties can be hidden from view here. They are otherwise
+					treated as unlisted varieties.
+				</div>
+			</label>
+		</div>
+	</div>
+
+	{{#unless DisableHideOrders}}
+	<div>
+		<div class="custom-control custom-checkbox">
+			<input id="CkHideNoOrd" name="CkHideNoOrd" type="checkbox"
+				class="CtlFilt custom-control-input">
+			<label for="CkHideNoOrd" class="custom-control-label">
+				Hide lines without orders?
+				<div class="Explain mb-lg-0">
+					'This cycle' orders only.
+				</div>
+			</label>
+		</div>
+	</div>
+	{{/unless}}
+
+	<div class="ml-auto mt-3 mt-lg-0">
+		<button id="BtnShowAll" class="btn btn-outline-secondary" type="button">
+			Show all
+		</button>
+	</div>
+</div>

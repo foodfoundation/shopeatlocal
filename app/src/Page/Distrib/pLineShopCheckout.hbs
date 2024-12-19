@@ -1,0 +1,101 @@
+{{!-- pLineShopCheckout.hbs
+//    ---------------------
+//    Shopper Checkout storage line --}}
+
+<div class="row HeadSheet border rounded-sm py-1 mx-0 mt-4">
+	<div class="col-md pl-2 font-weight-bold">
+		<div class="d-flex align-items-center">
+			{{!-- Without the icon, these blocks run together with everything else: --}}
+			<div class="ml-1">
+				<img src="{{hPrefixStatic 'stor.svg'}}" alt="" width="40" height="40">
+			</div>
+			<h3 class="ml-3 mb-0">
+				{{CdStor}}: {{hTextCdStor CdStor}}
+			</h3>
+		</div>
+	</div>
+</div>
+
+<div class="Vtys mt-2">
+	{{#each Vtys}}
+	{{!-- IDItCart is used to identify the presence or absence of a shopper note.
+	//    It would be superfluous in this page otherwise: --}}
+	<div id="Vty{{IDVty}}-{{#if NoteShop}}{{IDItCart}}{{/if}}"
+		class="Vty border rounded p-2 mb-2" data-qty-deliv="{{QtyDeliv}}">
+		<div class="form-row">
+			<div class="form-group col-md-4 mb-0">
+				<span class="font-weight-semi">Producer {{hTextIDProducer IDProducer}}</span>
+				<br class="d-md-none">{{NameBus}}
+				<br><span class="font-weight-semi">Product {{hTextIDProduct IDProduct}}</span>
+				<br class="d-md-none">{{NameProduct}}
+				<br><span class="font-weight-semi">Variety {{hTextIDVty IDVty}}</span>
+				<br class="d-md-none">{{hNameVty this}}
+			</div>
+
+			<div class="form-group col-md-8 mb-0 text-md-right">
+				{{#if NoteShop}}
+				"<em>{{NoteShop}}</em>"
+				{{else}}
+					{{#if CkInvtMgd}}
+					Managed
+					{{else}}
+					No note
+					{{/if}}
+				{{/if}}
+			</div>
+		</div>
+
+		<hr class="RuleFulf my-2">
+
+		<div class="form-row align-items-center px-1">
+			<div class="form-group font-weight-bold mb-0">
+				{{!-- Splitting the variable-price quantities into separate records
+				//    produces unit quantities: --}}
+				{{#if CkPriceVar}}{{Its.length}}{{else}}{{QtyDeliv}}{{/if}} delivered
+			</div>
+
+			<div class="form-group border-left BordDk ml-2 mb-0 pl-2">
+				<input id="QtyLost{{IDVty}}" name="QtyLost{{IDVty}}"
+					value="{{QtyLost}}" data-id-it-vty="{{IDVty}}"
+					class="QtyLost InputQty d-inline form-control form-control-sm">
+				<span class="font-weight-bold ml-1">lost</span>
+			</div>
+
+			<div class="form-group border-left BordDk ml-2 mb-0 pl-2">
+				<input id="QtyReject{{IDVty}}" name="QtyReject{{IDVty}}"
+					value="{{QtyReject}}" data-id-it-vty="{{IDVty}}"
+					class="QtyReject InputQty d-inline form-control form-control-sm">
+				<span class="font-weight-bold ml-1">rejected</span>
+			</div>
+
+			<div class="form-group flex-fill d-flex flex-wrap justify-content-md-end
+				align-items-center mt-2 mt-md-0 mb-0">
+				{{#if CkPriceVar}}
+					<span class="mr-2 font-weight-bold">Wgts sold</span>
+					{{#each Its}}
+						<input id="WgtPer{{IDItPickup}}" name="WgtPer{{IDItPickup}}"
+							{{#unless @root.CkAllowKbd}}readonly{{/unless}}
+							value="{{hTextWgtOrOrig WgtPer}}"
+							class="WgtPer InputWgt form-control form-control-sm mt-1 mt-md-0
+								ml-1">
+					{{/each}}
+				{{else}}
+					<span class="mr-2 font-weight-bold">Qty sold</span>
+					{{#each Its}}
+						<input id="QtySold{{IDItPickup}}" name="QtySold{{IDItPickup}}"
+							{{#unless @root.CkAllowKbd}}readonly{{/unless}}
+							value="{{QtySold}}" data-id-it-pickup="{{IDItPickup}}"
+							class="QtySold InputQty form-control form-control-sm">
+
+						<button type="button" data-id-it-pickup="{{IDItPickup}}"
+							class="BtnAddSold {{#unless @root.CkAllowKbd}}d-none{{/unless}}
+							btn btn-sm btn-outline-primary ml-2 font-weight-bold">
+							+1
+						</button>
+					{{/each}}
+				{{/if}}
+			</div>
+		</div>
+	</div>
+	{{/each}}
+</div>

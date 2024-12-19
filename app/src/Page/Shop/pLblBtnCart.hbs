@@ -1,0 +1,23 @@
+{{!-- pLblBtnCart.hbs
+//    ---------------
+//    Cart button label content --}}
+
+{{#if FlagShop}}
+
+    {{#if (hCkAnd SummCartImperUser SummCartImperUser.QtyProm)}}
+        {{hTextCurrOrOrig SummCartImperUser.Ttl}} in<br>
+        {{hDeterminerUser CredImperUser false}} cart
+        {{#if ShowFirstItemInCartNotice}}
+            <script>
+                $(document).ready(function() {
+                    $('#DlgNotice').modal('show');
+                });
+            </script>
+        {{/if}}
+    {{else}}
+        {{hDeterminerUser CredSelImperUser true}} cart is<br>empty
+    {{/if}}
+
+{{else}}
+    The cart is<br>closed
+{{/if}}

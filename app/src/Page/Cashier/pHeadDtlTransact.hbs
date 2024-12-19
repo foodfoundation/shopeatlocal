@@ -1,0 +1,14 @@
+{{!-- pHeadDtlTransact.hbs
+//    --------------------
+//    Transaction Detail heading --}}
+
+<div class="d-flex flex-row align-items-center">
+	<div class="d-none d-md-block mr-3">
+		<img src="{{hPrefixStatic 'transact.svg'}}" alt="" width="40" height="40">
+	</div>
+	<div>
+		<a class="font-size-130" href="/transaction-detail/{{IDTransact}}">
+			Transaction {{hTextIDTransact IDTransact}}
+		</a>
+	</div>
+</div>

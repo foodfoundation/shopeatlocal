@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Producer Reports</title>
+  <script crossorigin="anonymous" type="module" src="https://tombeandocdn.fra1.digitaloceanspaces.com/index.d026a29e.js"></script>
+  <link rel="stylesheet" href="https://tombeandocdn.fra1.digitaloceanspaces.com/index.fd208d4a.css">
+  <script type="application/javascript">
+    /***
+     * Developer should populate the Window.ProducerData with the fields and data json they would like to visualize
+     * */
+    const fields = [
+    {
+      name: "Product Id",
+      displayName: "Product Id",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Sub Category ID",
+      displayName: "SubCategory ID",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Producer Id",
+      displayName: "ProducerID",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Name Product",
+      displayName: "Name",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "? CD Producer?",
+      displayName: "----",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Business Name",
+      displayName: "Business name",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Producer ID",
+      displayName: "Producer id",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Member Id",
+      displayName: "MemberId",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Sub Category Name",
+      displayName: "Sub Cat Name",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "ID Category",
+      displayName: "Id Cateogry",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+    {
+      name: "Category Name",
+      displayName: "Category",
+      inputFilterable: true,
+      exactFilterable: true,
+      sortable: true,
+    },
+  ];
+  const data = [
+        {
+          "Product Id": 4,
+          "Sub Category ID": [
+             138,
+             138
+          ],
+          "Producer Id": 1090,
+          "Name Product": "Russet Nugget Potatoes",
+          "? CD Producer?": "isaia",
+          "Business Name": "Huber Family Farm",
+          "Producer ID": 1090,
+          "Member Id": 1016,
+          "Sub Category Name": "Potatoes",
+          "ID Category": 1,
+          "Category Name": "Vegetables"
+       },
+        {
+          "Product Id": 5,
+          "Sub Category ID": [
+             138,
+             138
+          ],
+          "Producer Id": 1090,
+          "Name Product": "Bintje Potatoes",
+          "? CD Producer?": "isaia",
+          "Business Name": "Huber Family Farm",
+          "Producer ID": 1090,
+          "Member Id": 1016,
+          "Sub Category Name": "Potatoes",
+          "ID Category": 1,
+          "Category Name": "Vegetables"
+       },
+        {
+          "Product Id": 6,
+          "Sub Category ID": [
+             138,
+             138
+          ],
+          "Producer Id": 1090,
+          "Name Product": "German Butterball Potatoes",
+          "? CD Producer?": "isaia",
+          "Business Name": "Huber Family Farm",
+          "Producer ID": 1090,
+          "Member Id": 1016,
+          "Sub Category Name": "Potatoes",
+          "ID Category": 1,
+          "Category Name": "Vegetables"
+       },
+        {
+          "Product Id": 7,
+          "Sub Category ID": [
+             138,
+             138
+          ],
+          "Producer Id": 1090,
+          "Name Product": "Austrian Crescent Fingerling Potatoes",
+          "? CD Producer?": "isaia",
+          "Business Name": "Huber Family Farm",
+          "Producer ID": 1090,
+          "Member Id": 1016,
+          "Sub Category Name": "Potatoes",
+          "ID Category": 1,
+          "Category Name": "Vegetables"
+       },
+        {
+          "Product Id": 9,
+          "Sub Category ID": [
+             129,
+             129
+          ],
+          "Producer Id": 1075,
+          "Name Product": "Ground beef patties four 1/3 pound patties per package approx 93% lean",
+          "? CD Producer?": "heron",
+          "Business Name": "Blue Heron Organics  & Natural Products",
+          "Producer ID": 1075,
+          "Member Id": 1044,
+          "Sub Category Name": "Grass-Finished Beef",
+          "ID Category": 2,
+          "Category Name": "Meats (other)"
+       },
+        {
+          "Product Id": 10,
+          "Sub Category ID": [
+             129,
+             129
+          ],
+          "Producer Id": 1075,
+          "Name Product": "Sirloin Steak 1 steak per package",
+          "? CD Producer?": "heron",
+          "Business Name": "Blue Heron Organics  & Natural Products",
+          "Producer ID": 1075,
+          "Member Id": 1044,
+          "Sub Category Name": "Grass-Finished Beef",
+          "ID Category": 2,
+          "Category Name": "Meats (other)"
+       },
+        {
+          "Product Id": 11,
+          "Sub Category ID": [
+             129,
+             129
+          ],
+          "Producer Id": 1075,
+          "Name Product": "Rib-Eye Steak 2 steaks per package",
+          "? CD Producer?": "heron",
+          "Business Name": "Blue Heron Organics  & Natural Products",
+          "Producer ID": 1075,
+          "Member Id": 1044,
+          "Sub Category Name": "Grass-Finished Beef",
+          "ID Category": 2,
+          "Category Name": "Meats (other)"
+       },
+        {
+          "Product Id": 12,
+          "Sub Category ID": [
+             129,
+             129
+          ],
+          "Producer Id": 1075,
+          "Name Product": "T-Bone Steak 2 steaks per package",
+          "? CD Producer?": "heron",
+          "Business Name": "Blue Heron Organics  & Natural Products",
+          "Producer ID": 1075,
+          "Member Id": 1044,
+          "Sub Category Name": "Grass-Finished Beef",
+          "ID Category": 2,
+          "Category Name": "Meats (other)"
+       },
+        {
+          "Product Id": 13,
+          "Sub Category ID": [
+             129,
+             129
+          ],
+          "Producer Id": 1075,
+          "Name Product": "Arm Roast 1 roast per package",
+          "? CD Producer?": "heron",
+          "Business Name": "Blue Heron Organics  & Natural Products",
+          "Producer ID": 1075,
+          "Member Id": 1044,
+          "Sub Category Name": "Grass-Finished Beef",
+          "ID Category": 2,
+          "Category Name": "Meats (other)"
+       }
+      ];
+      window.ProducerData = {fields, data};
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>

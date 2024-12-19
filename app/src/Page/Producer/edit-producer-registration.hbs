@@ -1,0 +1,36 @@
+{{!-- edit-producer-registration.hbs
+//    ------------------------------
+//    Edit producer registration view --}}
+
+<div class="container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-3">Edit producer registration</h2>
+
+		{{#unless CkSelImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredSelImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	{{!-- If a producer was selected in the GET, forward that selection to the
+	//    POST: --}}
+	<form id="form-main" class="pb-4"
+		action="{{hPathProducerSel "/edit-producer-registration"}}" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>Producer/pCtlsFormRegProducerEdit}}
+
+		<hr class="mt-2">
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>

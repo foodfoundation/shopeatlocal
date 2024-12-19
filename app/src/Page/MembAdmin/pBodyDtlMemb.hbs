@@ -1,0 +1,208 @@
+{{!-- pBodyDtlMemb.hbs
+//    ----------------
+//    Member detail body --}}
+
+<div class="row">
+	{{!-- Doesn't seem necessary to hide the border on small displays, or
+	//    possible, without responsive border class: --}}
+	<div class="col-lg pr-lg-4 border-lg-right">
+		<div class="mb-2">
+			<strong>
+				{{Name1First}} {{Name1Last}}<br>
+				{{#if Name2Last}}
+				{{Name2First}} {{Name2Last}}<br>
+				{{/if}}
+			</strong>
+			{{#if NameBus}}{{NameBus}}<br>{{/if}}
+			{{Addr1}}<br>
+			{{#if Addr2}}{{Addr2}}<br>{{/if}}
+			{{City}}, {{St}} {{Zip}}
+			{{#if InstructDeliv}}<br><em>{{InstructDeliv}}</em>{{/if}}
+		</div>
+
+		<div class="mb-2">
+			{{hLinkEmail Email1}}
+			{{#if Email2}}<br>{{hLinkEmail Email2}}{{/if}}
+		</div>
+
+		<div class="mb-2">
+			{{hLinkPhone Phone1}}
+			{{#if Phone2}}<br>{{hLinkPhone Phone2}}{{/if}}
+		</div>
+
+		<div class="d-flex flex-row justify-content-between">
+			<div>
+				Home delivery distance
+			</div>
+			<div>
+				<strong>
+					{{#if (hCkNotNull DistDeliv)}}
+					{{hTextFixedOrOrig DistDeliv 2}} miles
+					{{else}}
+					Unknown
+					{{/if}}
+				</strong>
+			</div>
+		</div>
+
+		<div class="LinksPg">
+			<a href="/edit-member-registration/{{IDMemb}}">Edit member
+				registration</a>
+		</div>
+
+		<hr>
+
+		<h5>Status</h5>
+
+		<div class="d-flex flex-row justify-content-between">
+			<div>
+				Membership status
+			</div>
+			<div>
+				<strong>{{hTextCdReg CdRegMemb}}</strong>
+			</div>
+		</div>
+
+		<div class="d-flex flex-row justify-content-between">
+			<div>
+				EBT status
+			</div>
+			<div>
+				<strong>{{hTextCdReg CdRegEBT}}</strong>
+			</div>
+		</div>
+
+		<div class="mt-2">
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Show Producer page
+				</div>
+				<div>
+					<strong>{{hYesNoBlank CkShowProducer}}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Volunteer status
+				</div>
+				<div>
+					<strong>{{hTextCdReg CdRegVolun}}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+					<div>
+						Wholesale Customer status
+					</div>
+					<div>
+						<strong>{{hTextCdReg CdRegWholesale}}</strong>
+					</div>
+			</div>
+
+			<div class="d-flex flex-row justify-content-between">
+				<div>
+					Staff status
+				</div>
+				<div>
+					<strong>{{hTextCdStaff CdStaff}}</strong>
+				</div>
+			</div>
+		</div>
+
+		<div class="d-flex flex-row justify-content-between mt-2">
+			<div>
+				Member since
+			</div>
+			<div>
+				<strong>{{hTextWhen WhenRegMemb "Med"}}</strong>
+			</div>
+		</div>
+
+		{{#if Notes}}
+		<div class="text-muted font-size-90 font-italic mt-2">
+			{{hHTMLLinesP (hQuoteDbl Notes)}}
+		</div>
+		{{/if}}
+
+		<div class="LinksPg mb-0">
+			<a href="/edit-member-status/{{IDMemb}}">Edit member status</a>
+		</div>
+	</div>
+
+	<div class="col-lg pl-lg-4">
+		<hr class="d-lg-none mb-3">
+
+		<h5>Fulfillment</h5>
+
+		<div class="LinksPg mb-2">
+			<a href="/order-fulfillment/{{IDMemb}}"
+				class="{{hClassDisab (hNot QtyProm)}}">
+				Order fulfillment
+			</a>
+			<a href="/shopper-checkout/{{IDMemb}}"
+				class="{{hClassDisab (hNot QtyProm)}}">
+				Shopper checkout
+			</a>
+		</div>
+		<div>
+			{{#if QtyProm}}
+			<a href="/cart-detail/{{IDCart}}">
+				{{QtyProm}} {{hPlural QtyProm "item"}} promised for purchase
+			</a>
+			{{else}}
+			No items promised for purchase
+			{{/if}}
+		</div>
+
+		<hr>
+
+		<h5>On-site</h5>
+
+		<div class="LinksPg">
+			<a href="/associate-member-on-site-cart/{{IDMemb}}">
+				Associate with on-site cart
+			</a>
+		</div>
+
+		<hr>
+
+		<h5>Billing</h5>
+
+		<div class="d-flex flex-row justify-content-between mb-2">
+			<div>
+				Account balance
+			</div>
+			{{#if BalEBT}}
+			<div>{{>Memb/pTblBalEBT this}}</div>
+			{{else}}
+			<div class="text-right font-weight-bold">
+				{{hTextCurrOrOrig BalMoney}}
+			</div>
+			{{/if}}
+		</div>
+		<div class="d-flex flex-row justify-content-between mb-2">
+			<div>
+				Last member fee
+			</div>
+			<div class="text-right">
+				<strong>
+				{{#if WhenFeeMembLast}}
+				{{hTextDateLong WhenFeeMembLast}}
+				{{else}}
+				Not assessed
+				{{/if}}
+				</strong>
+			</div>
+		</div>
+
+		<div class="LinksPg mb-0">
+			<a href="/shopper-invoices/{{IDMemb}}">Shopper invoices</a>
+			<a href="/transactions/{{IDMemb}}">Transactions</a>
+			<a href="/add-member-transaction/{{IDMemb}}"
+				class="{{hClassDisabLackAccts}}">
+				Add member transaction
+			</a>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,20 @@
+{{!-- pTblVtyShop.hbs
+//    ---------------
+//    Variety table for shoppers --}}
+
+<div class="GridTbl Head d-none d-md-block">
+	<div class="row font-weight-bold">
+		<div class="col-6 col-lg-7">Variety</div>
+		<div class="col text-right">Price</div>
+		<div class="col text-right">Avail</div>
+		<div class="col-2"></div>
+		
+	</div>
+</div>
+<div class="GridTbl Body">
+	{{#each this}}
+	<div id="RowTblVty{{IDVty}}" class="Row">
+		{{>Shop/pRowTblVtyShop}}
+	</div>
+	{{/each}}
+</div>

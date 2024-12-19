@@ -1,0 +1,24 @@
+{{!-- edit-site-configuration.hbs
+//    -----------------
+//    Edit site configurations view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2>Edit market parameters</h2>
+
+	<hr>
+
+	<form id="form-main" class="pb-4" action="/edit-coop-parameters"
+		method="POST" enctype="multipart/form-data" novalidate
+        onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>SiteAdmin/pCtlsFormCoopParams}}
+
+		<hr>
+
+		<div class="d-flex justify-content-end">
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+	</form>
+</div>

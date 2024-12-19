@@ -1,0 +1,25 @@
+{{!-- pHeadDtlProducer.hbs
+//    --------------------
+//    Producer Detail heading --}}
+
+<div class="d-none d-sm-block mr-3">
+	<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+</div>
+<div>
+	<span class="font-weight-semi">{{NameLogin}}</span><br>
+	{{>Misc/pIDsLine}}
+</div>
+
+<div class="ml-auto mt-2 mt-sm-0">
+	{{!-- Hide the button if the user is viewing their own detail?: --}}
+	<form id="FrmImperMemb{{IDMemb}}" action="/impersonate-member"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{@root.TokCSRF}}">
+
+		<input type="hidden" name="IDMembImper" value="{{IDMemb}}">
+		<input type="hidden" name="CkShowProducer" value="1">
+
+		<button type="submit" class="btn btn-warning">Impersonate</button>
+	</form>
+</div>

@@ -1,0 +1,29 @@
+{
+  "name": "producer-report",
+  "private": true,
+  "version": "1.1.4",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "release:static": "cp -r dist/assets/* ../app/Static/producers-report-assets/",
+    "build:release:static": "npm run build && npm run release:static"
+  },
+  "dependencies": {
+    "json-2-csv": "^5.5.7",
+    "react-filterable-table": "^0.3.443",
+    "react-icons": "^5.4.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0"
+  }
+}

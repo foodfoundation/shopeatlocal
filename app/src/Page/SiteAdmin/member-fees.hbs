@@ -1,0 +1,42 @@
+{{!-- member-fees.hbs
+// ------------------
+// Member Fees view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h3 class="mb-3">Member fees</h3>
+
+	<p>
+		Member fees consist of an initial fee and a renewal fee, these values can be set up in the Site Admin. If you'd not like to charge member fees for your shoppers, please set those values to zero.
+	</p>
+
+	<p>
+		Member fees are assessed at the end of the shopping window. Fees are due
+		to all members who:
+	</p>
+
+	<ul class="Spread">
+		<li>
+			Have not been assessed a membership fee in the last calendar year; and,
+		</li>
+		<li>
+			Have member registration dates that are older than the trial period, which
+			is currently {{hSite "CtMonthTrialMembNew"}} months; and,
+		</li>
+		<li>
+			Are not founding members; and,
+		</li>
+		<li>
+			Are not EBT-approved; and,
+		</li>
+		<li>
+			Have been promised items (as web shoppers) or had items ordered (as web
+			producers) in the current cycle.
+		</li>
+	</ul>
+
+	<p>
+		If member fees have never been assessed, the initial
+		{{hTextCurrOrOrig (hSite "FeeMembInit")}} fee is assessed. Otherwise, the
+		{{hTextCurrOrOrig (hSite "FeeMembRenew")}} renewal fee is assessed.
+	</p>
+</div>

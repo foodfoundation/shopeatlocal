@@ -1,0 +1,159 @@
+{{!-- add-to-on-site-cart.hbs
+//    -----------------------
+//    Add to On-site Cart view
+//
+// This view is largely identical to 'variety-labels'. It doesn't seem
+// worthwhile to combine them just yet, but that is something to consider. --}}
+
+<style>
+#Vty {
+	background-color: rgba(0, 0, 0, 5%);
+}
+
+.InputWgt, .InputQty {
+	display: inline-block;
+	width: 6rem;
+	margin-bottom: 0.25rem;
+	text-align: right;
+
+	/* Weight inputs are separated by whitespace, which spaces them apart. See the
+	// Add_InputWgt comments for more on that.
+	//
+	// Could we avoid the whole problem by using flexbox? */
+}
+</style>
+
+<div class="container pt-4">
+	{{#if (hIsWholesaleType CdCartType)}}
+		<h2>Add to  <strong>Wholesale</strong> on-site cart</h2>
+	{{else if (hIsRetailType CdCartType)}}
+		<h2>Add to <strong>Retail</strong> on-site cart</h2>
+	{{else}}
+		<h2>Add to on-site cart</h2>
+	{{/if}}
+
+	<div class="Flow-md-2">
+	<p>
+		This page allows you to add an item to the on-site cart without scanning.
+	</p>
+	<p>
+		{{#if VtySel.CkPriceVar}}
+		This is a variable-price item, so you must enter one weight for each item
+		instance, to be added to any weights already in the cart. New edit
+		boxes will appear as you use them. Leave boxes empty if you do not need
+		them.
+		{{else}}
+		This is a fixed-price item, so you must enter a quantity, to be
+		added to the quantity that is already in the cart.
+		{{/if}}
+	</p>
+	</div>
+
+	<form id="FormAddCartOnsite" class="mt-4x"
+		action="/add-to-on-site-cart/{{VtySel.IDVty}}" method="POST" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div class="form-row font-weight-bold border-top border-bottom py-1 mt-2">
+			<div class="form-group col-md m-0">
+				Producer / Product / Variety
+			</div>
+			{{#if VtySel.CkPriceVar}}
+			<div class="form-group col-md-4 text-md-right pr-3 m-0">
+				Weights
+			</div>
+			{{else}}
+			<div class="form-group col-md-4 text-md-right pr-3 m-0">
+				Qty
+			</div>
+			{{/if}}
+		</div>
+
+		<div id="Vty" class="form-row py-1 pr-1">
+			<div class="form-group col-md m-0">
+				<a href="/producer-detail/{{Producer.IDProducer}}">
+					{{hTextIDProducer Producer.IDProducer}} {{Producer.NameBus}}
+				</a><br>
+				<a href="/product-detail/{{Product.IDProduct}}">
+					{{hTextIDProduct Product.IDProduct}} {{Product.NameProduct}}
+				</a><br>
+				{{hTextIDVty VtySel.IDVty}} {{hNameVty VtySel}}
+			</div>
+
+			<div class="form-group col-md-4 text-md-right pt-2 pr-2 mb-0">
+				{{#if VtySel.CkPriceVar}}
+				<div id="InputsWgt">
+					{{#each WgtsFulf}}
+					{{!-- The weights are passed as an array. The ID suffixes must match
+					//    those array indices, or the MsgFailWgtPer ID will be wrong, and
+					//    the wrong fields will be highlighted on validation failure.
+					//
+					//    Add_InputWgt generates new inputs, so consider updating that
+					//    function after changing this HTML: --}}
+					<input name="WgtPer{{@index}}" value="{{hTextWgtOrOrig this}}"
+						maxlength="5"
+						class="InputWgt IconShow form-control form-control-sm
+							{{hClassValidFail "WgtPer" @index}}">
+					{{/each}}
+				</div>
+				{{hDivMsgFailForm MsgFailWgts}}
+				{{else}}
+				<input name="Qty" value="{{Qty}}" maxlength="3"
+					class="InputQty IconShow form-control form-control-sm
+						{{#if MsgFailQty}}is-invalid{{/if}} ml-auto">
+				{{hDivMsgFail MsgFailQty}}
+				{{/if}}
+			</div>
+		</div>
+
+		<hr class="WthGrid">
+
+		<div class="d-flex flex-row">
+			<a class="btn btn-secondary" href={{#if (hIsWholesaleType CdCartType)}}"/wholesale-catalog"{{else}}"/on-site-catalog"{{/if}}>Cancel</a>
+			<button type="submit" class="btn btn-primary ml-auto">Add</button>
+		</div>
+	</form>
+</div>
+
+<script>
+	/** Adds a new, empty weight input to the form. */
+	function Add_InputWgt() {
+		const oID = IDInputNext($("#InputsWgt"), "WgtPer");
+		const oInput = $(
+			`<input name="WgtPer${oID}" maxlength="5" class="InputWgt IconShow form-control form-control-sm">`
+		);
+		// For static controls, this is added at the end of 'Main.hbs':
+		oInput
+			.on("input", Rem_ChNonWgt)
+			.on("input", CkAdd_InputsWgt);
+
+		// The inputs are inline-block, so breaking the HTML lines between
+		// #InputsWgt and the template input adds whitespace, which alters the
+		// spacing between the elements. Rather than change the template (which
+		// would make it heard to read) we will add the same spacing between all of
+		// them:
+		$("#InputsWgt").append(oInput).append(" ");
+	}
+
+	/** Checks the weight inputs, and adds a new, empty one if all are filled. */
+	function CkAdd_InputsWgt() {
+		const oInputs = $("#InputsWgt").find("input");
+		for (const oInput of oInputs) {
+			const oVal = $(oInput).val();
+			if (!oVal) return;
+		}
+
+		Add_InputWgt();
+	}
+
+	$(document).ready(() => {
+		const oDivInputsWgt = $("#InputsWgt");
+		if (oDivInputsWgt.length) {
+			$("#InputsWgt .InputWgt").on("input", CkAdd_InputsWgt);
+			// The template does not add empty weight inputs, so one may be needed
+			// here:
+			CkAdd_InputsWgt();
+		}
+	});
+</script>

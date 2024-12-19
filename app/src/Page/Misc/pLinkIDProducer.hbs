@@ -1,0 +1,11 @@
+{{!-- pLinkIDProducer.hbs
+//    -------------------
+//    Producer ID and code with staff-only link to Producer Detail --}}
+
+{{#if (hCkStaffFromUser)}}
+<a href="/producer-detail/{{IDProducer}}" class="font-weight-normal">
+	Producer {{hTextIDProducer IDProducer}}{{#if CdProducer}} '{{CdProducer}}'{{/if}}
+</a>
+{{else}}
+Producer {{hTextIDProducer IDProducer}}{{#if CdProducer}} '{{CdProducer}}'{{/if}}
+{{/if}}

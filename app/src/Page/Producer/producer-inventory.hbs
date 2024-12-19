@@ -1,0 +1,181 @@
+{{!-- producer-inventory.hbs
+//    ----------------------
+//    Producer Inventory view
+//
+// We could use HTML validation in forms like this, where no user-friendly
+// validation feedback is needed, but I prefer to block invalid characters
+// altogether, and the browser's validation actually makes that more difficult.
+// In particular, when `type="number"` is added to an `input`, invalid values
+// are treated as blanks when queried with `val()`, which then breaks
+// `Rem_ChNonQty`. --}}
+
+<style>
+	.Product, .Vty {
+		/* This is slightly less annoying when the page is being rendered than
+		// having visible elements disappear. We can't use 'd-none', because that is
+		// '!important': */
+		display: none;
+	}
+
+	.BoxNoteShop {
+		border-color: hsl(0, 0%, 80%) !important;
+		background-color: hsl(45, 90%, 90%);
+	}
+
+	.BoxNoteShop.Denied {
+		background-color: hsl(0, 90%, 90%);
+	}
+</style>
+
+<div class="container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-0">Producer {{#if (hCkProducerWholesale)}}retail {{/if}}inventory</h2>
+
+		{{#unless CkImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredImperUser}}
+
+			<hr class="my-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<div class="row mt-2">
+		<div class="col-lg">
+			<div>
+				Use this page to update offer quantities and listing statuses for multiple
+				products simultaneously. Varieties with sales are highlighted in green. If
+				you set the offer quantity below the order quantity, recent orders will be
+				out-of-stocked. If you later increase the offer quantity, the same orders
+				will be re-stocked, if the items are still in shopper carts.
+			</div>
+			<div class="mt-2">
+				You can also view shopper notes, and deny notes that you are unable to
+				honor. If you deny a note, the shopper will be notified. If they change
+				the denied note, the new note will be un-denied automatically. Click the
+				name next to the note to e-mail the shopper.
+			</div>
+			<div class="mt-2">
+				You cannot change current-cycle quantities or note statuses after
+				checking-in.
+			</div>
+			<div class="mt-2">
+				When the delivery window ends, your delivery quantities will be
+				subtracted automatically from your offer quantities, and the quantities
+				on this page will begin to reference the <em>next</em> cycle. This
+				allows you to review and update your inventory before that cycle begins.
+			</div>
+		</div>
+		<div class="col-lg-4 mt-3 mt-lg-0">
+			<div class="d-flex border border-danger bg-white rounded-sm p-3">
+				<div class="d-none d-md-block mr-3">
+					<img src="{{hPrefixStatic 'time.svg'}}" alt="" width="40" height="40">
+				</div>
+				<div>
+					{{#unless CkCheckIn}}
+						You have not checked-in your delivery, so you can change offer
+						quantities and deny or un-deny notes. If you <em>have</em>
+						checked-in, you should refresh this page before continuing.
+					{{else}}
+						{{#if FlagDeliv}}
+							You have checked-in your delivery, but the delivery window is
+							still open, so you cannot change offer quantities. You will be
+							able to change the next cycle's quantities when the delivery
+							window closes. If that window <em>has</em> closed, you should
+							refresh this page before continuing.
+						{{else}}
+							The delivery window has closed, so you can now edit the
+							<em>next</em> cycle's offer quantities.
+						{{/if}}
+					{{/unless}}
+				</div>
+			</div>
+			<div class="d-flex border border-danger bg-white rounded-sm p-3 mt-2">
+				<div class="d-none d-md-block mr-3">
+					<img src="{{hPrefixStatic 'edit.svg'}}" alt="" width="40" height="40">
+				</div>
+				<div>
+					Be sure to click <span class="font-weight-semi">Save</span> after
+					making changes. This will submit variety edits even if the containing
+					lines have been hidden.
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+	{{>Producer/pFiltProduct}}
+
+	<hr>
+
+	<form id="FormInvtProducer" action="/producer-inventory" method="POST"
+		novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		<div id="Products">
+			{{#each Products}}
+			{{>Producer/pLineProducerInvt}}
+			{{/each}}
+
+			{{#if Products}}
+			<div class="d-flex mt-3">
+				<div class="flex-shrink-1 pr-4">
+					* Only {{CoopParams.CoopNameShort}} staff can update managed inventory varieties, or change
+					on-site listing statuses. Please contact {{CoopParams.CoopNameShort}} if you need help.
+				</div>
+				<div class="flex-shrink-0 ml-auto">
+					<button type="button" class="BtnCancel d-none btn btn-secondary">
+						Cancel
+					</button>
+					<button type="button" class="BtnSave d-none btn btn-primary ml-1">
+						Save
+					</button>
+				</div>
+			</div>
+			{{else}}
+			<div class="jumbotron">
+				<h2 class="display-4 font-size-200">
+					You have no products
+				</h2>
+			</div>
+			{{/if}}
+		</div>
+	</form>
+
+	<script src="{{hPrefixStatic 'filt-product-1.js'}}"></script>
+
+	<script>
+		PageFiltProduct = "Invt";
+
+		$(".CtlFilt").on("click", Hand_ChgFilt);
+		$("#BtnShowAll").on("click", Hand_ClickShowAll);
+
+		function Hand_Chg() {
+			ConfirmLeavePage.Set_Main();
+			$(".BtnCancel, .BtnSave").removeClass("d-none");
+		}
+
+		$(".InputQtyOffer").on("input", Hand_Chg);
+		$(".SelCdListVty").on("change", Hand_Chg);
+		$(".BtnDeny, .BtnDenied").on("click", Hand_Chg);
+
+		$(".BtnCancel").on("click", function () {
+			ConfirmLeavePage.Unset_Main();
+
+			// Can't decide where to go after Cancel or Save. To return to Producer
+			// page:
+			location.replace("/producer-inventory");
+		});
+
+		$(".BtnSave").on("click", function () {
+			ConfirmLeavePage.Unset_Main();
+			$("#FormInvtProducer").submit();
+		});
+
+		$(document).ready(Ready_Filt);
+	</script>
+</div>

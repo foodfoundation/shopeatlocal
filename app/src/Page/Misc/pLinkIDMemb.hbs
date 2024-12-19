@@ -1,0 +1,11 @@
+{{!-- pLinkIDMemb.hbs
+//    ---------------
+//    Member ID with staff-only link to Member Detail --}}
+
+{{#if (hCkStaffFromUser)}}
+<a href="/member-detail/{{IDMemb}}" class="font-weight-normal">
+	Member {{hTextIDMemb IDMemb}}
+</a>
+{{else}}
+Member {{hTextIDMemb IDMemb}}
+{{/if}}

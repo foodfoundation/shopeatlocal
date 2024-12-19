@@ -1,0 +1,47 @@
+{{!-- pLineCartOnsite.hbs
+//    -------------------
+//    On-site cart line partial --}}
+
+<div id="Vty{{IDVty}}" class="Vty form-row py-1 pr-1">
+	<div class="form-group col-md m-0">
+		<a href="/producer-detail/{{IDProducer}}">
+			{{hTextIDProducer IDProducer}} {{NameBus}}
+		</a><br>
+		<a href="/product-detail/{{IDProduct}}">
+			{{hTextIDProduct IDProduct}} {{NameProduct}}
+		</a><br>
+		{{hTextIDVty IDVty}} {{hNameVty this}}
+	</div>
+
+	<div class="form-group col-md-1 d-flex flex-column justify-content-center
+		text-md-right m-0">
+		{{hTextCurrOrOrig PriceNomOnsite}}{{#if WgtMin}}/lb{{/if}}
+	</div>
+
+	<hr class="d-md-none col my-2 mx-2">
+
+	<div class="Inputs form-group col-md-3 text-md-right py-1 pr-2 mb-0">
+		{{#if CkPriceVar}}
+		<div class="InputsWgt" data-id-vty="{{IDVty}}">
+			{{#each WgtsFulf}}
+			{{!-- The weights are passed as an array. The ID suffixes must match
+			//    those array indices, or the MsgFailWgtPer ID will be wrong, and
+			//    the wrong fields will be highlighted on validation failure.
+			//
+			//    Add_InputWgt generates new inputs, so consider updating that
+			//    function after changing this HTML: --}}
+			<input name="WgtPer{{../IDVty}}-{{@index}}"
+				value="{{hTextWgtOrOrig this}}" maxlength="5"
+				class="InputWgt IconShow form-control form-control-sm
+					{{hClassValidFail "WgtPer" ../IDVty @index}}">
+			{{/each}}
+		</div>
+		{{hDivMsgFailForm (hPropSuffRoot "MsgFailWgts" IDVty)}}
+		{{else}}
+		<input name="Qty{{IDVty}}" value="{{Qty}}" maxlength="3"
+			class="InputQty IconShow form-control form-control-sm
+				{{#if MsgFailQty}}is-invalid{{/if}} ml-auto">
+		{{hDivMsgFailForm (hPropSuffRoot "MsgFailQty" IDVty)}}
+		{{/if}}
+	</div>
+</div>

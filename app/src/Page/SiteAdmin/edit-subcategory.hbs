@@ -1,0 +1,32 @@
+{{!-- edit-subcategory.hbs
+//    --------------------
+//    Edit Subcategory view --}}
+
+<div class="w-lg-50 container-md py-4">
+	<h2>Edit subcategory</h2>
+
+	<hr class="my-2">
+
+	<div class="font-weight-semi font-size-120 mb-3">
+		Subcategory {{hTextIDSubcat IDSubcat}}
+	</div>
+
+	<form id="form-main" class="pb-4" action="/edit-subcategory/{{IDSubcat}}"
+		method="POST" novalidate onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{>SiteAdmin/pCtlsFormSubcat}}
+
+		<hr>
+
+		<div class="d-flex justify-content-between">
+			<a href="/delete-subcategory/{{IDSubcat}}"
+				class="btn btn-danger">
+				Delete
+			</a>
+
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+	</form>
+</div>

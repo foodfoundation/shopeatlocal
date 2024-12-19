@@ -1,0 +1,258 @@
+{{!-- transactions.hbs
+//    ----------------
+//    Transactions view --}}
+
+<div class="container-md py-4">
+	<h2>Transactions</h2>
+
+	<div class="row">
+		<div class="col-md mb-2 mb-md-0">
+			This page lists shopper invoices, payments, adjustments, and other credits
+			or debits to your {{CoopParams.CoopNameShort}} account{{#if Producer}}, including producer sales
+			activity{{/if}}.
+		</div>
+		<div class="col-md">
+			Positive balances are owed <em>to</em> the market. Negative balances are
+			owed <em>by</em> the market. Any payments you send will be subtracted from
+			this balance 7-10 days after {{CoopParams.CoopNameShort}} receives them.
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="d-md-flex mb-3">
+		{{#with Memb}}
+		<div class="d-md-flex mb-1 mb-md-0">
+			<div class="d-none d-md-block mr-3 mt-1">
+				<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
+			</div>
+			<div>
+				<div class="mb-2">
+					{{>Misc/pLinkIDMemb}}<br>
+					<strong>
+						{{Name1First}} {{Name1Last}}<br>
+						{{#if Name2Last}}
+						{{Name2First}} {{Name2Last}}<br>
+						{{/if}}
+					</strong>
+					{{#if NameBus}}{{NameBus}}<br>{{/if}}
+					{{Addr1}}<br>
+					{{#if Addr2}}{{Addr2}}<br>{{/if}}
+					{{City}}, {{St}} {{Zip}}
+				</div>
+				<div>
+					{{hLinkEmail Email1}}<br>
+					{{hLinkPhone Phone1}}
+				</div>
+			</div>
+		</div>
+		{{/with}}
+
+		{{#with Producer}}
+		<div class="d-md-flex ml-auto mb-1 mb-md-0">
+			<div class="text-md-right mt-3 mt-md-0 mb-1 mb-md-0">
+				<div class="mb-2">
+					{{>Misc/pLinkIDProducer}}<br>
+					<strong>
+						{{NameBus}}<br>
+					</strong>
+					{{Addr1}}<br>
+					{{#if Addr2}}{{Addr2}}<br>{{/if}}
+					{{City}}, {{St}} {{Zip}}
+				</div>
+				<div>
+					{{hLinkEmail Email}}<br>
+					{{hLinkPhone Phone1}}
+				</div>
+			</div>
+			<div class="d-none d-md-block ml-3 mt-1">
+				<img src="{{hPrefixStatic 'producer.svg'}}" alt="" width="40" height="40">
+			</div>
+		</div>
+		{{/with}}
+	</div>
+
+	{{#each Years}}
+	<div class="d-flex align-items-center mt-4 mb-2">
+		<img class="mr-2" src="{{hPrefixStatic 'date.svg'}}" alt="" width="30" height="30">
+		<h4 class="mb-0">Year {{Year}}</h4>
+	</div>
+
+	<hr class="d-none d-lg-block mt-2 mb-1">
+
+	<div class="GridTbl Head d-none d-lg-block">
+		<div class="row align-items-end font-weight-bold">
+			<div class="col-lg-2">Transaction ID</div>
+			<div class="col-lg-2">Time</div>
+			<div class="col-lg">Type / Method</div>
+			<div class="col-lg-1">Category</div>
+			<div class="col-lg-1 text-right">Amount</div>
+			<div class="col-lg-1 text-right">Balance</div>
+			<div class="col-lg-1"></div>
+		</div>
+	</div>
+
+	<div class="GridTbl Body mb-3">
+		{{#each Transacts}}
+		<div class="Row" data-toggle="modal"
+			data-target="#DlgDtlTransact{{IDTransact}}" style="cursor: pointer">
+
+			{{!-- Desktop layout
+			//    -------------- --}}
+
+			<div class="d-none d-lg-flex row align-items-center">
+				<div class="col-lg-2">{{hTextIDTransact IDTransact}}</div>
+				<div class="col-lg-2">
+					{{hTextWhen WhenCreate "Med" ""}}<br>
+					{{hTextWhen WhenCreate "" "HourMin"}}
+				</div>
+				<div class="col-lg">
+					{{hTextCdTypeTransact CdTypeTransact}}<br>
+					{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
+				</div>
+				<div class="col-lg-1">
+					{{#if IDProducer}}Producer{{else}}Member{{/if}}
+				</div>
+				<div class="col-lg-1 text-right pl-0">
+					{{hTextAmtMoneyTransact this}}<br>
+					{{#if (hCkOr AmtEBT BalEBT)}}
+					<span class="EBT">{{hTextAmtEBTTransact this}}</span>
+					{{/if}}
+				</div>
+				<div class="col-lg-1 text-right pl-0">
+					{{hTextCurrOrOrig BalMoney}}<br>
+					{{#if (hCkOr AmtEBT BalEBT)}}
+					<span class="EBT">{{hTextCurrOrOrig BalEBT}}</span>
+					{{/if}}
+				</div>
+				<div class="col-lg-1">
+					{{#if (hCkOr AmtEBT BalEBT)}}
+					Money<br>
+					<span class="EBT">EBT</span>
+					{{/if}}
+				</div>
+			</div>
+
+			{{!-- Mobile layout
+			//    ------------- --}}
+
+			<div class="d-lg-none row">
+				<div class="col-6 font-weight-semi">
+					Transaction {{hTextIDTransact IDTransact}}
+				</div>
+				<div class="col-6 text-right font-weight-semi">
+					{{hTextWhen WhenCreate "Med" ""}}
+					{{hTextWhen WhenCreate "" "HourMin"}}
+				</div>
+				<div class="col-8">
+					{{hTextCdTypeTransact CdTypeTransact}}<br>
+					{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
+				</div>
+				<div class="col-4 text-right">
+					To {{#if IDProducer}}producer{{else}}member{{/if}}
+				</div>
+				<div class="col-6 font-weight-semi mt-2">
+					<div>Amount</div>
+					<hr class="my-1 ml-0 mr-4">
+					<div>
+						{{hTextAmtMoneyTransact this}}
+						{{#if (hCkOr AmtEBT BalEBT)}}Money{{/if}}
+					</div>
+					{{#if (hCkOr AmtEBT BalEBT)}}
+					<div>
+						<span class="EBT">{{hTextAmtEBTTransact this}} EBT</span>
+					</div>
+					{{/if}}
+				</div>
+				<div class="col-6 text-right font-weight-semi mt-2">
+					<div>Balance</div>
+					<hr class="my-1 ml-4 mr-0">
+					<div>
+						{{hTextCurrOrOrig BalMoney}}
+						{{#if (hCkOr AmtEBT BalEBT)}}Money{{/if}}
+					</div>
+					{{#if (hCkOr AmtEBT BalEBT)}}
+					<div>
+						<span class="EBT">{{hTextCurrOrOrig BalEBT}} EBT</span>
+					</div>
+					{{/if}}
+				</div>
+			</div>
+
+		</div>
+		{{/each}}
+	</div>
+	{{else}}
+	<hr>
+
+	<div class="jumbotron">
+		<h2 class="display-4 font-size-200">No transactions</h2>
+	</div>
+	{{/each}}
+
+	{{#if Years}}
+	<hr>
+
+	<div class="d-flex">
+		<a class="btn btn-secondary ml-auto" href="{{PathExport}}">Export</a>
+	</div>
+	{{/if}}
+</div>
+
+{{!-- --------------------------
+//    Transaction detail dialogs
+//    -------------------------- --}}
+
+{{#each Years}}
+{{#each Transacts}}
+<div id="DlgDtlTransact{{IDTransact}}" class="modal" tabindex="-1"
+	role="dialog">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				{{>Cashier/pHeadDtlTransact}}
+			</div>
+
+			<div class="modal-body px-4 py-3">
+				{{>Cashier/pBodyDtlTransact}}
+			</div>
+
+			<div class="modal-footer">
+				<div id="button-err"></div>
+				<button id="reverse-transaction" type="button" class="btn btn-secondary ml-auto" onclick="reverseTransaction({{{json this}}})">
+					Reverse Transaction
+				</button>
+				<button type="button" class="btn btn-secondary" data-toggle="modal"
+					data-target="#DlgDtlTransact{{IDTransact}}">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+{{/each}}
+{{/each}}
+
+<script>
+
+
+	function reverseTransaction(data) {	
+
+		if (data.CdTypeTransact != "Adj" && data.CdTypeTransact != "PaySent" && data.CdTypeTransact != "PayRecv"){// && data.CdTypeTransact != "EarnInvcProducerWeb") {
+			alert("Reversal not available for this transaction type");
+			return false;
+		}
+		var amtToSend = data.AmtMoney;
+		
+		//certain transaction types require negative
+		if (data.CdTypeTransact == "PaySent" || data.CdTypeTransact == "Adj") {
+			amtToSend = amtToSend * -1;
+		}
+
+		if (data.IDProducer){
+			window.location.href = `/add-producer-transaction/${data.IDProducer}?reverse=yes&amt=${amtToSend}&method=${data.CdMethPay}&type=${data.CdTypeTransact}&id=${data.IDTransact}`;
+		}
+		else {
+			window.location.href = `/add-member-transaction/${data.IDMemb}?reverse=yes&amt=${amtToSend}&method=${data.CdMethPay}&type=${data.CdTypeTransact}&id=${data.IDTransact}`;
+		}
+		
+	}
+</script>
