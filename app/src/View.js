@@ -1397,6 +1397,7 @@ Handlebars.registerHelper("hPrefixStatic", function (aFileName) {
 // -------
 
 import { engine, create } from "express-handlebars";
+import * as os from "node:os";
 
 /** Configures view rendering with Handlebars. */
 export function Ready(aApp) {
@@ -1452,7 +1453,9 @@ export function Ready(aApp) {
  *  defined relative to the project folder. */
 export function TemplFromFile(aPathName) {
   const oPathFull = join(new URL(".", import.meta.url).pathname, aPathName + ".hbs");
+  const oPathTrimmed = os.platform() === "win32" ? oPathFull.split("\\C:")[1] : oPathFull;
+
   // Templates are loaded when various modules are first required, so this can
   // and probably should be synchronous:
-  return readFileSync(oPathFull, "utf8");
+  return readFileSync(oPathTrimmed, "utf8");
 }
