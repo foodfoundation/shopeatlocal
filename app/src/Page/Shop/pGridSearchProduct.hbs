@@ -51,8 +51,7 @@
 			</div>
 
 			<div class="Foot" data-target="#DlgDtlProduct{{IDProduct}}"
-				data-toggle="modal">
-
+				>
 				{{#unless NameImgProduct}}
 				<hr class="mx-0 mt-0 mb-2">
 				{{/unless}}
@@ -62,14 +61,11 @@
 				</div>
 				{{/if}}
 
-				<div>
-					{{#each Vtys}}
-					<div class="d-flex flex-row justify-content-between">
-						<div>{{hNameVty this}}</div>
-						<div>{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}</div>
-					</div>
-					{{/each}}
+				{{#each Vtys}}
+				<div class="d-flex flex-row justify-content-between" id="CardFooterTblVty{{IDVty}}">
+					{{>Shop/pCardFooterTblVtyShop this}}
 				</div>
+				{{/each}}
 			</div>
 		</div>
 	</div>

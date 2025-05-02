@@ -1058,8 +1058,6 @@ footer img.Seal {
 }
 
 .CardProduct .Foot {
-  cursor: pointer;
-
   padding-top: 0.15rem;
 
   line-height: 120%;
@@ -1080,6 +1078,98 @@ footer img.Seal {
   font-size: 1.1rem;
   font-weight: bold;
   line-height: 125%;
+}
+
+/* Product card footer */
+.product-card-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.product-info {
+  display: flex;
+  gap: .5rem
+}
+
+.product-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: hsl(0, 0%, 25%);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-price {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: hsl(181, 94%, 21%);
+  align-self: center;
+}
+
+.btn-add-to-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(210, 80%, 55%) !important;
+  border-radius: 4px;
+  min-width: 80px;
+  color: white !important;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  min-width: 40px;
+  flex-shrink: 0;
+  padding: 1px 3px;
+  font-size: 0.9rem;
+}
+
+/* Extra small screens */
+@media (max-width: 575px) {
+  .product-name {
+    font-size: 0.85rem;
+  }
+  
+  .product-price {
+    font-size: 0.95rem;
+  }
+  
+  .btn-add-to-cart {
+    min-width: 32px;
+  }
+}
+
+.btn-add-to-cart:hover {
+  background-color: hsl(210, 80%, 50%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-add-to-cart:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-add-to-cart:disabled {
+  background-color: hsl(0, 0%, 75%) !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.cart-icon {
+  margin-right: 0.5rem;
+  filter: brightness(100%);
+}
+
+@media (max-width: 575px) {
+  .cart-icon {
+    margin-right: 0.2rem;
+  }
 }
 
 /* --------------------------------------
@@ -2049,4 +2139,9 @@ a:hover.btn.header-button-orange {
   #WarnIE {
     display: block;
   }
+}
+
+
+.container {
+  max-width: 1040px;
 }

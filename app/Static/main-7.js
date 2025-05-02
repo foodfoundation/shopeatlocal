@@ -434,6 +434,38 @@ async function OnClick_BtnAddCartVty() {
   }
 }
 
+/** Handles a 'Add' button click for the card footer rows. */
+async function OnClick_CardFooterBtnAddCartVty() {
+  try {
+    Busy.Set();
+
+    const oBtn = $(this);
+    const oIDVty = oBtn.data("id-vty");
+    $("#CardFooterBtnAddCartVty" + oIDVty).prop("disabled", true);
+
+    // Create a flash container if it doesn't exist
+    let oDivFlashes = $("#FlashesProductAdd");
+    if (oDivFlashes.length === 0) {
+      $("body").append(
+        '<div id="FlashesProductAdd" class="position-fixed" style="top: 20px; right: 20px; z-index: 1050;"></div>',
+      );
+      oDivFlashes = $("#FlashesProductAdd");
+    }
+
+    // Add item directly to cart
+    await wAdd_ItCart(Number(oIDVty), oDivFlashes);
+
+    // Add success notification that will auto-dismiss
+    setTimeout(() => {
+      oDivFlashes.find(".Flash").fadeOut(500, function () {
+        $(this).remove();
+      });
+    }, 3000);
+  } finally {
+    Busy.Unset();
+  }
+}
+
 /** Configures the Cart dialog to expect a Cancel or Save button press. */
 async function OnChg_FormCart(aEvt) {
   // The controls that use this handler aren't served when the cart is closed,
