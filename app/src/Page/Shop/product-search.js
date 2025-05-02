@@ -17,6 +17,20 @@ export async function wHandGet(aReq, aResp) {
       : PathQuery("/product-search", aReq.query, NamesParamProduct, aIdxPage);
   }
 
+  // If user clicked “Favorites” we only show *their* favorites:
+  if (aReq.query.favorites) {
+    if (aReq.user) {
+      // inject their member ID so Search.js can filter to favorites
+      aReq.query.IDMemb = aResp.locals.CredImperUser.IDMemb;
+      // optionally: let Search.js know this is a favorites query
+      aReq.query.CkFavorites = true;
+    } else {
+      aResp.status(401);
+      aResp.render("Misc/401");
+      return;
+    }
+  }
+
   // Don't allow anyone to view another user's purchase history:
   if (aReq.query.CkPast) {
     if (aReq.user) aReq.query.IDMemb = aResp.locals.CredImperUser.IDMemb;
