@@ -24,7 +24,7 @@ export const Db = {
 
   host: "localhost",
   port: 3306,
-  user: "myuser",
+  user: "admin",
   /** The MySQL 'legacy-encrypted' password. */
   password: "mypassword",
   database: "shopeatlocal",
@@ -113,7 +113,7 @@ export const LenNameFileStoreDoc = 12;
 //
 
 // Storage configuration: possible values are "disk" or "S3"
-export const StorageType = "S3";
+export const StorageType = "disk";
 
 // S3 configuration
 export const S3Region = "us-east-1"; // Make sure the region matches the bucket's region, all buckets must be in the same region
