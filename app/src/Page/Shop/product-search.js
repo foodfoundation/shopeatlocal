@@ -45,6 +45,22 @@ export async function wHandGet(aReq, aResp) {
 
   const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable); //aReq.query includes terms if a term was searched
   const oDataPage = DataPage(aReq.query, oCt, CtProductPage);
+  // if we know who the user is, pull their favorites and tag each product
+  if (aReq.user) {
+     const memberId = aResp.locals.CredImperUser.IDMemb;
+     // pull just the IDs they’ve favorited
+     const [favRows] = await Conn.wExecPrep(
+       `SELECT IDProduct
+          FROM IMembFavorates
+         WHERE IDMemb = :IDMemb`,
+       { IDMemb: memberId }
+     );
+     const favSet = new Set(favRows.map(r => r.IDProduct));
+     // annotate each product
+     oProducts.forEach(p => {
+       p.CkFavorite = favSet.has(p.IDProduct);
+     });
+   }
 
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.Title = `${CoopParams.CoopNameShort} product search`;

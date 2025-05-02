@@ -95,6 +95,20 @@
 	#Cats .Cat .Title {
 		font-size: 110%;
 	}
+	.Cat.position-relative {
+  /* ensure relative context; if you don't use Bootstrap's shorthand */
+		position: relative;
+	}
+
+	.favorite-icon {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		width: 24px;
+		height: 24px;
+		cursor: pointer;
+		z-index: 10; /* above the box shadows */
+	}
 
 	a.Title {
 		color: hsl(0, 0%, 5%) !important;
@@ -257,7 +271,7 @@
 
 	<div id="Cats" class="text-center mt-3">
 		{{#each Cats}}
-		<div class="Cat p-2">
+		<div class="Cat p-2 position-relative">
 			<div class="font-weight-semi">
 				<a href="/product-search?IDCat={{IDCat}}" class="Title">{{NameCat}}</a>
 			</div>
@@ -267,6 +281,18 @@
 				<a href="/product-search?IDSubcat={{IDSubcat}}">{{NameSubcat}}</a>
 				{{/each}}
 			</div>
+			{{!-- carrot icon overlay --}}
+  <img
+    class="favorite-icon"
+    data-item-id="{{IDCat}}"
+    src="{{#if IsFavorite}}
+            {{hPrefixStatic 'logo-carrot.svg'}}
+         {{else}}
+            {{hPrefixStatic 'logo-carrot-negative.svg'}}
+         {{/if}}"
+    alt="favorite toggle"
+    onclick="toggleFavorite(this)"
+  />
 		</div>
 		{{/each}}
 	</div>
@@ -294,4 +320,21 @@
 			$("#production-list2").hide();         
 		}
 	}); 
+	function toggleFavorite(imgEl) {
+  var $img = $(imgEl);
+  var id  = $img.data('item-id');
+
+  $.post('/favorites/toggle', { id: id })
+    .done(function(res) {
+      // Assume your endpoint returns { favorited: true/false }
+      var newSrc = res.favorited
+        ? '{{hPrefixStatic "logo-carrot.svg"}}'
+        : '{{hPrefixStatic "logo-carrot-negative.svg"}}';
+      $img.attr('src', newSrc);
+    })
+    .fail(function() {
+      alert('Could not update favorites. Please try again.');
+    });
+}
+
 </script>
