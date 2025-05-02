@@ -57,7 +57,6 @@ metadata:
   name: mysql-pv-claim
   namespace: dsmhack-2025-cultivate
 spec:
-  storageClassName: manual
   accessModes:
     - ReadWriteMany
   resources:
