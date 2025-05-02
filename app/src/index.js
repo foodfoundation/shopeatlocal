@@ -874,6 +874,7 @@ App.route("/variety-order-history/:IDVtySel(\\d{1,7})")
 import {
   wHandGet as webOrderSummaryGet,
   wHandGetExport as __wHandGetExport,
+  wHandGetPicklist as __wHandGetPicklist
 } from "./Page/Producer/web-order-summary.js";
 
 App.route("/web-order-summary/:IDProducerSel(\\d{1,4})?")
@@ -882,11 +883,17 @@ App.route("/web-order-summary/:IDProducerSel(\\d{1,4})?")
   .all(WareCkProducer)
   .get(NextOnExcept(webOrderSummaryGet));
 
-App.route("/web-order-summary-export.js")
+App.route("/web-order-summary-export")
   .all(WaresPostRoute)
   .all(WareCkUser)
   .all(WareCkProducer)
   .get(NextOnExcept(__wHandGetExport));
+
+App.route("/web-order-picklist-export")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkProducer)
+  .get(NextOnExcept(__wHandGetPicklist));
 
 import { wHandGet as webOrderLabelsGet } from "./Page/Producer/web-order-labels.js";
 
