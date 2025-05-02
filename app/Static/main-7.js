@@ -434,7 +434,7 @@ async function OnClick_BtnAddCartVty() {
   }
 }
 
-/** Handles a variety row 'Add' button click for the redesigned footer button. */
+/** Handles a 'Add' button click for the card footer rows. */
 async function OnClick_CardFooterBtnAddCartVty() {
   try {
     Busy.Set();
