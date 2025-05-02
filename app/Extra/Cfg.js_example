@@ -22,11 +22,11 @@ export const URLBase = "http://localhost:" + PortServ;
 export const Db = {
   // These names match those used by 'node-mysql' and 'node-mysql2'.
 
-  host: "{db-host}",
-  port: 0,
-  user: "{db-username}",
+  host: "localhost",
+  port: 3306,
+  user: "myuser",
   /** The MySQL 'legacy-encrypted' password. */
-  password: "{db-password}",
+  password: "mypassword",
   database: "shopeatlocal",
 };
 
