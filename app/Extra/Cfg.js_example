@@ -24,7 +24,7 @@ export const Db = {
 
   host: "localhost",
   port: 3306,
-  user: "myuser",
+  user: "admin",
   /** The MySQL 'legacy-encrypted' password. */
   password: "mypassword",
   database: "shopeatlocal",
