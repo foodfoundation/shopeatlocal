@@ -1,12 +1,18 @@
 <div class="product-card-footer">
-  <button id="BtnAddCartVty{{IDVty}}V2" type="button"
-      {{#unless (hCkAnd (hPropCurrOrRoot "FlagShop")
-      (hCkAvailVty this))}}disabled{{/unless}}
-      data-id-product={{IDProduct}} data-id-vty={{IDVty}}
-      class="btn-add-to-cart">
-      <div class="product-name">{{hNameVty this}}</div>
-      <div class="product-price">{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}</div>
-  </button>
+  <div class="product-name">{{hNameVty this}}</div>
+  <div style="display: flex; gap: .5rem">
+    <div class="product-price">{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}</div>
+
+    <button id="BtnAddCartVty{{IDVty}}V2" type="button"
+        {{#unless (hCkAnd (hPropCurrOrRoot "FlagShop")
+        (hCkAvailVty this))}}disabled{{/unless}}
+        data-id-product={{IDProduct}} data-id-vty={{IDVty}}
+        class="btn btn-add-to-cart">
+        <img src="{{hPrefixStatic 'cart_outline.svg'}}" alt="" height="16px"
+            class="cart-icon">
+        <span class="d-none d-sm-inline">+1</span>
+    </button>
+  </div>
 </div>
 
 <script>
