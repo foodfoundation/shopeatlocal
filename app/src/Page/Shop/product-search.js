@@ -6,7 +6,7 @@ import { PathQuery, NamesParamProduct, wProducts, DataPage } from "../../Search.
 import { CoopParams, Cats, Subcats } from "../../Site.js";
 import { ArrayFromCds, CdsAttrProduct, wProducerFromID } from "../../Db.js";
 import { CtProductPage } from "../../../Cfg.js";
-import {Conn } from "../../Db.js";
+import { Conn } from "../../Db.js";
 import _ from "lodash";
 
 export async function wHandGet(aReq, aResp) {
@@ -66,8 +66,8 @@ export async function wHandGet(aReq, aResp) {
      const favSet = new Set(favRows.map(r => r.IDProduct));
      // annotate each product
      oProducts.forEach(p => {
-       p.CkFavorite = favSet.has(p.IDProduct);
-     });
+      p.IsFavorited = favSet.has(p.IDProduct);
+    });
    }
 
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
