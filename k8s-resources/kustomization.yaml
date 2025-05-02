@@ -4,6 +4,7 @@ namespace: dsmhack-2025-cultivate
 resources:
   - deployment.yaml
   - ingress.yaml
+  - mysql.yaml
 images:
   - name: "app-image"
     newName: "ghcr.io/dsmhack/shopeatlocal:latest"
