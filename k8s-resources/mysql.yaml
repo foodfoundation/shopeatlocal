@@ -38,6 +38,8 @@ spec:
         - image: mysql:9
           name: mysql
           env:
+            - name: MYSQL_DATABASE
+              value: shopeatlocal
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -54,15 +56,21 @@ spec:
             - containerPort: 3306
               name: mysql
           volumeMounts:
-            - name: mysql-persistent-storage
-              mountPath: /var/lib/mysql
+#            - name: mysql-persistent-storage
+#              mountPath: /var/lib/mysql
             - mountPath: /docker-entrypoint-initdb.d
               name: dump
+          resources:
+            limits:
+              memory: 1024Mi
+              cpu: 1000m
+            requests:
+              memory: 32Mi
+              cpu: 10m
       volumes:
         - name: mysql-persistent-storage
-          emptyDir: {}
-#          persistentVolumeClaim:
-#            claimName: mysql-pv-claim
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
         - name: dump
           emptyDir: {}
 ---
