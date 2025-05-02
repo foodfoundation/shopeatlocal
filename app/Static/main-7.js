@@ -446,16 +446,20 @@ async function OnClick_CardFooterBtnAddCartVty() {
     // Create a flash container if it doesn't exist
     let oDivFlashes = $("#FlashesProductAdd");
     if (oDivFlashes.length === 0) {
-      $("body").append('<div id="FlashesProductAdd" class="position-fixed" style="top: 20px; right: 20px; z-index: 1050;"></div>');
+      $("body").append(
+        '<div id="FlashesProductAdd" class="position-fixed" style="top: 20px; right: 20px; z-index: 1050;"></div>',
+      );
       oDivFlashes = $("#FlashesProductAdd");
     }
-    
+
     // Add item directly to cart
     await wAdd_ItCart(Number(oIDVty), oDivFlashes);
-    
+
     // Add success notification that will auto-dismiss
     setTimeout(() => {
-      oDivFlashes.find(".Flash").fadeOut(500, function() { $(this).remove(); });
+      oDivFlashes.find(".Flash").fadeOut(500, function () {
+        $(this).remove();
+      });
     }, 3000);
   } finally {
     Busy.Unset();
