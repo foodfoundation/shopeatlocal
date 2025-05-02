@@ -3,9 +3,9 @@ services:
     image: mysql:9
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: shopeatlocal
-      MYSQL_USER: myuser
+      MYSQL_USER: admin
       MYSQL_PASSWORD: mypassword
     ports:
       - "3306:3306"
