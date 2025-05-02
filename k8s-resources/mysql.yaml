@@ -59,6 +59,8 @@ spec:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pv-claim
+        - name: dump
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
