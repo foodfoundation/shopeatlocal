@@ -874,7 +874,7 @@ App.route("/variety-order-history/:IDVtySel(\\d{1,7})")
 import {
   wHandGet as webOrderSummaryGet,
   wHandGetExport as __wHandGetExport,
-  wHandGetPicklist as __wHandGetPicklist
+  wHandGetPicklist as __wHandGetPicklist,
 } from "./Page/Producer/web-order-summary.js";
 
 App.route("/web-order-summary/:IDProducerSel(\\d{1,4})?")

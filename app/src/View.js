@@ -1415,7 +1415,7 @@ export function Ready(aApp) {
       partialsDir: "src/Page",
       helpers: {
         gt: (a, b) => a > b,
-        add: (a,b) => a + b
+        add: (a, b) => a + b,
       },
       compilerOptions: {
         // This fixes an idiotic Handlebars problem that caused the tab characters
