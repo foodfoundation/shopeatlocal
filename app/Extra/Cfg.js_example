@@ -152,8 +152,8 @@ export const DocumentStoragePrefix =
 export const UseExpressStatic = false;
 
 export const Sanity = {
-  projectId: 'tu4u407a',
-  dataset: 'production', // 'production' by default
+  projectId: 'amntz8dl',
+  dataset: 'production',
   baseUrl: 'https://your-domain.sanity.studio',
   apiVersion: '2021-10-21',
   useCdn: false,
