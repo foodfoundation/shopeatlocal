@@ -20,8 +20,8 @@ If you're a developer and want to take part in developing `shopeatlocal`, please
 
 1. `cd app` and `docker compose up -D`
 2. `cp app/Extra/Cfg.js_example app/Cfg.js`
-2. `npm install`
-3. `npm run dev`
+3. `npm install`
+4. `npm run dev`
 
 ## Security
 
