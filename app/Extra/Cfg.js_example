@@ -22,12 +22,12 @@ export const URLBase = "http://localhost:" + PortServ;
 export const Db = {
   // These names match those used by 'node-mysql' and 'node-mysql2'.
 
-  host: "localhost",
+  host: process.env["MYSQL_HOST"] || "localhost",
   port: 3306,
-  user: "admin",
+  user: process.env["MYSQL_USER"] || "admin",
   /** The MySQL 'legacy-encrypted' password. */
-  password: "mypassword",
-  database: "shopeatlocal",
+  password: process.env["MYSQL_PASSWORD"] || "mypassword",
+  database: process.env["MYSQL_DB"] || "shopeatlocal",
 };
 
 /** The secret used to sign and verify session cookies. */
@@ -152,7 +152,7 @@ export const DocumentStoragePrefix =
 export const UseExpressStatic = false;
 
 export const Sanity = {
-  projectId: 'amntz8dl',
+  projectId: process.env["SANITY_PROJECT"] || 'amntz8dl',
   dataset: 'production',
   baseUrl: 'https://your-domain.sanity.studio',
   apiVersion: '2021-10-21',
