@@ -1,9 +1,9 @@
 <div class="product-card-footer">
   <div class="product-name">{{hNameVty this}}</div>
-  <div style="display: flex; gap: .5rem">
+  <div class="product-info">
     <div class="product-price">{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}</div>
 
-    <button id="BtnAddCartVty{{IDVty}}V2" type="button"
+    <button id="CardFooterBtnAddCartVty{{IDVty}}" type="button"
         {{#unless (hCkAnd (hPropCurrOrRoot "FlagShop")
         (hCkAvailVty this))}}disabled{{/unless}}
         data-id-product={{IDProduct}} data-id-vty={{IDVty}}
@@ -18,5 +18,5 @@
 <script>
     // This button is replaced when the available quantity is updated, so we
     // will assign the handler here:
-    $("#BtnAddCartVty{{IDVty}}V2").on("click", OnClick_BtnAddCartVtyV2);
+    $("#CardFooterBtnAddCartVty{{IDVty}}").on("click", OnClick_CardFooterBtnAddCartVtyV2);
 </script>

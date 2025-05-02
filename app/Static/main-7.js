@@ -435,13 +435,13 @@ async function OnClick_BtnAddCartVty() {
 }
 
 /** Handles a variety row 'Add' button click for the redesigned footer button. */
-async function OnClick_BtnAddCartVtyV2() {
+async function OnClick_CardFooterBtnAddCartVty() {
   try {
     Busy.Set();
 
     const oBtn = $(this);
     const oIDVty = oBtn.data("id-vty");
-    $("#BtnAddCartVty" + oIDVty + "V2").prop("disabled", true);
+    $("#CardFooterBtnAddCartVty" + oIDVty).prop("disabled", true);
 
     // Create a flash container if it doesn't exist
     let oDivFlashes = $("#FlashesProductAdd");

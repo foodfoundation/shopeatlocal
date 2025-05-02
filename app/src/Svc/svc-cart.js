@@ -408,5 +408,5 @@ const ViewSummCart = compile(TemplFromFile("Page/Shop/pSummCart"));
 const ViewLblBtnCart = compile(TemplFromFile("Page/Shop/pLblBtnCart"));
 /** A view that generates product variety table row HTML. */
 const ViewRowTblVty = compile(TemplFromFile("Page/Shop/pRowTblVtyShop"));
-/** TODO - add this comment later */
+/** A view that generates rows in the footer of a product card */
 const ViewCardFooterTblVty = compile(TemplFromFile("Page/Shop/pCardFooterTblVtyShop"));

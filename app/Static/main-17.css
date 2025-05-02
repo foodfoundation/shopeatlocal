@@ -1091,11 +1091,7 @@ footer img.Seal {
 
 .product-info {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex: 1;
-  min-width: 0; /* Allows text to truncate properly */
-  padding-right: 0.5rem;
+  gap: .5rem
 }
 
 .product-name {
@@ -2147,5 +2143,5 @@ a:hover.btn.header-button-orange {
 
 
 .container {
-  /*max-width: 1040px;*/
+  max-width: 1040px;
 }
