@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "release:static": "cp -r dist/assets/* ../app/Static/producers-report-assets/",
-    "build:release:static": "npm run build && npm run release:static"
+    "build:release:static": "npm run build && npm run release:static",
+    "continually:build:release:static": "nodemon --ignore dist/ --exec npm run build:release:static"
   },
   "dependencies": {
     "json-2-csv": "^5.5.7",
@@ -20,9 +21,10 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
+    "nodemon": "^3.1.10",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.0"
   }
