@@ -26,6 +26,13 @@ spec:
       labels:
         app: mysql
     spec:
+      initContainers:
+        - name: fetch
+          image: migrations-image
+          volumeMounts:
+            - mountPath: /docker-entrypoint-initdb.d
+              name: dump
+        - name: init
       containers:
         - image: mysql:9
           name: mysql

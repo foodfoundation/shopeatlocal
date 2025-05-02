@@ -19,6 +19,7 @@ jobs:
       IMAGE_NAME: ${{ github.repository }}
     needs:
       - build-and-push-image
+      - build-and-push-migrations
     runs-on: ubuntu-latest
     steps:
       - name: Clone
@@ -41,6 +42,7 @@ jobs:
         working-directory: "k8s-resources"
         run: |
           kustomize edit set image app-image=ghcr.io/dsmhack/shopeatlocal:sha-${{ github.sha }}
+          kustomize edit set image migrations-image=ghcr.io/dsmhack/shopeatlocal-migrations:sha-${{ github.sha }}
           kubectl kustomize | kubectl apply -f -
           kubectl rollout status -n dsmhack-2025-cultivate deployments
 
@@ -76,6 +78,43 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  build-and-push-migrations:
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}-migrations
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=long
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: migrations-Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

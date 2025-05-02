@@ -9,3 +9,6 @@ images:
   - name: "app-image"
     newName: "ghcr.io/dsmhack/shopeatlocal:latest"
     newTag: "initial"
+  - name: "migrations-image"
+    newName: "ghcr.io/dsmhack/shopeatlocal-migrations:latest"
+    newTag: "initial"
