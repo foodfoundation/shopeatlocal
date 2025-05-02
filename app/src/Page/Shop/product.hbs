@@ -36,36 +36,22 @@
 
 	<div class="my-3">
 		<div class="row">
-			{{!-- {{#if (hCkOr NameImgProduct NameImgProducer)}} --}}
-			{{#if (hCkOr Product.Images NameImgProducer)}}
-			<div class="col-md-4">
-				<div class="form-group mb-0">
-					<img src="{{hPrefixImageWithStorage (hCkOr Product.Images NameImgProducer)}}"
-						alt="Product or producer image"
-						class="w-100 border rounded rounded-lg p-0">
-				</div>
-			</div>
-			{{/if}}
-
-			{{!-- {{#if Product.Images}}
-			<div id="carouselImages" class="carousel slide mb-3" data-ride="carousel">
-			<div class="carousel-inner">
-				{{#each Product.Images}}
-				<div class="carousel-item {{@first 'active'}}">
-				<img src="{{../hPrefixImageWithStorage this}}" class="d-block w-100 border rounded" alt="Product image">
-				</div>
-				{{/each}}
-			</div>
-			<a class="carousel-control-prev" href="#carouselImages" role="button" data-slide="prev">
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="sr-only">Previous</span>
-			</a>
-			<a class="carousel-control-next" href="#carouselImages" role="button" data-slide="next">
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="sr-only">Next</span>
-			</a>
-			</div>
-			{{/if}} --}}
+		  {{log this Product}}
+			{{#if (gt Images.length 0)}}
+              <div class="row">
+                {{#each Images}}
+                  <div class="col-6 col-md-4 mb-3">
+                    <img
+                      src="{{hPrefixImageWithStorage this}}"
+                      alt="{{../NameProduct}} image {{add @index 1}}"
+                      class="img-fluid rounded"
+                    />
+                  </div>
+                {{/each}}
+              </div>
+            {{else}}
+              <p>No images available for this product.</p>
+            {{/if}}
 
 
 			<div class="col-md">
