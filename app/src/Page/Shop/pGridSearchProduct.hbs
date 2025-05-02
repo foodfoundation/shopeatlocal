@@ -10,13 +10,21 @@
 	//    not seem to be a way to do that without JavaScript: --}}
 	<div class="col">
 		<div class="CardProduct d-flex flex-column py-3 px-3
-			{{hClassCornerBtm @index ../Products}}">
-			<div class="Head">
+
+			{{hClassCornerBtm @index ../Products}}" data-product-id="{{IDProduct}}">
+						<div class="Head">
 				<div class="d-flex flex-row justify-content-between
 					align-items-baseline">
 					<a class="Subcat" href="/product-search?IDSubcat={{IDSubcat}}">
 						{{NameSubcat}}
 					</a>
+					{{#if CkFavorited}}
+	          <img src="{{hPrefixStatic 'logo-carrot.svg'}}"
+	               alt="Favorited" class="favorite-icon">
+	        {{else}}
+	          <img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}"
+	               alt="Not favorited" class="favorite-icon">
+	        {{/if}}
 
 					{{#if CkNew}}
 					<a class="New" href="/product-search">NEW</a>
@@ -44,7 +52,9 @@
 				<div style="background-image: url('{{hPrefixImageWithStorage NameImgProduct}}');"
 					class="Img rounded rounded-lg">
 				</div>
+				
 				{{else}}
+				
 				<hr class="mx-0 mt-0 mb-2">
 				<div class="Descrip">{{Descrip}}</div>
 				{{/if}}

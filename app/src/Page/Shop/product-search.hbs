@@ -12,7 +12,7 @@
   }
   .favorite-icon {
     position: absolute;
-    top: 8px;                    /* tweak to taste */
+    top: 16px;                    /* tweak to taste */
     right: 8px;                  /* tweak to taste */
     width: 24px;                 /* or whatever size you like */
     height: 24px;
@@ -103,13 +103,14 @@
 			{{TextRg}}
 		</p>
 	</div>
+	{{>Shop/pGridSearchProduct}}
 
 	{{!--
 	  Wrap each product tile in .product-thumb and overlay the carrot icon.
 	  You need to update Shop/pGridSearchProduct.hbs accordingly, for example:
 	--}}
 	{{!-- BEGIN inline override of grid partial --}}
-	<div class="row">
+	{{!-- <div class="row">
 	  {{#each Products}}
 	  <div class="col-6 col-md-4 col-lg-3 mb-4 product" data-product-id="{{Id}}">
 	    <div class="card">
@@ -130,7 +131,7 @@
 	    </div>
 	  </div>
 	  {{/each}}
-	</div>
+	</div> --}}
 	{{!-- END inline override --}}
 
 	<div class="d-flex flex-row mt-3 pl-1">
@@ -163,10 +164,12 @@
 		}
 	}); 
 $(document).ready(function(){
-  $('.product').on('click', '.favorite-icon', function(e){
+  $('.CardProduct').on('click', '.favorite-icon', async function(e){
+	console.log('favorite icon clicked');
     e.preventDefault();
     const $icon     = $(this);
-    const $product  = $icon.closest('.product');
+    const $product  = $icon.closest('.CardProduct');
+	console.log('SUmit-------  Request from Client $product', $product);
     const productId = $product.data('product-id');
 
     // Optimistically toggle UI (optional)
@@ -177,15 +180,34 @@ $(document).ready(function(){
     $icon.attr('src', newSrc);
 
     // Send to server
-    $.post('/toggle-favorite', { id: productId })
-      .fail(function(){
-        // on error, revert icon
-        const revertSrc = wasFav
+	const oDataReq = {
+    productId: productId,
+  };
+
+  const oOptsFetch = {
+    ...OptsFetchCSRF(),
+    method: "POST",
+    body: JSON.stringify(oDataReq),
+  };
+console.log('SUmit-------  Request from Client oDataReq', oDataReq);
+  const oResp = await fetch("/toggle-favorite", oOptsFetch);
+  if (!oResp.ok) {
+    Add_FlashFailFetch("Cart add request", oResp, aElFlashes);
+	const revertSrc = wasFav
           ? "{{hPrefixStatic 'logo-carrot.svg'}}"
           : "{{hPrefixStatic 'logo-carrot-negative.svg'}}";
         $icon.attr('src', revertSrc);
-        alert('Couldn’t update favorites. Please try again.');
-      });
+    return;
+  }
+//    await fetch('/toggle-favorite', { id: productId })
+//      .fail(function(){
+        // on error, revert icon
+//        const revertSrc = wasFav
+//          ? "{{hPrefixStatic 'logo-carrot.svg'}}"
+ //         : "{{hPrefixStatic 'logo-carrot-negative.svg'}}";
+ //       $icon.attr('src', revertSrc);
+ //       alert('Couldn’t update favorites. Please try again.');
+ //     });
   });
 });
 </script>

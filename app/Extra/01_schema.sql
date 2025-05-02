@@ -859,7 +859,7 @@ CREATE TABLE IF NOT EXISTS `WgtLblOrdWeb` (
 
 -- Sumit- DSM HACKTHON 
 -- Create Table to Store the Member Favorites 
-CREATE TABLE IF NOT EXISTS IMembFavorates (
+CREATE TABLE IF NOT EXISTS IMembFavorites (
     IDMemb INT NOT NULL,
     IDProduct INT NOT NULL,
     FavoritedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -953,6 +953,31 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS ToggleFavorite;
+
+CREATE PROCEDURE ToggleFavorite (
+    IN pIDMemb INT,
+    IN pIDProduct INT
+)
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM IMembFavorites
+        WHERE IDMemb = pIDMemb AND IDProduct = pIDProduct
+    ) THEN
+        DELETE FROM IMembFavorites
+        WHERE IDMemb = pIDMemb AND IDProduct = pIDProduct;
+    ELSE
+        INSERT INTO IMembFavorites (IDMemb, IDProduct)
+        VALUES (pIDMemb, pIDProduct);
+    END IF;
+END $$
+
+DELIMITER ;
+
+
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

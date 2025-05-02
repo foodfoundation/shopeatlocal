@@ -6,6 +6,7 @@ import { PathQuery, NamesParamProduct, wProducts, DataPage } from "../../Search.
 import { CoopParams, Cats, Subcats } from "../../Site.js";
 import { ArrayFromCds, CdsAttrProduct, wProducerFromID } from "../../Db.js";
 import { CtProductPage } from "../../../Cfg.js";
+import {Conn } from "../../Db.js";
 import _ from "lodash";
 
 export async function wHandGet(aReq, aResp) {
@@ -45,13 +46,20 @@ export async function wHandGet(aReq, aResp) {
 
   const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable); //aReq.query includes terms if a term was searched
   const oDataPage = DataPage(aReq.query, oCt, CtProductPage);
+ // console.log("sumit-----",oCt,oProducts);
   // if we know who the user is, pull their favorites and tag each product
   if (aReq.user) {
      const memberId = aResp.locals.CredImperUser.IDMemb;
      // pull just the IDs they’ve favorited
+     //check if hte value of MemberId is not null or undefined
+     if (!memberId) {
+       aResp.status(401);
+       aResp.render("Misc/401");
+       return;
+     }
      const [favRows] = await Conn.wExecPrep(
        `SELECT IDProduct
-          FROM IMembFavorates
+          FROM IMembFavorites
          WHERE IDMemb = :IDMemb`,
        { IDMemb: memberId }
      );

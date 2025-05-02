@@ -551,6 +551,19 @@ App.route("/product-search")
   .get(productSearchGet)
   .post(productSearchPost);
 
+  // Toggle Favorite
+  import {
+    //wHandGet as productSearchGet,
+    HandPost as toggleFavoritePost
+  } from "./Page/Shop/toggle-favorite.js";
+  
+  App.route("/toggle-favorite")
+    .all(WareBodyJSON)
+    .all(WaresPostRoute)
+    .all(WareCkUser)
+    .post(toggleFavoritePost);
+  //Ends Here
+
 import { wHandGet as productGet } from "./Page/Shop/product.js";
 
 App.route("/product/:IDProductSel(\\d{1,6})")

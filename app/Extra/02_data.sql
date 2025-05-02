@@ -27,18 +27,16 @@ SELECT 'CENTRAL', 'Dummy Location', 'Central', 'Dummy Address', 'Change Me', 1, 
 FROM dual
 WHERE NOT EXISTS (SELECT CdLoc FROM `Loc` WHERE CdLoc = 'CENTRAL');
 
-TRUNCATE TABLE IMembFavorates;
-
-INSERT into IMembFavorates ( IDMemb, IDProduct, FavoritedAt)
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
 SELECT 1, IDProduct , NOW() 
 from Product;
-INSERT into IMembFavorates ( IDMemb, IDProduct, FavoritedAt)
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
 SELECT 5930, IDProduct , NOW() 
 from Product;
-INSERT into IMembFavorates ( IDMemb, IDProduct, FavoritedAt)
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
 SELECT 5941, IDProduct , NOW() 
 from Product;
-INSERT into IMembFavorates ( IDMemb, IDProduct, FavoritedAt)
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
 SELECT 5943, IDProduct , NOW() 
 from Product;
 

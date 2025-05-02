@@ -881,7 +881,7 @@ function QrysProductFavorites(aParams) {
   const oSQLScore = oSQLScoreDef;
   // only return products that this member has starred:
   const oSQLJoin = `
-    JOIN IMembFavorates f
+    JOIN IMembFavorites f
       ON f.IDProduct = Product.IDProduct
      AND f.IDMemb    = :IDMemb
   `;
