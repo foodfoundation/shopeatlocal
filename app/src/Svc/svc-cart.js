@@ -204,6 +204,7 @@ export async function wHandPost(aReq, aResp) {
     oVty.CredUser = aResp.locals.CredUser;
     oVty.FlagShop = true;
     oDataResp.ElsUpd["#RowTblVty" + oIDVty] = ViewRowTblVty(oVty);
+    oDataResp.ElsUpd["#CardFooterTblVty" + oIDVty] = ViewCardFooterTblVty(oVty);
 
     aResp.status(200);
     aResp.json(JSON.stringify(oDataResp));
@@ -341,6 +342,7 @@ export async function wHandPut(aReq, aResp) {
       oVty.CredUser = aResp.locals.CredUser;
       oVty.FlagShop = true;
       oDataResp.ElsUpd[`#RowTblVty${oIt.IDVty}`] = ViewRowTblVty(oVty);
+      oDataResp.ElsUpd["#CardFooterTblVty" + oIt.IDVty] = ViewCardFooterTblVty(oVty);
     }
 
     aResp.status(200);
@@ -406,3 +408,5 @@ const ViewSummCart = compile(TemplFromFile("Page/Shop/pSummCart"));
 const ViewLblBtnCart = compile(TemplFromFile("Page/Shop/pLblBtnCart"));
 /** A view that generates product variety table row HTML. */
 const ViewRowTblVty = compile(TemplFromFile("Page/Shop/pRowTblVtyShop"));
+/** TODO - add this comment later */
+const ViewCardFooterTblVty = compile(TemplFromFile("Page/Shop/pCardFooterTblVtyShop"));
