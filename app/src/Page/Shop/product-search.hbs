@@ -169,7 +169,6 @@ $(document).ready(function(){
     e.preventDefault();
     const $icon     = $(this);
     const $product  = $icon.closest('.CardProduct');
-	console.log('SUmit-------  Request from Client $product', $product);
     const productId = $product.data('product-id');
 
     // Optimistically toggle UI (optional)
@@ -189,7 +188,7 @@ $(document).ready(function(){
     method: "POST",
     body: JSON.stringify(oDataReq),
   };
-console.log('SUmit-------  Request from Client oDataReq', oDataReq);
+//console.log('SUmit-------  Request from Client oDataReq', oDataReq);
   const oResp = await fetch("/toggle-favorite", oOptsFetch);
   if (!oResp.ok) {
     Add_FlashFailFetch("Cart add request", oResp, aElFlashes);

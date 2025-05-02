@@ -81,6 +81,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.PathPageNext = PathPage(oDataPage.IdxPageNext);
   aResp.locals.CkPaging = aResp.locals.PathPagePrev || aResp.locals.PathPageNext;
   aResp.locals.MatchingAttrs = await findMatchingAttrs(aReq.query, aResp.locals.AttrsProduct);
+  //console.log("Sumit ------------- matching attrs", aResp.locals.CredUser);
   aResp.render("Shop/product-search");
 }
 
