@@ -28,16 +28,16 @@ FROM dual
 WHERE NOT EXISTS (SELECT CdLoc FROM `Loc` WHERE CdLoc = 'CENTRAL');
 
 INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
-SELECT 1, IDProduct , NOW() 
+SELECT 1, IDProduct , NOW()
 from Product;
 INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
-SELECT 5930, IDProduct , NOW() 
+SELECT 5930, IDProduct , NOW()
 from Product;
 INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
-SELECT 5941, IDProduct , NOW() 
+SELECT 5941, IDProduct , NOW()
 from Product;
 INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
-SELECT 5943, IDProduct , NOW() 
+SELECT 5943, IDProduct , NOW()
 from Product;
 
 

@@ -7,19 +7,17 @@
 		/*background: linear-gradient(120deg, hsla(66, 30%, 80%, 0.5),
 			hsla(66, 30%, 80%, 0) 70.71%);*/
 	}
-  .product-thumb {
-    position: relative;          /* establish a positioning context */
-  }
-  .favorite-icon {
-    position: absolute;
-    top: 16px;                    /* tweak to taste */
-    right: 8px;                  /* tweak to taste */
-    width: 24px;                 /* or whatever size you like */
-    height: 24px;
-    /* pointer-events: none;        /* so clicks go “through” */
-	pointer-events: auto;
-    cursor: pointer;
-  }
+	.product-thumb {
+		position: relative;
+	}
+	.favorite-icon {
+		position: absolute;
+		top: 16px;
+		right: 8px;
+		width: 24px;
+		height: 24px;
+		cursor: pointer;
+	}
 </style>
 <div class="container py-4">
 	<form class="form-inline px-1 mb-2" action="/product-search" method="POST"
@@ -103,36 +101,8 @@
 			{{TextRg}}
 		</p>
 	</div>
-	{{>Shop/pGridSearchProduct}}
 
-	{{!--
-	  Wrap each product tile in .product-thumb and overlay the carrot icon.
-	  You need to update Shop/pGridSearchProduct.hbs accordingly, for example:
-	--}}
-	{{!-- BEGIN inline override of grid partial --}}
-	{{!-- <div class="row">
-	  {{#each Products}}
-	  <div class="col-6 col-md-4 col-lg-3 mb-4 product" data-product-id="{{Id}}">
-	    <div class="card">
-	      <div class="product-thumb">
-	        <img src="{{ImageUrl}}" alt="{{Name}}" class="card-img-top">
-	        {{#if IsFavorited}}
-	          <img src="{{hPrefixStatic 'logo-carrot.svg'}}"
-	               alt="Favorited" class="favorite-icon">
-	        {{else}}
-	          <img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}"
-	               alt="Not favorited" class="favorite-icon">
-	        {{/if}}
-	      </div>
-	      <div class="card-body">
-	        <h5 class="card-title">{{Name}}</h5>
-	        <!-- etc. -->
-	      </div>
-	    </div>
-	  </div>
-	  {{/each}}
-	</div> --}}
-	{{!-- END inline override --}}
+	{{>Shop/pGridSearchProduct}}
 
 	<div class="d-flex flex-row mt-3 pl-1">
 		{{#if CkPaging}}
@@ -165,48 +135,32 @@
 	}); 
 $(document).ready(function(){
   $('.CardProduct').on('click', '.favorite-icon', async function(e){
-	console.log('favorite icon clicked');
     e.preventDefault();
     const $icon     = $(this);
     const $product  = $icon.closest('.CardProduct');
     const productId = $product.data('product-id');
 
-    // Optimistically toggle UI (optional)
+    // Optimistically toggle UI
     const wasFav = $icon.attr('src').includes('logo-carrot.svg');
     const newSrc = wasFav
       ? "{{hPrefixStatic 'logo-carrot-negative.svg'}}"
       : "{{hPrefixStatic 'logo-carrot.svg'}}";
     $icon.attr('src', newSrc);
 
-    // Send to server
-	const oDataReq = {
-    productId: productId,
-  };
+	const oDataReq = { productId };
 
-  const oOptsFetch = {
-    ...OptsFetchCSRF(),
-    method: "POST",
-    body: JSON.stringify(oDataReq),
-  };
-//console.log('SUmit-------  Request from Client oDataReq', oDataReq);
-  const oResp = await fetch("/toggle-favorite", oOptsFetch);
-  if (!oResp.ok) {
-    Add_FlashFailFetch("Cart add request", oResp, aElFlashes);
-	const revertSrc = wasFav
-          ? "{{hPrefixStatic 'logo-carrot.svg'}}"
-          : "{{hPrefixStatic 'logo-carrot-negative.svg'}}";
-        $icon.attr('src', revertSrc);
-    return;
-  }
-//    await fetch('/toggle-favorite', { id: productId })
-//      .fail(function(){
-        // on error, revert icon
-//        const revertSrc = wasFav
-//          ? "{{hPrefixStatic 'logo-carrot.svg'}}"
- //         : "{{hPrefixStatic 'logo-carrot-negative.svg'}}";
- //       $icon.attr('src', revertSrc);
- //       alert('Couldn’t update favorites. Please try again.');
- //     });
+	const oOptsFetch = {
+		...OptsFetchCSRF(),
+		method: "POST",
+		body: JSON.stringify(oDataReq),
+	};
+	const oResp = await fetch("/toggle-favorite", oOptsFetch);
+	if (!oResp.ok) {
+		const revertSrc = wasFav
+			? "{{hPrefixStatic 'logo-carrot.svg'}}"
+			: "{{hPrefixStatic 'logo-carrot-negative.svg'}}";
+			$icon.attr('src', revertSrc);
+	}
   });
 });
 </script>

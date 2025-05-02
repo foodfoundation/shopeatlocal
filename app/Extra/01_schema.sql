@@ -857,8 +857,7 @@ CREATE TABLE IF NOT EXISTS `WgtLblOrdWeb` (
   CONSTRAINT `kWgtLblOrdWeb-IDVty` FOREIGN KEY (`IDVty`) REFERENCES `Vty` (`IDVty`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Sumit- DSM HACKTHON 
--- Create Table to Store the Member Favorites 
+-- Create Table to Store the Member Favorites
 CREATE TABLE IF NOT EXISTS IMembFavorites (
     IDMemb INT NOT NULL,
     IDProduct INT NOT NULL,

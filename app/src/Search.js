@@ -879,7 +879,6 @@ function QrysProductProducer(aParams) {
 /** Starred favorites for this member */
 function QrysProductFavorites(aParams) {
   const oSQLScore = oSQLScoreDef;
-  // only return products that this member has starred:
   const oSQLJoin = `
     JOIN IMembFavorites f
       ON f.IDProduct = Product.IDProduct
@@ -888,13 +887,9 @@ function QrysProductFavorites(aParams) {
   const oSQLWhere = `f.IDMemb = :IDMemb`;
 
   const oSQLSel = SQLSelProducts(oSQLScore, oSQLJoin, oSQLWhere);
-  const oSQLCt  = SQLCtProducts(oSQLJoin, oSQLWhere);
+  const oSQLCt = SQLCtProducts(oSQLJoin, oSQLWhere);
 
-  return [
-    oSQLCt,
-    oSQLSel,
-    { IDMemb: aParams.IDMemb },  // bind their member ID
-  ];
+  return [oSQLCt, oSQLSel, { IDMemb: aParams.IDMemb }];
 }
 
 function QrysProductPast(aParams) {

@@ -1,13 +1,13 @@
 {{!-- pGridSearchProduct.hbs
-// ----------------------
-// Product search result grid --}}
+//    ----------------------
+//    Product search result grid --}}
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 no-gutters">
 	{{#each Products}}
 	{{!-- I would like to set the product dialog 'data-target' and 'data-toggle'
-	// throughout this element, and then cancel them within the links (so that
-	// the dialog is not toggled just before the page change) but there does
-	// not seem to be a way to do that without JavaScript: --}}
+	//    throughout this element, and then cancel them within the links (so that
+	//    the dialog is not toggled just before the page change) but there does
+	//    not seem to be a way to do that without JavaScript: --}}
 	<div class="col">
 		<div class="CardProduct d-flex flex-column py-3 px-3
 
@@ -19,18 +19,16 @@
 						{{NameSubcat}}
 					</a>
 					
-					{{!-- if Use is not Logged in then don't show the carrot icon --}}
+					{{!-- if the User is not Logged in, then don't show the carrot icon --}}
 					{{#if ../CredUser}}
-					{{!-- Carrot Icon Logic Starts Here --}}
-					{{#if IsFavorited}}
-					<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Favorited" class="favorite-icon">
-					{{else}}
-					<img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}" alt="Not favorited" class="favorite-icon">
+						{{#if IsFavorited}}
+							<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Favorited" class="favorite-icon">
+						{{else}}
+							<img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}" alt="Not favorited" class="favorite-icon">
+						{{/if}}
 					{{/if}}
-					{{/if}}
-					{{!-- Carrot Icon Logic Ends Here --}}
 					{{#if CkNew}}
-					<a class="New" href="/product-search">NEW</a>
+						<a class="New" href="/product-search">NEW</a>
 					{{/if}}
 				</div>
 

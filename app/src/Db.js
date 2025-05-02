@@ -897,18 +897,14 @@ export async function wProducerFromIDProduct(aIDProduct, aConn) {
   const [producerRows] = await aConn.wExecPrep(sql, params);
   return producerRows.length ? producerRows[0] : null;
 }
-//** DB Procedure for Toggle Favorites */
+/** Toggles the specified product's favorite status for the specified member. */
 export async function wToggleFavorite(aIDMemb, aIDProduct, aConn) {
   if (!aConn) aConn = Conn;
-//console.log("ToggleFavorite: ", aIDMemb, aIDProduct);
+
   const oSQL = `CALL ToggleFavorite(?, ?)`;
   await aConn.wExecPrep(oSQL, [aIDMemb, aIDProduct]);
-
-  // Optionally return something useful
-  return { action: 'toggled', IDMemb: aIDMemb, IDProduct: aIDProduct };
 }
 
-//ENds DB Procedure for Toggle Favorites
 export async function wProducersActivWeb() {
   const oSQL = `SELECT DISTINCT Producer.*
 		FROM Producer

@@ -18,13 +18,9 @@ export async function wHandGet(aReq, aResp) {
       : PathQuery("/product-search", aReq.query, NamesParamProduct, aIdxPage);
   }
 
-  // If user clicked “Favorites” we only show *their* favorites:
   if (aReq.query.favorites) {
     if (aReq.user) {
-      // inject their member ID so Search.js can filter to favorites
       aReq.query.IDMemb = aResp.locals.CredImperUser.IDMemb;
-      // optionally: let Search.js know this is a favorites query
-      aReq.query.CkFavorites = true;
     } else {
       aResp.status(401);
       aResp.render("Misc/401");
@@ -44,31 +40,27 @@ export async function wHandGet(aReq, aResp) {
 
   const oIsMembEbtEligable = aResp.locals.CredUser?.CdRegEBT === "Approv";
 
-  const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable); //aReq.query includes terms if a term was searched
+  const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable);
   const oDataPage = DataPage(aReq.query, oCt, CtProductPage);
- // console.log("sumit-----",oCt,oProducts);
   // if we know who the user is, pull their favorites and tag each product
   if (aReq.user) {
-     const memberId = aResp.locals.CredImperUser.IDMemb;
-     // pull just the IDs they’ve favorited
-     //check if hte value of MemberId is not null or undefined
-     if (!memberId) {
-       aResp.status(401);
-       aResp.render("Misc/401");
-       return;
-     }
-     const [favRows] = await Conn.wExecPrep(
-       `SELECT IDProduct
+    const memberId = aResp.locals.CredImperUser.IDMemb;
+    if (!memberId) {
+      aResp.status(401);
+      aResp.render("Misc/401");
+      return;
+    }
+    const [favRows] = await Conn.wExecPrep(
+      `SELECT IDProduct
           FROM IMembFavorites
          WHERE IDMemb = :IDMemb`,
-       { IDMemb: memberId }
-     );
-     const favSet = new Set(favRows.map(r => r.IDProduct));
-     // annotate each product
-     oProducts.forEach(p => {
+      { IDMemb: memberId },
+    );
+    const favSet = new Set(favRows.map(r => r.IDProduct));
+    oProducts.forEach(p => {
       p.IsFavorited = favSet.has(p.IDProduct);
     });
-   }
+  }
 
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.Title = `${CoopParams.CoopNameShort} product search`;
@@ -81,7 +73,6 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.PathPageNext = PathPage(oDataPage.IdxPageNext);
   aResp.locals.CkPaging = aResp.locals.PathPagePrev || aResp.locals.PathPageNext;
   aResp.locals.MatchingAttrs = await findMatchingAttrs(aReq.query, aResp.locals.AttrsProduct);
-  //console.log("Sumit ------------- matching attrs", aResp.locals.CredUser);
   aResp.render("Shop/product-search");
 }
 
@@ -112,7 +103,7 @@ async function wSummsParam(aParams) {
   const oSumms = [];
 
   if (aParams.favorites) {
-      oSumms.push({ Lbl: "Favorites" });
+    oSumms.push({ Lbl: "Favorites" });
   }
 
   if (aParams.Terms)
