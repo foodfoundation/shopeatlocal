@@ -30,6 +30,9 @@ WHERE NOT EXISTS (SELECT CdLoc FROM `Loc` WHERE CdLoc = 'CENTRAL');
 TRUNCATE TABLE IMembFavorates;
 
 INSERT into IMembFavorates ( IDMemb, IDProduct, FavoritedAt)
+SELECT 1, IDProduct , NOW() 
+from Product;
+INSERT into IMembFavorates ( IDMemb, IDProduct, FavoritedAt)
 SELECT 5930, IDProduct , NOW() 
 from Product;
 INSERT into IMembFavorates ( IDMemb, IDProduct, FavoritedAt)
