@@ -27,6 +27,20 @@ SELECT 'CENTRAL', 'Dummy Location', 'Central', 'Dummy Address', 'Change Me', 1, 
 FROM dual
 WHERE NOT EXISTS (SELECT CdLoc FROM `Loc` WHERE CdLoc = 'CENTRAL');
 
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
+SELECT 1, IDProduct , NOW()
+from Product;
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
+SELECT 5930, IDProduct , NOW()
+from Product;
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
+SELECT 5941, IDProduct , NOW()
+from Product;
+INSERT into IMembFavorites ( IDMemb, IDProduct, FavoritedAt)
+SELECT 5943, IDProduct , NOW()
+from Product;
+
+
 INSERT INTO `Memb` (`NameLogin`,`HashPass`,`CdRegMemb`,`CdRegEBT`,`CdRegVolun`,`CdStaff`,`CdLocLast`,`Name1First`,`Name1Last`,`Addr1`,`City`,`St`,`Zip`,`CkAllowMail`,`Phone1`,`Email1`,`CkAllowEmail1RemindShop`,`CkAllowEmail1News`,`CkAllowEmail2RemindShop`,`CkAllowEmail2News`,`HowHear`,`DtlHowHear`,`WhenReg`)
 SELECT 'admin','$2a$10$JeeTocTA5UtE5.QsnXLxk.zAiJqBniyU4SYgdUQYSyIKkm7pqzPhC','Approv','Avail','Avail','StaffSuper','CENTRAL','Admin','User','Yes Street','Aux','AK','12341',1,'5555559999','admin@example.com',1,1,1,1,'Flyer','admin','2024-02-27 10:20:23'
 FROM dual

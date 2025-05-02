@@ -6,6 +6,7 @@ import { PathQuery, NamesParamProduct, wProducts, DataPage } from "../../Search.
 import { CoopParams, Cats, Subcats } from "../../Site.js";
 import { ArrayFromCds, CdsAttrProduct, wProducerFromID } from "../../Db.js";
 import { CtProductPage } from "../../../Cfg.js";
+import { Conn } from "../../Db.js";
 import _ from "lodash";
 
 export async function wHandGet(aReq, aResp) {
@@ -15,6 +16,16 @@ export async function wHandGet(aReq, aResp) {
     return aIdxPage === undefined
       ? undefined
       : PathQuery("/product-search", aReq.query, NamesParamProduct, aIdxPage);
+  }
+
+  if (aReq.query.favorites) {
+    if (aReq.user) {
+      aReq.query.IDMemb = aResp.locals.CredImperUser.IDMemb;
+    } else {
+      aResp.status(401);
+      aResp.render("Misc/401");
+      return;
+    }
   }
 
   // Don't allow anyone to view another user's purchase history:
@@ -29,8 +40,27 @@ export async function wHandGet(aReq, aResp) {
 
   const oIsMembEbtEligable = aResp.locals.CredUser?.CdRegEBT === "Approv";
 
-  const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable); //aReq.query includes terms if a term was searched
+  const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable);
   const oDataPage = DataPage(aReq.query, oCt, CtProductPage);
+  // if we know who the user is, pull their favorites and tag each product
+  if (aReq.user) {
+    const memberId = aResp.locals.CredImperUser.IDMemb;
+    if (!memberId) {
+      aResp.status(401);
+      aResp.render("Misc/401");
+      return;
+    }
+    const [favRows] = await Conn.wExecPrep(
+      `SELECT IDProduct
+          FROM IMembFavorites
+         WHERE IDMemb = :IDMemb`,
+      { IDMemb: memberId },
+    );
+    const favSet = new Set(favRows.map(r => r.IDProduct));
+    oProducts.forEach(p => {
+      p.IsFavorited = favSet.has(p.IDProduct);
+    });
+  }
 
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.Title = `${CoopParams.CoopNameShort} product search`;
@@ -71,6 +101,10 @@ async function wSummsParam(aParams) {
   if (oCkNew) return [{ Lbl: "New products" }];
 
   const oSumms = [];
+
+  if (aParams.favorites) {
+    oSumms.push({ Lbl: "Favorites" });
+  }
 
   if (aParams.Terms)
     oSumms.push({

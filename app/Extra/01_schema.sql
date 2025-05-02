@@ -857,6 +857,16 @@ CREATE TABLE IF NOT EXISTS `WgtLblOrdWeb` (
   CONSTRAINT `kWgtLblOrdWeb-IDVty` FOREIGN KEY (`IDVty`) REFERENCES `Vty` (`IDVty`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- Create Table to Store the Member Favorites
+CREATE TABLE IF NOT EXISTS IMembFavorites (
+    IDMemb INT NOT NULL,
+    IDProduct INT NOT NULL,
+    FavoritedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY unique_favorite (IDMemb, IDProduct),
+    FOREIGN KEY (IDMemb) REFERENCES Memb(IDMemb),
+    FOREIGN KEY (IDProduct) REFERENCES Product(IDProduct)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- End of the Table Creation for Member Favorites
 
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='REAL_AS_FLOAT,PIPES_AS_CONCAT,ANSI_QUOTES,IGNORE_SPACE,ONLY_FULL_GROUP_BY,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
@@ -942,6 +952,31 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS ToggleFavorite;
+
+CREATE PROCEDURE ToggleFavorite (
+    IN pIDMemb INT,
+    IN pIDProduct INT
+)
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM IMembFavorites
+        WHERE IDMemb = pIDMemb AND IDProduct = pIDProduct
+    ) THEN
+        DELETE FROM IMembFavorites
+        WHERE IDMemb = pIDMemb AND IDProduct = pIDProduct;
+    ELSE
+        INSERT INTO IMembFavorites (IDMemb, IDProduct)
+        VALUES (pIDMemb, pIDProduct);
+    END IF;
+END $$
+
+DELIMITER ;
+
+
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
