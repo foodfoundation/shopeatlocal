@@ -26,6 +26,8 @@ spec:
       labels:
         app: mysql
     spec:
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
       initContainers:
         - name: init
           image: migrations-image
