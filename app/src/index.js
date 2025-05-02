@@ -540,7 +540,16 @@ import {
   HandPost as productSearchPost,
 } from "./Page/Shop/product-search.js";
 
-App.route("/product-search").all(WaresPostRoute).get(productSearchGet).post(productSearchPost);
+App.route("/product-search")
+  .all(WaresPostRoute)
+  .get((req, res, next) => {
+    if (req.query.favorites) {
+      return WareCkUser(req, res, next);
+    }
+    next();
+  })
+  .get(productSearchGet)
+  .post(productSearchPost);
 
 import { wHandGet as productGet } from "./Page/Shop/product.js";
 
