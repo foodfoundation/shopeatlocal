@@ -113,7 +113,7 @@ export const LenNameFileStoreDoc = 12;
 //
 
 // Storage configuration: possible values are "disk" or "S3"
-export const StorageType = "S3";
+export const StorageType = "disk";
 
 // S3 configuration
 export const S3Region = "us-east-1"; // Make sure the region matches the bucket's region, all buckets must be in the same region
