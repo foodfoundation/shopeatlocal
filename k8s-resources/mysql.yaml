@@ -60,8 +60,9 @@ spec:
               name: dump
       volumes:
         - name: mysql-persistent-storage
-          persistentVolumeClaim:
-            claimName: mysql-pv-claim
+          emptyDir: {}
+#          persistentVolumeClaim:
+#            claimName: mysql-pv-claim
         - name: dump
           emptyDir: {}
 ---
