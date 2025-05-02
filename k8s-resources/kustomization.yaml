@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dsmhack-2025-cultivate
+resources:
+  - deployment.yaml
+  - ingress.yaml
+images:
+  - name: "app-image"
+    newName: "ghcr.io/dsmhack/shopeatlocal:latest"
+    newTag: "initial"
