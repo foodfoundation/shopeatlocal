@@ -61,7 +61,7 @@ async function wVtys(aIDProduct) {
   return oRows;
 }
 
-async function wImages(aIDProduct) {
+export async function wImages(aIDProduct) {
   const oSQL = `
     SELECT FileName
       FROM ProductImage
