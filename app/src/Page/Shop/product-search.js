@@ -86,6 +86,10 @@ async function wSummsParam(aParams) {
 
   const oSumms = [];
 
+  if (aParams.favorites) {
+      oSumms.push({ Lbl: "Favorites" });
+  }
+
   if (aParams.Terms)
     oSumms.push({
       Lbl: "Terms",
