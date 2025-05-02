@@ -592,6 +592,7 @@ export const NamesParamProduct = [
   "IDSubcat",
   "IDProducer",
   "CkPast",
+  "favorites",
   ...NamesParamAttrProduct(),
 ];
 
@@ -875,6 +876,27 @@ function QrysProductProducer(aParams) {
   return [oSQLCt, oSQLSel, oParamsEx];
 }
 
+/** Starred favorites for this member */
+function QrysProductFavorites(aParams) {
+  const oSQLScore = oSQLScoreDef;
+  // only return products that this member has starred:
+  const oSQLJoin  = `
+    JOIN FavoriteProduct f
+      ON f.IDProduct = Product.IDProduct
+     AND f.IDMemb    = :IDMemb
+  `;
+  const oSQLWhere = `f.IDMemb = :IDMemb`;
+
+  const oSQLSel = SQLSelProducts(oSQLScore, oSQLJoin, oSQLWhere);
+  const oSQLCt  = SQLCtProducts(oSQLJoin, oSQLWhere);
+
+  return [
+    oSQLCt,
+    oSQLSel,
+    { IDMemb: aParams.IDMemb },  // bind their member ID
+  ];
+}
+
 function QrysProductPast(aParams) {
   // The cycle ID provides an easy way to favor recent orders:
   const oSQLScore = `SUM(Cart.IDCyc * IF((Vty.QtyOffer > IFNULL(zItCartProduct.QtyProm, 0)), 1, 0.5))`;
@@ -958,6 +980,7 @@ export async function wProducts(aParams, aIsMembEbtEligible) {
       [oSQLCt, oSQLSel, oParamsEx] = QrysProductAttr(aParams);
     }
   } else if (aParams.CkPast) [oSQLCt, oSQLSel, oParamsEx] = QrysProductPast(aParams);
+  else if (aParams.favorites) [oSQLCt, oSQLSel, oParamsEx] = QrysProductFavorites(aParams);
   else {
     if (hasTerms) {
       [oSQLCt, oSQLSel, oParamsEx] = QrysProductTerms(aParams);
