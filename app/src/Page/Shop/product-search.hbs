@@ -7,27 +7,48 @@
 		/*background: linear-gradient(120deg, hsla(66, 30%, 80%, 0.5),
 			hsla(66, 30%, 80%, 0) 70.71%);*/
 	}
+  .product-thumb {
+    position: relative;          /* establish a positioning context */
+  }
+  .favorite-icon {
+    position: absolute;
+    top: 8px;                    /* tweak to taste */
+    right: 8px;                  /* tweak to taste */
+    width: 24px;                 /* or whatever size you like */
+    height: 24px;
+    /* pointer-events: none;        /* so clicks go “through” */
+	pointer-events: auto;
+    cursor: pointer;
+  }
 </style>
-
 <div class="container py-4">
 	<form class="form-inline px-1 mb-2" action="/product-search" method="POST"
 		onsubmit="Disab_Form()">
 		<div>
-			<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList()">
-				<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
+			<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick"
+				style="background-color: #036667; border:1px solid #036667; margin:1px;"
+				onclick="showProdList()">
 				Production Type
 			</div>
-			<div id="production-list" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667;  position:absolute; display:none; background-color: #036667; z-index:9999;">
+			<div id="production-list" class="production-list-noclick"
+				style="text-align:left; padding-left: 15px; width:280px;
+				       border:1px solid #036667; position:absolute;
+				       display:none; background-color: #036667; z-index:9999;">
 				{{#each AttrsProduct}}						
-					<input class="production-list-noclick" id="Ck{{Cd}}" name="Ck{{Cd}}" type="checkbox" >
-					<label class="production-list-noclick" style="color: #fff; display:inline-block; margin-bottom: 0.5rem;" for="Ck{{Cd}}" >
+					<input class="production-list-noclick" id="Ck{{Cd}}"
+					       name="Ck{{Cd}}" type="checkbox">
+					<label class="production-list-noclick"
+					       style="color: #fff; display:inline-block; margin-bottom: .5rem;"
+					       for="Ck{{Cd}}">
 						{{Text}}
 					</label>
 					<br class="production-list-noclick">
 				{{/each}}
 				{{#if CoopParams.isProductTypesPageDefined}}
-				<div style="width: 100%; text-align:center; padding-right: 15px; margin-bottom:10px;">
-					<a id="production-info-link" href="/production-types" target="_blank"><b>Production Type Info</b></a>
+				<div style="width:100%; text-align:center; padding-right:15px; margin-bottom:10px;">
+					<a id="production-info-link" href="/production-types" target="_blank">
+						<b>Production Type Info</b>
+					</a>
 				</div>
 				{{/if}}
 			</div>
@@ -36,7 +57,7 @@
 		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
 
 		<input id="Terms" name="Terms" type="text" value="{{Terms}}" autofocus
-			class="form-control flex-grow-1 mr-sm-2" style="margin-left: 0.5rem;">
+		       class="form-control flex-grow-1 mr-sm-2" style="margin-left:.5rem;">
 
 		{{!-- I added this container because sometimes the buttons wrap awkwardly on
 		//    my old Android phone, with the Search button on the top line, and the
@@ -50,9 +71,10 @@
 		//    seem to fix that without breaking the vertical spacing on the desktop,
 		//    which does put space between the edit and the buttons when it wraps: --}}
 		<div class="d-flex">
-			<button type="submit"  class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577;">
+			<button type="submit" class="btn btn-primary mt-2 mt-sm-0"
+			        style="background-color:#737577; border:1px solid #737577;">
 				<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20"
-					class="IconBtn" style="position: relative; top: -2px">
+				     class="IconBtn" style="position: relative; top:-2px">
 				Search
 			</button>
 
@@ -72,8 +94,8 @@
 		{{#if SummsParam}}
 		<div class="lead">
 			{{#each SummsParam}}
-			{{this.Lbl}}{{#if this.Val}}:
-			<strong>{{this.Val}}</strong>{{/if}}{{#unless @last}}, {{/unless}}
+				{{this.Lbl}}{{#if this.Val}}:
+				<strong>{{this.Val}}</strong>{{/if}}{{#unless @last}}, {{/unless}}
 			{{/each}}
 		</div>
 		{{/if}}
@@ -82,7 +104,34 @@
 		</p>
 	</div>
 
-	{{>Shop/pGridSearchProduct}}
+	{{!--
+	  Wrap each product tile in .product-thumb and overlay the carrot icon.
+	  You need to update Shop/pGridSearchProduct.hbs accordingly, for example:
+	--}}
+	{{!-- BEGIN inline override of grid partial --}}
+	<div class="row">
+	  {{#each Products}}
+	  <div class="col-6 col-md-4 col-lg-3 mb-4 product" data-product-id="{{Id}}">
+	    <div class="card">
+	      <div class="product-thumb">
+	        <img src="{{ImageUrl}}" alt="{{Name}}" class="card-img-top">
+	        {{#if IsFavorited}}
+	          <img src="{{hPrefixStatic 'logo-carrot.svg'}}"
+	               alt="Favorited" class="favorite-icon">
+	        {{else}}
+	          <img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}"
+	               alt="Not favorited" class="favorite-icon">
+	        {{/if}}
+	      </div>
+	      <div class="card-body">
+	        <h5 class="card-title">{{Name}}</h5>
+	        <!-- etc. -->
+	      </div>
+	    </div>
+	  </div>
+	  {{/each}}
+	</div>
+	{{!-- END inline override --}}
 
 	<div class="d-flex flex-row mt-3 pl-1">
 		{{#if CkPaging}}
@@ -113,4 +162,31 @@
 			$("#production-list").hide();               
 		}
 	}); 
+$(document).ready(function(){
+  $('.product').on('click', '.favorite-icon', function(e){
+    e.preventDefault();
+    const $icon     = $(this);
+    const $product  = $icon.closest('.product');
+    const productId = $product.data('product-id');
+
+    // Optimistically toggle UI (optional)
+    const wasFav = $icon.attr('src').includes('logo-carrot.svg');
+    const newSrc = wasFav
+      ? "{{hPrefixStatic 'logo-carrot-negative.svg'}}"
+      : "{{hPrefixStatic 'logo-carrot.svg'}}";
+    $icon.attr('src', newSrc);
+
+    // Send to server
+    $.post('/toggle-favorite', { id: productId })
+      .fail(function(){
+        // on error, revert icon
+        const revertSrc = wasFav
+          ? "{{hPrefixStatic 'logo-carrot.svg'}}"
+          : "{{hPrefixStatic 'logo-carrot-negative.svg'}}";
+        $icon.attr('src', revertSrc);
+        alert('Couldn’t update favorites. Please try again.');
+      });
+  });
+});
 </script>
+
