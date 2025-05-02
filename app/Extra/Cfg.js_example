@@ -22,11 +22,11 @@ export const URLBase = "http://localhost:" + PortServ;
 export const Db = {
   // These names match those used by 'node-mysql' and 'node-mysql2'.
 
-  host: "{db-host}",
-  port: 0,
-  user: "{db-username}",
+  host: "localhost",
+  port: 3306,
+  user: "myuser",
   /** The MySQL 'legacy-encrypted' password. */
-  password: "{db-password}",
+  password: "mypassword",
   database: "shopeatlocal",
 };
 
@@ -113,7 +113,7 @@ export const LenNameFileStoreDoc = 12;
 //
 
 // Storage configuration: possible values are "disk" or "S3"
-export const StorageType = "S3";
+export const StorageType = "disk";
 
 // S3 configuration
 export const S3Region = "us-east-1"; // Make sure the region matches the bucket's region, all buckets must be in the same region
@@ -150,3 +150,18 @@ export const DocumentStoragePrefix =
 // Only makes sense if StorageType is "disk"
 // Not recommended for production - use a CDN or Nginx instead
 export const UseExpressStatic = false;
+
+export const Sanity = {
+  projectId: 'amntz8dl',
+  dataset: 'production',
+  baseUrl: 'https://your-domain.sanity.studio',
+  apiVersion: '2021-10-21',
+  useCdn: false,
+};
+
+export const S3DocumentBucketAccessKeyId = "";
+export const S3DocumentBucketSecretAccessKey = "";
+export const S3PublicBucketAccessKeyId = "";
+export const S3PublicBucketSecretAccessKey = "";
+
+

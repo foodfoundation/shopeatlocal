@@ -904,6 +904,8 @@ CREATE TABLE FeeCoopVty(
     `FracFeeCoopWholesaleMemb` decimal(3,2) NOT NULL
 );
 
+DELIMITER //
+
 DROP PROCEDURE ItsCartFromIDCart;
 CREATE PROCEDURE `ItsCartFromIDCart`(
 	IN `aIDCart` INT
@@ -937,7 +939,9 @@ BEGIN
 	ORDER BY Producer.NameBus, Producer.IDProducer, 
 		Product.NameProduct, Product.IDProduct,
 		Vty.Kind, Vty.Size, Vty.WgtMin, Vty.WgtMax, Vty.IDVty;
-END
+END //
+
+DELIMITER ;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
