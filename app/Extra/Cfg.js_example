@@ -150,3 +150,17 @@ export const DocumentStoragePrefix =
 // Only makes sense if StorageType is "disk"
 // Not recommended for production - use a CDN or Nginx instead
 export const UseExpressStatic = false;
+
+export const Sanity = {
+  projectId: 'your-project-id',
+  dataset: 'your-dataset-name', // 'production' by default
+  baseUrl: 'https://your-domain.sanity.studio',
+  apiVersion: '2021-10-21',
+  useCdn: false,
+};
+export const S3DocumentBucketAccessKeyId = "";
+export const S3DocumentBucketSecretAccessKey = "";
+export const S3PublicBucketAccessKeyId = "";
+export const S3PublicBucketSecretAccessKey = "";
+
+
