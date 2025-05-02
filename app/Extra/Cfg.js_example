@@ -152,12 +152,13 @@ export const DocumentStoragePrefix =
 export const UseExpressStatic = false;
 
 export const Sanity = {
-  projectId: 'your-project-id',
-  dataset: 'your-dataset-name', // 'production' by default
+  projectId: 'tu4u407a',
+  dataset: 'production', // 'production' by default
   baseUrl: 'https://your-domain.sanity.studio',
   apiVersion: '2021-10-21',
   useCdn: false,
 };
+
 export const S3DocumentBucketAccessKeyId = "";
 export const S3DocumentBucketSecretAccessKey = "";
 export const S3PublicBucketAccessKeyId = "";

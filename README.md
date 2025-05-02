@@ -16,6 +16,13 @@
 
 If you're a developer and want to take part in developing `shopeatlocal`, please head on to our [wiki](https://github.com/foodfoundation/shopeatlocal/wiki) and educate there on how you can get started.
 
+## Local development
+
+1. `cd app` and `docker compose up -D`
+2. `cp app/Extra/Cfg.js_example app/Cfg.js`
+2. `npm install`
+3. `npm run dev`
+
 ## Security
 
 If you find a security vulnerability in the codebase, we would like to kindly ask you not to open a public issue, but reach out to us at [shopeatlocal.security@neonjelly.co](mailto:shopeatlocal.security@neonjelly.co).

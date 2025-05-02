@@ -1,6 +1,6 @@
 -- Fixtures for setting up the initial state of the DB
 
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '';
 
 INSERT INTO `Site` (`z`, `CtMonthTrialMembNew`, `FeeMembInit`, `FeeMembRenew`, `FeeInvtIt`, `FracFeeCoopProducer`, `FracFeeCoopShop`, `FeeTransfer`, `FeeDelivBase`, `FeeDelivMile`, `FracTaxSale`)
 SELECT 1, 1, 10.0000, 10.0000, 10.0000, 0.1, 0.1, 10.0000, 10.0000, 10.0000, 0.1

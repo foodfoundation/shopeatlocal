@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:9
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -11,5 +11,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./Extra:/docker-entrypoint-initdb.d
 volumes:
   db_data:
