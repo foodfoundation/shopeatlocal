@@ -3,7 +3,7 @@
 // Edit Product controllers
 
 import _ from "lodash";
-import { wExec, CkFail, Retry, wUpdOne } from "../../Form.js";
+import { wExec, CkFail, Retry, wUpdOne, wUpdOneMultipleWhere } from "../../Form.js";
 import { wSubcatsProducer, ArrayFromCds, CdsAttrProduct } from "../../Db.js";
 import { Add_Props, PageAfterEditProduct } from "../../Util.js";
 import { CoopParams } from "../../Site.js";
@@ -131,6 +131,15 @@ export async function wHandPost(aReq, aResp) {
 
   const oIDProduct = aResp.locals.ProductSel.IDProduct;
   await wUpdOne("Product", "IDProduct", oIDProduct, oFlds, oParamsEx);
+  const where = {
+    IDProduct: oIDProduct,
+    DisplayOrder: 0,
+  };
+  const set = {
+    FileName: oNameImg,
+  };
+
+  await wUpdOneMultipleWhere("ProductImage", where, set);
 
   // Returns to previous page
   // ------------------------

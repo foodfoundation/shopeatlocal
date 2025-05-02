@@ -1128,6 +1128,39 @@ export async function wUpdOne(aNameTbl, aNameWhere, aValWhere, aFlds, aParamsEx,
   if (oCt > 1) throw Error("Form wUpdOne: Updated too many records");
 }
 
+/** Uses form data to update records in the specified table. aNameWhere gives
+ *  the name of the field in the WHERE clause, and aValWhere gives its value.
+ *  aParamsEx defines additional name/value pairs to be used in the query. If
+ *  database connection aConn is defined, it will be used to perform the query.
+ *  Otherwise the default connection will be used. Returns the number of rows
+ *  affected by the update. */
+async function _wUpdOneMultipleWhere(aNameTbl, where, set, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const fieldsToSet = Object.keys(set)
+    .map(aName => `${aName} = :${aName}`)
+    .join(", ");
+
+  const fieldsToFilter = Object.keys(where)
+    .map(aName => `${aName} = :${aName}`)
+    .join(" AND ");
+
+  let oSQL = `UPDATE ${aNameTbl}
+		SET ${fieldsToSet}
+		WHERE ${fieldsToFilter}`;
+
+  const [oRows] = await aConn.wExecPrep(oSQL, { ...set, ...where });
+  return oRows.affectedRows;
+}
+
+/** Updates the specified table with wUpd, throwing if fewer or more than one
+ *  record was affected. */
+export async function wUpdOneMultipleWhere(aNameTbl, where, set, aConn) {
+  const oCt = await _wUpdOneMultipleWhere(aNameTbl, where, set, aConn);
+  if (oCt < 1) throw Error("Form wUpdOne: Failed to update record");
+  if (oCt > 1) throw Error("Form wUpdOne: Updated too many records");
+}
+
 /** Updates the specified table with wUpd, throwing if fewer than one record was
  *  affected. */
 export async function wUpdSome(aNameTbl, aNameWhere, aValWhere, aFlds, aParamsEx, aConn) {
