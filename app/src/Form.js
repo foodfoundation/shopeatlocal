@@ -1153,6 +1153,24 @@ export async function wInsertProductImage(aProductId, aImageName, aDisplayOrder)
   return oRows.insertId;
 }
 
+export async function wClearProducerImages(aProducerId) {
+  const oSQL = `DELETE FROM ProducerImage WHERE IDProducer = :IDProducer`;
+  const oParams = { IDProducer: aProducerId };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  return oRows.affectedRows;
+}
+
+export async function wInsertProducerImage(aProducerId, aImageName, aDisplayOrder) {
+  const oSQL = `INSERT INTO ProducerImage (IDProducer, FileName, DisplayOrder) VALUES (:IDProducer, :FileName, :DisplayOrder)`;
+  const oParams = {
+    IDProducer: aProducerId,
+    FileName: aImageName,
+    DisplayOrder: aDisplayOrder,
+  };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  return oRows.insertId;
+}
+
 // ---------------------
 // Form-level validation
 // ---------------------
