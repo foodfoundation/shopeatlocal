@@ -12,9 +12,11 @@ function App() {
       // @ts-ignore
       const filterValue= document.querySelector(".filter-container > input")?.value;
       console.log("filterValue", filterValue);
-      const filterData = ReportFilterAndSort(window.ProducerData.data, {filter:filterValue, fields:window.ProducerData.fields});
+      const options={filter:filterValue, fields:window.ProducerData.fields, exactFilters:[], fieldFilters:[], sortFields:[]};
+      console.log("options", options);
+      const filterData = ReportFilterAndSort(window.ProducerData.data, options);
       console.log("filterData", filterData);
-      const csv = json2csv(window.ProducerData.data);
+      const csv = json2csv(filterData);
 
       const blob = new Blob([csv], { type: "text/csv" });
       const url = window.URL.createObjectURL(blob);
@@ -24,7 +26,8 @@ function App() {
       a.click();
     } catch (error) {
       alert("We encountered an error generating your CSV. Please try again later.");
-      console.error("generating_csv_error:", error);
+      console.error("Sumit------generating_csv_error:", error.message);
+      console.error("Sumit---- Stack generating_csv_error:", error.stack);
     }
   };
 
@@ -99,7 +102,7 @@ function ReportFilterAndSort(array, options) {
 			});
 		});
 	}
-
+console.log("records 2 ", records);
 	// Check field filters
 	if (fieldFilters.length > 0) {
 		records = records.filter(record => {
