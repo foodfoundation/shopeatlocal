@@ -1,39 +1,47 @@
 {{#if (gt Images.length 0)}}
     {{#if Modal}}
-    <div id="modalCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+    <div id="modalCarousel{{IDProduct}}" class="carousel slide carousel-fade h-100"
         data-interval="false">
     {{else}}
-    <div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+    <div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade h-100"
         data-interval="false">
     {{/if}}
         <!-- Slides -->
         {{#if SearchGrid}}
         <div class="carousel-inner" data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
         {{#each Images}}
-            <div class="carousel-item {{#if @first}}active{{/if}}">
-                <img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
-                    alt="{{../NameProduct}} image {{add @index 1}}">
+            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}});">
             </div>
             {{/each}}
         </div>
         {{else}}
         <div class="carousel-inner">
             {{#each Images}}
-            <div class="carousel-item {{#if @first}}active{{/if}}">
-                <img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
-                    alt="{{../NameProduct}} image {{add @index 1}}">
+            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}});">
             </div>
             {{/each}}
         </div>
         {{/if}}
-        <a class="carousel-control-prev" role="button" href="#productCarousel{{IDProduct}}" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" role="button" href="#productCarousel{{IDProduct}}"  data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+            {{#if Modal}}
+                    <a class="carousel-control-prev" role="button" href="#modalCarousel{{IDProduct}}" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" role="button" href="#modalCarousel{{IDProduct}}"  data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+            {{else}}
+                    <a class="carousel-control-prev" role="button" href="#productCarousel{{IDProduct}}" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" role="button" href="#productCarousel{{IDProduct}}"  data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+            {{/if}}
+
     </div>
 
     {{else}}
@@ -79,11 +87,12 @@
 		background-color: #000 !important;
 	}
 
-	.carousel-item img {
+	.carousel-item {
 		height: 100%;
 		width: 100%;
 		object-fit: contain;
 		transition: none !important;
+		background-size: cover;
 	}
 
 	.carousel-inner {
