@@ -10,22 +10,22 @@
 	//    not seem to be a way to do that without JavaScript: --}}
 	<div class="col">
 		<div class="CardProduct d-flex flex-column py-3 px-3
-
-			{{hClassCornerBtm @index ../Products}}">
+			{{hClassCornerBtm @index ../Products}}" min-height: "1000px">
 			<div class="Head">
 				<div class="d-flex flex-row justify-content-between
 					align-items-baseline">
 					<a class="Subcat" href="/product-search?IDSubcat={{IDSubcat}}">
 						{{NameSubcat}}
 					</a>
-					{{>Shop/pFavoriteButton ShowButton=../CredUser}}
+
 					{{#if CkNew}}
-						<a class="New" href="/product-search">NEW</a>
+					<a class="New" href="/product-search">NEW</a>
 					{{/if}}
 				</div>
 
 				<div>
-					<a class="Product font-size-120 font-weight-bold" href="/product/{{IDProduct}}">
+					<a class="Product font-size-120 font-weight-bold"
+						href="/product/{{IDProduct}}">
 						{{NameProduct}}
 					</a>
 				</div>
@@ -37,24 +37,14 @@
 				</div>
 			</div>
 
-			<div class="Body flex-grow-1 mt-2 mb-1" data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
-
-				{{#if NameImgProduct}}
-				<div style="background-image: url('{{hPrefixImageWithStorage NameImgProduct}}');"
-					class="Img rounded rounded-lg">
-				</div>
-
-				{{else}}
-
-				<hr class="mx-0 mt-0 mb-2">
-				<div class="Descrip">{{Descrip}}</div>
-				{{/if}}
+			<div class="Body flex-grow-1 mt-2 mb-1">
+{{!-- 			    { shouldModal: True} --}}
+				{{>Product/pImageCarousel SearchGrid=true}}
 			</div>
 
-
-
-
 			<div class="Foot" data-target="#DlgDtlProduct{{IDProduct}}">
+
+
 				{{#unless NameImgProduct}}
 				<hr class="mx-0 mt-0 mb-2">
 				{{/unless}}
@@ -64,11 +54,14 @@
 				</div>
 				{{/if}}
 
-				{{#each Vtys}}
-				<div class="d-flex flex-row justify-content-between" id="CardFooterTblVty{{IDVty}}">
-					{{>Shop/pCardFooterTblVtyShop this}}
+				<div>
+					{{#each Vtys}}
+					<div class="d-flex flex-row justify-content-between">
+						<div>{{hNameVty this}}</div>
+						<div>{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}</div>
+					</div>
+					{{/each}}
 				</div>
-				{{/each}}
 			</div>
 		</div>
 	</div>

@@ -1135,6 +1135,24 @@ export async function wUpdSome(aNameTbl, aNameWhere, aValWhere, aFlds, aParamsEx
   if (oCt < 1) throw Error("Form wUpdSome: Failed to update record");
 }
 
+export async function wClearProductImages(aProductId) {
+  const oSQL = `DELETE FROM ProductImage WHERE IDProduct = :IDProduct`;
+  const oParams = { IDProduct: aProductId };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  return oRows.affectedRows;
+}
+
+export async function wInsertProductImage(aProductId, aImageName, aDisplayOrder) {
+  const oSQL = `INSERT INTO ProductImage (IDProduct, FileName, DisplayOrder) VALUES (:IDProduct, :FileName, :DisplayOrder)`;
+  const oParams = {
+    IDProduct: aProductId,
+    FileName: aImageName,
+    DisplayOrder: aDisplayOrder,
+  };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  return oRows.insertId;
+}
+
 // ---------------------
 // Form-level validation
 // ---------------------

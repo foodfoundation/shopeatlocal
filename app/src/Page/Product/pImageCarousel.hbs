@@ -1,0 +1,99 @@
+{{#if (gt Images.length 0)}}
+    {{#if Modal}}
+    <div id="modalCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+        data-interval="false">
+        <!-- Indicators (dots only) -->
+            <ol class="carousel-indicators mb-0">
+                {{#each Images}}
+                <li data-target="#modalCarousel{{../IDProduct}}"
+                    data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
+                {{/each}}
+            </ol>
+    {{else}}
+    <div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+        data-interval="false">
+        <!-- Indicators (dots only) -->
+            <ol class="carousel-indicators mb-0">
+                {{#each Images}}
+                <li data-target="#productCarousel{{../IDProduct}}"
+                    data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
+                {{/each}}
+            </ol>
+    {{/if}}
+        <!-- Slides -->
+        {{#if SearchGrid}}
+        <div class="carousel-inner" data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
+        {{#each Images}}
+            <div class="carousel-item {{#if @first}}active{{/if}}">
+                <img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
+                    alt="{{../NameProduct}} image {{add @index 1}}">
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
+        <div class="carousel-inner">
+            {{#each Images}}
+            <div class="carousel-item {{#if @first}}active{{/if}}">
+                <img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
+                    alt="{{../NameProduct}} image {{add @index 1}}">
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+    </div>
+
+    {{else}}
+    {{#if GridSearch}}
+    <hr class="mx-0 mt-0 mb-2">
+    	<div class="Descrip">{{Descrip}}</div>
+    {{else}}
+    <div class="col-md-4 mb-3">
+        <p>No images available for this product.</p>
+    </div>
+    {{/if}}
+{{/if}}
+
+<!-- Carousel & image CSS overrides -->
+<style>
+	#productCarousel, #modalCarousel {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.carousel-indicators {
+		position: static;
+		margin: 8px 0 0;
+	}
+
+	.carousel-fade .carousel-item.active {
+		transform: none !important;
+		transition: opacity .5s ease-in-out !important;
+	}
+
+	.carousel-indicators li {
+		width: 12px;
+		height: 12px;
+		margin: 0 6px;
+		background-color: #000 !important;
+		border-radius: 50%;
+		opacity: 0.5;
+	}
+
+	.carousel-indicators .active {
+		opacity: 1;
+		background-color: #000 !important;
+	}
+
+	.carousel-item img {
+		height: 100%;
+		width: 100%;
+		object-fit: contain;
+		transition: none !important;
+	}
+
+	.carousel-inner {
+		width: 100%;
+		height: 100%;
+	}
+</style>

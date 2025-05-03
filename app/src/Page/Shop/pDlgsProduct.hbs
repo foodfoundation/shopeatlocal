@@ -47,15 +47,9 @@
 
 			<div class="modal-body">
 				<div class="row">
-					{{#if (hCkOr NameImgProduct NameImgProducer)}}
-					<div class="h-50 col-lg-4 mb-2 mb-lg-0">
-						<div class="form-group mb-0">
-							<img src="{{hPrefixImageWithStorage (hCkOr NameImgProduct NameImgProducer)}}"
-								alt="Product or producer image"
-								class="w-100 border rounded p-0">
-						</div>
+				    <div class="col-md-4 mb-3">
+				        {{>Product/pImageCarousel Modal=true}}
 					</div>
-					{{/if}}
 
 					<div class="col-md">
 						<div class="text-center">

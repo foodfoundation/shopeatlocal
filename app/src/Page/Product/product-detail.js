@@ -8,6 +8,7 @@
 import { wPopulateIsFavorited, wVtysQtyOrdCycFromIDProduct } from "../../Db.js";
 import { IDCycPrevProducer } from "../../Util.js";
 import { CoopParams } from "../../Site.js";
+import { wImages } from "../Shop/product.js";
 
 export async function wHandGet(aReq, aResp) {
   aResp.locals.Product = { ...aResp.locals.ProductSel };
@@ -21,8 +22,11 @@ export async function wHandGet(aReq, aResp) {
   const oVtys = await wVtysQtyOrdCycFromIDProduct(oIDProduct, oIDCycPrev);
   aResp.locals.Product.Vtys = oVtys;
 
-  if (aResp.locals.CredImperUser?.IDMemb)
-    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, [aResp.locals.Product]);
+  // Fetch all images for this product
+  const oImages = await wImages(oIDProduct);
+
+  const oProduct = { ...aResp.locals.Product, Images: oImages };
+  aResp.locals.Product = oProduct;
 
   aResp.locals.Title = `${CoopParams.CoopNameShort} product detail`;
   aResp.render("Product/product-detail");
