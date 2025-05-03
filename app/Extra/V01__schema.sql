@@ -914,9 +914,9 @@ CREATE TABLE FeeCoopVty(
     `FracFeeCoopWholesaleMemb` decimal(3,2) NOT NULL
 );
 
-DELIMITER //
 
 DROP PROCEDURE ItsCartFromIDCart;
+DELIMITER //
 CREATE PROCEDURE `ItsCartFromIDCart`(
 	IN `aIDCart` INT
 )

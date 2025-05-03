@@ -28,12 +28,6 @@ spec:
     spec:
       imagePullSecrets:
         - name: dockerconfigjson-github-com
-      initContainers:
-        - name: init
-          image: migrations-image
-          volumeMounts:
-            - mountPath: /docker-entrypoint-initdb.d
-              name: dump
       containers:
         - image: mysql:9
           name: mysql
@@ -50,16 +44,18 @@ spec:
                 secretKeyRef:
                   key: username
                   name: mysql-secrets
-            - name: MYSQL_RANDOM_ROOT_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: root-password
+                  name: mysql-secrets
               value: "true"
           ports:
             - containerPort: 3306
               name: mysql
           volumeMounts:
-#            - name: mysql-persistent-storage
-#              mountPath: /var/lib/mysql
-            - mountPath: /docker-entrypoint-initdb.d
-              name: dump
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
           resources:
             limits:
               memory: 1024Mi
@@ -67,6 +63,13 @@ spec:
             requests:
               memory: 512Mi
               cpu: 200m
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 20
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
@@ -85,4 +88,3 @@ spec:
   resources:
     requests:
       storage: 1Gi
- 

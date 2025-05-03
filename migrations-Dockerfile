@@ -1,5 +1,0 @@
-FROM bash
-WORKDIR workspace
-
-COPY app/Extra/*.sql .
-CMD cp --verbose /workspace/* /docker-entrypoint-initdb.d/
