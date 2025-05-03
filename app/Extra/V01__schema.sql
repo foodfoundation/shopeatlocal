@@ -953,9 +953,9 @@ END //
 
 DELIMITER ;
 
-DELIMITER $$
-
 DROP PROCEDURE IF EXISTS ToggleFavorite;
+
+DELIMITER $$
 
 CREATE PROCEDURE ToggleFavorite (
     IN pIDMemb INT,
