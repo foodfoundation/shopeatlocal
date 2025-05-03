@@ -14,6 +14,21 @@ spec:
     spec:
       imagePullSecrets:
         - name: dockerconfigjson-github-com
+      initContainers:
+        - name: init
+          image: migrations-image
+          env:
+            - name: MYSQL_DATABASE
+              value: shopeatlocal
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: root-password
+                  name: mysql-secrets
+            - name: MYSQL_HOST
+              value: shopeatlocal-mysql
       containers:
         - image: app-image
           env:
@@ -42,6 +57,14 @@ spec:
           volumeMounts:
             - name: images-vol
               mountPath: /workspace/app/StoreImg
+          readinessProbe:
+            httpGet:
+              port: 3000
+              path: /
+          livenessProbe:
+            httpGet:
+              port: 3000
+              path: /
       volumes:
         - name: images-vol
           persistentVolumeClaim:
