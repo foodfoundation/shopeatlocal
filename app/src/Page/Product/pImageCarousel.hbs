@@ -22,25 +22,22 @@
             {{/each}}
         </div>
         {{/if}}
-            {{#if Modal}}
-                    <a class="carousel-control-prev" role="button" href="#modalCarousel{{IDProduct}}" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" role="button" href="#modalCarousel{{IDProduct}}"  data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-            {{else}}
-                    <a class="carousel-control-prev" role="button" href="#productCarousel{{IDProduct}}" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" role="button" href="#productCarousel{{IDProduct}}"  data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-            {{/if}}
+        {{#if (gt Images.length 1)}}
+          <a class="carousel-control-prev"
+             role="button"
+             href="#{{#if Modal}}modalCarousel{{else}}productCarousel{{/if}}{{IDProduct}}"
+             data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next"
+             role="button"
+             href="#{{#if Modal}}modalCarousel{{else}}productCarousel{{/if}}{{IDProduct}}"
+             data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        {{/if}}
 
     </div>
 
