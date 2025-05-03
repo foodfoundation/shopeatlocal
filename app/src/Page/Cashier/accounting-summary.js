@@ -42,7 +42,6 @@ export async function wHandGetExport(aReq, aResp) {
 			const oNameFld = "Cyc" + TextIDCyc(oCyc.IDCyc) + " " + TextWhen(oCyc.WhenEndCyc, "Short");
 			// Fmt_RowExcel wouldn't format this, because the field name is actually a
 			// date. Is that a mistake?:
-
 			oLine[oNameFld] = TextCurr(oCyc[aProp]);
 		}
 		oLines.push(oLine);
