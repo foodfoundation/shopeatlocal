@@ -112,7 +112,14 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md mt-3">
+			<div class="col-md mt-3" style="position: relative;">
+				{{#if ../CredUser}}
+					{{#if IsFavorited}}
+						<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Favorited" class="favorite-icon" data-product-id="{{IDProduct}}" data-other-src="{{hPrefixStatic 'logo-carrot-negative.svg'}}">
+					{{else}}
+						<img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}" alt="Not favorited" class="favorite-icon" data-product-id="{{IDProduct}}" data-other-src="{{hPrefixStatic 'logo-carrot.svg'}}">
+					{{/if}}
+				{{/if}}
 				{{#if Vtys}}
 				{{>Product/pTblVtyProducer Vtys}}
 				{{else}}

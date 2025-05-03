@@ -23,6 +23,16 @@ export async function wHandGet(aReq, aResp) {
   if (oProductsRoll.length !== 1) throw Error("product wHandGet: Cannot get product");
 
   const oProduct = { ...oProductsRoll[0], ...oQtysWeb };
+
+  const memberId = aResp.locals.CredImperUser.IDMemb;
+  const [favRows] = await Conn.wExecPrep(
+    `SELECT IDProduct
+        FROM IMembFavorites
+       WHERE IDMemb = :IDMemb AND IDProduct = :IDProduct`,
+    { IDMemb: memberId, IDProduct: oIDProduct },
+  );
+  oProduct.IsFavorited = favRows.length > 0;
+
   aResp.locals.Product = oProduct;
 
   aResp.locals.Title = oProduct.NameProduct + " (" + oProduct.NameBus + ")";
