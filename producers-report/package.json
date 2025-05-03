@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "release:static": "cp -r dist/assets/* ../app/Static/producers-report-assets/",
+    "release:static": "copy -r dist/assets/* ../app/Static/producers-report-assets/",
     "build:release:static": "npm run build && npm run release:static",
     "continually:build:release:static": "nodemon --ignore dist/ --exec npm run build:release:static"
   },
