@@ -48,18 +48,6 @@ spec:
             claimName: images-pvc
 ---
 apiVersion: v1
-kind: Service
-metadata:
-  name: shopeatlocal
-  namespace: dsmhack-2025-cultivate
-spec:
-  ports:
-    - name: server
-      port: 3000
-  selector:
-    app: shopeatlocal
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: images-pvc

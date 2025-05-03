@@ -5,6 +5,7 @@ resources:
   - deployment.yaml
   - ingress.yaml
   - mysql.yaml
+  - service.yaml
 images:
   - name: "app-image"
     newName: "ghcr.io/dsmhack/shopeatlocal:latest"

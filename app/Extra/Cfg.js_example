@@ -13,7 +13,7 @@
 //
 // This file should NOT be added to source control.
 
-export const HostServ = "localhost";
+export const HostServ = "0.0.0.0";
 export const PortServ = 3000;
 
 export const URLBase = "http://localhost:" + PortServ;
