@@ -24,6 +24,7 @@ export async function wHandGet(aReq, aResp) {
   // Debug: verify what images were loaded
   console.log(`�️  Loaded images for producer ${oIDProducer}:`, oImages);
 
+  aResp.locals.Images = oImages;
   if (aResp.locals.CredImperUser?.IDMemb)
     await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, aResp.locals.Products);
 
