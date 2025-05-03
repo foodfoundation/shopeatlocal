@@ -78,13 +78,7 @@
 						{{>Misc/pLinksAttrProduct}}
 					</div>
 
-					{{#if ../CredUser}}
-						{{#if IsFavorited}}
-							<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Favorited" class="favorite-icon" data-product-id="{{IDProduct}}" data-other-src="{{hPrefixStatic 'logo-carrot-negative.svg'}}">
-						{{else}}
-							<img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}" alt="Not favorited" class="favorite-icon" data-product-id="{{IDProduct}}" data-other-src="{{hPrefixStatic 'logo-carrot.svg'}}">
-						{{/if}}
-					{{/if}}
+					{{>Shop/pFavoriteButton ShowButton=../CredUser}}
 
 					<div class="my-3">
 						{{#if Vtys}}
