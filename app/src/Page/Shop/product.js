@@ -3,7 +3,7 @@
 // Product page controllers
 
 import { ProductsVtysRoll } from "../../Search.js";
-import { Conn } from "../../Db.js";
+import { Conn, wPopulateIsFavorited } from "../../Db.js";
 
 export async function wHandGet(aReq, aResp) {
   const oIDProduct = aResp.locals.ProductSel.IDProduct;
@@ -24,16 +24,8 @@ export async function wHandGet(aReq, aResp) {
 
   const oProduct = { ...oProductsRoll[0], ...oQtysWeb };
 
-  const memberId = aResp.locals.CredImperUser?.IDMemb;
-  if (memberId) {
-    const [favRows] = await Conn.wExecPrep(
-      `SELECT IDProduct
-        FROM IMembFavorites
-       WHERE IDMemb = :IDMemb AND IDProduct = :IDProduct`,
-      { IDMemb: memberId, IDProduct: oIDProduct },
-    );
-    oProduct.IsFavorited = favRows.length > 0;
-  }
+  if (aResp.locals.CredImperUser?.IDMemb)
+    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, [oProduct]);
 
   aResp.locals.Product = oProduct;
 

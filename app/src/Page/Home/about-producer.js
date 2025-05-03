@@ -3,7 +3,7 @@
 // About Producer page controllers
 
 import { ProductsVtysRoll } from "../../Search.js";
-import { wProducerFromID, Conn } from "../../Db.js";
+import { wProducerFromID, Conn, wPopulateIsFavorited } from "../../Db.js";
 
 export async function wHandGet(aReq, aResp) {
   const oIDProducer = aReq.params.IDProducerView;
@@ -18,19 +18,8 @@ export async function wHandGet(aReq, aResp) {
   const oIsMembEbtEligable = aResp.locals.CredUser?.CdRegEBT === "Approv";
   aResp.locals.Products = await wProducts(oIDProducer, oIsMembEbtEligable);
 
-  const memberId = aResp.locals.CredImperUser?.IDMemb;
-  if (memberId) {
-    const [favRows] = await Conn.wExecPrep(
-      `SELECT IDProduct
-		FROM IMembFavorites
-	   WHERE IDMemb = :IDMemb`,
-      { IDMemb: memberId },
-    );
-    const favSet = new Set(favRows.map(r => r.IDProduct));
-    aResp.locals.Products.forEach(p => {
-      p.IsFavorited = favSet.has(p.IDProduct);
-    });
-  }
+  if (aResp.locals.CredImperUser?.IDMemb)
+    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, aResp.locals.Products);
 
   aResp.locals.Title = "About " + oProducer.NameBus;
   aResp.render("Home/about-producer");
