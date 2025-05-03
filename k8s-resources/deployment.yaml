@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  namespace: dsmhack-2025-cultivate
+spec:
+  selector:
+    matchLabels:
+      app: shopeatlocal
+  template:
+    metadata:
+      labels:
+        app: shopeatlocal
+    spec:
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+      containers:
+        - image: app-image
+          env:
+            - name: MYSQL_HOST
+              value: shopeatlocal-mysql
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mysql-secrets
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: mysql-secrets
+          name: shopeatlocal
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 500m
+            requests:
+              memory: 32Mi
+              cpu: 10m
+          volumeMounts:
+            - name: images-vol
+              mountPath: /workspace/app/StoreImg
+      volumes:
+        - name: images-vol
+          persistentVolumeClaim:
+            claimName: images-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: images-pvc
+  namespace: dsmhack-2025-cultivate
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

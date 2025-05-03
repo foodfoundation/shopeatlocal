@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: public
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: dsmhack-2025-cultivate-ingress
+  namespace: dsmhack-2025-cultivate
+spec:
+  tls:
+    - hosts:
+        - cultivate.2025.dsmhack.pessimistic-it.com
+      secretName: cultivate-2025-dsmhack-pessimistic-tls
+  rules:
+    - host: cultivate.2025.dsmhack.pessimistic-it.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: shopeatlocal
+                port:
+                  number: 3000
+            pathType: Prefix
+            path: /
