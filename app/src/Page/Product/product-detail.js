@@ -22,14 +22,16 @@ export async function wHandGet(aReq, aResp) {
   const oVtys = await wVtysQtyOrdCycFromIDProduct(oIDProduct, oIDCycPrev);
   aResp.locals.Product.Vtys = oVtys;
 
-  const memberId = aResp.locals.CredImperUser.IDMemb;
-  const [favRows] = await Conn.wExecPrep(
-    `SELECT IDProduct
+  const memberId = aResp.locals.CredImperUser?.IDMemb;
+  if (memberId) {
+    const [favRows] = await Conn.wExecPrep(
+      `SELECT IDProduct
         FROM IMembFavorites
         WHERE IDMemb = :IDMemb AND IDProduct = :IDProduct`,
-    { IDMemb: memberId, IDProduct: oIDProduct },
-  );
-  aResp.locals.Product.IsFavorited = favRows.length > 0;
+      { IDMemb: memberId, IDProduct: oIDProduct },
+    );
+    aResp.locals.Product.IsFavorited = favRows.length > 0;
+  }
 
   aResp.locals.Title = `${CoopParams.CoopNameShort} product detail`;
   aResp.render("Product/product-detail");

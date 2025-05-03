@@ -43,13 +43,8 @@ export async function wHandGet(aReq, aResp) {
   const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable);
   const oDataPage = DataPage(aReq.query, oCt, CtProductPage);
   // if we know who the user is, pull their favorites and tag each product
-  if (aReq.user) {
-    const memberId = aResp.locals.CredImperUser.IDMemb;
-    if (!memberId) {
-      aResp.status(401);
-      aResp.render("Misc/401");
-      return;
-    }
+  const memberId = aResp.locals.CredImperUser?.IDMemb;
+  if (memberId) {
     const [favRows] = await Conn.wExecPrep(
       `SELECT IDProduct
           FROM IMembFavorites
