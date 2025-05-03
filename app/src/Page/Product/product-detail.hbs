@@ -112,7 +112,8 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md mt-3">
+			<div class="col-md mt-3 position-relative">
+				{{>Shop/pFavoriteButton ShowButton=../CredUser}}
 				{{#if Vtys}}
 				{{>Product/pTblVtyProducer Vtys}}
 				{{else}}

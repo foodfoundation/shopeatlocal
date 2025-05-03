@@ -321,6 +321,33 @@ function Disab_Form() {
   $("a.btn").addClass("disabled");
 }
 
+$(document).ready(function(){
+  $('.favorite-icon').on('click', async function(e){
+    e.preventDefault();
+    const $icon     = $(this);
+    const productId = $icon.data('product-id');
+
+    const temp = $icon.attr('src');
+    $icon.attr('src', $icon.data('other-src'));
+    $icon.data('other-src', temp);
+
+    const oDataReq = { productId };
+
+    const oOptsFetch = {
+      ...OptsFetchCSRF(),
+      method: "POST",
+      body: JSON.stringify(oDataReq),
+    };
+    const oResp = await fetch("/toggle-favorite", oOptsFetch);
+    if (!oResp.ok) {
+      const temp = $icon.attr('src');
+      $icon.attr('src', $icon.data('other-src'));
+      $icon.data('other-src', temp);
+    }
+  });
+});
+
+
 // Cart functionality
 // ------------------
 

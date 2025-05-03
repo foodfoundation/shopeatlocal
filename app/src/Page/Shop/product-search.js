@@ -4,9 +4,8 @@
 
 import { PathQuery, NamesParamProduct, wProducts, DataPage } from "../../Search.js";
 import { CoopParams, Cats, Subcats } from "../../Site.js";
-import { ArrayFromCds, CdsAttrProduct, wProducerFromID } from "../../Db.js";
+import { ArrayFromCds, CdsAttrProduct, wPopulateIsFavorited, wProducerFromID } from "../../Db.js";
 import { CtProductPage } from "../../../Cfg.js";
-import { Conn } from "../../Db.js";
 import _ from "lodash";
 
 export async function wHandGet(aReq, aResp) {
@@ -42,30 +41,14 @@ export async function wHandGet(aReq, aResp) {
 
   const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable);
   const oDataPage = DataPage(aReq.query, oCt, CtProductPage);
+
   // if we know who the user is, pull their favorites and tag each product
-  if (aReq.user) {
-    const memberId = aResp.locals.CredImperUser.IDMemb;
-    if (!memberId) {
-      aResp.status(401);
-      aResp.render("Misc/401");
-      return;
-    }
-    const [favRows] = await Conn.wExecPrep(
-      `SELECT IDProduct
-          FROM IMembFavorites
-         WHERE IDMemb = :IDMemb`,
-      { IDMemb: memberId },
-    );
-    const favSet = new Set(favRows.map(r => r.IDProduct));
-    oProducts.forEach(p => {
-      p.IsFavorited = favSet.has(p.IDProduct);
-    });
-  }
+  if (aResp.locals.CredImperUser?.IDMemb)
+    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, oProducts);
 
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.Title = `${CoopParams.CoopNameShort} product search`;
   aResp.locals.SummsParam = await wSummsParam(aReq.query);
-  console.log(aResp.locals.SummsParam);
   aResp.locals.Terms = aReq.query.Terms || "";
   aResp.locals.Products = oProducts;
   aResp.locals.TextRg = oDataPage.Text;

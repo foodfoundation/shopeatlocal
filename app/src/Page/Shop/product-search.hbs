@@ -7,17 +7,6 @@
 		/*background: linear-gradient(120deg, hsla(66, 30%, 80%, 0.5),
 			hsla(66, 30%, 80%, 0) 70.71%);*/
 	}
-	.product-thumb {
-		position: relative;
-	}
-	.favorite-icon {
-		position: absolute;
-		top: 16px;
-		right: 8px;
-		width: 24px;
-		height: 24px;
-		cursor: pointer;
-	}
 </style>
 <div class="container py-4">
 	<form class="form-inline px-1 mb-2" action="/product-search" method="POST"
@@ -133,35 +122,5 @@
 			$("#production-list").hide();               
 		}
 	}); 
-$(document).ready(function(){
-  $('.CardProduct').on('click', '.favorite-icon', async function(e){
-    e.preventDefault();
-    const $icon     = $(this);
-    const $product  = $icon.closest('.CardProduct');
-    const productId = $product.data('product-id');
-
-    // Optimistically toggle UI
-    const wasFav = $icon.attr('src').includes('logo-carrot.svg');
-    const newSrc = wasFav
-      ? "{{hPrefixStatic 'logo-carrot-negative.svg'}}"
-      : "{{hPrefixStatic 'logo-carrot.svg'}}";
-    $icon.attr('src', newSrc);
-
-	const oDataReq = { productId };
-
-	const oOptsFetch = {
-		...OptsFetchCSRF(),
-		method: "POST",
-		body: JSON.stringify(oDataReq),
-	};
-	const oResp = await fetch("/toggle-favorite", oOptsFetch);
-	if (!oResp.ok) {
-		const revertSrc = wasFav
-			? "{{hPrefixStatic 'logo-carrot.svg'}}"
-			: "{{hPrefixStatic 'logo-carrot-negative.svg'}}";
-			$icon.attr('src', revertSrc);
-	}
-  });
-});
 </script>
 

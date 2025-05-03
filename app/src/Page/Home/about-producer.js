@@ -3,7 +3,7 @@
 // About Producer page controllers
 
 import { ProductsVtysRoll } from "../../Search.js";
-import { wProducerFromID, Conn } from "../../Db.js";
+import { wProducerFromID, Conn, wPopulateIsFavorited } from "../../Db.js";
 
 export async function wHandGet(aReq, aResp) {
   const oIDProducer = aReq.params.IDProducerView;
@@ -17,6 +17,9 @@ export async function wHandGet(aReq, aResp) {
 
   const oIsMembEbtEligable = aResp.locals.CredUser?.CdRegEBT === "Approv";
   aResp.locals.Products = await wProducts(oIDProducer, oIsMembEbtEligable);
+
+  if (aResp.locals.CredImperUser?.IDMemb)
+    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, aResp.locals.Products);
 
   aResp.locals.Title = "About " + oProducer.NameBus;
   aResp.render("Home/about-producer");

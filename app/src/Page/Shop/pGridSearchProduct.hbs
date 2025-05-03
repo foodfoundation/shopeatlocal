@@ -11,22 +11,14 @@
 	<div class="col">
 		<div class="CardProduct d-flex flex-column py-3 px-3
 
-			{{hClassCornerBtm @index ../Products}}" data-product-id="{{IDProduct}}">
+			{{hClassCornerBtm @index ../Products}}">
 			<div class="Head">
 				<div class="d-flex flex-row justify-content-between
 					align-items-baseline">
 					<a class="Subcat" href="/product-search?IDSubcat={{IDSubcat}}">
 						{{NameSubcat}}
 					</a>
-					
-					{{!-- if the User is not Logged in, then don't show the carrot icon --}}
-					{{#if ../CredUser}}
-						{{#if IsFavorited}}
-							<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Favorited" class="favorite-icon">
-						{{else}}
-							<img src="{{hPrefixStatic 'logo-carrot-negative.svg'}}" alt="Not favorited" class="favorite-icon">
-						{{/if}}
-					{{/if}}
+					{{>Shop/pFavoriteButton ShowButton=../CredUser}}
 					{{#if CkNew}}
 						<a class="New" href="/product-search">NEW</a>
 					{{/if}}

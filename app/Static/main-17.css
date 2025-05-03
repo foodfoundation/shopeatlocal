@@ -1172,6 +1172,15 @@ footer img.Seal {
   }
 }
 
+.favorite-icon {
+  position: absolute;
+  top: 16px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
 /* --------------------------------------
 // Bootstrap modifications and extensions
 // -------------------------------------- */

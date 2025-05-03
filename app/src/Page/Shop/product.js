@@ -3,7 +3,7 @@
 // Product page controllers
 
 import { ProductsVtysRoll } from "../../Search.js";
-import { Conn } from "../../Db.js";
+import { Conn, wPopulateIsFavorited } from "../../Db.js";
 
 export async function wHandGet(aReq, aResp) {
   const oIDProduct = aResp.locals.ProductSel.IDProduct;
@@ -23,6 +23,10 @@ export async function wHandGet(aReq, aResp) {
   if (oProductsRoll.length !== 1) throw Error("product wHandGet: Cannot get product");
 
   const oProduct = { ...oProductsRoll[0], ...oQtysWeb };
+
+  if (aResp.locals.CredImperUser?.IDMemb)
+    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, [oProduct]);
+
   aResp.locals.Product = oProduct;
 
   aResp.locals.Title = oProduct.NameProduct + " (" + oProduct.NameBus + ")";
