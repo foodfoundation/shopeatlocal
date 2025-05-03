@@ -65,8 +65,6 @@ async function wData(aIDProducer) {
         Size: oIt.Size,
         WgtMin: oIt.WgtMin,
         WgtMax: oIt.WgtMax,
-        //  CkInvtMgd: oIt.CkInvtMgd,
-        //  CkPriceVar: oIt.CkPriceVar,
         PriceNomWeb: oIt.PriceNomWeb,
         IDProduct: oIt.IDProduct,
         NameProduct: oIt.NameProduct,
@@ -97,7 +95,6 @@ async function wData(aIDProducer) {
         Name1First: oIt.Name1First,
         Name1Last: oIt.Name1Last,
         Email1: oIt.Email1,
-        //  CkAllowPublicName: oIt.CkAllowPublicName,
       };
     }
     oVtyLast.NotesShop.push(oNoteShop);
