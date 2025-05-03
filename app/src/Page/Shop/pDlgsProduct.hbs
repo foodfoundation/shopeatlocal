@@ -47,15 +47,34 @@
 
 			<div class="modal-body">
 				<div class="row">
-					{{#if (hCkOr NameImgProduct NameImgProducer)}}
-					<div class="h-50 col-lg-4 mb-2 mb-lg-0">
-						<div class="form-group mb-0">
-							<img src="{{hPrefixImageWithStorage (hCkOr NameImgProduct NameImgProducer)}}"
-								alt="Product or producer image"
-								class="w-100 border rounded p-0">
-						</div>
-					</div>
-					{{/if}}
+					{{#if (gt Images.length 0)}}
+                    			<div class="col-md-4 mb-3">
+                    				<div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+                    					data-interval="false">
+                    					<!-- Slides -->
+                    					<div class="carousel-inner">
+                    						{{#each Images}}
+                    						<div class="carousel-item {{#if @first}}active{{/if}}">
+                    							<img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
+                    								alt="{{../NameProduct}} image {{add @index 1}}">
+                    						</div>
+                    						{{/each}}
+                    					</div>
+
+                    					<!-- Indicators (dots only) -->
+                    					<ol class="carousel-indicators mb-0">
+                    						{{#each Images}}
+                    						<li data-target="#productCarousel{{../IDProduct}}"
+                    							data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
+                    						{{/each}}
+                    					</ol>
+                    				</div>
+                    			</div>
+                    			{{else}}
+                    			<div class="col-md-4 mb-3">
+                    				<p>No images available for this product.</p>
+                    			</div>
+                    			{{/if}}
 
 					<div class="col-md">
 						<div class="text-center">

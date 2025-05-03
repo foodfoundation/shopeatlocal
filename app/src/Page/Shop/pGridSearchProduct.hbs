@@ -40,11 +40,30 @@
 			<div class="Body flex-grow-1 mt-2 mb-1"
 				data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
 
-				{{#if NameImgProduct}}
-				<div style="background-image: url('{{hPrefixImageWithStorage NameImgProduct}}');"
-					class="Img rounded rounded-lg">
-				</div>
-				{{else}}
+				{{#if (gt Images.length 0)}}
+                			<div class="col-md-4 mb-3">
+                				<div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+                					data-interval="false">
+                					<!-- Slides -->
+                					<div class="carousel-inner">
+                						{{#each Images}}
+                						<div class="carousel-item {{#if @first}}active{{/if}}">
+                							<img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
+                								alt="{{../NameProduct}} image {{add @index 1}}">
+                						</div>
+                						{{/each}}
+                					</div>
+
+                					<!-- Indicators (dots only) -->
+                					<ol class="carousel-indicators mb-0">
+                						{{#each Images}}
+                						<li data-target="#productCarousel{{../IDProduct}}"
+                							data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
+                						{{/each}}
+                					</ol>
+                				</div>
+                			</div>
+                			{{else}}
 				<hr class="mx-0 mt-0 mb-2">
 				<div class="Descrip">{{Descrip}}</div>
 				{{/if}}
