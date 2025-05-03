@@ -8,7 +8,7 @@
 import { wPopulateIsFavorited, wVtysQtyOrdCycFromIDProduct } from "../../Db.js";
 import { IDCycPrevProducer } from "../../Util.js";
 import { CoopParams } from "../../Site.js";
-import { wImages } from "../Shop/product.js";
+import { wProductImages } from "../Shop/product.js";
 
 export async function wHandGet(aReq, aResp) {
   aResp.locals.Product = { ...aResp.locals.ProductSel };
@@ -25,7 +25,7 @@ export async function wHandGet(aReq, aResp) {
   if (aResp.locals.CredImperUser?.IDMemb)
     await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, [aResp.locals.Product]);
   // Fetch all images for this product
-  const oImages = await wImages(oIDProduct);
+  const oImages = await wProductImages(oIDProduct);
 
   const oProduct = { ...aResp.locals.Product, Images: oImages };
   aResp.locals.Product = oProduct;

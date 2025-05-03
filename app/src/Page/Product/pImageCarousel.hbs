@@ -1,45 +1,44 @@
 {{#if (gt Images.length 0)}}
     {{#if Modal}}
-    <div id="modalCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+    <div id="modalCarousel{{IDProduct}}" class="carousel slide carousel-fade h-100"
         data-interval="false">
-        <!-- Indicators (dots only) -->
-            <ol class="carousel-indicators mb-0">
-                {{#each Images}}
-                <li data-target="#modalCarousel{{../IDProduct}}"
-                    data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
-                {{/each}}
-            </ol>
     {{else}}
-    <div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade"
+    <div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade h-100"
         data-interval="false">
-        <!-- Indicators (dots only) -->
-            <ol class="carousel-indicators mb-0">
-                {{#each Images}}
-                <li data-target="#productCarousel{{../IDProduct}}"
-                    data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
-                {{/each}}
-            </ol>
     {{/if}}
         <!-- Slides -->
         {{#if SearchGrid}}
         <div class="carousel-inner" data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
         {{#each Images}}
-            <div class="carousel-item {{#if @first}}active{{/if}}">
-                <img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
-                    alt="{{../NameProduct}} image {{add @index 1}}">
+            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}});">
             </div>
             {{/each}}
         </div>
         {{else}}
         <div class="carousel-inner">
             {{#each Images}}
-            <div class="carousel-item {{#if @first}}active{{/if}}">
-                <img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
-                    alt="{{../NameProduct}} image {{add @index 1}}">
+            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}});">
             </div>
             {{/each}}
         </div>
         {{/if}}
+        {{#if (gt Images.length 1)}}
+          <a class="carousel-control-prev"
+             role="button"
+             href="#{{#if Modal}}modalCarousel{{else}}productCarousel{{/if}}{{IDProduct}}"
+             data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next"
+             role="button"
+             href="#{{#if Modal}}modalCarousel{{else}}productCarousel{{/if}}{{IDProduct}}"
+             data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        {{/if}}
+
     </div>
 
     {{else}}
@@ -85,15 +84,25 @@
 		background-color: #000 !important;
 	}
 
-	.carousel-item img {
+	.carousel-item {
 		height: 100%;
 		width: 100%;
 		object-fit: contain;
 		transition: none !important;
+		background-size: cover;
 	}
 
 	.carousel-inner {
 		width: 100%;
 		height: 100%;
 	}
+
+    .carousel-control-prev-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M2.5 0L1.09 1.41 3.67 4 1.09 6.59 2.5 8l4-4-4-4z' fill='black' stroke='white' stroke-width='0.5'/%3E%3C/svg%3E");
+        transform: rotate(180deg);
+    }
+
+    .carousel-control-next-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M2.5 0L1.09 1.41 3.67 4 1.09 6.59 2.5 8l4-4-4-4z' fill='black' stroke='white' stroke-width='0.5'/%3E%3C/svg%3E");
+    }
 </style>
