@@ -22,7 +22,7 @@ export async function wHandGet(aReq, aResp) {
   if (oProductsRoll.length !== 1) throw Error("product wHandGet: Cannot get product");
 
   // Fetch all images for this product
-  const oImages = await wImages(oIDProduct);
+  const oImages = await wProductImages(oIDProduct);
 
   // Debug: verify what images were loaded
   console.log(`�️  Loaded images for product ${oIDProduct}:`, oImages);
@@ -63,7 +63,7 @@ async function wVtys(aIDProduct) {
   return oRows;
 }
 
-export async function wImages(aIDProduct) {
+export async function wProductImages(aIDProduct) {
   const oSQL = `
     SELECT FileName
       FROM ProductImage
@@ -74,6 +74,7 @@ export async function wImages(aIDProduct) {
   const [oRows] = await Conn.wExecPrep(oSQL, oParams);
   return oRows.map(row => row.FileName);
 }
+
 
 /** Returns the total listed variety offer and promise quantities for the
  *  specified product, or zeros if the product is not found. */

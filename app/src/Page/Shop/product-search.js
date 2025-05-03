@@ -7,7 +7,7 @@ import { CoopParams, Cats, Subcats } from "../../Site.js";
 import { ArrayFromCds, CdsAttrProduct, wPopulateIsFavorited, wProducerFromID } from "../../Db.js";
 import { CtProductPage } from "../../../Cfg.js";
 import _ from "lodash";
-import {wImages} from "./product.js";
+import {wProductImages} from "./product.js";
 
 export async function wHandGet(aReq, aResp) {
   /** Returns a path that adds the specified page number to the current search
@@ -53,7 +53,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.Terms = aReq.query.Terms || "";
   aResp.locals.Products = oProducts;
   for(const Product of aResp.locals.Products){
-    const oImages = await wImages(Product.IDProduct);
+    const oImages = await wProductImages(Product.IDProduct);
     Product.Images = oImages;
   }
   aResp.locals.TextRg = oDataPage.Text;
