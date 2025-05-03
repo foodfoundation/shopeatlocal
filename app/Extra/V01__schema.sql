@@ -914,9 +914,9 @@ CREATE TABLE FeeCoopVty(
     `FracFeeCoopWholesaleMemb` decimal(3,2) NOT NULL
 );
 
-DELIMITER //
 
 DROP PROCEDURE ItsCartFromIDCart;
+DELIMITER //
 CREATE PROCEDURE `ItsCartFromIDCart`(
 	IN `aIDCart` INT
 )
@@ -953,9 +953,9 @@ END //
 
 DELIMITER ;
 
-DELIMITER $$
-
 DROP PROCEDURE IF EXISTS ToggleFavorite;
+
+DELIMITER $$
 
 CREATE PROCEDURE ToggleFavorite (
     IN pIDMemb INT,
