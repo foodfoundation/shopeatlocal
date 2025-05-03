@@ -7,7 +7,7 @@
  */
 
 import { Conn } from "../../Db.js";
-import { TextIDCyc, TextCurr } from "../../Util.js";
+import { TextIDCyc, TextCurr, TextWhen } from "../../Util.js";
 import { CoopParams } from "../../Site.js";
 import _gCSV from "../../CSV.js";
 
@@ -17,11 +17,11 @@ import _gCSV from "../../CSV.js";
  *  @returns {Promise<void>} Renders accounting summary view
  */
 export async function wHandGet(aReq, aResp) {
-  // There isn't room to show an entire year without horizontal scrolling:
-  aResp.locals.Cycs = await wCycs(6);
+	// There isn't room to show an entire year without horizontal scrolling:
+	aResp.locals.Cycs = await wCycs(6);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} accounting summary`;
-  aResp.render("Cashier/accounting-summary");
+	aResp.locals.Title = `${CoopParams.CoopNameShort} accounting summary`;
+	aResp.render("Cashier/accounting-summary");
 }
 
 /** GET handler for CSV export
@@ -30,79 +30,81 @@ export async function wHandGet(aReq, aResp) {
  *  @returns {Promise<void>} Sends CSV file with accounting data
  */
 export async function wHandGetExport(aReq, aResp) {
-  /** Row generator helper
-   *  @param {string} aProp - Property name
-   *  @param {string} aHead - Column header
-   */
-  function oAdd(aProp, aHead) {
-    let oLine = {
-      Amt: aHead,
-    };
-    for (const oCyc of oCycs) {
-      const oNameFld = "Cyc" + TextIDCyc(oCyc.IDCyc);
-      // Fmt_RowExcel wouldn't format this, because the field name is actually a
-      // date. Is that a mistake?:
-      oLine[oNameFld] = TextCurr(oCyc[aProp]);
-    }
-    oLines.push(oLine);
-  }
+	/** Row generator helper
+	 *  @param {string} aProp - Property name
+	 *  @param {string} aHead - Column header
+	 */
+	function oAdd(aProp, aHead) {
+		let oLine = {
+			Amt: aHead,
+		};
+		for (const oCyc of oCycs) {
+			const oNameFld = "Cyc" + TextIDCyc(oCyc.IDCyc) + " " + TextWhen(oCyc.WhenEndCyc, "Short");
+			// Fmt_RowExcel wouldn't format this, because the field name is actually a
+			// date. Is that a mistake?:
 
-  const oCycs = await wCycs(12);
-  const oLines = [];
+			oLine[oNameFld] = TextCurr(oCyc[aProp]);
+		}
+		oLines.push(oLine);
+	}
 
-  oAdd("FeeMembInit", "Initial member fees assessed");
-  oAdd("FeeMembRenew", "Renewal member fees assessed");
-  oAdd("RefundFeeMembInit", "Initial member fees refunded");
+	const oCycs = await wCycs(12);
 
-  oAdd("SaleNomProducerWeb", "Nominal producer web sales");
-  oAdd("FeeCoopProducerWeb", "Producer web sale market fees");
-  oAdd("FeeInvtProducerWeb", "Producer web sale managed inventory fees");
-  oAdd("EarnProducerWeb", "Producer web sale earnings");
+	const oLines = [];
 
-  oAdd("SaleNomLostRejectWeb", "Nominal lost or rejected web sales");
-  oAdd("SaleNomNontaxabWeb", "Nominal non-taxable shopper web sales");
-  oAdd("SaleNomTaxabWeb", "Nominal taxable shopper web sales");
-  oAdd("FeeCoopShopWeb", "Shopper web sale market fees");
-  oAdd("FeeCoopShopForgivWeb", "Forgiven shopper web sale market fees");
-  oAdd("FeeDelivTransferShopWeb", "Shopper web sale delivery/transfer fees");
-  oAdd("TaxSaleShopWeb", "Shopper web sale sales tax");
-  oAdd("ChargeMoneyShopWeb", "Shopper web sale money charges");
-  oAdd("ChargeEBTShopWeb", "Shopper web sale EBT charges");
+	oAdd("FeeMembInit", "Initial member fees assessed");
+	oAdd("FeeMembRenew", "Renewal member fees assessed");
+	oAdd("RefundFeeMembInit", "Initial member fees refunded");
 
-  oAdd("SaleNomProducerOnsite", "Nominal producer on-site sales");
-  oAdd("FeeCoopProducerOnsite", "Producer on-site sale market fees");
-  oAdd("FeeInvtProducerOnsite", "Producer on-site sale managed inventory fees");
-  oAdd("EarnProducerOnsite", "Producer on-site sale earnings");
+	oAdd("SaleNomProducerWeb", "Nominal producer web sales");
+	oAdd("FeeCoopProducerWeb", "Producer web sale market fees");
+	oAdd("FeeInvtProducerWeb", "Producer web sale managed inventory fees");
+	oAdd("EarnProducerWeb", "Producer web sale earnings");
 
-  oAdd("SaleNomNontaxabOnsite", "Nominal non-taxable shopper on-site sales");
-  oAdd("SaleNomTaxabOnsite", "Nominal taxable shopper on-site sales");
-  oAdd("FeeCoopShopOnsite", "Shopper on-site sale market fees");
-  oAdd("FeeCoopShopForgivOnsite", "Forgiven shopper on-site sale market fees");
-  oAdd("TaxSaleShopOnsite", "Shopper on-site sale sales tax");
-  oAdd("ChargeMoneyShopOnsite", "Shopper on-site sale money charges");
-  oAdd("ChargeEBTShopOnsite", "Shopper on-site sale EBT charges");
+	oAdd("SaleNomLostRejectWeb", "Nominal lost or rejected web sales");
+	oAdd("SaleNomNontaxabWeb", "Nominal non-taxable shopper web sales");
+	oAdd("SaleNomTaxabWeb", "Nominal taxable shopper web sales");
+	oAdd("FeeCoopShopWeb", "Shopper web sale market fees");
+	oAdd("FeeCoopShopForgivWeb", "Forgiven shopper web sale market fees");
+	oAdd("FeeDelivTransferShopWeb", "Shopper web sale delivery/transfer fees");
+	oAdd("TaxSaleShopWeb", "Shopper web sale sales tax");
+	oAdd("ChargeMoneyShopWeb", "Shopper web sale money charges");
+	oAdd("ChargeEBTShopWeb", "Shopper web sale EBT charges");
 
-  oAdd("ChargeShopOnsiteMemb", "Member on-site shopper charges");
-  oAdd("ChargeShopOnsiteNonmemb", "Non-member on-site shopper charges");
+	oAdd("SaleNomProducerOnsite", "Nominal producer on-site sales");
+	oAdd("FeeCoopProducerOnsite", "Producer on-site sale market fees");
+	oAdd("FeeInvtProducerOnsite", "Producer on-site sale managed inventory fees");
+	oAdd("EarnProducerOnsite", "Producer on-site sale earnings");
 
-  oAdd("SaleNomProducerOnsiteWholesale", "Nominal producer on-site wholesale sales");
-  oAdd("FeeCoopProducerOnsiteWholesale", "Producer on-site wholesale sale market fees");
-  oAdd("FeeInvtProducerOnsiteWholesale", "Producer on-site wholesale sale managed inventory fees");
-  oAdd("EarnProducerOnsiteWholesale", "Producer on-site wholesale sale earnings");
+	oAdd("SaleNomNontaxabOnsite", "Nominal non-taxable shopper on-site sales");
+	oAdd("SaleNomTaxabOnsite", "Nominal taxable shopper on-site sales");
+	oAdd("FeeCoopShopOnsite", "Shopper on-site sale market fees");
+	oAdd("FeeCoopShopForgivOnsite", "Forgiven shopper on-site sale market fees");
+	oAdd("TaxSaleShopOnsite", "Shopper on-site sale sales tax");
+	oAdd("ChargeMoneyShopOnsite", "Shopper on-site sale money charges");
+	oAdd("ChargeEBTShopOnsite", "Shopper on-site sale EBT charges");
 
-  oAdd("SaleNomNontaxabOnsiteWholesale", "Nominal non-taxable shopper on-site wholesale sales");
-  oAdd("SaleNomTaxabOnsiteWholesale", "Nominal taxable shopper on-site wholesale sales");
-  oAdd("FeeCoopShopOnsiteWholesale", "Shopper on-site wholesale sale market fees");
-  oAdd("FeeCoopShopForgivOnsiteWholesale", "Forgiven shopper on-site wholesale sale market fees");
-  oAdd("TaxSaleShopOnsiteWholesale", "Shopper on-site wholesale sale sales tax");
-  oAdd("ChargeMoneyShopOnsiteWholesale", "Shopper on-site wholesale sale money charges");
-  oAdd("ChargeEBTShopOnsiteWholesale", "Shopper on-site wholesale sale EBT charges");
+	oAdd("ChargeShopOnsiteMemb", "Member on-site shopper charges");
+	oAdd("ChargeShopOnsiteNonmemb", "Non-member on-site shopper charges");
 
-  oAdd("ChargeShopOnsiteMembWholesale", "Member on-site wholesale shopper charges");
-  oAdd("ChargeShopOnsiteNonmembWholesale", "Non-member on-site wholesale shopper charges");
+	oAdd("SaleNomProducerOnsiteWholesale", "Nominal producer on-site wholesale sales");
+	oAdd("FeeCoopProducerOnsiteWholesale", "Producer on-site wholesale sale market fees");
+	oAdd("FeeInvtProducerOnsiteWholesale", "Producer on-site wholesale sale managed inventory fees");
+	oAdd("EarnProducerOnsiteWholesale", "Producer on-site wholesale sale earnings");
 
-  aResp.attachment("Accounting summary.csv");
-  aResp.csv(oLines, true);
+	oAdd("SaleNomNontaxabOnsiteWholesale", "Nominal non-taxable shopper on-site wholesale sales");
+	oAdd("SaleNomTaxabOnsiteWholesale", "Nominal taxable shopper on-site wholesale sales");
+	oAdd("FeeCoopShopOnsiteWholesale", "Shopper on-site wholesale sale market fees");
+	oAdd("FeeCoopShopForgivOnsiteWholesale", "Forgiven shopper on-site wholesale sale market fees");
+	oAdd("TaxSaleShopOnsiteWholesale", "Shopper on-site wholesale sale sales tax");
+	oAdd("ChargeMoneyShopOnsiteWholesale", "Shopper on-site wholesale sale money charges");
+	oAdd("ChargeEBTShopOnsiteWholesale", "Shopper on-site wholesale sale EBT charges");
+
+	oAdd("ChargeShopOnsiteMembWholesale", "Member on-site wholesale shopper charges");
+	oAdd("ChargeShopOnsiteNonmembWholesale", "Non-member on-site wholesale shopper charges");
+
+	aResp.attachment("Accounting summary.csv");
+	aResp.csv(oLines, true);
 }
 
 /** Cycle summary data retriever
@@ -110,7 +112,7 @@ export async function wHandGetExport(aReq, aResp) {
  *  @returns {Promise<Array>} Cycle summary records
  */
 async function wCycs(aCtMonth) {
-  const oSQL = `SELECT Cyc.IDCyc, Cyc.WhenEndCyc,
+	const oSQL = `SELECT Cyc.IDCyc, Cyc.WhenEndCyc,
 			zTransact.FeeMembInit, zTransact.FeeMembRenew,
 			zTransact.RefundFeeMembInit,
 
@@ -275,9 +277,9 @@ async function wCycs(aCtMonth) {
 			AND Cyc.WhenEndCyc < NOW()
 		)
 		ORDER BY IDCyc`;
-  const oParams = {
-    CtMonth: aCtMonth,
-  };
-  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
-  return oRows;
+	const oParams = {
+		CtMonth: aCtMonth,
+	};
+	const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+	return oRows;
 }
