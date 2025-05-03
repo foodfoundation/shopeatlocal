@@ -10,7 +10,7 @@
 	//    not seem to be a way to do that without JavaScript: --}}
 	<div class="col">
 		<div class="CardProduct d-flex flex-column py-3 px-3
-			{{hClassCornerBtm @index ../Products}}">
+			{{hClassCornerBtm @index ../Products}}" min-height: "1000px">
 			<div class="Head">
 				<div class="d-flex flex-row justify-content-between
 					align-items-baseline">
@@ -37,15 +37,21 @@
 				</div>
 			</div>
 
-			<div class="Body flex-grow-1 mt-2 mb-1"
-				data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
+			<div class="Body flex-grow-1 mt-2 mb-1">
 
 				{{#if (gt Images.length 0)}}
-                			<div class="col-md-4 mb-3">
+
                 				<div id="productCarousel{{IDProduct}}" class="carousel slide carousel-fade"
                 					data-interval="false">
+                					<ol class="carousel-indicators mb-0">
+                                        {{#each Images}}
+                                        <li data-target="#productCarousel{{../IDProduct}}"
+                                            data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
+                                        {{/each}}
+                                    </ol>
+
                 					<!-- Slides -->
-                					<div class="carousel-inner">
+                					<div class="carousel-inner" data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
                 						{{#each Images}}
                 						<div class="carousel-item {{#if @first}}active{{/if}}">
                 							<img class="d-block mx-auto" src="{{hPrefixImageWithStorage this}}"
@@ -55,22 +61,17 @@
                 					</div>
 
                 					<!-- Indicators (dots only) -->
-                					<ol class="carousel-indicators mb-0">
-                						{{#each Images}}
-                						<li data-target="#productCarousel{{../IDProduct}}"
-                							data-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"></li>
-                						{{/each}}
-                					</ol>
+
                 				</div>
-                			</div>
+
                 			{{else}}
 				<hr class="mx-0 mt-0 mb-2">
 				<div class="Descrip">{{Descrip}}</div>
 				{{/if}}
 			</div>
 
-			<div class="Foot" data-target="#DlgDtlProduct{{IDProduct}}"
-				data-toggle="modal">
+			<div class="Foot" data-target="#DlgDtlProduct{{IDProduct}}">
+
 
 				{{#unless NameImgProduct}}
 				<hr class="mx-0 mt-0 mb-2">
@@ -94,3 +95,119 @@
 	</div>
 	{{/each}}
 </div>
+
+<!-- Carousel & image CSS overrides -->
+	<style>
+		/* center carousel content */
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+			{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		/* image container fixed height */
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-inner {
+			width: 100%;
+			height: 100%;
+		}
+
+		/* place dots right below image */
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-indicators {
+			position: static;
+			margin: 8px 0 0;
+		}
+
+		/* fade effect only */
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-fade .carousel-item,
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-fade .carousel-item-next,
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-fade .carousel-item-prev,
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-fade .carousel-item.active {
+			transform: none !important;
+			transition: opacity .5s ease-in-out !important;
+		}
+
+		/* style dots */
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-indicators li {
+			width: 12px;
+			height: 12px;
+			margin: 0 6px;
+			background-color: #000 !important;
+			border-radius: 50%;
+			opacity: 0.5;
+		}
+
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-indicators .active {
+			opacity: 1;
+			background-color: #000 !important;
+		}
+
+		/* lock image size, no transitions */
+		#productCarousel {
+				{
+				IDProduct
+			}
+		}
+
+		.carousel-item img {
+			height: 200%;
+			width: 50%;
+			object-fit: contain;
+			transition: none !important;
+		}
+	</style>
+</div>
+
