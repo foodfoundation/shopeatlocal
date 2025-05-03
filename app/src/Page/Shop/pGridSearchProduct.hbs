@@ -17,15 +17,14 @@
 					<a class="Subcat" href="/product-search?IDSubcat={{IDSubcat}}">
 						{{NameSubcat}}
 					</a>
-
+					{{>Shop/pFavoriteButton ShowButton=../CredUser}}
 					{{#if CkNew}}
-					<a class="New" href="/product-search">NEW</a>
+						<a class="New" href="/product-search">NEW</a>
 					{{/if}}
 				</div>
 
 				<div>
-					<a class="Product font-size-120 font-weight-bold"
-						href="/product/{{IDProduct}}">
+					<a class="Product font-size-120 font-weight-bold" href="/product/{{IDProduct}}">
 						{{NameProduct}}
 					</a>
 				</div>
@@ -40,11 +39,13 @@
 			<div class="Body flex-grow-1 mt-2 mb-1">
 {{!-- 			    { shouldModal: True} --}}
 				{{>Product/pImageCarousel SearchGrid=true}}
+
 			</div>
 
+
+
+
 			<div class="Foot" data-target="#DlgDtlProduct{{IDProduct}}">
-
-
 				{{#unless NameImgProduct}}
 				<hr class="mx-0 mt-0 mb-2">
 				{{/unless}}
@@ -54,14 +55,11 @@
 				</div>
 				{{/if}}
 
-				<div>
-					{{#each Vtys}}
-					<div class="d-flex flex-row justify-content-between">
-						<div>{{hNameVty this}}</div>
-						<div>{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}</div>
-					</div>
-					{{/each}}
+				{{#each Vtys}}
+				<div class="d-flex flex-row justify-content-between" id="CardFooterTblVty{{IDVty}}">
+					{{>Shop/pCardFooterTblVtyShop this}}
 				</div>
+				{{/each}}
 			</div>
 		</div>
 	</div>

@@ -22,6 +22,8 @@ export async function wHandGet(aReq, aResp) {
   const oVtys = await wVtysQtyOrdCycFromIDProduct(oIDProduct, oIDCycPrev);
   aResp.locals.Product.Vtys = oVtys;
 
+  if (aResp.locals.CredImperUser?.IDMemb)
+    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, [aResp.locals.Product]);
   // Fetch all images for this product
   const oImages = await wImages(oIDProduct);
 

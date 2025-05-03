@@ -22,8 +22,6 @@ export async function wHandGet(aReq, aResp) {
   if (oProductsRoll.length !== 1) throw Error("product wHandGet: Cannot get product");
 
   // Fetch all images for this product
-
-
   const oImages = await wImages(oIDProduct);
 
   // Debug: verify what images were loaded
