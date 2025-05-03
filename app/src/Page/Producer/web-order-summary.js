@@ -65,8 +65,6 @@ async function wData(aIDProducer) {
         Size: oIt.Size,
         WgtMin: oIt.WgtMin,
         WgtMax: oIt.WgtMax,
-        CkInvtMgd: oIt.CkInvtMgd,
-        CkPriceVar: oIt.CkPriceVar,
         PriceNomWeb: oIt.PriceNomWeb,
         IDProduct: oIt.IDProduct,
         NameProduct: oIt.NameProduct,
@@ -97,7 +95,6 @@ async function wData(aIDProducer) {
         Name1First: oIt.Name1First,
         Name1Last: oIt.Name1Last,
         Email1: oIt.Email1,
-        CkAllowPublicName: oIt.CkAllowPublicName,
       };
     }
     oVtyLast.NotesShop.push(oNoteShop);
@@ -118,11 +115,10 @@ async function wData(aIDProducer) {
 
 async function wIts(aIDProducer) {
   const oSQL = `SELECT Vty.IDVty, Vty.Kind, Vty.Size, Vty.WgtMin, Vty.WgtMax,
-			Vty.CkInvtMgd, IF(Vty.Size IS NULL, TRUE, FALSE) AS CkPriceVar,
 			Vty.PriceNomWeb,
 			Product.IDProduct, Product.NameProduct,
 			zItsCart.NoteShop, zItsCart.QtyProm,
-			Memb.IDMemb, Memb.Name1First, Memb.Name1Last, Memb.Email1, Memb.CkAllowPublicName
+			Memb.IDMemb, Memb.Name1First, Memb.Name1Last, Memb.Email1
 		FROM Vty
 		JOIN Product USING (IDProduct)
 		JOIN (
@@ -157,8 +153,6 @@ async function wPicklist(aIDProducer) {
              Vty.Size,
              Vty.WgtMin,
              Vty.WgtMax,
-             Vty.CkInvtMgd,
-             IF(Vty.Size IS NULL, TRUE, FALSE) AS CkPriceVar,
              Vty.PriceNomWeb,
              Product.IDProduct,
              Product.NameProduct,
