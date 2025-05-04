@@ -3,7 +3,7 @@
 // Edit producer 'about' controllers
 
 import _ from "lodash";
-import { wExec, CkFail, Retry, wUpdOne } from "../../Form.js";
+import {wExec, CkFail, Retry, wUpdOne, wClearProducerImages, wInsertProducerImage} from "../../Form.js";
 import { wProducerFromID } from "../../Db.js";
 import { PageAfterEditProducer } from "../../Util.js";
 import { CoopParams } from "../../Site.js";
@@ -58,12 +58,12 @@ export async function wHandPost(aReq, aResp) {
 
   // If the user selected a 'new' file, use that. Otherwise, use the previously-
   // selected file, unless the user opted to remove it:
-  let oNameImg;
+  let oNameImg=[];
   if (aReq.files && aReq.files["Img"] && aReq.files["Img"].length > 0)
-    oNameImg = aReq.files["Img"][0].filename;
-  else if (aReq.body.CkRemImg) oNameImg = null;
-  else if (aReq.body.NameImgProducer) oNameImg = aReq.body.NameImgProducer;
-  else oNameImg = null;
+    oNameImg.push(...aReq.files["Img"].map(f => f.filename));
+  else if (aReq.body.CkRemImg) oNameImg = [];
+  else if (aReq.body.NameImgProduct) oNameImg = [aReq.body.NameImgProduct];
+  else oNameImg = [];
 
   // Handle validation failure
   // -------------------------
@@ -82,11 +82,15 @@ export async function wHandPost(aReq, aResp) {
   // ------------------------------------
 
   const oParamsEx = {
-    NameImgProducer: oNameImg,
+    NameImgProducer: oNameImg[0],
   };
 
   const oIDProducer = aResp.locals.CredSelImperUser.IDProducer;
+  await wClearProducerImages(oIDProducer);
   await wUpdOne("Producer", "IDProducer", oIDProducer, oFlds, oParamsEx);
+  for (const [i, name] of oNameImg.entries()) {
+    await wInsertProducerImage(oIDProducer, name, i);
+  }
 
   // Go to Producer or Producer Detail page
   // --------------------------------------

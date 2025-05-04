@@ -71,7 +71,7 @@ export async function wExec(aConn, aIDMemb, aItsPickup, aVtysByID, aCdStatCart) 
   // Retrieve checkout data
   const oItsCheckout = await wItsCheckout(aConn, oCart.IDCart);
   const oItsCheckoutExtended = await Add_CkExcludeConsumerFee(oItsCheckout);
-  console.log("oItsCheckout: ", oItsCheckoutExtended);
+  //("oItsCheckout: ", oItsCheckoutExtended);
   const oMemb = await wMembFromID(aIDMemb, aConn);
   const oCkRegEBT = oMemb.CdRegEBT === "Approv";
   const oCkRegWholesale = oMemb.CdRegWholesale === "Approv";

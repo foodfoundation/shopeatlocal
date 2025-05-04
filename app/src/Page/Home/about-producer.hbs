@@ -57,13 +57,7 @@
 	<div class="row my-3">
 		{{#if NameImgProducer}}
 		<div class="col-md-4">
-			<div class="form-group bg-white">
-				{{!-- Some white-background logos have no padding of their own, and they
-				//    look better with 'p-2' or something similar. Others have dark
-				//    backgrounds, however, and they look worse: --}}
-				<img src="{{hPrefixImageWithStorage NameImgProducer}}" alt="Producer image"
-					class="w-100 border rounded p-0" >
-			</div>
+			{{>Product/pImageCarousel}}
 		</div>
 		{{/if}}
 

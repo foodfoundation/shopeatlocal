@@ -12,10 +12,10 @@
     "lint:fix": "turbo lint -- --fix"
   },
   "devDependencies": {
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.4.2",
-    "turbo": "^2.3.3"
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "prettier": "^3.5.3",
+    "turbo": "^2.5.2"
   },
   "engines": {
     "node": ">=18"
@@ -26,5 +26,5 @@
     "producers-report",
     "sanity"
   ],
-  "packageManager": "npm@10.2.4"
+  "packageManager": "npm@11.3.0"
 }

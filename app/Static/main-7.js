@@ -321,6 +321,33 @@ function Disab_Form() {
   $("a.btn").addClass("disabled");
 }
 
+$(document).ready(function(){
+  $('.favorite-icon').on('click', async function(e){
+    e.preventDefault();
+    const $icon     = $(this);
+    const productId = $icon.data('product-id');
+
+    const temp = $icon.attr('src');
+    $icon.attr('src', $icon.data('other-src'));
+    $icon.data('other-src', temp);
+
+    const oDataReq = { productId };
+
+    const oOptsFetch = {
+      ...OptsFetchCSRF(),
+      method: "POST",
+      body: JSON.stringify(oDataReq),
+    };
+    const oResp = await fetch("/toggle-favorite", oOptsFetch);
+    if (!oResp.ok) {
+      const temp = $icon.attr('src');
+      $icon.attr('src', $icon.data('other-src'));
+      $icon.data('other-src', temp);
+    }
+  });
+});
+
+
 // Cart functionality
 // ------------------
 
@@ -430,6 +457,38 @@ async function OnClick_BtnAddCartVty() {
     // There is no need to re-enable the button, because the variety row that
     // contains the button will be entirely replaced.
 
+    Busy.Unset();
+  }
+}
+
+/** Handles a 'Add' button click for the card footer rows. */
+async function OnClick_CardFooterBtnAddCartVty() {
+  try {
+    Busy.Set();
+
+    const oBtn = $(this);
+    const oIDVty = oBtn.data("id-vty");
+    $("#CardFooterBtnAddCartVty" + oIDVty).prop("disabled", true);
+
+    // Create a flash container if it doesn't exist
+    let oDivFlashes = $("#FlashesProductAdd");
+    if (oDivFlashes.length === 0) {
+      $("body").append(
+        '<div id="FlashesProductAdd" class="position-fixed" style="top: 20px; right: 20px; z-index: 1050;"></div>',
+      );
+      oDivFlashes = $("#FlashesProductAdd");
+    }
+
+    // Add item directly to cart
+    await wAdd_ItCart(Number(oIDVty), oDivFlashes);
+
+    // Add success notification that will auto-dismiss
+    setTimeout(() => {
+      oDivFlashes.find(".Flash").fadeOut(500, function () {
+        $(this).remove();
+      });
+    }, 3000);
+  } finally {
     Busy.Unset();
   }
 }

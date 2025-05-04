@@ -7,7 +7,7 @@
  */
 
 import { Conn } from "../../Db.js";
-import { TextIDCyc, TextCurr } from "../../Util.js";
+import { TextIDCyc, TextCurr, TextWhen } from "../../Util.js";
 import { CoopParams } from "../../Site.js";
 import _gCSV from "../../CSV.js";
 
@@ -39,7 +39,7 @@ export async function wHandGetExport(aReq, aResp) {
       Amt: aHead,
     };
     for (const oCyc of oCycs) {
-      const oNameFld = "Cyc" + TextIDCyc(oCyc.IDCyc);
+      const oNameFld = "Cyc" + TextIDCyc(oCyc.IDCyc) + " " + TextWhen(oCyc.WhenEndCyc, "Short");
       // Fmt_RowExcel wouldn't format this, because the field name is actually a
       // date. Is that a mistake?:
       oLine[oNameFld] = TextCurr(oCyc[aProp]);
@@ -48,6 +48,7 @@ export async function wHandGetExport(aReq, aResp) {
   }
 
   const oCycs = await wCycs(12);
+
   const oLines = [];
 
   oAdd("FeeMembInit", "Initial member fees assessed");

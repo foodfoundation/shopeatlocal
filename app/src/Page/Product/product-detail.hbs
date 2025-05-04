@@ -26,15 +26,9 @@
 
 	<div class="py-3">
 		<div class="row">
-			{{#if NameImgProduct}}
-			<div class="col-md-4">
-				<div class="form-group mb-2">
-					<img src="{{hPrefixImageWithStorage NameImgProduct}}" alt="Product image"
-						class="w-100 border rounded p-0 mb-3 mb-md-0">
-				</div>
+		    <div class="col-md-4 mb-3">
+			    {{>Product/pImageCarousel}}
 			</div>
-			{{/if}}
-
 			<div class="col-md">
 				<hr class="NoDlg d-none d-md-block mt-0">
 
@@ -112,7 +106,8 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md mt-3">
+			<div class="col-md mt-3 position-relative">
+				{{>Shop/pFavoriteButton ShowButton=../CredUser}}
 				{{#if Vtys}}
 				{{>Product/pTblVtyProducer Vtys}}
 				{{else}}
@@ -130,4 +125,5 @@
 		</div>
 	</div>
 </div>
+
 {{/with}}

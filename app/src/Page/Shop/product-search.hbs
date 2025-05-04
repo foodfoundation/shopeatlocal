@@ -8,26 +8,34 @@
 			hsla(66, 30%, 80%, 0) 70.71%);*/
 	}
 </style>
-
 <div class="container py-4">
 	<form class="form-inline px-1 mb-2" action="/product-search" method="POST"
 		onsubmit="Disab_Form()">
 		<div>
-			<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList()">
-				<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
+			<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick"
+				style="background-color: #036667; border:1px solid #036667; margin:1px;"
+				onclick="showProdList()">
 				Production Type
 			</div>
-			<div id="production-list" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667;  position:absolute; display:none; background-color: #036667; z-index:9999;">
+			<div id="production-list" class="production-list-noclick"
+				style="text-align:left; padding-left: 15px; width:280px;
+				       border:1px solid #036667; position:absolute;
+				       display:none; background-color: #036667; z-index:9999;">
 				{{#each AttrsProduct}}						
-					<input class="production-list-noclick" id="Ck{{Cd}}" name="Ck{{Cd}}" type="checkbox" >
-					<label class="production-list-noclick" style="color: #fff; display:inline-block; margin-bottom: 0.5rem;" for="Ck{{Cd}}" >
+					<input class="production-list-noclick" id="Ck{{Cd}}"
+					       name="Ck{{Cd}}" type="checkbox">
+					<label class="production-list-noclick"
+					       style="color: #fff; display:inline-block; margin-bottom: .5rem;"
+					       for="Ck{{Cd}}">
 						{{Text}}
 					</label>
 					<br class="production-list-noclick">
 				{{/each}}
 				{{#if CoopParams.isProductTypesPageDefined}}
-				<div style="width: 100%; text-align:center; padding-right: 15px; margin-bottom:10px;">
-					<a id="production-info-link" href="/production-types" target="_blank"><b>Production Type Info</b></a>
+				<div style="width:100%; text-align:center; padding-right:15px; margin-bottom:10px;">
+					<a id="production-info-link" href="/production-types" target="_blank">
+						<b>Production Type Info</b>
+					</a>
 				</div>
 				{{/if}}
 			</div>
@@ -36,7 +44,7 @@
 		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
 
 		<input id="Terms" name="Terms" type="text" value="{{Terms}}" autofocus
-			class="form-control flex-grow-1 mr-sm-2" style="margin-left: 0.5rem;">
+		       class="form-control flex-grow-1 mr-sm-2" style="margin-left:.5rem;">
 
 		{{!-- I added this container because sometimes the buttons wrap awkwardly on
 		//    my old Android phone, with the Search button on the top line, and the
@@ -50,9 +58,10 @@
 		//    seem to fix that without breaking the vertical spacing on the desktop,
 		//    which does put space between the edit and the buttons when it wraps: --}}
 		<div class="d-flex">
-			<button type="submit"  class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577;">
+			<button type="submit" class="btn btn-primary mt-2 mt-sm-0"
+			        style="background-color:#737577; border:1px solid #737577;">
 				<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20"
-					class="IconBtn" style="position: relative; top: -2px">
+				     class="IconBtn" style="position: relative; top:-2px">
 				Search
 			</button>
 
@@ -72,8 +81,8 @@
 		{{#if SummsParam}}
 		<div class="lead">
 			{{#each SummsParam}}
-			{{this.Lbl}}{{#if this.Val}}:
-			<strong>{{this.Val}}</strong>{{/if}}{{#unless @last}}, {{/unless}}
+				{{this.Lbl}}{{#if this.Val}}:
+				<strong>{{this.Val}}</strong>{{/if}}{{#unless @last}}, {{/unless}}
 			{{/each}}
 		</div>
 		{{/if}}
@@ -114,3 +123,4 @@
 		}
 	}); 
 </script>
+

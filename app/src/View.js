@@ -1413,6 +1413,10 @@ export function Ready(aApp) {
       // with the view templates, and organize these (along with the controllers)
       // by functionality:
       partialsDir: "src/Page",
+      helpers: {
+        gt: (a, b) => a > b,
+        add: (a, b) => a + b,
+      },
       compilerOptions: {
         // This fixes an idiotic Handlebars problem that caused the tab characters
         // preceding a partial invocation:
