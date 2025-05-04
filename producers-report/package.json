@@ -12,20 +12,20 @@
     "continually:build:release:static": "nodemon --ignore dist/ --exec npm run build:release:static"
   },
   "dependencies": {
-    "json-2-csv": "^5.5.7",
+    "json-2-csv": "^5.5.9",
     "react-filterable-table": "^0.3.443",
-    "react-icons": "^5.4.0"
+    "react-icons": "^5.5.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.7.2",
+    "typescript": "^5.8.3",
     "nodemon": "^3.1.10",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.0.0"
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.3.4"
   }
 }

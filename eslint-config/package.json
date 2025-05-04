@@ -6,8 +6,8 @@
     "./base": "./base.js"
   },
   "dependencies": {
-    "eslint": "^9.17.0",
+    "eslint": "^9.26.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-turbo": "^2.3.3"
+    "eslint-plugin-turbo": "^2.5.2"
   }
 }
