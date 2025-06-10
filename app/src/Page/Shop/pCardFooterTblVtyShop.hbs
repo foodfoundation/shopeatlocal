@@ -3,6 +3,7 @@
   <div class="product-info">
     <div class="product-price">{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}</div>
 
+    {{#if (hPropCurrOrRoot "CredUser")}}
     <button id="CardFooterBtnAddCartVty{{IDVty}}" type="button"
         {{#unless (hCkAnd (hPropCurrOrRoot "FlagShop")
         (hCkAvailVty this))}}disabled{{/unless}}
@@ -12,6 +13,7 @@
             class="cart-icon">
         <span class="d-none d-sm-inline">+1</span>
     </button>
+    {{/if}}
   </div>
 </div>
 
