@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:9
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: shopeatlocal
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./Extra:/docker-entrypoint-initdb.d
+volumes:
+  db_data:

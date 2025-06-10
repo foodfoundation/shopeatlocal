@@ -39,6 +39,19 @@ export async function wHandGetExport(aReq, aResp) {
   aResp.csv(arrayOfExportData, true);
 }
 
+export async function wHandGetPicklist(aReq, aResp) {
+  const oIDProducer = aResp.locals.CredSelImperUser.IDProducer;
+  aResp.locals.Producer = await wProducerFromID(oIDProducer);
+
+  const arrayOfExportData = await wPicklist(oIDProducer);
+  for (const dataRow of arrayOfExportData) {
+    Fmt_RowExcel(dataRow);
+  }
+
+  aResp.attachment("Web_order_picklist.csv");
+  aResp.csv(arrayOfExportData, true);
+}
+
 async function wData(aIDProducer) {
   const oVtys = [];
   let oVtyLast = null;
@@ -52,8 +65,6 @@ async function wData(aIDProducer) {
         Size: oIt.Size,
         WgtMin: oIt.WgtMin,
         WgtMax: oIt.WgtMax,
-        CkInvtMgd: oIt.CkInvtMgd,
-        CkPriceVar: oIt.CkPriceVar,
         PriceNomWeb: oIt.PriceNomWeb,
         IDProduct: oIt.IDProduct,
         NameProduct: oIt.NameProduct,
@@ -84,7 +95,6 @@ async function wData(aIDProducer) {
         Name1First: oIt.Name1First,
         Name1Last: oIt.Name1Last,
         Email1: oIt.Email1,
-        CkAllowPublicName: oIt.CkAllowPublicName,
       };
     }
     oVtyLast.NotesShop.push(oNoteShop);
@@ -105,11 +115,10 @@ async function wData(aIDProducer) {
 
 async function wIts(aIDProducer) {
   const oSQL = `SELECT Vty.IDVty, Vty.Kind, Vty.Size, Vty.WgtMin, Vty.WgtMax,
-			Vty.CkInvtMgd, IF(Vty.Size IS NULL, TRUE, FALSE) AS CkPriceVar,
 			Vty.PriceNomWeb,
 			Product.IDProduct, Product.NameProduct,
 			zItsCart.NoteShop, zItsCart.QtyProm,
-			Memb.IDMemb, Memb.Name1First, Memb.Name1Last, Memb.Email1, Memb.CkAllowPublicName
+			Memb.IDMemb, Memb.Name1First, Memb.Name1Last, Memb.Email1
 		FROM Vty
 		JOIN Product USING (IDProduct)
 		JOIN (
@@ -130,6 +139,45 @@ async function wIts(aIDProducer) {
 		ORDER BY Product.NameProduct, Product.IDProduct,
 			Vty.Kind, Vty.Size, Vty.WgtMin, Vty.WgtMax, Vty.IDVty,
 			Memb.Name1First, Memb.Name1Last, Memb.IDMemb`;
+  const oParams = {
+    IDProducer: aIDProducer,
+  };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  return oRows;
+}
+
+async function wPicklist(aIDProducer) {
+  const oSQL = `
+      SELECT Vty.IDVty,
+             Vty.Kind,
+             Vty.Size,
+             Vty.WgtMin,
+             Vty.WgtMax,
+             Vty.PriceNomWeb,
+             Product.IDProduct,
+             Product.NameProduct,
+             zItsCart.QtyProm
+      FROM Vty
+               JOIN Product USING (IDProduct)
+               JOIN (SELECT Vty.IDVty,
+                            ItCart.NoteShop,
+                            SUM(ItCart.QtyProm) AS QtyProm
+                     FROM ItCart
+                              JOIN Cart USING (IDCart)
+                              JOIN StApp USING (IDCyc)
+                              JOIN Vty USING (IDVty)
+                              JOIN Product USING (IDProduct)
+                     WHERE IDProducer = :IDProducer
+                     GROUP BY IDVty,
+                              NoteShop) AS zItsCart ON (zItsCart.IDVty = Vty.IDVty)
+      ORDER BY Product.NameProduct, 
+               Product.IDProduct,
+               Vty.Kind,
+               Vty.Size,
+               Vty.WgtMin,
+               Vty.WgtMax,
+               Vty.IDVty
+  `;
   const oParams = {
     IDProducer: aIDProducer,
   };

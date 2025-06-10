@@ -4,9 +4,10 @@
 
 import { PathQuery, NamesParamProduct, wProducts, DataPage } from "../../Search.js";
 import { CoopParams, Cats, Subcats } from "../../Site.js";
-import { ArrayFromCds, CdsAttrProduct, wProducerFromID } from "../../Db.js";
+import { ArrayFromCds, CdsAttrProduct, wPopulateIsFavorited, wProducerFromID } from "../../Db.js";
 import { CtProductPage } from "../../../Cfg.js";
 import _ from "lodash";
+import {wProductImages} from "./product.js";
 
 export async function wHandGet(aReq, aResp) {
   /** Returns a path that adds the specified page number to the current search
@@ -15,6 +16,16 @@ export async function wHandGet(aReq, aResp) {
     return aIdxPage === undefined
       ? undefined
       : PathQuery("/product-search", aReq.query, NamesParamProduct, aIdxPage);
+  }
+
+  if (aReq.query.favorites) {
+    if (aReq.user) {
+      aReq.query.IDMemb = aResp.locals.CredImperUser.IDMemb;
+    } else {
+      aResp.status(401);
+      aResp.render("Misc/401");
+      return;
+    }
   }
 
   // Don't allow anyone to view another user's purchase history:
@@ -29,15 +40,22 @@ export async function wHandGet(aReq, aResp) {
 
   const oIsMembEbtEligable = aResp.locals.CredUser?.CdRegEBT === "Approv";
 
-  const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable); //aReq.query includes terms if a term was searched
+  const { Ct: oCt, Products: oProducts } = await wProducts(aReq.query, oIsMembEbtEligable);
   const oDataPage = DataPage(aReq.query, oCt, CtProductPage);
+
+  // if we know who the user is, pull their favorites and tag each product
+  if (aResp.locals.CredImperUser?.IDMemb)
+    await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, oProducts);
 
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.Title = `${CoopParams.CoopNameShort} product search`;
   aResp.locals.SummsParam = await wSummsParam(aReq.query);
-  console.log(aResp.locals.SummsParam);
   aResp.locals.Terms = aReq.query.Terms || "";
   aResp.locals.Products = oProducts;
+  for(const Product of aResp.locals.Products){
+    const oImages = await wProductImages(Product.IDProduct);
+    Product.Images = oImages;
+  }
   aResp.locals.TextRg = oDataPage.Text;
   aResp.locals.PathPagePrev = PathPage(oDataPage.IdxPagePrev);
   aResp.locals.PathPageNext = PathPage(oDataPage.IdxPageNext);
@@ -71,6 +89,10 @@ async function wSummsParam(aParams) {
   if (oCkNew) return [{ Lbl: "New products" }];
 
   const oSumms = [];
+
+  if (aParams.favorites) {
+    oSumms.push({ Lbl: "Favorites" });
+  }
 
   if (aParams.Terms)
     oSumms.push({

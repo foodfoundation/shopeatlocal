@@ -27,5 +27,5 @@
     "producers-report",
     "sanity"
   ],
-  "packageManager": "npm@10.2.4"
+  "packageManager": "npm@11.3.0"
 }

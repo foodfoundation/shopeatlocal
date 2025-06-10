@@ -3,7 +3,14 @@
 // Edit Product controllers
 
 import _ from "lodash";
-import { wExec, CkFail, Retry, wUpdOne } from "../../Form.js";
+import {
+  wExec,
+  CkFail,
+  Retry,
+  wUpdOne,
+  wClearProductImages,
+  wInsertProductImage,
+} from "../../Form.js";
 import { wSubcatsProducer, ArrayFromCds, CdsAttrProduct } from "../../Db.js";
 import { Add_Props, PageAfterEditProduct } from "../../Util.js";
 import { CoopParams } from "../../Site.js";
@@ -101,12 +108,12 @@ export async function wHandPost(aReq, aResp) {
 
   // If the user selected a 'new' file, use that. Otherwise, use the previously-
   // selected file, unless the user opted to remove it:
-  let oNameImg;
+  let oNameImg = [];
   if (aReq.files && aReq.files["Img"] && aReq.files["Img"].length > 0)
-    oNameImg = aReq.files["Img"][0].filename;
-  else if (aReq.body.CkRemImg) oNameImg = null;
-  else if (aReq.body.NameImgProduct) oNameImg = aReq.body.NameImgProduct;
-  else oNameImg = null;
+    oNameImg.push(...aReq.files["Img"].map(f => f.filename));
+  else if (aReq.body.CkRemImg) oNameImg = [];
+  else if (aReq.body.NameImgProduct) oNameImg = [aReq.body.NameImgProduct];
+  else oNameImg = [];
 
   // Handle validation failure
   // -------------------------
@@ -125,12 +132,16 @@ export async function wHandPost(aReq, aResp) {
   // be updated? [TO DO]
 
   const oParamsEx = {
-    NameImgProduct: oNameImg,
+    NameImgProduct: oNameImg[0],
     WhenEdit: new Date(),
   };
 
   const oIDProduct = aResp.locals.ProductSel.IDProduct;
+  await wClearProductImages(oIDProduct);
   await wUpdOne("Product", "IDProduct", oIDProduct, oFlds, oParamsEx);
+  for (const [i, name] of oNameImg.entries()) {
+    await wInsertProductImage(oIDProduct, name, i);
+  }
 
   // Returns to previous page
   // ------------------------

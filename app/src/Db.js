@@ -897,6 +897,31 @@ export async function wProducerFromIDProduct(aIDProduct, aConn) {
   const [producerRows] = await aConn.wExecPrep(sql, params);
   return producerRows.length ? producerRows[0] : null;
 }
+/** Toggles the specified product's favorite status for the specified member. */
+export async function wToggleFavorite(aIDMemb, aIDProduct, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `CALL ToggleFavorite(?, ?)`;
+  await aConn.wExecPrep(oSQL, [aIDMemb, aIDProduct]);
+}
+
+export async function wPopulateIsFavorited(aIDMemb, aIDProducts, aConn) {
+  if (!aConn) aConn = Conn;
+  if (!aIDProducts.length) return;
+
+  const oSQL = `SELECT IDProduct
+    FROM IMembFavorites
+    WHERE IDMemb = :IDMemb`;
+  const oParams = {
+    IDMemb: aIDMemb,
+  };
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
+
+  const favSet = new Set(oRows.map(r => r.IDProduct));
+  aIDProducts.forEach(p => {
+    p.IsFavorited = favSet.has(p.IDProduct);
+  });
+}
 
 export async function wProducersActivWeb() {
   const oSQL = `SELECT DISTINCT Producer.*

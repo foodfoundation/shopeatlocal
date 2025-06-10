@@ -22,9 +22,9 @@
     "react-dom": "^18.2.0",
     "sanity": "^3.90.0",
     "sanity-plugin-note-field": "^2.0.2",
-    "sanity-plugin-simpler-color-input": "^3.0.0",
+    "sanity-plugin-simpler-color-input": "^3.0.1",
     "sanity-plugin-singleton-tools": "^1.1.0",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.1.17"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
