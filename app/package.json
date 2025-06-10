@@ -40,8 +40,7 @@
     "y18n": "^5.0.8"
   },
   "devDependencies": {
-    "@repo/eslint-config": "file:../eslint-config",
-    "eslint": "^8.57.0",
+    "@repo/eslint-config": "*",
     "jest": "^29.7.0",
     "nodemon": "^3.1.10"
   },
