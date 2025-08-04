@@ -41,8 +41,6 @@ import { TextIDMemb, NameRndAlphaNum } from "./Util.js";
 import {
   UseExpressStatic,
   CkDev,
-  StaticStoragePrefix,
-  ImageStoragePrefix,
   LenNameFileStoreImg,
   SizeMaxUploadImg,
   Db,
@@ -51,7 +49,7 @@ import {
   HostServ,
 } from "../Cfg.js";
 import { extname } from "path";
-import { Storage } from "./Storage.js";
+import { Storage, StaticStoragePrefix, ImageStoragePrefix } from "./Storage.js";
 
 const App = gExpr();
 
