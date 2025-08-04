@@ -1,3 +1,4 @@
+import {CheckmarkCircleIcon} from '@sanity/icons'
 import {defineField} from 'sanity'
 
 export const mainInfoFileds = [
@@ -292,5 +293,51 @@ export const socialMediaFields = [
         scheme: ['http', 'https'],
         allowRelative: false,
       }),
+  }),
+]
+
+export const donateDetailsFields = [
+  defineField({
+    title: 'Tip!',
+    description: `This button is optional.
+           It is designed to act as a Donate button in the navigation header, but it can be used for any other purpose.
+           When the external website is filled out the donate button will be shown
+           in the navigation header when the user is logged in.
+           Make sure to fill out all the fields if you want to use it.
+           `,
+    name: 'donateDetailsNote',
+    fieldset: 'donateDetails',
+    type: 'note',
+    options: {
+      icon: CheckmarkCircleIcon,
+      tone: 'positive',
+    },
+  }),
+  defineField({
+    name: 'DonateWebsite',
+    title: 'Donate Website',
+    description: 'Website address for your external donate page.',
+    type: 'url',
+    fieldset: 'donateDetails',
+    validation: (Rule) =>
+      Rule.uri({
+        scheme: ['http', 'https'],
+        allowRelative: false,
+      }),
+  }),
+  defineField({
+    name: 'DonateButtonText',
+    title: 'Donate Button Text',
+    description: 'Text for the donate button.',
+    type: 'string',
+    fieldset: 'donateDetails',
+    validation: (Rule) => Rule.max(10).error('Text is too long'),
+  }),
+  defineField({
+    name: 'DonateButtonTooltip',
+    title: 'Donate Button Tooltip',
+    description: 'Tooltip for the donate button.',
+    type: 'string',
+    fieldset: 'donateDetails',
   }),
 ]
