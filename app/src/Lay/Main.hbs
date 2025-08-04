@@ -242,20 +242,22 @@
 
 		<div class="text-right">
 			{{#if CredUser}}
-			<div id="ColWelcome" class="d-flex align-items-center">
-				<div class="d-none d-md-block">
-					<span class="header-main-text">Welcome<br>{{CredUser.NameLogin}}!</span>
-				</div>
-				<div id="ColDonate" class="mr-2">
-					<a target="_blank" class="btn header-button-orange ml-2" href="https://cultivatefoodconnections.org/donate">
-						<span class="Tip" data-toggle="tooltip" data-placement="top" data-html="true"
-							title="Donate to support our open source work."
-						>
-							Donate
-						</span>
-					</a>
-				</div>
-			</div>
+				{{#if (hCkAnd CoopParams.DonateWebsite CoopParams.DonateButtonText CoopParams.DonateButtonTooltip) }}
+					<div id="ColWelcome" class="d-flex align-items-center">
+						<div class="d-none d-md-block">
+							<span class="header-main-text">Welcome<br>{{CredUser.NameLogin}}!</span>
+						</div>
+						<div id="ColDonate" class="mr-2">
+							<a target="_blank" class="btn header-button-orange ml-2" href="{{CoopParams.DonateWebsite}}">
+								<span class="Tip" data-toggle="tooltip" data-placement="top" data-html="true"
+									title="{{CoopParams.DonateButtonTooltip}}"
+								>
+									{{CoopParams.DonateButtonText}}
+								</span>
+							</a>
+						</div>
+					</div>
+				{{/if}}
 			{{else}}
 			<div id="ColWelcome" class="d-flex align-items-center">
 				<div class="d-none d-md-block text-left mr-5">

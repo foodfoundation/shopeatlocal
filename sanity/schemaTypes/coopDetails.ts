@@ -1,6 +1,7 @@
 import {HomeIcon} from '@sanity/icons'
 import {defineType} from 'sanity'
 import {
+  donateDetailsFields,
   emailAddressesFields,
   externalWebsitesFields,
   mainImages,
@@ -43,6 +44,11 @@ export const coopDetails = defineType(
         name: 'socialMedia',
         options: {collapsible: true, collapsed: true},
       },
+      {
+        title: 'Donate Details',
+        name: 'donateDetails',
+        options: {collapsible: true, collapsed: true},
+      },
     ],
     fields: [
       ...mainInfoFileds,
@@ -50,6 +56,7 @@ export const coopDetails = defineType(
       ...externalWebsitesFields,
       ...mainImages,
       ...socialMediaFields,
+      ...donateDetailsFields,
     ],
   },
   {strict: false},
