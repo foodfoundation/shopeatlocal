@@ -3,11 +3,10 @@
 // Utilities
 
 import { PhaseCycLess, getProductRow } from "./Db.js";
-import { TimeZoneUser, DocumentStoragePrefix } from "../Cfg.js";
+import { TimeZoneUser } from "../Cfg.js";
 import { Locs, Site } from "./Site.js";
 
 import { DateTime } from "luxon";
-import { join } from "path";
 
 import lodash from "lodash";
 const { round, cloneDeep } = lodash;
@@ -437,16 +436,6 @@ export function TextIDInvcShopOnsite(aID) {
 
 export function TextIDTransact(aID) {
   return aID.toString().padStart(10, "0");
-}
-
-export function PathFileStoreDoc() {
-  return join(process.cwd(), DocumentStoragePrefix);
-}
-
-/** Returns the combined path and name for a StoreDoc file with the specified
- *  name. */
-export function PathNameFileStoreDoc(aNameFile) {
-  return join(PathFileStoreDoc(), aNameFile);
 }
 
 /** Converts a Date into a user-time-zone ISO 8601 'yyyy-mm-ddThh:mm' string

@@ -13,11 +13,13 @@ import {
   S3DocumentBucket,
   S3PublicBucket,
   S3ImageStoragePrefix,
+  DocumentStorageDomain,
+  StaticStorageDomain,
   S3Acl,
-  ImageStoragePrefix,
+  ImageStorageDomain,
   StorageType,
 } from "../Cfg.js";
-import { NameRndAlphaNum, PathNameFileStoreDoc } from "./Util.js";
+import { NameRndAlphaNum } from "./Util.js";
 import { extname } from "path";
 
 import { promisify } from "node:util";
@@ -25,6 +27,13 @@ const accessAsync = promisify(access);
 
 const generateRandomFileName = aFile =>
   `${NameRndAlphaNum(LenNameFileStoreImg)}${extname(aFile.originalname)}`;
+
+const DocumentStoragePrefix = StorageType === "disk" ? "StoreDoc" : DocumentStorageDomain;
+const PathFileStoreDoc = () => join(process.cwd(), DocumentStoragePrefix);
+
+/** Returns the combined path and name for a StoreDoc file with the specified
+ *  name. */
+const PathNameFileStoreDoc = aNameFile => join(PathFileStoreDoc(), aNameFile);
 
 const S3Storage = () => {
   const s3ClientPrivate = new S3Client({
@@ -193,6 +202,15 @@ const DiskStorage = () => {
     },
   };
 };
+
+// Static storage prefix, set this to where you'll be storing your static files (disk, cloudfront, etc.)
+export const StaticStoragePrefix = StorageType === "disk" ? "/Static" : StaticStorageDomain;
+
+// Image storage prefix, set this to where you'll be storing your images (disk, cloudfront, etc.)
+export const ImageStoragePrefix =
+  StorageType === "disk"
+    ? "/StoreImg"
+    : `${ImageStorageDomain}${S3ImageStoragePrefix ? `/${S3ImageStoragePrefix}` : ""}`;
 
 export const Storage = (function () {
   if (StorageType === "disk") {
