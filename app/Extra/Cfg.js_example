@@ -130,22 +130,6 @@ export const ImageStorageDomain = "https://public-cdn/user-content/";
 export const DocumentStorageDomain =
   "https://private-bucket/sensitive-user-content"; // Make sure this is not public!
 
-// Document storage prefix, set this to where you'll be storing your documents (disk, cloudfront, etc.)
-export const StaticStoragePrefix =
-  StorageType === "disk" ? "/Static" : StaticStorageDomain;
-
-// Image storage prefix, set this to where you'll be storing your images (disk, cloudfront, etc.)
-export const ImageStoragePrefix =
-  StorageType === "disk"
-    ? "/StoreImg"
-    : `${ImageStorageDomain}${
-        S3ImageStoragePrefix ? `/${S3ImageStoragePrefix}` : ""
-      }`;
-
-// Document storage prefix, set this to where you'll be storing your documents (disk, cloudfront, etc.)
-export const DocumentStoragePrefix =
-  StorageType === "disk" ? "StoreDoc" : DocumentStorageDomain;
-
 // Set to true if you want to use express.static to serve files from the disk
 // Only makes sense if StorageType is "disk"
 // Not recommended for production - use a CDN or Nginx instead

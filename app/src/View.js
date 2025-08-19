@@ -28,7 +28,9 @@ import {
 } from "./Db.js";
 import gFeatureFlags from "./FeatureFlags.js";
 import { Site, CoopParams, Locs } from "./Site.js";
-import { CkDev, CkTest, ImageStoragePrefix, StaticStoragePrefix } from "../Cfg.js";
+import { CkDev, CkTest } from "../Cfg.js";
+
+import { ImageStoragePrefix, StaticStoragePrefix } from "./Storage.js";
 import {
   ReplaceAll,
   TextDateTimeInput,
