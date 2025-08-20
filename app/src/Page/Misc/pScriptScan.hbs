@@ -98,17 +98,17 @@
 			return null;
 		}
 		console.log(BuffKey);
-		if (BuffKey.length > DefsBarcode.LenScanIt)
-			BuffKey = BuffKey.slice(BuffKey.length - DefsBarcode.LenScanIt);
+		if (BuffKey.length > LenScanIt)
+			BuffKey = BuffKey.slice(BuffKey.length - LenScanIt);
 
-		CkScan = BuffKey.includes(DefsBarcode.PrefixScan);
+		CkScan = BuffKey.includes(PrefixScan);
 		if (regExp.test(BuffKey)) {
 			hasLetters = true;
 		} 
 
 		console.log(hasLetters);
 
-		if (BuffKey.length < DefsBarcode.LenScanIt && hasLetters == false){
+		if (BuffKey.length < LenScanIt && hasLetters == false){
 			let upcFound = null;
 			if (BuffKey.length == 13){
 				console.log("UPC Barcode detected!");
@@ -179,7 +179,7 @@
 			return null;
 		}
 				
-		if (!BuffKey.startsWith(DefsBarcode.PrefixScan)) {
+		if (!BuffKey.startsWith(PrefixScan)) {
 			// prefix not detected for QR code
 			//if it's a number, clear leftovers from buffkey (this could be useful in future)
 			return null;
@@ -190,30 +190,30 @@
 			return null;
 		}
 
-		const oPosCdType = DefsBarcode.PrefixScan.length;
-		const oCdType = BuffKey.substr(oPosCdType, DefsBarcode.LenCdType);
-		if (oCdType !== DefsBarcode.CdTypeIt) return null;
+		const oPosCdType = PrefixScan.length;
+		const oCdType = BuffKey.substr(oPosCdType, LenCdType);
+		if (oCdType !== CdTypeIt) return null;
 
-		const oPosVer = oPosCdType + DefsBarcode.LenCdType;
-		const oVer = BuffKey.substr(oPosVer, DefsBarcode.LenVer);
+		const oPosVer = oPosCdType + LenCdType;
+		const oVer = BuffKey.substr(oPosVer, LenVer);
 		// In the future, we can read different content if a new label version is
 		// encountered:
-		if (oVer !== DefsBarcode.VerIt) return null;
+		if (oVer !== VerIt) return null;
 
-		const oPosIDVty = oPosVer + DefsBarcode.LenVer;
-		const oTextIDVty = BuffKey.substr(oPosIDVty, DefsBarcode.LenIDVty);
+		const oPosIDVty = oPosVer + LenVer;
+		const oTextIDVty = BuffKey.substr(oPosIDVty, LenIDVty);
 		const oRegNum = /^\d+$/;
 		if (!oTextIDVty.match(oRegNum)) return null;
 		const oIDVty = parseInt(oTextIDVty);
 
-		const oPosWgtPer = oPosIDVty + DefsBarcode.LenIDVty;
-		const oTextWgtPer = BuffKey.substr(oPosWgtPer, DefsBarcode.LenWgt);
+		const oPosWgtPer = oPosIDVty + LenIDVty;
+		const oTextWgtPer = BuffKey.substr(oPosWgtPer, LenWgt);
 		if (!oTextWgtPer.match(oRegNum)) return null;
 		const oWgtPer = parseInt(oTextWgtPer)
-			/ Math.pow(10.0, DefsBarcode.LenWgtFrac);
+			/ Math.pow(10.0, LenWgtFrac);
 
-		const oPosIDItCart = oPosWgtPer + DefsBarcode.LenWgt;
-		const oTextIDItCart = BuffKey.substr(oPosIDItCart, DefsBarcode.LenIDItCart);
+		const oPosIDItCart = oPosWgtPer + LenWgt;
+		const oTextIDItCart = BuffKey.substr(oPosIDItCart, LenIDItCart);
 		if (!oTextIDItCart.match(oRegNum)) return null;
 		const oIDItCart = parseInt(oTextIDItCart) || null;
 
