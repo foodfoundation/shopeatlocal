@@ -2,156 +2,44 @@
 //    ---------
 //    Market home view --}}
 
-<style>
-	body {
-		background-color: hsl(120, 2%, 60%);
-		background-image: url("{{hPrefixStatic 'back.jpg'}}");
-		background-size: cover;
-	}
-
-	#Banner {
-		box-shadow: 0 0 12px 0 hsla(0, 0%, 0%, 0.4) !important;
-		background-color: hsl(81, 51%, 82%);
-
-		border-top: 2px solid hsl(0, 0%, 90%);
-		border-bottom: 2px solid hsl(0, 0%, 90%);
-	}
-
-	/* Bootstrap 'lg' or larger: */
-	@media (min-width: 992px) {
-		#Banner {
-			background: linear-gradient(150deg, hsl(81, 30%, 55%), hsl(81, 51%, 82%) 80%);
-		}
-	}
-
-	#Banner hr {
-		border-color: hsl(0, 0%, 20%);
-	}
-
-	#Banner a {
-		color: hsl(0, 0%, 10%) !important;
-	}
-
-	#Banner a:active {
-		color: hsl(0, 0%, 60%) !important;
-	}
-
-	#DivJoin {
-		padding: 0.35em 0 0.6em 0;
-		border-top: 1px solid hsl(0, 0%, 10%) !important;
-		border-bottom: 1px solid hsl(0, 0%, 10%) !important;
-	}
-
-	.Box {
-		box-shadow:
-			/* Just increasing the contrast a bit: */
-			inset 0 0 4px rgba(0, 0, 0, 12%),
-			0 0 8px rgba(0, 0, 0, 30%) !important;
-		background-color: hsla(0, 0%, 100%, 0.3);
-
-		border: 2px solid hsla(0, 0%, 100%, 0.4);
-		border-radius: 4px;
-
-		line-height: 150%;
-	}
-
-	#Cats {
-		columns: 3;
-		column-gap: 10px;
-	}
-
-	/* Bootstrap 'lg' or smaller: */
-	@media (max-width: 991px) {
-		#Cats {
-			columns: 2;
-		}
-	}
-
-	/* Bootstrap 'xs' or smaller: */
-	@media (max-width: 575px) {
-		#Cats {
-			columns: 1;
-		}
-	}
-
-	#Cats .Cat {
-		break-inside: avoid;
-
-		box-shadow:
-			/* Just increasing the contrast a bit: */
-			inset 0 0 4px rgba(0, 0, 0, 12%),
-			0 0 8px rgba(0, 0, 0, 30%) !important;
-		background-color: hsla(0, 0%, 100%, 0.3);
-		/* Just increasing the contrast a bit: */
-
-		border: 2px solid hsla(0, 0%, 100%, 0.4);
-		border-radius: 4px;
-
-		margin-bottom: 10px;
-
-		line-height: 120% !important;
-	}
-
-	#Cats .Cat .Title {
-		font-size: 110%;
-	}
-
-	a.Title {
-		color: hsl(0, 0%, 5%) !important;
-	}
-
-	a.Title:active {
-		color: hsl(0, 0%, 80%) !important;
-	}
-
-	#Attrs .LinksPg a, #Cats .LinksPg a {
-		background-color: hsla(0, 0%, 100%, 0.5) !important;
-		color: hsl(0, 0%, 10%) !important;
-	}
-
-	#Attrs .LinksPg a:active, #Cats .LinksPg a:active {
-		color: hsl(0, 0%, 60%) !important;
-	}
-</style>
+<div id="HomeBg" class="w-full min-h-screen bg-[hsl(120,2%,60%)] bg-cover bg-center" style="background-image: url('{{hPrefixStatic 'back.jpg'}}');">
 
 {{#*inline "pProducersPickup"}}
 {{/inline}}
 
 {{!-- These blocks are repeated below the banner: --}}
-<div class="container d-none d-lg-block pt-3">
+<div class="container mx-auto hidden lg:block pt-3">
 	{{>pProducersPickup}}
 </div>
 
-<div id="Banner" class="py-4 my-3">
-	<div class="container">
-		<div class="row align-items-center">
-			<div class="d-none d-lg-block col-lg-2">
+<div id="Banner" class="py-4 my-3 !shadow-[0_0_12px_0_rgba(0,0,0,0.4)] bg-[hsl(81,51%,82%)] border-y-2 border-[hsl(0,0%,90%)] min-[992px]:bg-[linear-gradient(150deg,hsl(81,30%,55%),hsl(81,51%,82%)_80%)]">
+	<div>
+		<div class="flex flex-row items-center">
+			<div class="flex flex-col flex-1">
 				<img src="{{CoopParams.HeroLogoPath}}" alt="" width="180">
 			</div>
-			<div class="col-md-8 col-lg-6">
-				<h1 class="text-center text-md-left display-4 font-size-200
-					font-size-lg-300">
+			<div class="w-full md:w-8/12 lg:w-6/12">
+				<h1 class="text-red-500">
 					{{CoopParams.CoopName}}
 				</h1>
 
-				<p class="text-center text-md-left lead font-size-110 font-size-md-125
-					mb-0">
+				<p class="text-center md:text-left text-lg font-size-110 font-size-md-125 mb-0">
 
 				</p>
 			</div>
-			<div class="col-md-4 d-flex justify-content-center align-items-center">
-				<div id="" class="mt-3 mt-md-0">
+			<div class="w-full md:w-4/12 flex justify-center items-center">
+				<div id="" class="mt-3 md:mt-0">
 					{{#unless CredUser}}
 					<a href="/member-registration"
-						class="Title lead font-size-150 font-size-md-225">
-						<button id="meet-button" style="color:#fff; background-color: #f5912e; border:1px solid #f5912e; border-radius: 35px; padding:12px; margin-bottom:5px; font-size:27px;">
+						class="Title text-lg font-size-150 font-size-md-225 !text-[hsl(0,0%,10%)] active:!text-[hsl(0,0%,60%)]">
+						<button id="meet-button" class="text-white bg-[#f5912e] border border-[#f5912e] rounded-[35px] p-3 mb-[5px] text-[27px]">
 							Start Free Trial - Shop Now
 						</button>
 					</a>
 					{{/unless}}
 					<a href="/producers"
-						class="Title lead font-size-150 font-size-md-225">
-						<button id="meet-button" style="color:#fff; background-color: #036667; border:1px solid #036667; border-radius: 35px; padding:12px;">
+						class="Title text-lg font-size-150 font-size-md-225 !text-[hsl(0,0%,10%)] active:!text-[hsl(0,0%,60%)]">
+						<button id="meet-button" class="text-white bg-[#036667] border border-[#036667] rounded-[35px] p-3">
 							Meet Our Producers
 						</button>
 					</a>
@@ -163,14 +51,13 @@
 
 {{!-- For aesthetic reasons, I want these blocks to appear above the banner when
 //    the viewport is large, but that does not work on a phone: --}}
-<div class="container d-lg-none">
+<div class="container mx-auto lg:hidden">
 	{{>pProducersPickup}}
 </div>
 
-<div class="container pb-4">
-	<div class="Box p-2" id="shop-pane" style="padding-top: 0px !important;">
-		<div class="position-relative d-flex justify-content-center
-			align-items-center" style="top: 5px;">
+<div class="container mx-auto pb-4">
+	<div class="Box p-2 pt-0 bg-[hsla(0,0%,100%,0.3)] border-2 border-[hsla(0,0%,100%,0.4)] rounded leading-[150%] !shadow-[inset_0_0_4px_rgba(0,0,0,0.12),0_0_8px_rgba(0,0,0,0.3)]" id="shop-pane">
+		<div class="relative flex justify-center items-center top-[5px]">
 			<div class="mr-3">
 				<img src="{{CoopParams.ProductLogoPath}}" alt="" height="40">
 			</div>
@@ -184,34 +71,34 @@
 		<div id="Attrs">
 			<form id="mainSearch">
 			<div class="LinksPg text-center mb-0">
-				<div id="search-container" style="width: 100%; display:flex; flex-direction:row;justify-content: space-evenly; overflow:hidden; ">
-					<span id="button-container" style="width:13%; display:flex; flex-direction:column;">
+				<div id="search-container" class="w-full flex flex-row justify-evenly overflow-hidden">
+					<span id="button-container" class="w-[13%] flex flex-col">
 						{{#if CredUser}}
-						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search?favorites=true'">
+						<div class="inline-flex items-center justify-center rounded text-white mt-2 sm:mt-0 px-3 py-2 bg-[#737577] border border-[#737577] m-px" onclick="window.location.href='/product-search?favorites=true'">
 							<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
 							Favorites
-							<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Add to Favorites" class="d-none d-md-inline-block align-top" width="25" height="25">
+							<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Add to Favorites" class="hidden md:inline-block align-top" width="25" height="25">
 						</div>
 						{{/if}}
-						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search'">
+						<div class="inline-flex items-center justify-center rounded text-white mt-2 sm:mt-0 px-3 py-2 bg-[#737577] border border-[#737577] m-px" onclick="window.location.href='/product-search'">
 							<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
 							New Products
 						</div>
 						{{#if CredUser}}
-						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search?CkPast=true'">
+						<div class="inline-flex items-center justify-center rounded text-white mt-2 sm:mt-0 px-3 py-2 bg-[#737577] border border-[#737577] m-px" onclick="window.location.href='/product-search?CkPast=true'">
 							<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
 							Past Purchases
 						</div>
 						{{/if}}
-						<div id="prodlist-mobile" style="display:none;">
-							<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList2()">
+						<div id="prodlist-mobile" class="hidden">
+							<div class="inline-flex items-center justify-center rounded text-white mt-2 sm:mt-0 px-3 py-2 production-list-noclick bg-[#036667] border border-[#036667] m-px" onclick="showProdList2()">
 								<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
 								Production Type
 							</div>
-							<div id="production-list2" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667; position:absolute; display:none; background-color: #036667;">
-								{{#each AttrsProduct}}						
+							<div id="production-list2" class="production-list-noclick text-left pl-[15px] w-[280px] border border-[#036667] absolute bg-[#036667] hidden">
+								{{#each AttrsProduct}}							
 									<input class="production-list-noclick" id="Ck{{Cd}}*" name="Ck{{Cd}}*" type="checkbox" >
-									<label class="production-list-noclick" style="color: #fff" for="Ck{{Cd}}*" >
+									<label class="production-list-noclick text-white" for="Ck{{Cd}}*" >
 										{{Text}}
 									</label>
 									<br class="production-list-noclick">
@@ -219,29 +106,29 @@
 							</div>
 						</div>
 					</span>
-					<span id="searchbar-container" style="width:60%; display:flex; flex-direction:column; justify-content: center;">
-						<input style="max-height:40px;" id="Terms" name="Terms" type="text" value="" autofocus="" class="form-control flex-grow-1 mr-sm-2">
+					<span id="searchbar-container" class="w-[60%] flex flex-col justify-center">
+						<input id="Terms" name="Terms" type="text" value="" autofocus="" class="flex-1 sm:mr-2 border border-gray-300 rounded px-3 py-2 max-h-10">
 					</span>
-					<span id="searchbutton-container" style="width:13%; display:flex; flex-direction:column; justify-content: center;">
-						<button type="submit" class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;">
-							<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">
+					<span id="searchbutton-container" class="w-[13%] flex flex-col justify-center">
+						<button type="submit" class="inline-flex items-center justify-center rounded text-white mt-2 sm:mt-0 px-3 py-2 bg-[#737577] border border-[#737577] m-px">
+							<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn relative -top-[2px]">
 							Search
 						</button>
 						<div id="prodlist-full">
-							<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList()">
+							<div class="inline-flex items-center justify-center rounded text-white mt-2 sm:mt-0 px-3 py-2 production-list-noclick bg-[#036667] border border-[#036667] m-px" onclick="showProdList()">
 								<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
 								Production Type
 							</div>
-							<div id="production-list" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667; position:absolute; display:none; background-color: #036667;">
-								{{#each AttrsProduct}}						
+							<div id="production-list" class="production-list-noclick text-left pl-[15px] w-[280px] border border-[#036667] absolute bg-[#036667] hidden">
+								{{#each AttrsProduct}}							
 									<input class="production-list-noclick" id="Ck{{Cd}}" name="Ck{{Cd}}" type="checkbox" >
-									<label class="production-list-noclick" style="color: #fff" for="Ck{{Cd}}" >
+									<label class="production-list-noclick text-white" for="Ck{{Cd}}" >
 										{{Text}}
 									</label>
 									<br class="production-list-noclick">
 								{{/each}}
 								{{#if CoopParams.isProductTypesPageDefined}}
-								<div style="width: 100%; text-align:center; padding-right: 15px; margin-bottom:10px;">
+								<div class="w-full text-center pr-[15px] mb-[10px]">
 									<a href="/production-types" target="_blank"><b>Production Type Info</b></a>
 								</div>
 								{{/if}}
@@ -259,16 +146,16 @@
 		</div>
 	</div>
 
-	<div id="Cats" class="text-center mt-3">
+	<div id="Cats" class="text-center mt-3 Flow-md-2 Flow-lg-3 [column-gap:10px]">
 		{{#each Cats}}
-		<div class="Cat p-2 position-relative">
+		<div class="Cat p-2 relative NoBreak !shadow-[inset_0_0_4px_rgba(0,0,0,0.12),0_0_8px_rgba(0,0,0,0.3)] bg-[hsla(0,0%,100%,0.3)] border-2 border-[hsla(0,0%,100%,0.4)] rounded mb-[10px] !leading-[120%]">
 			<div class="font-weight-semi">
-				<a href="/product-search?IDCat={{IDCat}}" class="Title">{{NameCat}}</a>
+				<a href="/product-search?IDCat={{IDCat}}" class="Title text-[110%] !text-[hsl(0,0%,5%)] active:!text-[hsl(0,0%,80%)]">{{NameCat}}</a>
 			</div>
 
 			<div class="LinksPg mb-1">
 				{{#each Subcats}}
-				<a href="/product-search?IDSubcat={{IDSubcat}}">{{NameSubcat}}</a>
+				<a class="!bg-[hsla(0,0%,100%,0.5)] !text-[hsl(0,0%,10%)] inline-block px-[0.4em] py-[0.1em] rounded-[0.2em] mb-[0.2em] active:!text-[hsl(0,0%,60%)]" href="/product-search?IDSubcat={{IDSubcat}}">{{NameSubcat}}</a>
 				{{/each}}
 			</div>
 		</div>
@@ -285,17 +172,17 @@
 		window.location.href = "/product-search?" + values;
 	});
 	function showProdList() {
-		$("#production-list").toggle();
-	}
-	function showProdList2() {
-		$("#production-list2").toggle();
-	}
+        $("#production-list").toggleClass("hidden");
+    }
+    function showProdList2() {
+        $("#production-list2").toggleClass("hidden");
+    }
 
-	$('html').click(function(e) {                    
-		if(!$(e.target).hasClass('production-list-noclick') )
-		{
-			$("#production-list").hide();
-			$("#production-list2").hide();         
-		}
-	}); 
+	    $('html').click(function(e) {                    
+        if(!$(e.target).hasClass('production-list-noclick') )
+        {
+            $("#production-list").addClass('hidden');
+            $("#production-list2").addClass('hidden');         
+        }
+    }); 
 </script>
