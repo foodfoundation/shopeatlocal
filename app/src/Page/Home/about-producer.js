@@ -4,7 +4,7 @@
 
 import { ProductsVtysRoll } from "../../Search.js";
 import { wProducerFromID, Conn, wPopulateIsFavorited } from "../../Db.js";
-import {wProductImages} from "../Shop/product.js";
+import { wProductImages } from "../Shop/product.js";
 
 export async function wHandGet(aReq, aResp) {
   const oIDProducer = aReq.params.IDProducerView;
@@ -14,17 +14,22 @@ export async function wHandGet(aReq, aResp) {
     aResp.render("Misc/404");
     return;
   }
+
+  // Set the first image as the producer's image:
+  // NOTE: not supporting multiple producer images - not sure if it makes sense
+  // to have multiple images for a producer - that's a logo basically
+  const oImages = await wProducerImages(oIDProducer);
+  oProducer.NameImgProducer = oImages.at(0);
+
   Object.assign(aResp.locals, oProducer);
 
   const oIsMembEbtEligable = aResp.locals.CredUser?.CdRegEBT === "Approv";
   aResp.locals.Products = await wProducts(oIDProducer, oIsMembEbtEligable);
+  for (const Product of aResp.locals.Products) {
+    const oImages = await wProductImages(Product.IDProduct);
+    Product.Images = oImages;
+  }
 
-  const oImages = await wProducerImages(oIDProducer);
-
-  // Debug: verify what images were loaded
-  console.log(`�️  Loaded images for producer ${oIDProducer}:`, oImages);
-
-  aResp.locals.Images = oImages;
   if (aResp.locals.CredImperUser?.IDMemb)
     await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, aResp.locals.Products);
 
@@ -102,7 +107,6 @@ async function wProducts(aIDProducer, aIsMembEbtEligable) {
                 ORDER BY QtyAvailWebProduct DESC, zProductAvail.WhenCreate DESC,
                          Vty.Kind, Vty.Size, Vty.WgtMin, Vty.WgtMax, Vty.IDVty`;
 
-
   const oParams = {
     IDProducer: aIDProducer,
   };
@@ -111,17 +115,14 @@ async function wProducts(aIDProducer, aIsMembEbtEligable) {
   return ProductsVtysRoll(oRows, aIsMembEbtEligable);
 }
 
-  export async function wProducerImages(aIDProducer) {
-    const oSQL = `
+export async function wProducerImages(aIDProducer) {
+  const oSQL = `
       SELECT FileName
       FROM ProducerImage
       WHERE IDProducer = :IDProducer
       ORDER BY DisplayOrder ASC
     `;
-    const oParams = {IDProducer: aIDProducer};
-    const [oRows] = await Conn.wExecPrep(oSQL, oParams);
-    return oRows.map(row => row.FileName);
-  }
-
-
-
+  const oParams = { IDProducer: aIDProducer };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  return oRows.map(row => row.FileName);
+}

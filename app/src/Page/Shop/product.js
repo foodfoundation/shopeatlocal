@@ -24,9 +24,6 @@ export async function wHandGet(aReq, aResp) {
   // Fetch all images for this product
   const oImages = await wProductImages(oIDProduct);
 
-  // Debug: verify what images were loaded
-  console.log(`�️  Loaded images for product ${oIDProduct}:`, oImages);
-
   const oProduct = { ...oProductsRoll[0], ...oQtysWeb, Images: oImages };
   if (aResp.locals.CredImperUser?.IDMemb)
     await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, [oProduct]);
@@ -74,7 +71,6 @@ export async function wProductImages(aIDProduct) {
   const [oRows] = await Conn.wExecPrep(oSQL, oParams);
   return oRows.map(row => row.FileName);
 }
-
 
 /** Returns the total listed variety offer and promise quantities for the
  *  specified product, or zeros if the product is not found. */
