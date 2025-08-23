@@ -63,7 +63,7 @@ export async function wSend(aMsg, retryCount = 0) {
     console.error(`Error in sending email: ${error}`);
     if (retryCount < 3) {
       // If email sending fails, wait 5 seconds and then try again
-      await new Promise(resolve => setTimeout(resolve, 60000));
+      await new Promise(resolve => setTimeout(resolve, 5000));
       await wSend(aMsg, retryCount + 1);
     } else {
       // If email sending fails 3 times, log the failure and give up
