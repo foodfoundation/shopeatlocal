@@ -177,7 +177,6 @@ export const NamesParamMemb = [
   "CkProducer",
   "CkStaff",
   "CkWholesale",
-  // Preserve member tag filters across paging/export
   "MemberTagID",
   "MemberTagName",
 ];

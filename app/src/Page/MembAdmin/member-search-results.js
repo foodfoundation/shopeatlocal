@@ -69,8 +69,6 @@ function SummsParam(aParams) {
   oAdd("St", "State:");
   oAdd("Zip");
 
-  console.log(aParams);
-
   if (aParams.CkTrialMemb) oSumms.push({ Lbl: "Current trial members" });
   if (aParams.CkPendMemb) oSumms.push({ Lbl: "Trial completed and pending" });
   if (aParams.CkPendEBT) oSumms.push({ Lbl: "Pending EBT registration" });
