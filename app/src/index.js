@@ -625,6 +625,19 @@ App.route("/edit-member-status/:IDMembSel(\\d{1,5})?")
   .post(NextOnExcept(editMemberStatusPost));
 
 import {
+  wHandGet as editMemberTagsGet,
+  wHandPost as editMemberTagsPost,
+} from "./Page/Memb/edit-member-tags.js";
+
+App.route("/edit-member-tags/:IDMembSel(\\d{1,5})?")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareAllowEditMemb)
+  .all(WareCkStaff)
+  .get(NextOnExcept(editMemberTagsGet))
+  .post(NextOnExcept(editMemberTagsPost));
+
+import {
   wHandGet as transactionsGet,
   wHandGetExport as transactionsExportGet,
 } from "./Page/Memb/transactions.js";
