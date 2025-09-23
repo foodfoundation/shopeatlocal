@@ -1741,7 +1741,7 @@ export async function queryMemberTagAssignments(memberId) {
   const sql = `
 				SELECT
 					IDMemberTagAssignment,
-					IDMemberTag,
+					MemberTagAssignments.IDMemberTag,
 					IDMemb,
           Tag
 				FROM
@@ -1753,6 +1753,21 @@ export async function queryMemberTagAssignments(memberId) {
     memberId: memberId,
   };
   const [memberTagAssignments] = await Conn.wExecPrep(sql, params);
+  return memberTagAssignments;
+}
+
+export async function queryAllMemberTagAssignments() {
+  const sql = `
+				SELECT
+					MemberTagAssignments.IDMemberTagAssignment,
+					MemberTagAssignments.IDMemberTag,
+					MemberTagAssignments.IDMemb,
+					MemberTags.Tag
+				FROM
+					MemberTagAssignments
+				LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+				`;
+  const [memberTagAssignments] = await Conn.wExecPrep(sql, {});
   return memberTagAssignments;
 }
 
