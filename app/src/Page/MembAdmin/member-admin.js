@@ -2,7 +2,7 @@
 // ---------------
 // Member Admin page controllers
 
-import { Conn } from "../../Db.js";
+import { Conn, queryMemberTagAssignmentCountByTagName } from "../../Db.js";
 import { PathQuery, NamesParamMemb } from "../../Search.js";
 import { CoopParams } from "../../Site.js";
 
@@ -20,6 +20,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.CtMembProducer = await wCtMembProducer();
   aResp.locals.CtMembStaff = await wCtMembStaff();
   aResp.locals.CtMembWholesale = await wCtMembWholesale();
+  aResp.locals.memberTags = await queryMemberTagAssignmentCountByTagName();
 
   aResp.locals.Title = `${CoopParams.CoopNameShort} member admin`;
   aResp.render("MembAdmin/member-admin");

@@ -92,6 +92,16 @@
 				&times; <span class="LblPg">{{CtMembStaff}}</span>
 			</div>
 
+			<h5 class="mt-3">Member tags</h4>
+			{{#each memberTags}}
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkMemberTags=true">
+					{{Tag}}
+				</a>
+				&times; <span class="LblPg">{{Count}}</span>
+			</div>
+			{{/each}}
+
 			<hr class="d-block d-md-none">
 		</div>
 
