@@ -22,6 +22,8 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.CtMembWholesale = await wCtMembWholesale();
   aResp.locals.memberTags = await queryMemberTagAssignmentCountByTagName();
 
+  console.log(aResp.locals.memberTags);
+
   aResp.locals.Title = `${CoopParams.CoopNameShort} member admin`;
   aResp.render("MembAdmin/member-admin");
 }
