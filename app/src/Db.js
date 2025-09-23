@@ -741,7 +741,9 @@ export async function wMembFromID(aIDMemb, aConn) {
   const oSQL = `SELECT Memb.*, Memb.WhenReg AS WhenRegMemb,
 			Producer.IDProducer, Producer.CdProducer,
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
-			IFNULL(zTransact.BalEBT, 0) AS BalEBT
+			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
+      IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+      IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
 		LEFT JOIN Producer USING (IDMemb)
 		LEFT JOIN (
@@ -749,6 +751,15 @@ export async function wMembFromID(aIDMemb, aConn) {
 			FROM Transact
 			GROUP BY Transact.IDMemb
 		) AS zTransact USING (IDMemb)
+     LEFT JOIN (
+            SELECT
+                MTA.IDMemb,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
+            FROM MemberTagAssignments AS MTA
+            LEFT JOIN MemberTags AS MT ON (MT.IDMemberTag = MTA.IDMemberTag)
+            GROUP BY MTA.IDMemb
+    ) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
 		WHERE Memb.IDMemb = ?`;
   const [oRows] = await aConn.wExecPrep(oSQL, [aIDMemb]);
   return oRows.length ? oRows[0] : null;
@@ -762,7 +773,9 @@ export async function wMembFromNameLogin(aNameLogin) {
   const oSQL = `SELECT Memb.*,
 			Producer.IDProducer, Producer.CdProducer,
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
-			IFNULL(zTransact.BalEBT, 0) AS BalEBT
+			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
+      IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+		IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
 		LEFT JOIN Producer USING (IDMemb)
 		LEFT JOIN (

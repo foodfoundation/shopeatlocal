@@ -128,6 +128,9 @@ async function wAssess_FeesMemb(aConn) {
  */
 async function wMembsFeeDue(aConn) {
   // Why isn't CtMonthTrialMembNew a query parameter?: [TO DO]
+
+  // TODO: Exclude members with tags certain_tags
+
   const oSQL = `SELECT *
 		FROM Memb
 		WHERE (

@@ -152,9 +152,20 @@ async function wDataCartPend(aIDSess) {
     oCkEligEBT =
       oCdCartType === "Retail" && (!!oCartPend.CkEBTNonMemb || oMembShop?.CdRegEBT === "Approv");
 
+    const oMembTagIds = oMembShop?.TagIDs ?? [];
+
     oIts = await wItsCartOnsitePend(aIDSess);
     oIts = await Add_CkExcludeConsumerFee(oIts);
-    oTtls = TtlsCart(oIts, "Qty", "PriceNomOnsite", oCkEligEBT, null, null, oIsWholesaleElig);
+    oTtls = TtlsCart(
+      oIts,
+      "Qty",
+      "PriceNomOnsite",
+      oCkEligEBT,
+      null,
+      null,
+      oIsWholesaleElig,
+      oMembTagIds,
+    );
 
     // TtlsCart does not add producer fees:
     for (const oIt of oTtls.Its) {
