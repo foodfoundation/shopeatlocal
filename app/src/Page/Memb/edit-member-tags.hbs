@@ -1,0 +1,52 @@
+{{!-- edit-member-tags.hbs
+//    ----------------------
+//    Edit member tags view --}}
+
+<div class="w-lg-40 container py-4">
+	<div class="d-flex flex-row justify-content-between">
+		<h2 class="mb-3">Edit member tags</h2>
+
+		{{#unless CkSelImperUserSelf}}
+		<div class="text-right">
+			<h3 class="mb-0">{{CredSelImperUser.NameLogin}}</h3>
+
+			{{>Misc/pIDsBlock CredSelImperUser}}
+
+			<hr class="mt-2">
+		</div>
+		{{/unless}}
+	</div>
+
+	<form id="form-main" class="pb-4"
+		action="{{hPathMembSel "/edit-member-tags"}}" method="POST" novalidate
+		onsubmit="Disab_Form()">
+
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+
+		{{#if Tags.length}}
+		<div class="form-group">
+			<label class="col-form-label">Available tags</label>
+			<div>
+				{{#each Tags}}
+				<div class="custom-control custom-checkbox mb-2">
+					<input id="Tag{{IDMemberTag}}" name="Tag{{IDMemberTag}}" type="checkbox"
+						{{hAttrCk Ck false}}
+						class="custom-control-input">
+					<label for="Tag{{IDMemberTag}}" class="custom-control-label">
+						{{Tag}}
+					</label>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		{{else}}
+		<div class="alert alert-info">No tags have been defined.</div>
+		{{/if}}
+
+		<hr>
+
+		<div class="d-flex">
+			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+		</div>
+	</form>
+</div>
