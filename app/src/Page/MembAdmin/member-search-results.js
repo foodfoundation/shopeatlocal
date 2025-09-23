@@ -6,6 +6,7 @@ import { PathQuery, NamesParamMemb, wMembs, DataPage } from "../../Search.js";
 import { Fmt_RowExcel } from "../../Util.js";
 import { CtResultSearchListPage } from "../../../Cfg.js";
 import { CoopParams } from "../../Site.js";
+import { queryAllMemberTagAssignments } from "../../Db.js";
 // The module adds the 'csv' method to the response object prototype, so it must
 // be required, though the export is not used:
 import _gCSV from "../../CSV.js";
@@ -21,10 +22,16 @@ export async function wHandGet(aReq, aResp) {
 
   const { Ct: oCt, Membs: oMembs } = await wMembs(aReq.query);
   const oDataPage = DataPage(aReq.query, oCt, CtResultSearchListPage);
+  const oMemberTagAssignments = await queryAllMemberTagAssignments(aReq.query);
+
+  const membersWithTagAssignments = oMembs.map(oMemb => ({
+    ...oMemb,
+    MemberTagAssignments: oMemberTagAssignments.filter(o => o.IDMemb === oMemb.IDMemb),
+  }));
 
   aResp.locals.Title = `${CoopParams.CoopNameShort} member search results`;
   aResp.locals.SummsParam = SummsParam(aReq.query);
-  aResp.locals.Membs = oMembs;
+  aResp.locals.Membs = membersWithTagAssignments;
   aResp.locals.TextRg = oDataPage.Text;
   aResp.locals.PathPagePrev = PathPage(oDataPage.IdxPagePrev);
   aResp.locals.PathPageNext = PathPage(oDataPage.IdxPageNext);
