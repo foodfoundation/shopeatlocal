@@ -1101,6 +1101,36 @@ export async function wUpd_CatsProducer(aIDProducer, aIDsCats) {
   }
 }
 
+/** Replaces a member's tag assignments. */
+export async function wUpd_MembTags(aIDMemb, aIDsTags) {
+  const oConn = await wConnNew();
+  await oConn.wTransact();
+  try {
+    // Delete existing records
+    const oSQLDel = `DELETE FROM MemberTagAssignments WHERE IDMemb = ?`;
+    await oConn.wExecPrep(oSQLDel, [aIDMemb]);
+
+    // Add new records (dedupe in case caller provides duplicates)
+    const oSQLIns = `INSERT INTO MemberTagAssignments (IDMemberTag, IDMemb)
+      VALUES (:IDMemberTag, :IDMemb)`;
+    const oSet = new Set(aIDsTags || []);
+    for (const oIDTag of oSet) {
+      const oParams = {
+        IDMemberTag: oIDTag,
+        IDMemb: aIDMemb,
+      };
+      await oConn.wExecPrep(oSQLIns, oParams);
+    }
+
+    await oConn.wCommit();
+  } catch (aErr) {
+    await oConn.wRollback();
+    throw aErr;
+  } finally {
+    oConn.Release();
+  }
+}
+
 /** Returns the specified subcategory, or 'null' if no match is found. */
 //
 // Note that the same data is cached in gSite.
@@ -1754,7 +1784,7 @@ export async function queryMemberTagAssignments(memberId) {
   const sql = `
 				SELECT
 					IDMemberTagAssignment,
-					IDMemberTag,
+					MemberTagAssignments.IDMemberTag,
 					IDMemb,
           Tag
 				FROM
@@ -1766,6 +1796,21 @@ export async function queryMemberTagAssignments(memberId) {
     memberId: memberId,
   };
   const [memberTagAssignments] = await Conn.wExecPrep(sql, params);
+  return memberTagAssignments;
+}
+
+export async function queryAllMemberTagAssignments() {
+  const sql = `
+				SELECT
+					MemberTagAssignments.IDMemberTagAssignment,
+					MemberTagAssignments.IDMemberTag,
+					MemberTagAssignments.IDMemb,
+					MemberTags.Tag
+				FROM
+					MemberTagAssignments
+				LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+				`;
+  const [memberTagAssignments] = await Conn.wExecPrep(sql, {});
   return memberTagAssignments;
 }
 
