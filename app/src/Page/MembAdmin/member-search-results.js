@@ -69,6 +69,8 @@ function SummsParam(aParams) {
   oAdd("St", "State:");
   oAdd("Zip");
 
+  console.log(aParams);
+
   if (aParams.CkTrialMemb) oSumms.push({ Lbl: "Current trial members" });
   if (aParams.CkPendMemb) oSumms.push({ Lbl: "Trial completed and pending" });
   if (aParams.CkPendEBT) oSumms.push({ Lbl: "Pending EBT registration" });
@@ -80,6 +82,7 @@ function SummsParam(aParams) {
   if (aParams.CkEBT) oSumms.push({ Lbl: "Approved for EBT" });
   if (aParams.CkProducer) oSumms.push({ Lbl: "Registered as producer" });
   if (aParams.CkStaff) oSumms.push({ Lbl: "Staff" });
+  if (aParams.MemberTagID) oSumms.push({ Lbl: `Member tag: ${aParams.MemberTagName}` });
 
   return oSumms;
 }
