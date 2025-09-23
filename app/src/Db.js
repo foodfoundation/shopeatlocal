@@ -1724,3 +1724,62 @@ export async function querySiteConfigurations() {
   const [siteRow] = await Conn.wExecPrep(sql, {});
   return siteRow;
 }
+
+export async function queryMemberTags() {
+  const sql = `
+				SELECT
+					IDMemberTag,
+					Tag
+				FROM
+					MemberTags
+				`;
+  const [memberTags] = await Conn.wExecPrep(sql, {});
+  return memberTags;
+}
+
+export async function queryMemberTagAssignments(memberId) {
+  const sql = `
+				SELECT
+					IDMemberTagAssignment,
+					IDMemberTag,
+					IDMemb,
+          Tag
+				FROM
+					MemberTagAssignments
+          LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+        WHERE IDMemb = :memberId
+				`;
+  const params = {
+    memberId: memberId,
+  };
+  const [memberTagAssignments] = await Conn.wExecPrep(sql, params);
+  return memberTagAssignments;
+}
+
+export async function queryMemberTagAssignmentCountByTagName() {
+  const sql = `
+				SELECT
+          MemberTags.IDMemberTag,
+					Tag,
+					COUNT(*) AS Count
+				FROM
+					MemberTagAssignments
+				  LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+				GROUP BY IDMemberTag, Tag
+				`;
+  const [memberTagAssignments] = await Conn.wExecPrep(sql, {});
+  if (memberTagAssignments.length > 0) {
+    return memberTagAssignments;
+  } else {
+    const sql2 = `
+				SELECT
+					IDMemberTag,
+					Tag,
+					0 AS Count
+				FROM
+				  MemberTags
+				`;
+    const [emptyMemberTags] = await Conn.wExecPrep(sql2, {});
+    return emptyMemberTags;
+  }
+}
