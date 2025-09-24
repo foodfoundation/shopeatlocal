@@ -13,6 +13,7 @@ import { Site, CoopParams } from "./Site.js";
 import moment from "moment";
 
 import momentTimezone from "moment-timezone";
+import { MembershipTags } from "../Cfg.js";
 const { tz } = momentTimezone;
 
 /** Passes the connection to function awExec so it can make changes within
@@ -131,8 +132,20 @@ async function wMembsFeeDue(aConn) {
 
   // TODO: Exclude members with tags certain_tags
 
-  const oSQL = `SELECT *
+  const oSQL = `SELECT
+    Memb.*,
+    IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+    IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
+		LEFT JOIN (
+            SELECT
+                MTA.IDMemb,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
+            FROM MemberTagAssignments AS MTA
+            LEFT JOIN MemberTags AS MT ON (MT.IDMemberTag = MTA.IDMemberTag)
+            GROUP BY MTA.IDMemb
+    ) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
 		WHERE (
 				WhenFeeMembLast IS NULL
 				OR WhenFeeMembLast <= DATE_SUB(NOW(), INTERVAL 1 YEAR)
@@ -181,6 +194,15 @@ async function wAssess_FeeMemb(aConn, aMemb) {
   if (producerRows.length === 1) {
     aMemb.CyclesUsed = 2;
     await updateProducerCycleCount(aConn, aMemb.IDMemb);
+  }
+
+  const hasNoFeeMembership = !!MembershipTags.find(oMemberTag =>
+    aMemb.TagIDs.includes(oMemberTag.tagId),
+  )?.hasNoFee;
+
+  if (hasNoFeeMembership) {
+    console.log("membership_fee_not_assessed: has_no_fee_membership");
+    return;
   }
 
   if (aMemb.CyclesUsed < 2) {
