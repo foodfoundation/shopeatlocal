@@ -109,11 +109,15 @@ export async function wHandPost(aReq, aResp) {
   // If the user selected a 'new' file, use that. Otherwise, use the previously-
   // selected file, unless the user opted to remove it:
   let oNameImg = [];
-  if (aReq.files && aReq.files["Img"] && aReq.files["Img"].length > 0)
+  if (aReq.files && aReq.files["Img"] && aReq.files["Img"].length > 0) {
     oNameImg.push(...aReq.files["Img"].map(f => f.filename));
-  else if (aReq.body.CkRemImg) oNameImg = [];
-  else if (aReq.body.NameImgProduct) oNameImg = [aReq.body.NameImgProduct];
-  else oNameImg = [];
+  } else if (aReq.body.CkRemImg) {
+    oNameImg = [];
+  } else if (aReq.body.NameImgProduct) {
+    oNameImg = [aReq.body.NameImgProduct];
+  } else {
+    oNameImg = [];
+  }
 
   // Handle validation failure
   // -------------------------
