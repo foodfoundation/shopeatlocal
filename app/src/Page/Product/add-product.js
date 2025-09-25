@@ -226,7 +226,7 @@ export async function wHandPost(aReq, aResp) {
 
   const oParamsExProduct = {
     IDProducer: oIDProducer,
-    NameImgProduct: oNameImg[0],
+    NameImgProduct: oNameImg[0] ?? null,
   };
 
   const oIDProduct = await wIns("Product", oFlds, oParamsExProduct);

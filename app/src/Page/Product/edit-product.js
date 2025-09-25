@@ -136,7 +136,7 @@ export async function wHandPost(aReq, aResp) {
   // be updated? [TO DO]
 
   const oParamsEx = {
-    NameImgProduct: oNameImg[0],
+    NameImgProduct: oNameImg[0] ?? null,
     WhenEdit: new Date(),
   };
 
