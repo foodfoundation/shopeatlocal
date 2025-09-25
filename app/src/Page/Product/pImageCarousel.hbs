@@ -10,14 +10,14 @@
         {{#if SearchGrid}}
         <div class="carousel-inner" data-target="#DlgDtlProduct{{IDProduct}}" data-toggle="modal">
         {{#each Images}}
-            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}});">
+            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}}); background-size: cover; background-position: center;">
             </div>
             {{/each}}
         </div>
         {{else}}
         <div class="carousel-inner">
             {{#each Images}}
-            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}});">
+            <div title="{{../NameProduct}} image {{add @index 1}}" class="carousel-item {{#if @first}}active{{/if}}" style="background-image:url({{hPrefixImageWithStorage this}}); background-size: cover; background-position: center;">
             </div>
             {{/each}}
         </div>
