@@ -914,7 +914,6 @@ footer img.Seal {
     align-items: center !important;
   }
   #button-container {
-    /* flex-direction: row !important; */
     flex: none;
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
