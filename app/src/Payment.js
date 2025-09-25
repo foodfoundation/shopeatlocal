@@ -1,5 +1,7 @@
 import { PayPalClientId, PayPalClientSecret, PayPalBaseUrl } from "../Cfg.js";
 
+import { wAdd_Transact } from "./Db.js";
+
 /** PayPal API Integration Module
  *  @module Payment
  *  @requires PayPalClientId
@@ -66,6 +68,7 @@ export async function wHandlePaypalCaptureOrder(aReq, aRes) {
   try {
     const { orderID } = aReq.params;
     const { jsonResponse, httpStatusCode } = await paypalCaptureOrder(orderID);
+    await createPaymentReceivedTransaction(jsonResponse, aReq.user);
     aRes.status(httpStatusCode).json(jsonResponse);
   } catch (error) {
     console.error("paypal_error_capture_order", "Failed to capture order:", error);
@@ -160,4 +163,44 @@ async function handleResponse(response) {
     const errorMessage = await response.text();
     throw new Error(errorMessage);
   }
+}
+
+async function createPaymentReceivedTransaction(paypalJsonResponse, user) {
+  const { id, status, purchase_units } = paypalJsonResponse;
+  const { IDMemb } = user;
+
+  if (status !== "COMPLETED" || purchase_units?.length === 0) {
+    console.log(new Date(), "paypal_create_transaction_payment_failed", status, user.IDMemb);
+    return;
+  }
+
+  if (!IDMemb) {
+    console.error(
+      new Date(),
+      "paypal_create_transaction_member_missing",
+      status,
+      JSON.stringify(user),
+    );
+    return;
+  }
+
+  // Should be only one purchase unit, but let's be safe:
+  const sumAmount = purchase_units.reduce((sum, unit) => {
+    const capture = unit.payments.captures.find(c => c.status === "COMPLETED");
+    if (!capture) {
+      console.log(new Date(), "paypal_create_transaction_capture_missing", unit);
+      return sum;
+    }
+    const amount = parseFloat(capture.amount?.value);
+    if (isNaN(amount)) {
+      console.log(new Date(), "paypal_create_transaction_amount_invalid", capture.amount);
+      return sum;
+    }
+    return sum + amount;
+  }, 0);
+
+  await wAdd_Transact(IDMemb, "PayRecv", -sumAmount, 0, null, {
+    CdMethPay: "PayPal",
+    Note: `PayPal order. PayPal transaction ID: ${id}`,
+  });
 }
