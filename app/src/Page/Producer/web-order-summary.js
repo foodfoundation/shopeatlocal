@@ -32,6 +32,11 @@ export async function wHandGetExport(aReq, aResp) {
 
   const arrayOfExportData = await wIts(oIDProducer);
   for (const dataRow of arrayOfExportData) {
+    if (!dataRow.CkAllowPublicName) {
+      dataRow.Name1First = "";
+      dataRow.Name1Last = "";
+      dataRow.Email1 = "";
+    }
     Fmt_RowExcel(dataRow);
   }
 
