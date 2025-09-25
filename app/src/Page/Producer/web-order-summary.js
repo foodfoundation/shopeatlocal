@@ -33,6 +33,7 @@ export async function wHandGetExport(aReq, aResp) {
   const arrayOfExportData = await wIts(oIDProducer);
   for (const dataRow of arrayOfExportData) {
     if (!dataRow.CkAllowPublicName) {
+      dataRow.IDMemb = "";
       dataRow.Name1First = "";
       dataRow.Name1Last = "";
       dataRow.Email1 = "";
