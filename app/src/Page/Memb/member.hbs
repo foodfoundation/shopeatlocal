@@ -380,9 +380,17 @@
 			return;
 		}
 		const message = (isError
-			? `<strong>Payment Failed!</strong> ${errorMessage}`
-			: `<strong>Successful Payment!</strong>`);
+			? `<strong>Payment failed!</strong> ${errorMessage}`
+			: `
+			<div class="d-flex align-items-center">
+				<div class="spinner-border text-primary" role="status"></div>
+				<div>
+					<span class="ml-2"><strong>Processing successful payment...</strong></span>
+				</div>
+			</div>`);
+
 		const alertTypeClass = isError ? "alert-danger" : "alert-success";
+
 		const innerHTML = 
 			`<div class="alert alert-dismissible mb-0 ${alertTypeClass}" style="border-radius: 5px;" role="alert">
 				${message}
@@ -393,6 +401,9 @@
 		container.innerHTML = innerHTML;
 		if (!isError) {
 			document.getElementById('paymentAmount').value = "";
+			setTimeout(() => {
+				window.location.reload();
+			}, 3000);
 		}
 	}
 
