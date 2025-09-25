@@ -9,6 +9,7 @@ import {
   CkFail,
   Retry,
   wIns,
+  wInsertProductImage,
 } from "../../Form.js";
 import { wSubcatsProducer, ArrayFromCds, CdsAttrProduct, wProducerFromID } from "../../Db.js";
 import { PageAfterEditProduct } from "../../Util.js";
@@ -180,12 +181,16 @@ export async function wHandPost(aReq, aResp) {
 
   // If the user selected a 'new' file, use that. Otherwise, use the previously-
   // selected file, unless the user opted to remove it:
-  let oNameImg;
-  if (aReq.files && aReq.files["Img"] && aReq.files["Img"].length > 0)
-    oNameImg = aReq.files["Img"][0].filename;
-  else if (aReq.body.CkRemImg) oNameImg = null;
-  else if (aReq.body.NameImgProduct) oNameImg = aReq.body.NameImgProduct;
-  else oNameImg = null;
+  let oNameImg = [];
+  if (aReq.files && aReq.files["Img"] && aReq.files["Img"].length > 0) {
+    oNameImg.push(...aReq.files["Img"].map(f => f.filename));
+  } else if (aReq.body.CkRemImg) {
+    oNameImg = [];
+  } else if (aReq.body.NameImgProduct) {
+    oNameImg = [aReq.body.NameImgProduct];
+  } else {
+    oNameImg = [];
+  }
 
   // Form-level validation
   // ---------------------
@@ -221,11 +226,17 @@ export async function wHandPost(aReq, aResp) {
 
   const oParamsExProduct = {
     IDProducer: oIDProducer,
-    NameImgProduct: oNameImg,
+    NameImgProduct: oNameImg[0] ?? null,
   };
 
   const oIDProduct = await wIns("Product", oFlds, oParamsExProduct);
   if (!oIDProduct) throw Error("wHandPost: Could not create product record");
+
+  // Create product images
+  // ---------------------
+  for (const [i, name] of oNameImg.entries()) {
+    await wInsertProductImage(oIDProduct, name, i);
+  }
 
   // Create variety record
   // ---------------------
