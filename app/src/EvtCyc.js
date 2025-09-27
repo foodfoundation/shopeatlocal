@@ -129,17 +129,14 @@ async function wAssess_FeesMemb(aConn) {
  */
 async function wMembsFeeDue(aConn) {
   // Why isn't CtMonthTrialMembNew a query parameter?: [TO DO]
-
-  // TODO: Exclude members with tags certain_tags
-
   const oSQL = `SELECT
     Memb.*,
     IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
     IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
 		LEFT JOIN (
-            SELECT
-                MTA.IDMemb,
+        SELECT
+              MTA.IDMemb,
 				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
 				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
             FROM MemberTagAssignments AS MTA
@@ -150,27 +147,27 @@ async function wMembsFeeDue(aConn) {
 				WhenFeeMembLast IS NULL
 				OR WhenFeeMembLast <= DATE_SUB(NOW(), INTERVAL 1 YEAR)
 			)
-			AND IDMemb IN (
+    AND Memb.IDMemb IN (
 				SELECT IDMemb
-				FROM Memb
-				JOIN Cart USING (IDMemb)
-				JOIN ItCart USING (IDCart)
-				JOIN StApp USING (IDCyc)
-				WHERE ItCart.QtyProm > 0
-				UNION
-				SELECT Memb.IDMemb
-				FROM Memb
-				JOIN Producer ON Producer.IDMemb = Memb.IDMemb
-				JOIN Product USING (IDProducer)
-				JOIN Vty USING (IDProduct)
-				JOIN ItCart USING (IDVty)
-				JOIN Cart USING (IDCart)
-				JOIN StApp USING (IDCyc)
-				WHERE ItCart.QtyOrd > 0
-			)
-			AND WhenReg <= DATE_SUB(NOW(), INTERVAL ${Site.CtMonthTrialMembNew} MONTH)
-			AND CkFounder IS NOT TRUE
-			AND CdRegEBT != 'Approv'
+          FROM Memb
+          JOIN Cart USING (IDMemb)
+          JOIN ItCart USING (IDCart)
+          JOIN StApp USING (IDCyc)
+          WHERE ItCart.QtyProm > 0
+          UNION
+          SELECT Memb.IDMemb
+          FROM Memb
+          JOIN Producer ON Producer.IDMemb = Memb.IDMemb
+          JOIN Product USING (IDProducer)
+          JOIN Vty USING (IDProduct)
+          JOIN ItCart USING (IDVty)
+          JOIN Cart USING (IDCart)
+          JOIN StApp USING (IDCyc)
+          WHERE ItCart.QtyOrd > 0
+    )
+    AND WhenReg <= DATE_SUB(NOW(), INTERVAL ${Site.CtMonthTrialMembNew} MONTH)
+    AND CkFounder IS NOT TRUE
+    AND CdRegEBT != 'Approv'
 		ORDER BY IDMemb`;
   const [oRows] = await aConn.wExecPrep(oSQL);
   return oRows;
