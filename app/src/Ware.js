@@ -235,7 +235,13 @@ export async function wWarePhase(aReq, aResp, aNext) {
   }
 
   const oNow = new Date();
-  Add_PropsCyc(aResp, oNow, "Shop");
+  const oMembTagIds = aReq.user?.TagIDs ?? [];
+  const oShoppingDateMidifier =
+    MembershipTags.find(oMemberTag => oMembTagIds.includes(oMemberTag.tagId))
+      ?.shoppingDateMidifier ?? 0;
+  const oNowShoppingDate = new Date();
+  oNowShoppingDate.setHours(oNowShoppingDate.getHours() - oShoppingDateMidifier);
+  Add_PropsCyc(aResp, oNowShoppingDate, "Shop");
   Add_PropsCyc(aResp, oNow, "Deliv");
   Add_PropsCyc(aResp, oNow, "Pickup");
 
@@ -254,18 +260,18 @@ export async function wWarePhase(aReq, aResp, aNext) {
 // ~ FlagBeforeShop, FlagShop, or FlagAfterShop: Set to 'true' if the current
 //   time is before, during, or after the current cycle's shopping window.
 //
-function Add_PropsCyc(aResp, aNow, aName) {
+function Add_PropsCyc(aResp, aDateTimeToCompare, aName) {
   // Maybe 'Next' should be replaced with 'Soon', to avoid confusion with the
   // 'next' cycle? [TO DO]
 
   // The current-cycle window has not started:
-  if (aNow < aResp.locals.CycCurr[`WhenStart${aName}`]) {
+  if (aDateTimeToCompare < aResp.locals.CycCurr[`WhenStart${aName}`]) {
     aResp.locals[`WhenStart${aName}Next`] = aResp.locals.CycCurr[`WhenStart${aName}`];
     aResp.locals[`WhenEnd${aName}Next`] = aResp.locals.CycCurr[`WhenEnd${aName}`];
     aResp.locals[`FlagBefore${aName}`] = true;
   }
   // The current-cycle window has not ended:
-  else if (aNow < aResp.locals.CycCurr[`WhenEnd${aName}`]) {
+  else if (aDateTimeToCompare < aResp.locals.CycCurr[`WhenEnd${aName}`]) {
     aResp.locals[`WhenStart${aName}Next`] = aResp.locals.CycCurr[`WhenStart${aName}`];
     aResp.locals[`WhenEnd${aName}Next`] = aResp.locals.CycCurr[`WhenEnd${aName}`];
     aResp.locals[`Flag${aName}`] = true;
@@ -575,6 +581,7 @@ function WareFlashPersist(aReq, aResp, aNext) {
 // ---------------
 
 import gCSurf from "csurf";
+import { MembershipTags } from "../Cfg.js";
 
 // Be sure to perform the CSRF check after wWareDataUser, so the user data is
 // available when the '403' page is rendered:

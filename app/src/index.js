@@ -290,6 +290,45 @@ App.use(
   ),
 );
 
+// -------------------
+// Manage session data
+// -------------------
+// 'express-mysql-session' can be configured to use an existing table, instead
+// of creating its own. I considered that, but it would not be useful unless the
+// store wrote to other fields in the table (such as a username field) and I
+// would have to modify the package to get that.
+
+import gExprSess from "express-session";
+
+import gStoreSess from "express-mysql-session";
+/** Implements the session store. */
+const tStoreSess = gStoreSess(gExprSess);
+// It is possible to pass an existing connection or connection pool to the
+// store constructor, and that does work when the connection is created with
+// 'mysql'. When that package is replaced with 'mysql2', however, an exception
+// is generated. For now, we will let the store create its own connection:
+const StoreSess = new tStoreSess(Db);
+
+App.use(
+  gExprSess({
+    secret: SecretCookSess,
+    store: StoreSess,
+    resave: false,
+    saveUninitialized: true,
+  }),
+);
+
+// -----------------
+// Authenticate user
+// -----------------
+
+import { Ready as _Ready, wHandPostLogin, HandGetLogout } from "./Auth.js";
+
+// This adds the 'user' object to the request, if the user is logged-in:
+_Ready(App);
+
+App.use(WareMembSusp);
+
 // ---------------------------------
 // Add data and process events
 // ---------------------------------
@@ -388,45 +427,6 @@ async function WareMulterImgErr(aReq, aResp, aNext) {
 
   WareMulterImg(aReq, aResp, oNext);
 }
-
-// -------------------
-// Manage session data
-// -------------------
-// 'express-mysql-session' can be configured to use an existing table, instead
-// of creating its own. I considered that, but it would not be useful unless the
-// store wrote to other fields in the table (such as a username field) and I
-// would have to modify the package to get that.
-
-import gExprSess from "express-session";
-
-import gStoreSess from "express-mysql-session";
-/** Implements the session store. */
-const tStoreSess = gStoreSess(gExprSess);
-// It is possible to pass an existing connection or connection pool to the
-// store constructor, and that does work when the connection is created with
-// 'mysql'. When that package is replaced with 'mysql2', however, an exception
-// is generated. For now, we will let the store create its own connection:
-const StoreSess = new tStoreSess(Db);
-
-App.use(
-  gExprSess({
-    secret: SecretCookSess,
-    store: StoreSess,
-    resave: false,
-    saveUninitialized: true,
-  }),
-);
-
-// -----------------
-// Authenticate user
-// -----------------
-
-import { Ready as _Ready, wHandPostLogin, HandGetLogout } from "./Auth.js";
-
-// This adds the 'user' object to the request, if the user is logged-in:
-_Ready(App);
-
-App.use(WareMembSusp);
 
 // ----------------------
 // Fix Express 'redirect'
