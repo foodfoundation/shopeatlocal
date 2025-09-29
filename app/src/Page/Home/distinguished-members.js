@@ -80,7 +80,11 @@ export async function wHandGet(aReq, aResp) {
   }
 
   sections.forEach(section => {
-    section.members.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    section.members.sort((a, b) => {
+      if (a.isAnonymous && !b.isAnonymous) return 1;
+      if (!a.isAnonymous && b.isAnonymous) return -1;
+      return a.displayName.localeCompare(b.displayName);
+    });
   });
 
   const populatedSections = sections.filter(section => section.members.length > 0);
