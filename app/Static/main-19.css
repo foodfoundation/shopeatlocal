@@ -655,6 +655,7 @@ header .btn:hover {
 }
 
 .nav-link {
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -709,8 +710,6 @@ header .btn:hover {
     /* The 'vw' unit seems to seems to disregard the vertical scrollbar. Also,
 		// larger values cause the horizontal scrollbar to appear: */
     min-width: 9.8vw;
-
-    padding: 0.3rem 0;
 
     border-width: 0 1px 0 0;
     border-style: solid;

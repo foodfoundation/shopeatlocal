@@ -473,7 +473,13 @@ App.route("/about-producer/:IDProducerView(\\d{1,4})")
 
 import { wHandGet as acknowledgementsGet } from "./Page/Home/acknowledgments.js";
 
+import { wHandGet as distinguishedMembersGet } from "./Page/Home/distinguished-members.js";
+
 App.route("/acknowledgments").all(WaresPostRoute).get(NextOnExcept(acknowledgementsGet));
+
+App.route("/distinguished-members")
+  .all(WaresPostRoute)
+  .get(NextOnExcept(distinguishedMembersGet));
 
 // New member registration
 // -----------------------

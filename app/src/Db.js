@@ -1782,16 +1782,16 @@ export async function queryMemberTags() {
 
 export async function queryMemberTagAssignments(memberId) {
   const sql = `
-				SELECT
-					IDMemberTagAssignment,
-					MemberTagAssignments.IDMemberTag,
-					IDMemb,
+			SELECT
+				IDMemberTagAssignment,
+				MemberTagAssignments.IDMemberTag,
+				IDMemb,
           Tag
-				FROM
-					MemberTagAssignments
+			FROM
+				MemberTagAssignments
           LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
         WHERE IDMemb = :memberId
-				`;
+			`;
   const params = {
     memberId: memberId,
   };
@@ -1801,42 +1801,87 @@ export async function queryMemberTagAssignments(memberId) {
 
 export async function queryAllMemberTagAssignments() {
   const sql = `
-				SELECT
-					MemberTagAssignments.IDMemberTagAssignment,
-					MemberTagAssignments.IDMemberTag,
-					MemberTagAssignments.IDMemb,
-					MemberTags.Tag
-				FROM
-					MemberTagAssignments
-				LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
-				`;
+			SELECT
+				MemberTagAssignments.IDMemberTagAssignment,
+				MemberTagAssignments.IDMemberTag,
+				MemberTagAssignments.IDMemb,
+				MemberTags.Tag
+			FROM
+				MemberTagAssignments
+			LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+			`;
   const [memberTagAssignments] = await Conn.wExecPrep(sql, {});
   return memberTagAssignments;
 }
 
+export async function queryDistinguishedMembers() {
+  const sql = `
+			SELECT
+				Memb.IDMemb,
+				Memb.Name1First,
+				Memb.Name1Last,
+				Memb.Name2First,
+				Memb.Name2Last,
+				Memb.NameBus,
+				GROUP_CONCAT(DISTINCT MTAll.Tag ORDER BY MTAll.Tag SEPARATOR '||') AS Tags
+			FROM
+				Memb
+			JOIN MemberTagAssignments AS MTAFilter ON (MTAFilter.IDMemb = Memb.IDMemb)
+			JOIN MemberTags AS MTFilter ON (MTFilter.IDMemberTag = MTAFilter.IDMemberTag)
+			LEFT JOIN MemberTagAssignments AS MTAAll ON (MTAAll.IDMemb = Memb.IDMemb)
+			LEFT JOIN MemberTags AS MTAll ON (MTAll.IDMemberTag = MTAAll.IDMemberTag)
+			WHERE LOWER(MTFilter.Tag) IN (
+				:tagFarmersFriend,
+				:tagSustainabilitySteward,
+				:tagSustainingSteward,
+				:tagCommunityCultivator
+			)
+			GROUP BY
+				Memb.IDMemb,
+				Memb.Name1First,
+				Memb.Name1Last,
+				Memb.Name2First,
+				Memb.Name2Last,
+				Memb.NameBus
+			`;
+
+  const params = {
+    tagFarmersFriend: "farmers friend",
+    tagSustainabilitySteward: "sustainability steward",
+    tagSustainingSteward: "sustaining steward",
+    tagCommunityCultivator: "community cultivator",
+  };
+
+  const [rows] = await Conn.wExecPrep(sql, params);
+  return rows;
+}
 export async function queryMemberTagAssignmentCountByTagName() {
   const sql = `
-				SELECT
-          MemberTags.IDMemberTag,
-					Tag,
-					COUNT(*) AS Count
-				FROM
-					MemberTagAssignments
-				  LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
-				GROUP BY IDMemberTag, Tag
-				`;
-  const [memberTagAssignments] = await Conn.wExecPrep(sql, {});
-  if (memberTagAssignments.length > 0) {
-    return memberTagAssignments;
+			SELECT
+				MemberTags.IDMemberTag,
+				Tag,
+				COUNT(*) AS Count
+			FROM
+				MemberTagAssignments
+			  LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+			GROUP BY
+				MemberTags.IDMemberTag,
+				MemberTags.Tag
+			ORDER BY
+				MemberTags.Tag
+			`;
+  const [rows] = await Conn.wExecPrep(sql, {});
+  if (rows.length > 0) {
+    return rows;
   } else {
     const sql2 = `
-				SELECT
-					IDMemberTag,
-					Tag,
-					0 AS Count
-				FROM
-				  MemberTags
-				`;
+			SELECT
+				IDMemberTag,
+				Tag,
+				0 AS Count
+			FROM
+			  MemberTags
+			`;
     const [emptyMemberTags] = await Conn.wExecPrep(sql2, {});
     return emptyMemberTags;
   }

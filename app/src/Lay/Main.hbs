@@ -327,9 +327,15 @@
 				</li>
 				{{/if}}
 
+				<li class="nav-item {{hTextIfView "Home/distinguished-members" "active"}}">
+					<a href="/distinguished-members" class="nav-link double">
+						Distinguished<br>members
+					</a>
+				</li>
+
 				{{#if CoopParams.staticPages}}
 					{{#each CoopParams.staticPages}}
-						<li class="nav-item" style="max-width: 100px;">
+						<li class="nav-item">
 							<a href="/pages/{{this.slug}}" class="nav-link double" target="_blank">
 								{{this.linkTitle}}
 							</a>
@@ -352,8 +358,6 @@
 						</a>
 				</li>
 				{{/if}}
-
-				
 				{{/if}}
 			</ul>
 		</div>
@@ -364,15 +368,16 @@
 		//    the CSS that hides this when the menu is open, otherwise it would
 		//    appear in the menu: --}}
 		<div id="TitleMob" class="d-md-none navbar-brand">
-			{{hTextIfView "Home/index" "Market Home"}}
-			{{hTextIfView "Shop/product-search" "Product Search"}}
+			{{hTextIfView "Home/index" "Market home"}}
+			{{hTextIfView "Home/distinguished-members" "Distinguished members"}}
+			{{hTextIfView "Shop/product-search" "Product search"}}
 			{{hTextIfView "Memb/member" "Member"}}
 			{{hTextIfView "Producer/producer" "Producer"}}
-			{{hTextIfView "MembAdmin/member-admin" "Member Admin"}}
-			{{hTextIfView "ProducerAdmin/producer-admin" "Producer Admin"}}
+			{{hTextIfView "MembAdmin/member-admin" "Member admin"}}
+			{{hTextIfView "ProducerAdmin/producer-admin" "Producer admin"}}
 			{{hTextIfView "Distrib/distribution" "Distribution"}}
 			{{hTextIfView "Cashier/cashier" "Accounting"}}
-			{{hTextIfView "SiteAdmin/site-admin" "Site Admin"}}
+			{{hTextIfView "SiteAdmin/site-admin" "Site admin"}}
 			{{hTextIfView "Onsite/on-site" "On-site"}}
 		</div>
 	</nav>
@@ -383,17 +388,13 @@
 				
 				<li class="nav-item {{hTextIfView "MembAdmin/member-admin" "active"}}">
 					<a href="/member-admin" class="nav-link double">
-						Member
-						<span class="d-none d-md-inline"><br></span>
-						Admin
+						Member admin
 					</a>
 				</li>
 				<li
 					class="nav-item {{hTextIfView "ProducerAdmin/producer-admin" "active"}}">
 					<a href="/producer-admin" class="nav-link double">
-						Producer
-						<span class="d-none d-md-inline"><br></span>
-						Admin
+						Producer admin
 					</a>
 				</li>
 				<li class="nav-item {{hTextIfView "Distrib/distribution" "active"}}">
@@ -409,9 +410,7 @@
 				</li>
 				<li class="nav-item {{hTextIfView "SiteAdmin/site-admin" "active"}}">
 					<a href="/site-admin" class="nav-link double">
-						Site
-						<span class="d-none d-md-inline"><br></span>
-						Admin
+						Site admin
 					</a>
 				</li>
 				
