@@ -315,17 +315,14 @@
 
 				<li class="nav-item {{hTextIfView "Home/index" "active"}}">
 					<a href="/" class="nav-link double">
-						Market
-						<span class="d-none d-md-inline"><br></span>
-						Home
+						Market home
 					</a>
 				</li>
+
 				{{#if CoopParams.isProductTypesPageDefined}}
 				<li class="nav-item">
 					<a href="/production-types" class="nav-link double" target="_blank">
-						Production
-						<span class="d-none d-md-inline"><br></span>
-						Types
+						Production types
 					</a>
 				</li>
 				{{/if}}
@@ -343,9 +340,7 @@
 				{{#if CredUser}}
 				<li class="nav-item {{hTextIfView "Memb/member" "active"}}">
 					<a href="/member" class="nav-link double">
-					Member
-					<span class="d-none d-md-inline"><br></span>
-					Account
+					Member account
 					</a>
 				</li>
 				{{#if CredImperUser.CkShowProducer}}
@@ -353,9 +348,7 @@
 					<a {{#if CredImperUser.IDProducer}} href="/producer" {{else}}
 						href="/producer-registration" {{/if}}
 						class="nav-link double">
-						Producer
-						<span class="d-none d-md-inline"><br></span>
-						Account
+						Producer account
 						</a>
 				</li>
 				{{/if}}
