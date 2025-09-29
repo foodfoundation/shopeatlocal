@@ -4,18 +4,15 @@ import { CoopParams } from "../../Site.js";
 const TAG_GROUPS = [
   {
     key: "farmers friend",
-    heading: "Farmers' Friends",
-    aliases: [],
+    heading: "Farmers' friends",
   },
   {
-    key: "sustainability steward",
-    heading: "Sustainability Stewards",
-    aliases: ["sustaining steward"],
+    key: "sustaining steward",
+    heading: "Sustaining stewards",
   },
   {
     key: "community cultivator",
-    heading: "Community Cultivators",
-    aliases: [],
+    heading: "Community cultivators",
   },
 ];
 
@@ -37,7 +34,7 @@ function deriveMemberName(member) {
 
 function selectGroup(tagsLower) {
   for (const group of TAG_GROUPS) {
-    const candidates = new Set([group.key, ...group.aliases].map(tag => tag.toLowerCase()));
+    const candidates = new Set([group.key].map(tag => tag.toLowerCase()));
     for (const tag of tagsLower) {
       if (candidates.has(tag)) return group;
     }
@@ -58,8 +55,7 @@ export async function wHandGet(aReq, aResp) {
     const tagsLower = member.Tags
       ? Array.from(
           new Set(
-            member.Tags
-              .split("||")
+            member.Tags.split("||")
               .map(tag => tag && tag.trim())
               .filter(Boolean)
               .map(normalizeTag),
