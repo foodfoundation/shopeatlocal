@@ -714,6 +714,8 @@ header .btn:hover {
     border-width: 0 1px 0 0;
     border-style: solid;
     border-color: hsl(0, 0%, 40%);
+
+    width: 110px;
   }
 
   .nav-link {
