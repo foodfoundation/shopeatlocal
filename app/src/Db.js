@@ -775,7 +775,7 @@ export async function wMembFromNameLogin(aNameLogin) {
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
 			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
       IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
-		  IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags,
+		  IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
 		LEFT JOIN Producer USING (IDMemb)
 		LEFT JOIN (
