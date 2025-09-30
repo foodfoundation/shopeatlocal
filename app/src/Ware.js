@@ -276,7 +276,7 @@ function Add_PropsCyc(aResp, aNow, aName, aShouldPostponeShopStartDate) {
 
   const whenCycleStart = aResp.locals.CycCurr[`WhenStart${aName}`];
   if (aName === "Shop" && oShouldPostponeShopStartDate) {
-    whenCycleStart.setHours(whenCycleStart.getHours() + 30);
+    whenCycleStart.setHours(whenCycleStart.getHours() + 1);
   }
 
   // The current-cycle window has not started:
