@@ -271,20 +271,12 @@ function Add_PropsCyc(aResp, aNow, aName, aShouldPostponeShopStartDate) {
   // Maybe 'Next' should be replaced with 'Soon', to avoid confusion with the
   // 'next' cycle? [TO DO]
 
-  // WhenStartShopNext
-  // WhenEndShopNext
-  // FlagBeforeShop
-
   const oShouldPostponeShopStartDate = !!aShouldPostponeShopStartDate;
 
   const whenCycleStart = aResp.locals.CycCurr[`WhenStart${aName}`];
   if (aName === "Shop" && oShouldPostponeShopStartDate) {
     whenCycleStart.setHours(whenCycleStart.getHours() + 30);
   }
-
-  // Shopping started: 12:00 !!!
-  // 12:05
-  //
 
   // The current-cycle window has not started:
   if (aNow < whenCycleStart) {
