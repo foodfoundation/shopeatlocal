@@ -180,16 +180,19 @@ export const MembershipTags = [
     tagId: 1,
     fracFeeCoopShop: 0.2,
     hasNoFee: true,
+    onTimeShopping: true,
   },
   {
     tagId: 2,
     fracFeeCoopShop: 0.05,
     hasNoFee: true,
+    onTimeShopping: false,
   },
   {
     tagId: 3,
     fracFeeCoopShop: 0.1,
     hasNoFee: true,
+    onTimeShopping: false,
   },
 ];
 
