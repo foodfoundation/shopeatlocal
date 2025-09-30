@@ -27,6 +27,7 @@ import {
 } from "./Db.js";
 import { LocsActiv, CoopParams } from "./Site.js";
 import { Bool_Cks, PageAfterEditMemb } from "./Util.js";
+import { MembershipTags } from "../Cfg.js";
 
 // Wraps the specified asynchronous middleware in another middleware that
 // catches exceptions and passes them to the 'next' function, for regular
@@ -595,7 +596,6 @@ function WareFlashPersist(aReq, aResp, aNext) {
 // ---------------
 
 import gCSurf from "csurf";
-import { MembershipTags } from "../Cfg.js";
 
 // Be sure to perform the CSRF check after wWareDataUser, so the user data is
 // available when the '403' page is rendered:
