@@ -3,7 +3,7 @@
 // Utilities
 
 import { PhaseCycLess, getProductRow } from "./Db.js";
-import { TimeZoneUser, DocumentStoragePrefix } from "../Cfg.js";
+import { TimeZoneUser, DocumentStoragePrefix, MembershipTags } from "../Cfg.js";
 import { Locs, Site } from "./Site.js";
 
 import { DateTime } from "luxon";
@@ -758,6 +758,7 @@ export function SummCart(aCart, aItsCart, aMemb) {
     aCart.CdLoc,
     aMemb.DistDeliv,
     oCkRegWholesale,
+    aMemb.TagIDs,
   );
 
   return {
@@ -868,6 +869,7 @@ export function TtlsCart(
   aCdLoc,
   aDistDeliv,
   aCkRegWholesale,
+  aMembTagIds,
 ) {
   const oTtls = {
     Its: cloneDeep(aItsCart),
@@ -880,6 +882,11 @@ export function TtlsCart(
     TtlEBT: 0,
   };
   const oEbtCustomer = !!aCkRegEBT;
+  const oMembTagIds = aMembTagIds ?? [];
+
+  const oMemberFracFeeCoopShop =
+    MembershipTags.find(oMemberTag => oMembTagIds.includes(oMemberTag.tagId))?.fracFeeCoopShop ??
+    Site.FracFeeCoopShop;
 
   /** Uses properties in aIt with names that begin with aPrefixName to create
    *  and then increment totals in oTtls. */
@@ -902,6 +909,7 @@ export function TtlsCart(
         aIsWholesaleCustomer: !!aCkRegWholesale,
         aIsWholeSaleItem: oIt.CdVtyType === "Wholesale",
         aFracFeeCoopWholesaleMemb: oIt.FracFeeCoopWholesaleMemb,
+        aMemberFrecFeeCoopShop: oMemberFracFeeCoopShop,
       });
 
     oInc_Ttls(oIt, "Qty");
@@ -992,24 +1000,32 @@ export function TtlsCart(
 }
 
 function calculateEffCoopFeeMemb(opts) {
-  const { aIsEbtCustomer, aIsWholesaleCustomer, aIsWholeSaleItem, aFracFeeCoopWholesaleMemb } =
-    opts;
+  const {
+    aIsEbtCustomer,
+    aIsWholesaleCustomer,
+    aIsWholeSaleItem,
+    aFracFeeCoopWholesaleMemb,
+    aMemberFrecFeeCoopShop,
+  } = opts;
+  const oFracFeeCoopShop = aMemberFrecFeeCoopShop ?? Site.FracFeeCoopShop;
+  const oFracFeeCoopWholesaleMemb = aFracFeeCoopWholesaleMemb ?? Site.FracFeeCoopWholesaleMemb;
+
   if (aIsEbtCustomer) {
     return {
       feeCoopShopEff: 0.0,
-      feeCoopShopForgivEff: Site.FracFeeCoopShop,
+      feeCoopShopForgivEff: oFracFeeCoopShop,
     };
   }
 
   if (aIsWholesaleCustomer && aIsWholeSaleItem) {
     return {
-      feeCoopShopEff: aFracFeeCoopWholesaleMemb ?? Site.FracFeeCoopWholesaleMemb,
+      feeCoopShopEff: oFracFeeCoopWholesaleMemb,
       feeCoopShopForgivEff: 0.0,
     };
   }
 
   return {
-    feeCoopShopEff: Site.FracFeeCoopShop,
+    feeCoopShopEff: oFracFeeCoopShop,
     feeCoopShopForgivEff: 0.0,
   };
 }

@@ -204,5 +204,21 @@
 				Add member transaction
 			</a>
 		</div>
+
+		<hr>
+
+		<h5>Member tags</h5>
+
+		{{#each MemberTagAssignments}}
+			<span class="badge badge-secondary">{{Tag}}</span>
+		{{/each}}
+
+		{{#if (hNot MemberTagAssignments.length)}}
+			No member tags
+		{{/if}}
+
+		<div class="LinksPg mb-0">
+			<a href="/edit-member-tags/{{IDMemb}}">Edit member tags</a>
+		</div>
 	</div>
 </div>

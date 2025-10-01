@@ -25,6 +25,8 @@ export async function wHandGet(aReq, aResp) {
         "IDCart",
         "CdLoc",
         "NameLoc",
+        "TagIDs",
+        "Tags",
       ],
       NameChild: "Its",
     },
@@ -65,6 +67,7 @@ export async function wHandGet(aReq, aResp) {
       oMemb.CdLoc,
       oMemb.DistDeliv,
       oCkWholesale,
+      oMemb.TagIDs,
     );
     // To avoid confusion later. TtlsCart copies the items into its result:
     delete oMemb.Its;
@@ -91,7 +94,9 @@ async function wMembsIts() {
 			Memb.IDMemb, Memb.Name1First, Memb.Name1Last, Memb.Phone1, Memb.Email1,
 			Memb.DistDeliv, Memb.CdRegEBT,
 			Loc.CdLoc, Loc.NameLoc,
-			IFNULL(FeeCoopVty.FracFeeCoopWholesaleMemb, (SELECT FracFeeCoopWholesaleMemb FROM Site)) AS FracFeeCoopWholesaleMemb
+			IFNULL(FeeCoopVty.FracFeeCoopWholesaleMemb, (SELECT FracFeeCoopWholesaleMemb FROM Site)) AS FracFeeCoopWholesaleMemb,
+      IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+		  IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM ItCart
 		JOIN Vty USING (IDVty)
 		JOIN Product USING (IDProduct)
@@ -101,6 +106,15 @@ async function wMembsIts() {
 		JOIN Loc USING (CdLoc)
 		JOIN StApp USING (IDCyc)
 		LEFT JOIN FeeCoopVty USING (IDVty)
+    LEFT JOIN (
+            SELECT
+                MTA.IDMemb,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
+            FROM MemberTagAssignments AS MTA
+            LEFT JOIN MemberTags AS MT ON (MT.IDMemberTag = MTA.IDMemberTag)
+            GROUP BY MTA.IDMemb
+    ) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
 		ORDER BY Memb.Name1Last, Memb.Name1First, Memb.IDMemb,
 			Product.NameProduct, Product.IDProduct,
 			Vty.Kind, Vty.Size, Vty.WgtMin, Vty.WgtMax, Vty.IDVty`;

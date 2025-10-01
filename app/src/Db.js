@@ -741,7 +741,9 @@ export async function wMembFromID(aIDMemb, aConn) {
   const oSQL = `SELECT Memb.*, Memb.WhenReg AS WhenRegMemb,
 			Producer.IDProducer, Producer.CdProducer,
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
-			IFNULL(zTransact.BalEBT, 0) AS BalEBT
+			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
+      IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+      IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
 		LEFT JOIN Producer USING (IDMemb)
 		LEFT JOIN (
@@ -749,6 +751,15 @@ export async function wMembFromID(aIDMemb, aConn) {
 			FROM Transact
 			GROUP BY Transact.IDMemb
 		) AS zTransact USING (IDMemb)
+     LEFT JOIN (
+            SELECT
+                MTA.IDMemb,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
+            FROM MemberTagAssignments AS MTA
+            LEFT JOIN MemberTags AS MT ON (MT.IDMemberTag = MTA.IDMemberTag)
+            GROUP BY MTA.IDMemb
+    ) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
 		WHERE Memb.IDMemb = ?`;
   const [oRows] = await aConn.wExecPrep(oSQL, [aIDMemb]);
   return oRows.length ? oRows[0] : null;
@@ -762,7 +773,9 @@ export async function wMembFromNameLogin(aNameLogin) {
   const oSQL = `SELECT Memb.*,
 			Producer.IDProducer, Producer.CdProducer,
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
-			IFNULL(zTransact.BalEBT, 0) AS BalEBT
+			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
+      IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+		  IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
 		LEFT JOIN Producer USING (IDMemb)
 		LEFT JOIN (
@@ -770,6 +783,15 @@ export async function wMembFromNameLogin(aNameLogin) {
 			FROM Transact
 			GROUP BY Transact.IDMemb
 		) AS zTransact USING (IDMemb)
+     LEFT JOIN (
+            SELECT
+                MTA.IDMemb,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
+            FROM MemberTagAssignments AS MTA
+            LEFT JOIN MemberTags AS MT ON (MT.IDMemberTag = MTA.IDMemberTag)
+            GROUP BY MTA.IDMemb
+    ) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
 		WHERE NameLogin = ?`;
   const [oRows] = await Conn.wExecPrep(oSQL, [aNameLogin]);
   return oRows.length ? oRows[0] : null;
@@ -1075,6 +1097,36 @@ export async function wUpd_CatsProducer(aIDProducer, aIDsCats) {
       const oParams = {
         IDProducer: aIDProducer,
         IDCat: oIDCat,
+      };
+      await oConn.wExecPrep(oSQLIns, oParams);
+    }
+
+    await oConn.wCommit();
+  } catch (aErr) {
+    await oConn.wRollback();
+    throw aErr;
+  } finally {
+    oConn.Release();
+  }
+}
+
+/** Replaces a member's tag assignments. */
+export async function wUpd_MembTags(aIDMemb, aIDsTags) {
+  const oConn = await wConnNew();
+  await oConn.wTransact();
+  try {
+    // Delete existing records
+    const oSQLDel = `DELETE FROM MemberTagAssignments WHERE IDMemb = ?`;
+    await oConn.wExecPrep(oSQLDel, [aIDMemb]);
+
+    // Add new records (dedupe in case caller provides duplicates)
+    const oSQLIns = `INSERT INTO MemberTagAssignments (IDMemberTag, IDMemb)
+      VALUES (:IDMemberTag, :IDMemb)`;
+    const oSet = new Set(aIDsTags || []);
+    for (const oIDTag of oSet) {
+      const oParams = {
+        IDMemberTag: oIDTag,
+        IDMemb: aIDMemb,
       };
       await oConn.wExecPrep(oSQLIns, oParams);
     }
@@ -1723,4 +1775,123 @@ export async function querySiteConfigurations() {
 				`;
   const [siteRow] = await Conn.wExecPrep(sql, {});
   return siteRow;
+}
+
+export async function queryMemberTags() {
+  const sql = `
+				SELECT
+					IDMemberTag,
+					Tag
+				FROM
+					MemberTags
+				`;
+  const [memberTags] = await Conn.wExecPrep(sql, {});
+  return memberTags;
+}
+
+export async function queryMemberTagAssignments(memberId) {
+  const sql = `
+			SELECT
+				IDMemberTagAssignment,
+				MemberTagAssignments.IDMemberTag,
+				IDMemb,
+          Tag
+			FROM
+				MemberTagAssignments
+          LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+        WHERE IDMemb = :memberId
+			`;
+  const params = {
+    memberId: memberId,
+  };
+  const [memberTagAssignments] = await Conn.wExecPrep(sql, params);
+  return memberTagAssignments;
+}
+
+export async function queryAllMemberTagAssignments() {
+  const sql = `
+			SELECT
+				MemberTagAssignments.IDMemberTagAssignment,
+				MemberTagAssignments.IDMemberTag,
+				MemberTagAssignments.IDMemb,
+				MemberTags.Tag
+			FROM
+				MemberTagAssignments
+			LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+			`;
+  const [memberTagAssignments] = await Conn.wExecPrep(sql, {});
+  return memberTagAssignments;
+}
+
+export async function queryDistinguishedMembers() {
+  const sql = `
+			SELECT
+				Memb.IDMemb,
+				Memb.Name1First,
+				Memb.Name1Last,
+				Memb.Name2First,
+				Memb.Name2Last,
+				Memb.NameBus,
+				GROUP_CONCAT(DISTINCT MTAll.Tag ORDER BY MTAll.Tag SEPARATOR '||') AS Tags
+			FROM
+				Memb
+			JOIN MemberTagAssignments AS MTAFilter ON (MTAFilter.IDMemb = Memb.IDMemb)
+			JOIN MemberTags AS MTFilter ON (MTFilter.IDMemberTag = MTAFilter.IDMemberTag)
+			LEFT JOIN MemberTagAssignments AS MTAAll ON (MTAAll.IDMemb = Memb.IDMemb)
+			LEFT JOIN MemberTags AS MTAll ON (MTAll.IDMemberTag = MTAAll.IDMemberTag)
+			WHERE LOWER(MTFilter.Tag) IN (
+				:tagFarmersFriend,
+				:tagSustainabilitySteward,
+				:tagSustainingSteward,
+				:tagCommunityCultivator
+			)
+			GROUP BY
+				Memb.IDMemb,
+				Memb.Name1First,
+				Memb.Name1Last,
+				Memb.Name2First,
+				Memb.Name2Last,
+				Memb.NameBus
+			`;
+
+  const params = {
+    tagFarmersFriend: "farmers friend",
+    tagSustainabilitySteward: "sustainability steward",
+    tagSustainingSteward: "sustaining steward",
+    tagCommunityCultivator: "community cultivator",
+  };
+
+  const [rows] = await Conn.wExecPrep(sql, params);
+  return rows;
+}
+export async function queryMemberTagAssignmentCountByTagName() {
+  const sql = `
+			SELECT
+				MemberTags.IDMemberTag,
+				Tag,
+				COUNT(*) AS Count
+			FROM
+				MemberTagAssignments
+			  LEFT JOIN MemberTags ON MemberTagAssignments.IDMemberTag = MemberTags.IDMemberTag
+			GROUP BY
+				MemberTags.IDMemberTag,
+				MemberTags.Tag
+			ORDER BY
+				MemberTags.Tag
+			`;
+  const [rows] = await Conn.wExecPrep(sql, {});
+  if (rows.length > 0) {
+    return rows;
+  } else {
+    const sql2 = `
+			SELECT
+				IDMemberTag,
+				Tag,
+				0 AS Count
+			FROM
+			  MemberTags
+			`;
+    const [emptyMemberTags] = await Conn.wExecPrep(sql2, {});
+    return emptyMemberTags;
+  }
 }

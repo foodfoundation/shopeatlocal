@@ -164,4 +164,36 @@ export const S3DocumentBucketSecretAccessKey = "";
 export const S3PublicBucketAccessKeyId = "";
 export const S3PublicBucketSecretAccessKey = "";
 
+//
+// Add membership tags here
+//
+// The 'fracFeeCoopShop' value is the fraction of the coop shop fee that will be
+// charged to the member.
+//
+// The 'hasNoFee' value indicates whether the member
+// should be exempt from paying the annual membership fee.
+//
+// The 'tagId' value must match the ID of the tag in the database.
+//
+export const MembershipTags = [
+  {
+    tagId: 1,
+    fracFeeCoopShop: 0.2,
+    hasNoFee: true,
+    onTimeShopping: true,
+  },
+  {
+    tagId: 2,
+    fracFeeCoopShop: 0.05,
+    hasNoFee: true,
+    onTimeShopping: false,
+  },
+  {
+    tagId: 3,
+    fracFeeCoopShop: 0.1,
+    hasNoFee: true,
+    onTimeShopping: false,
+  },
+];
+
 

@@ -31,14 +31,26 @@ const SQLSelCred = `SELECT Memb.IDMemb, NameLogin, HashPass, HashPassLeg, CkLock
 		Producer.CkListProducer, Producer.NameBus AS NameBusProducer,
 		Producer.CdRegWholesale,
 		IFNULL(zTransact.BalMoney, 0) AS BalMoney,
-		IFNULL(zTransact.BalEBT, 0) AS BalEBT
+		IFNULL(zTransact.BalEBT, 0) AS BalEBT,
+		IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+		IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 	FROM Memb
 	LEFT JOIN (
 		SELECT Transact.IDMemb, SUM(AmtMoney) AS BalMoney, SUM(AmtEBT) AS BalEBT
 		FROM Transact
 		GROUP BY Transact.IDMemb
 	) AS zTransact ON (zTransact.IDMemb = Memb.IDMemb)
-	LEFT JOIN Producer ON (Producer.IDMemb = Memb.IDMemb)`;
+	LEFT JOIN Producer ON (Producer.IDMemb = Memb.IDMemb)
+	LEFT JOIN (
+            SELECT
+                MTA.IDMemb,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
+            FROM MemberTagAssignments AS MTA
+            LEFT JOIN MemberTags AS MT ON (MT.IDMemberTag = MTA.IDMemberTag)
+            GROUP BY MTA.IDMemb
+    ) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
+	`;
 
 /** Retrieves member profile and authorization data by member ID.
  *  @param {number} aIDMemb - Member ID to look up

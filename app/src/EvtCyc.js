@@ -13,6 +13,7 @@ import { Site, CoopParams } from "./Site.js";
 import moment from "moment";
 
 import momentTimezone from "moment-timezone";
+import { MembershipTags } from "../Cfg.js";
 const { tz } = momentTimezone;
 
 /** Passes the connection to function awExec so it can make changes within
@@ -128,33 +129,45 @@ async function wAssess_FeesMemb(aConn) {
  */
 async function wMembsFeeDue(aConn) {
   // Why isn't CtMonthTrialMembNew a query parameter?: [TO DO]
-  const oSQL = `SELECT *
+  const oSQL = `SELECT
+    Memb.*,
+    IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
+    IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
 		FROM Memb
+		LEFT JOIN (
+        SELECT
+              MTA.IDMemb,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ','), ']') AS JSON) AS TagIDs,
+				CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_QUOTE(MT.Tag) ORDER BY MT.Tag SEPARATOR ','), ']') AS JSON) AS Tags
+            FROM MemberTagAssignments AS MTA
+            LEFT JOIN MemberTags AS MT ON (MT.IDMemberTag = MTA.IDMemberTag)
+            GROUP BY MTA.IDMemb
+    ) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
 		WHERE (
 				WhenFeeMembLast IS NULL
 				OR WhenFeeMembLast <= DATE_SUB(NOW(), INTERVAL 1 YEAR)
 			)
-			AND IDMemb IN (
+    AND Memb.IDMemb IN (
 				SELECT IDMemb
-				FROM Memb
-				JOIN Cart USING (IDMemb)
-				JOIN ItCart USING (IDCart)
-				JOIN StApp USING (IDCyc)
-				WHERE ItCart.QtyProm > 0
-				UNION
-				SELECT Memb.IDMemb
-				FROM Memb
-				JOIN Producer ON Producer.IDMemb = Memb.IDMemb
-				JOIN Product USING (IDProducer)
-				JOIN Vty USING (IDProduct)
-				JOIN ItCart USING (IDVty)
-				JOIN Cart USING (IDCart)
-				JOIN StApp USING (IDCyc)
-				WHERE ItCart.QtyOrd > 0
-			)
-			AND WhenReg <= DATE_SUB(NOW(), INTERVAL ${Site.CtMonthTrialMembNew} MONTH)
-			AND CkFounder IS NOT TRUE
-			AND CdRegEBT != 'Approv'
+          FROM Memb
+          JOIN Cart USING (IDMemb)
+          JOIN ItCart USING (IDCart)
+          JOIN StApp USING (IDCyc)
+          WHERE ItCart.QtyProm > 0
+          UNION
+          SELECT Memb.IDMemb
+          FROM Memb
+          JOIN Producer ON Producer.IDMemb = Memb.IDMemb
+          JOIN Product USING (IDProducer)
+          JOIN Vty USING (IDProduct)
+          JOIN ItCart USING (IDVty)
+          JOIN Cart USING (IDCart)
+          JOIN StApp USING (IDCyc)
+          WHERE ItCart.QtyOrd > 0
+    )
+    AND WhenReg <= DATE_SUB(NOW(), INTERVAL ${Site.CtMonthTrialMembNew} MONTH)
+    AND CkFounder IS NOT TRUE
+    AND CdRegEBT != 'Approv'
 		ORDER BY IDMemb`;
   const [oRows] = await aConn.wExecPrep(oSQL);
   return oRows;
@@ -178,6 +191,15 @@ async function wAssess_FeeMemb(aConn, aMemb) {
   if (producerRows.length === 1) {
     aMemb.CyclesUsed = 2;
     await updateProducerCycleCount(aConn, aMemb.IDMemb);
+  }
+
+  const hasNoFeeMembership = !!MembershipTags.find(oMemberTag =>
+    aMemb.TagIDs.includes(oMemberTag.tagId),
+  )?.hasNoFee;
+
+  if (hasNoFeeMembership) {
+    console.log("membership_fee_not_assessed: has_no_fee_membership");
+    return;
   }
 
   if (aMemb.CyclesUsed < 2) {

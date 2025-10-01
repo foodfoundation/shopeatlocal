@@ -177,6 +177,8 @@ export const NamesParamMemb = [
   "CkProducer",
   "CkStaff",
   "CkWholesale",
+  "MemberTagID",
+  "MemberTagName",
 ];
 
 /** Member search results
@@ -199,6 +201,7 @@ export async function wMembs(aParams, aCkExport) {
 				Producer.IDProducer, Producer.CdProducer,
 				IFNULL(zTransact.BalMoney, 0) AS BalMoney,
 				IFNULL(zTransact.BalEBT, 0) AS BalEBT,
+				IFNULL(zMembTags.TagIDs, '') AS MembTagIDs,
 				Loc.CdTypeLoc, `;
   // Only a few fields are displayed in the search results. The rest are for the
   // export:
@@ -206,6 +209,7 @@ export async function wMembs(aParams, aCkExport) {
 			Producer.IDProducer, Producer.CdProducer,
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
 			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
+			IFNULL(zMembTags.TagIDs, '') AS MembTagIDs,
 			Loc.CdTypeLoc, `;
 
   /** An array of expressions that contribute to the rank of each search
@@ -240,6 +244,11 @@ export async function wMembs(aParams, aCkExport) {
 			FROM Transact
 			GROUP BY Transact.IDMemb
 		) AS zTransact ON (zTransact.IDMemb = Memb.IDMemb)
+		LEFT JOIN (
+			SELECT MTA.IDMemb, GROUP_CONCAT(DISTINCT MTA.IDMemberTag ORDER BY MTA.IDMemberTag SEPARATOR ',') AS TagIDs
+			FROM MemberTagAssignments AS MTA
+			GROUP BY MTA.IDMemb
+		) AS zMembTags ON (zMembTags.IDMemb = Memb.IDMemb)
 		JOIN Loc ON (Loc.CdLoc = Memb.CdLocLast)`;
   oSQLCt += oFrom;
   oSQLSel += oFrom;
@@ -281,6 +290,12 @@ export async function wMembs(aParams, aCkExport) {
   if (aParams.CkStaff !== undefined) oWheres.push("CdStaff != 'NotStaff'");
 
   if (aParams.CkWholesale !== undefined) oWheres.push("Memb.CdRegWholesale = 'Approv'");
+
+  // Optional filter: limit results to members assigned a specific tag ID
+  if (aParams.MemberTagID !== undefined)
+    oWheres.push(
+      "EXISTS (SELECT 1 FROM MemberTagAssignments AS MTA WHERE MTA.IDMemb = Memb.IDMemb AND MTA.IDMemberTag = :MemberTagID)",
+    );
 
   let oSQLWheres;
   if (oWheres.length) oSQLWheres = "\nWHERE " + oWheres.join("\n\tAND ");

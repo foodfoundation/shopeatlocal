@@ -27,6 +27,7 @@ import {
 } from "./Db.js";
 import { LocsActiv, CoopParams } from "./Site.js";
 import { Bool_Cks, PageAfterEditMemb } from "./Util.js";
+import { MembershipTags } from "../Cfg.js";
 
 // Wraps the specified asynchronous middleware in another middleware that
 // catches exceptions and passes them to the 'next' function, for regular
@@ -234,10 +235,23 @@ export async function wWarePhase(aReq, aResp, aNext) {
     // Always repeat the phase check...
   }
 
+  // Postpone the Shop Start date
+  const user = aReq.user;
   const oNow = new Date();
-  Add_PropsCyc(aResp, oNow, "Shop");
-  Add_PropsCyc(aResp, oNow, "Deliv");
-  Add_PropsCyc(aResp, oNow, "Pickup");
+  const oMembTagIds = aReq.user?.TagIDs ?? [];
+  const oIsOnTimeShopping =
+    MembershipTags.find(oMemberTag => oMembTagIds.includes(oMemberTag.tagId))?.onTimeShopping ??
+    false;
+  const oIsStaff = user?.CkStaff() ?? false;
+
+  // If none of the membership tags have onTimeShopping set to true, then everyone shops on time
+  const everyoneShopsOnTime = MembershipTags.every(oMemberTag => !oMemberTag.onTimeShopping);
+
+  const oShouldPostponeShopStartDate = !(oIsOnTimeShopping || oIsStaff || everyoneShopsOnTime);
+
+  Add_PropsCyc(aResp, oNow, "Shop", oShouldPostponeShopStartDate);
+  Add_PropsCyc(aResp, oNow, "Deliv", false);
+  Add_PropsCyc(aResp, oNow, "Pickup", false);
 
   aNext();
 }
@@ -254,19 +268,26 @@ export async function wWarePhase(aReq, aResp, aNext) {
 // ~ FlagBeforeShop, FlagShop, or FlagAfterShop: Set to 'true' if the current
 //   time is before, during, or after the current cycle's shopping window.
 //
-function Add_PropsCyc(aResp, aNow, aName) {
+function Add_PropsCyc(aResp, aNow, aName, aShouldPostponeShopStartDate) {
   // Maybe 'Next' should be replaced with 'Soon', to avoid confusion with the
   // 'next' cycle? [TO DO]
 
+  const oShouldPostponeShopStartDate = !!aShouldPostponeShopStartDate;
+
+  const whenCycleStart = aResp.locals.CycCurr[`WhenStart${aName}`];
+  if (aName === "Shop" && oShouldPostponeShopStartDate) {
+    whenCycleStart.setHours(whenCycleStart.getHours() + 1);
+  }
+
   // The current-cycle window has not started:
-  if (aNow < aResp.locals.CycCurr[`WhenStart${aName}`]) {
-    aResp.locals[`WhenStart${aName}Next`] = aResp.locals.CycCurr[`WhenStart${aName}`];
+  if (aNow < whenCycleStart) {
+    aResp.locals[`WhenStart${aName}Next`] = whenCycleStart;
     aResp.locals[`WhenEnd${aName}Next`] = aResp.locals.CycCurr[`WhenEnd${aName}`];
     aResp.locals[`FlagBefore${aName}`] = true;
   }
   // The current-cycle window has not ended:
   else if (aNow < aResp.locals.CycCurr[`WhenEnd${aName}`]) {
-    aResp.locals[`WhenStart${aName}Next`] = aResp.locals.CycCurr[`WhenStart${aName}`];
+    aResp.locals[`WhenStart${aName}Next`] = whenCycleStart;
     aResp.locals[`WhenEnd${aName}Next`] = aResp.locals.CycCurr[`WhenEnd${aName}`];
     aResp.locals[`Flag${aName}`] = true;
   }
