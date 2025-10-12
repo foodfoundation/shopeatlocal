@@ -41,16 +41,15 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
-    "jest": "^29.7.0",
-    "nodemon": "^3.1.10"
+    "jest": "^29.7.0"
   },
   "engines": {
     "node": ">=v18.18.2"
   },
   "scripts": {
-    "start": "node src/index.js",
-    "test": "jest",
-    "dev": "nodemon -i sessions src/index.js",
+    "start": "bun run src/index.js",
+    "test": "bun x jest",
+    "dev": "bun --watch run src/index.js",
     "lint": "eslint ."
   },
   "repository": {
