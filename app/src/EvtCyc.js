@@ -227,7 +227,7 @@ async function wAssess_FeeMemb(aConn, aMemb) {
 
     await wAdd_Transact(aMemb.IDMemb, oCdTransact, oAmt, 0, null, null, aConn);
 
-    await wUpd_WhenFeeMembLast(aMemb.IDMemb);
+    await wUpd_WhenFeeMembLast(aMemb.IDMemb, aConn);
   }
 }
 
