@@ -743,7 +743,8 @@ export async function wMembFromID(aIDMemb, aConn) {
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
 			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
       IFNULL(zMembTags.TagIDs, CAST('[]' AS JSON)) AS TagIDs,
-      IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags
+      IFNULL(zMembTags.Tags, CAST('[]' AS JSON)) AS Tags,
+      (Memb.CdRegMemb = 'Pend' AND Memb.CyclesUsed <= 2 AND Memb.WhenFeeMembLast IS NULL) AS IsTrial
 		FROM Memb
 		LEFT JOIN Producer USING (IDMemb)
 		LEFT JOIN (
@@ -1894,4 +1895,28 @@ export async function queryMemberTagAssignmentCountByTagName() {
     const [emptyMemberTags] = await Conn.wExecPrep(sql2, {});
     return emptyMemberTags;
   }
+}
+
+export async function updateSetCycleCount(aIDMemb, aCyclesUsed) {
+  const oSQL = `UPDATE Memb
+	SET CyclesUsed = :CyclesUsed
+	WHERE IDMemb = :IDMemb`;
+  const oParams = {
+    IDMemb: aIDMemb,
+    CyclesUsed: aCyclesUsed,
+  };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  if (oRows.affectedRows !== 1) throw Error("EvtCyc updateCycleCount: Cannot update cycle count");
+}
+
+/** Updates last fee payment timestamp for member */
+export async function wUpd_WhenFeeMembLast(aIDMemb) {
+  const oSQL = `UPDATE Memb
+		SET WhenFeeMembLast = NOW()
+		WHERE IDMemb = :IDMemb`;
+  const oParams = {
+    IDMemb: aIDMemb,
+  };
+  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  if (oRows.affectedRows !== 1) throw Error("EvtCyc wUpd_WhenFeeMembLast: Cannot update fee date");
 }

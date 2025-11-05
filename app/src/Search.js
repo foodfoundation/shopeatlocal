@@ -210,6 +210,7 @@ export async function wMembs(aParams, aCkExport) {
 			IFNULL(zTransact.BalMoney, 0) AS BalMoney,
 			IFNULL(zTransact.BalEBT, 0) AS BalEBT,
 			IFNULL(zMembTags.TagIDs, '') AS MembTagIDs,
+      (Memb.CdRegMemb = 'Pend' AND Memb.CyclesUsed <= 2 AND Memb.WhenFeeMembLast IS NULL) AS IsTrial,
 			Loc.CdTypeLoc, `;
 
   /** An array of expressions that contribute to the rank of each search

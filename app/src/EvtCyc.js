@@ -7,7 +7,7 @@ import { wExec } from "./CheckIn.js";
 import { wCreate } from "./InvcProducerOnsite.js";
 import { wExec as _wExec } from "./Checkout.js";
 import { wSend } from "./Email.js";
-import { wAdd_Transact, Conn } from "./Db.js";
+import { wAdd_Transact, Conn, updateSetCycleCount, wUpd_WhenFeeMembLast } from "./Db.js";
 import { TextIDCyc } from "./Util.js";
 import { Site, CoopParams } from "./Site.js";
 import moment from "moment";
@@ -190,7 +190,7 @@ async function wAssess_FeeMemb(aConn, aMemb) {
   //if aMemb.IDMemb is in there, set cycles used to 2
   if (producerRows.length === 1) {
     aMemb.CyclesUsed = 2;
-    await updateProducerCycleCount(aConn, aMemb.IDMemb);
+    await updateProducerCycleCount(aMemb.IDMemb);
   }
 
   const hasNoFeeMembership = !!MembershipTags.find(oMemberTag =>
@@ -227,20 +227,8 @@ async function wAssess_FeeMemb(aConn, aMemb) {
 
     await wAdd_Transact(aMemb.IDMemb, oCdTransact, oAmt, 0, null, null, aConn);
 
-    await wUpd_WhenFeeMembLast(aConn, aMemb.IDMemb);
+    await wUpd_WhenFeeMembLast(aMemb.IDMemb);
   }
-}
-
-/** Updates last fee payment timestamp for member */
-async function wUpd_WhenFeeMembLast(aConn, aIDMemb) {
-  const oSQL = `UPDATE Memb
-		SET WhenFeeMembLast = NOW()
-		WHERE IDMemb = :IDMemb`;
-  const oParams = {
-    IDMemb: aIDMemb,
-  };
-  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
-  if (oRows.affectedRows !== 1) throw Error("EvtCyc wUpd_WhenFeeMembLast: Cannot update fee date");
 }
 
 /** Updates cycle participation count for member shopping activity */
@@ -256,15 +244,8 @@ async function updateCycleCount(aConn, aIDMemb) {
 }
 
 /** Updates cycle participation count for producer activity */
-async function updateProducerCycleCount(aConn, aIDMemb) {
-  const oSQL = `UPDATE Memb
-	SET CyclesUsed = 2
-	WHERE IDMemb = :IDMemb`;
-  const oParams = {
-    IDMemb: aIDMemb,
-  };
-  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
-  if (oRows.affectedRows !== 1) throw Error("EvtCyc updateCycleCount: Cannot update cycle count");
+async function updateProducerCycleCount(aIDMemb) {
+  await updateSetCycleCount(aIDMemb, 2);
 }
 
 // --------------

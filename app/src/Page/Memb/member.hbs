@@ -5,7 +5,12 @@
 <div class="container-md py-4">
 
 	<div>
-		<h3 class="display-4 font-size-150 mb-0">{{CredSelImperUser.NameLogin}}</h3>
+		<div class="d-flex align-items-center">
+			<h3 class="display-4 font-size-150 mb-0">{{CredSelImperUser.NameLogin}}</h3>
+			{{#if Memb.IsTrial}}
+			<span class="badge badge-info ml-2">Trial</span>
+			{{/if}}
+			</div>
 		{{>Misc/pIDsLine CredSelImperUser}}
 	</div>
 
