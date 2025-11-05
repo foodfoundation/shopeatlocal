@@ -43,7 +43,7 @@ async function wCtMembPend() {
 }
 
 async function trialMembersCount() {
-  const oSQL = `SELECT COUNT(*) AS Ct FROM Memb WHERE CyclesUsed <= 2 AND WhenFeeMembLast IS NULL`;
+  const oSQL = `SELECT COUNT(*) AS Ct FROM Memb WHERE CdRegMemb = 'Pend' AND CyclesUsed <= 2 AND WhenFeeMembLast IS NULL`;
   const [oRows] = await Conn.wExecPrep(oSQL);
   if (!oRows.length) throw Error("trialMembersCount: Cannot get count");
   return oRows[0].Ct;
