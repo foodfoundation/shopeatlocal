@@ -1,4 +1,7 @@
-import FeatureFlags, { testEnv as _testEnv, prodEnv as _prodEnv } from "../../FeatureFlags";
+import { FeatureFlags } from "../src/FeatureFlags";
+
+const _testEnv = FeatureFlags.testEnv;
+const _prodEnv = FeatureFlags.prodEnv;
 
 describe("FeatureFlags", () => {
   const FeatureFlagsTest = {

@@ -1,11 +1,10 @@
 /** Feature flags for switching on/off features in an environment aware manner */
-const FeatureFlags = {
-  testEnv: {
-    paypalUpdate: true,
-  },
-  prodEnv: {
-    paypalUpdate: true,
-  },
+export const testEnv = {
+  paypalUpdate: true,
 };
 
-export default FeatureFlags;
+export const prodEnv = {
+  paypalUpdate: true,
+};
+
+export const FeatureFlags = { testEnv, prodEnv };
