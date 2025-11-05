@@ -1897,7 +1897,8 @@ export async function queryMemberTagAssignmentCountByTagName() {
   }
 }
 
-export async function updateSetCycleCount(aIDMemb, aCyclesUsed) {
+export async function updateSetCycleCount(aIDMemb, aCyclesUsed, aConn) {
+  if (!aConn) aConn = Conn;
   const oSQL = `UPDATE Memb
 	SET CyclesUsed = :CyclesUsed
 	WHERE IDMemb = :IDMemb`;
@@ -1905,18 +1906,19 @@ export async function updateSetCycleCount(aIDMemb, aCyclesUsed) {
     IDMemb: aIDMemb,
     CyclesUsed: aCyclesUsed,
   };
-  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
   if (oRows.affectedRows !== 1) throw Error("EvtCyc updateCycleCount: Cannot update cycle count");
 }
 
 /** Updates last fee payment timestamp for member */
-export async function wUpd_WhenFeeMembLast(aIDMemb) {
+export async function wUpd_WhenFeeMembLast(aIDMemb, aConn) {
+  if (!aConn) aConn = Conn;
   const oSQL = `UPDATE Memb
 		SET WhenFeeMembLast = NOW()
 		WHERE IDMemb = :IDMemb`;
   const oParams = {
     IDMemb: aIDMemb,
   };
-  const [oRows] = await Conn.wExecPrep(oSQL, oParams);
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
   if (oRows.affectedRows !== 1) throw Error("EvtCyc wUpd_WhenFeeMembLast: Cannot update fee date");
 }

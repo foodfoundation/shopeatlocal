@@ -83,7 +83,7 @@ export async function wHandPost(aReq, aResp) {
       "FeeMembInit",
       oAmt,
       0,
-      null,
+      aResp.locals.CredUser.IDMemb,
       {
         Note: aNote,
       },
@@ -96,7 +96,7 @@ export async function wHandPost(aReq, aResp) {
         "PayRecv",
         -oAmt,
         0,
-        null,
+        aResp.locals.CredUser.IDMemb,
         {
           CdMethPay: "GiftCert",
           Note: "Gifted trial fee",

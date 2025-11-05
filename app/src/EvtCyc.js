@@ -190,7 +190,7 @@ async function wAssess_FeeMemb(aConn, aMemb) {
   //if aMemb.IDMemb is in there, set cycles used to 2
   if (producerRows.length === 1) {
     aMemb.CyclesUsed = 2;
-    await updateProducerCycleCount(aMemb.IDMemb);
+    await updateProducerCycleCount(aConn, aMemb.IDMemb);
   }
 
   const hasNoFeeMembership = !!MembershipTags.find(oMemberTag =>
@@ -244,8 +244,8 @@ async function updateCycleCount(aConn, aIDMemb) {
 }
 
 /** Updates cycle participation count for producer activity */
-async function updateProducerCycleCount(aIDMemb) {
-  await updateSetCycleCount(aIDMemb, 2);
+async function updateProducerCycleCount(aConn, aIDMemb) {
+  await updateSetCycleCount(aIDMemb, 2, aConn);
 }
 
 // --------------
