@@ -255,9 +255,11 @@ export async function wMembs(aParams, aCkExport) {
 
   const oWheres = [];
 
-  if (aParams.CkTrialMemb !== undefined) oWheres.push("CyclesUsed < 2");
+  if (aParams.CkTrialMemb !== undefined)
+    oWheres.push("CdRegMemb = 'Pend' AND CyclesUsed <= 2 AND WhenFeeMembLast IS NULL");
 
-  if (aParams.CkPendMemb !== undefined) oWheres.push("CdRegMemb = 'Pend' AND CyclesUsed = 2");
+  if (aParams.CkPendMemb !== undefined)
+    oWheres.push("CdRegMemb = 'Pend' AND CyclesUsed = 2 AND WhenFeeMembLast IS NOT NULL");
 
   if (aParams.CkPendEBT !== undefined) oWheres.push("CdRegEBT = 'Pend'");
 
