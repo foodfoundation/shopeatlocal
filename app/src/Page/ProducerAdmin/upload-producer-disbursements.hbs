@@ -1,0 +1,301 @@
+{{!-- upload-producer-disbursements.hbs
+//    -----------------------------------
+//    Upload Producer Disbursements view --}}
+
+<div class="container-md py-4">
+	<h2 class="mb-4">Upload Producer Disbursements</h2>
+
+	{{#if SuccessMessage}}
+	<div class="alert alert-success" role="alert">
+		<h5 class="alert-heading">
+			<i class="fas fa-check-circle"></i> Success!
+		</h5>
+		<p class="mb-0">{{SuccessMessage}}</p>
+	</div>
+
+	{{#if Transacts}}
+	<div class="card mb-4">
+		<div class="card-header">
+			<h5 class="mb-0">Uploaded Transactions</h5>
+		</div>
+		<div class="card-body p-0">
+			<div class="GridTbl Head d-none d-lg-block">
+				<div class="row align-items-end font-weight-bold px-3 py-2">
+					<div class="col-lg-2">Transaction ID</div>
+					<div class="col-lg-2">Time</div>
+					<div class="col-lg-2">Producer</div>
+					<div class="col-lg">Type / Method</div>
+					<div class="col-lg-2 text-right">Amount</div>
+				</div>
+			</div>
+
+			<div class="GridTbl Body">
+				{{#each Transacts}}
+				<div class="Row px-3 py-2">
+					{{!-- Desktop layout --}}
+					<div class="d-none d-lg-flex row align-items-center">
+						<div class="col-lg-2">{{hTextIDTransact IDTransact}}</div>
+						<div class="col-lg-2">
+							{{hTextWhen WhenCreate "Med" ""}}<br>
+							{{hTextWhen WhenCreate "" "HourMin"}}
+						</div>
+						<div class="col-lg-2">
+							{{#if IDProducer}}
+								<strong>{{NameBusProducer}}</strong><br>
+								<small class="text-muted">ID: {{IDProducer}}</small>
+							{{else}}
+								<span class="text-muted">N/A</span>
+							{{/if}}
+						</div>
+						<div class="col-lg">
+							{{hTextCdTypeTransact CdTypeTransact}}<br>
+							{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
+							{{#if Note}}<br><small class="text-muted">{{Note}}</small>{{/if}}
+						</div>
+						<div class="col-lg-2 text-right pl-0">
+							{{hTextAmtMoneyTransact this}}
+						</div>
+					</div>
+
+					{{!-- Mobile layout --}}
+					<div class="d-lg-none row">
+						<div class="col-6 font-weight-semi">
+							Transaction {{hTextIDTransact IDTransact}}
+						</div>
+						<div class="col-6 text-right font-weight-semi">
+							{{hTextWhen WhenCreate "Med" ""}}
+							{{hTextWhen WhenCreate "" "HourMin"}}
+						</div>
+						<div class="col-12 mt-2">
+							<strong>Producer:</strong>
+							{{#if IDProducer}}
+								{{NameBusProducer}} (ID: {{IDProducer}})
+							{{else}}
+								<span class="text-muted">N/A</span>
+							{{/if}}
+						</div>
+						<div class="col-8 mt-2">
+							{{hTextCdTypeTransact CdTypeTransact}}<br>
+							{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
+							{{#if Note}}<br><small class="text-muted">{{Note}}</small>{{/if}}
+						</div>
+						<div class="col-4 text-right font-weight-semi mt-2">
+							<div>Amount</div>
+							<hr class="my-1 ml-4 mr-0">
+							<div>{{hTextAmtMoneyTransact this}}</div>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+	{{/if}}
+	{{/if}}
+
+	{{#if Errors}}
+	<div class="alert alert-danger" role="alert">
+		<h5 class="alert-heading">Validation Errors</h5>
+		{{#if SuccessCount}}
+		<p class="mb-2"><strong>{{SuccessCount}} transactions were processed successfully before errors occurred.</strong></p>
+		{{/if}}
+		<ul class="mb-0">
+			{{#each Errors}}
+			<li>{{this}}</li>
+			{{/each}}
+		</ul>
+	</div>
+	{{/if}}
+
+	<div class="card mb-4">
+		<div class="card-header">
+			<h5 class="mb-0">CSV File Requirements</h5>
+		</div>
+		<div class="card-body">
+			<p class="mb-3">The CSV file must follow this schema:</p>
+			
+			<table class="table table-sm table-bordered">
+				<thead class="thead-light">
+					<tr>
+						<th>Column Name</th>
+						<th>Type</th>
+						<th>Required</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>producer_id</code></td>
+						<td>Number</td>
+						<td><span class="badge badge-danger">Required</span></td>
+						<td><strong>The Producer ID</strong> (not Member ID). This is the IDProducer from the Producer table. Must exist in the system as an approved producer.</td>
+					</tr>
+					<tr>
+						<td><code>business_name</code></td>
+						<td>Text</td>
+						<td><span class="badge badge-secondary">Optional</span></td>
+						<td>Producer's business name. This field is ignored during processing.</td>
+					</tr>
+					<tr>
+						<td><code>transaction_type</code></td>
+						<td>Text</td>
+						<td><span class="badge badge-secondary">Optional</span></td>
+						<td>If provided, must be exactly "Payment disbursement".</td>
+					</tr>
+					<tr>
+						<td><code>payment_method</code></td>
+						<td>Text</td>
+						<td><span class="badge badge-danger">Required</span></td>
+						<td>Must be one of: <code>Cash</code>, <code>Check</code>, or <code>PayPal</code></td>
+					</tr>
+					<tr>
+						<td><code>amount</code></td>
+						<td>Number</td>
+						<td><span class="badge badge-danger">Required</span></td>
+						<td>Payment amount (positive number). Will be recorded as a payment sent to the producer.</td>
+					</tr>
+					<tr>
+						<td><code>note</code></td>
+						<td>Text</td>
+						<td><span class="badge badge-secondary">Optional</span></td>
+						<td>Additional notes (max 500 characters).</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="alert alert-info mt-3" role="alert">
+				<h6 class="alert-heading">Example CSV Format:</h6>
+				<pre class="mb-0"><code>producer_id,business_name,transaction_type,payment_method,amount,note
+123,Acme Farms,Payment disbursement,Check,150.50,Q4 2024 disbursement
+456,Green Gardens,,PayPal,275.00,
+789,Fresh Produce Co,Payment disbursement,Cash,100.00,Weekly payment</code></pre>
+			</div>
+
+			<div class="alert alert-warning" role="alert">
+				<strong>Important:</strong>
+				<ul class="mb-0">
+					<li>The first row must contain the column headers exactly as shown above</li>
+					<li><strong>Use Producer ID (IDProducer), not Member ID (IDMemb)</strong> in the producer_id column</li>
+					<li>All producer IDs must exist in the system as approved producers</li>
+					<li>The file will be validated completely before any transactions are created</li>
+					<li>If any validation errors are found, no transactions will be created</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="card">
+		<div class="card-header">
+			<h5 class="mb-0">Upload File</h5>
+		</div>
+		<div class="card-body">
+			<form id="form-main" method="POST" action="/upload-producer-disbursements" enctype="multipart/form-data">
+				<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+				
+				<div class="form-group">
+					<label for="csvFile">Select CSV File</label>
+					<div class="custom-file">
+						<input type="file" class="custom-file-input" id="csvFile" name="csvFile" accept=".csv" required>
+						<label class="custom-file-label" for="csvFile">Choose file...</label>
+					</div>
+					<small class="form-text text-muted">
+						Please upload a CSV file (.csv) with producer disbursement data.
+					</small>
+				</div>
+
+				<div class="d-flex justify-content-between align-items-center">
+					<a href="/cashier" class="btn btn-secondary">Back to Accounting</a>
+					<button type="submit" class="btn btn-primary">Upload and Process</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	{{#if SuccessMessage}}
+	<div class="alert alert-success mt-4" role="alert">
+		<h5 class="alert-heading">
+			<i class="fas fa-check-circle"></i> Success!
+		</h5>
+		<p class="mb-0">{{SuccessMessage}}</p>
+	</div>
+
+	{{#if Transacts}}
+	<div class="card mt-4">
+		<div class="card-header">
+			<h5 class="mb-0">Uploaded Transactions</h5>
+		</div>
+		<div class="card-body p-0">
+			<div class="GridTbl Head d-none d-lg-block">
+				<div class="row align-items-end font-weight-bold px-3 py-2">
+					<div class="col-lg-2">Transaction ID</div>
+					<div class="col-lg-2">Time</div>
+					<div class="col-lg-2">Producer</div>
+					<div class="col-lg">Type / Method</div>
+					<div class="col-lg-2 text-right">Amount</div>
+				</div>
+			</div>
+
+			<div class="GridTbl Body">
+				{{#each Transacts}}
+				<div class="Row px-3 py-2">
+					{{!-- Desktop layout --}}
+					<div class="d-none d-lg-flex row align-items-center">
+						<div class="col-lg-2">{{hTextIDTransact IDTransact}}</div>
+						<div class="col-lg-2">
+							{{hTextWhen WhenCreate "Med" ""}}<br>
+							{{hTextWhen WhenCreate "" "HourMin"}}
+						</div>
+						<div class="col-lg-2">
+							{{#if IDProducer}}
+								<strong>{{NameBusProducer}}</strong><br>
+								<small class="text-muted">ID: {{IDProducer}}</small>
+							{{else}}
+								<span class="text-muted">N/A</span>
+							{{/if}}
+						</div>
+						<div class="col-lg">
+							{{hTextCdTypeTransact CdTypeTransact}}<br>
+							{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
+							{{#if Note}}<br><small class="text-muted">{{Note}}</small>{{/if}}
+						</div>
+						<div class="col-lg-2 text-right pl-0">
+							{{hTextAmtMoneyTransact this}}
+						</div>
+					</div>
+
+					{{!-- Mobile layout --}}
+					<div class="d-lg-none row">
+						<div class="col-6 font-weight-semi">
+							Transaction {{hTextIDTransact IDTransact}}
+						</div>
+						<div class="col-6 text-right font-weight-semi">
+							{{hTextWhen WhenCreate "Med" ""}}
+							{{hTextWhen WhenCreate "" "HourMin"}}
+						</div>
+						<div class="col-12 mt-2">
+							<strong>Producer:</strong>
+							{{#if IDProducer}}
+								{{NameBusProducer}} (ID: {{IDProducer}})
+							{{else}}
+								<span class="text-muted">N/A</span>
+							{{/if}}
+						</div>
+						<div class="col-8 mt-2">
+							{{hTextCdTypeTransact CdTypeTransact}}<br>
+							{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
+							{{#if Note}}<br><small class="text-muted">{{Note}}</small>{{/if}}
+						</div>
+						<div class="col-4 text-right font-weight-semi mt-2">
+							<div>Amount</div>
+							<hr class="my-1 ml-4 mr-0">
+							<div>{{hTextAmtMoneyTransact this}}</div>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+	{{/if}}
+	{{/if}}
+</div>
