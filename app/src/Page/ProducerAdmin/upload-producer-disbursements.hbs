@@ -210,92 +210,13 @@
 			</form>
 		</div>
 	</div>
-
-	{{#if SuccessMessage}}
-	<div class="alert alert-success mt-4" role="alert">
-		<h5 class="alert-heading">
-			<i class="fas fa-check-circle"></i> Success!
-		</h5>
-		<p class="mb-0">{{SuccessMessage}}</p>
-	</div>
-
-	{{#if Transacts}}
-	<div class="card mt-4">
-		<div class="card-header">
-			<h5 class="mb-0">Uploaded Transactions</h5>
-		</div>
-		<div class="card-body p-0">
-			<div class="GridTbl Head d-none d-lg-block">
-				<div class="row align-items-end font-weight-bold px-3 py-2">
-					<div class="col-lg-2">Transaction ID</div>
-					<div class="col-lg-2">Time</div>
-					<div class="col-lg-2">Producer</div>
-					<div class="col-lg">Type / Method</div>
-					<div class="col-lg-2 text-right">Amount</div>
-				</div>
-			</div>
-
-			<div class="GridTbl Body">
-				{{#each Transacts}}
-				<div class="Row px-3 py-2">
-					{{!-- Desktop layout --}}
-					<div class="d-none d-lg-flex row align-items-center">
-						<div class="col-lg-2">{{hTextIDTransact IDTransact}}</div>
-						<div class="col-lg-2">
-							{{hTextWhen WhenCreate "Med" ""}}<br>
-							{{hTextWhen WhenCreate "" "HourMin"}}
-						</div>
-						<div class="col-lg-2">
-							{{#if IDProducer}}
-								<strong>{{NameBusProducer}}</strong><br>
-								<small class="text-muted">ID: {{IDProducer}}</small>
-							{{else}}
-								<span class="text-muted">N/A</span>
-							{{/if}}
-						</div>
-						<div class="col-lg">
-							{{hTextCdTypeTransact CdTypeTransact}}<br>
-							{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
-							{{#if Note}}<br><small class="text-muted">{{Note}}</small>{{/if}}
-						</div>
-						<div class="col-lg-2 text-right pl-0">
-							{{hTextAmtMoneyTransact this}}
-						</div>
-					</div>
-
-					{{!-- Mobile layout --}}
-					<div class="d-lg-none row">
-						<div class="col-6 font-weight-semi">
-							Transaction {{hTextIDTransact IDTransact}}
-						</div>
-						<div class="col-6 text-right font-weight-semi">
-							{{hTextWhen WhenCreate "Med" ""}}
-							{{hTextWhen WhenCreate "" "HourMin"}}
-						</div>
-						<div class="col-12 mt-2">
-							<strong>Producer:</strong>
-							{{#if IDProducer}}
-								{{NameBusProducer}} (ID: {{IDProducer}})
-							{{else}}
-								<span class="text-muted">N/A</span>
-							{{/if}}
-						</div>
-						<div class="col-8 mt-2">
-							{{hTextCdTypeTransact CdTypeTransact}}<br>
-							{{#if CdMethPay}}{{hTextCdMethPay CdMethPay}}{{/if}}
-							{{#if Note}}<br><small class="text-muted">{{Note}}</small>{{/if}}
-						</div>
-						<div class="col-4 text-right font-weight-semi mt-2">
-							<div>Amount</div>
-							<hr class="my-1 ml-4 mr-0">
-							<div>{{hTextAmtMoneyTransact this}}</div>
-						</div>
-					</div>
-				</div>
-				{{/each}}
-			</div>
-		</div>
-	</div>
-	{{/if}}
-	{{/if}}
 </div>
+
+<script>
+	// Update custom file input label with selected filename
+	document.getElementById('csvFile').addEventListener('change', function (e) {
+		const fileName = e.target.files[0]?.name || 'Choose file...';
+		const label = e.target.nextElementSibling;
+		label.textContent = fileName;
+	});
+</script>

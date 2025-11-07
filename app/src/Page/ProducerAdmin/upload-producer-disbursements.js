@@ -2,77 +2,32 @@
 // ---------------------------------
 // Upload Producer Disbursements controllers
 
+import { parse } from "csv-parse/sync";
 import { wAdd_Transact, Conn } from "../../Db.js";
 import { CoopParams } from "../../Site.js";
 
 /**
- * Parse CSV content into an array of objects
+ * Parse CSV content into an array of objects using csv-parse
  * @param {string} csvContent - The CSV file content
  * @returns {Array} Array of parsed rows
  */
 function parseCSV(csvContent) {
-  const lines = csvContent.trim().split("\n");
-  if (lines.length === 0) {
-    throw new Error("CSV file is empty");
-  }
-
-  // Parse header
-  const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
-
-  // Parse rows
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue; // Skip empty lines
-
-    const values = parseCSVLine(line);
-    if (values.length !== headers.length) {
-      throw new Error(
-        `Row ${i + 1}: Column count mismatch (expected ${headers.length}, got ${values.length})`,
-      );
-    }
-
-    const row = {};
-    headers.forEach((header, index) => {
-      row[header] = values[index];
+  try {
+    const records = parse(csvContent, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+      relax_quotes: true,
     });
-    rows.push(row);
-  }
 
-  return rows;
-}
-
-/**
- * Parse a single CSV line handling quoted values
- * @param {string} line - CSV line to parse
- * @returns {Array} Array of values
- */
-function parseCSVLine(line) {
-  const values = [];
-  let current = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    const nextChar = line[i + 1];
-
-    if (char === '"') {
-      if (inQuotes && nextChar === '"') {
-        current += '"';
-        i++; // Skip next quote
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (char === "," && !inQuotes) {
-      values.push(current.trim());
-      current = "";
-    } else {
-      current += char;
+    if (!records || records.length === 0) {
+      throw new Error("CSV file is empty or contains no data rows");
     }
-  }
-  values.push(current.trim());
 
-  return values;
+    return records;
+  } catch (err) {
+    throw new Error(`CSV parsing failed: ${err.message}`);
+  }
 }
 
 /**
