@@ -258,7 +258,7 @@ export async function wHandPost(aReq, aResp) {
         const memberId = producerValidation.producerToMemberMap.get(data.producer_id);
 
         // Create PaySent transaction (negative amount for producer payment out)
-        await wAdd_Transact(
+        const transactionId = await wAdd_Transact(
           memberId,
           "PaySent",
           -Math.abs(data.amount), // Ensure negative for payment out
@@ -272,9 +272,7 @@ export async function wHandPost(aReq, aResp) {
           null, // Use default connection
         );
         
-        // Get the last inserted transaction ID
-        const [result] = await Conn.wExecPrep('SELECT LAST_INSERT_ID() as IDTransact');
-        createdTransactionIds.push(result[0].IDTransact);
+        createdTransactionIds.push(transactionId);
         successCount++;
       } catch (err) {
         allErrors.push(
