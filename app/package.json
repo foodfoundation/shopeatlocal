@@ -37,6 +37,7 @@
     "svg-to-pdfkit": "^0.1.8",
     "uuid": "<7.0.0",
     "validator": "^13.15.0",
+    "csv-parse": "^6.1.0",
     "y18n": "^5.0.8"
   },
   "devDependencies": {

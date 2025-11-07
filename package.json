@@ -27,8 +27,5 @@
     "producers-report",
     "sanity"
   ],
-  "packageManager": "npm@11.3.0",
-  "dependencies": {
-    "csv-parse": "^6.1.0"
-  }
+  "packageManager": "npm@11.3.0"
 }
