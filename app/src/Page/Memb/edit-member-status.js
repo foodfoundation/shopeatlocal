@@ -2,10 +2,10 @@
 // ---------------------
 // Edit member status controllers
 
-import { wMembFromID } from "../../Db.js";
+import { wMembFromID, wAdd_Transact, wUpd_WhenFeeMembLast } from "../../Db.js";
 import { wExec, CkFail, Retry, wUpdOne } from "../../Form.js";
 import { PageAfterEditMemb } from "../../Util.js";
-import { CoopParams } from "../../Site.js";
+import { Site, CoopParams } from "../../Site.js";
 
 /** Returns an object containing fields that should be disabled in the form, and
  *  ignored during form processing. */
@@ -47,6 +47,7 @@ export async function wHandPost(aReq, aResp) {
     CkShowProducer: {},
     CdRegVolun: {},
     CdRegWholesale: {},
+    TrialFeeDecision: { Valid: false, Store: false }, // Optional field for trial fee handling
   };
 
   if (aResp.locals.CredUser.CkStaffMgr() && !aResp.locals.CkSelImperUserSelf) oFlds.CdStaff = {};
@@ -69,7 +70,42 @@ export async function wHandPost(aReq, aResp) {
   // Update member record
   // --------------------
 
+  const shouldGiftTrialFee = oFlds.TrialFeeDecision.ValCook === "gift";
+  const shouldChargeTrialFee = oFlds.TrialFeeDecision.ValCook === "charge";
+  const shouldHandleTrialFee = shouldGiftTrialFee || shouldChargeTrialFee;
+
   const oIDMemb = aResp.locals.CredSelImperUser.IDMemb;
+  if (shouldHandleTrialFee) {
+    const oAmt = Site.FeeMembInit;
+    const aNote = shouldGiftTrialFee ? "Gifted trial fee" : "Trial fee charged manually";
+    await wAdd_Transact(
+      oIDMemb,
+      "FeeMembInit",
+      oAmt,
+      0,
+      aResp.locals.CredUser.IDMemb,
+      {
+        Note: aNote,
+      },
+      null,
+    );
+    await wUpd_WhenFeeMembLast(oIDMemb);
+    if (shouldGiftTrialFee) {
+      await wAdd_Transact(
+        oIDMemb,
+        "PayRecv",
+        -oAmt,
+        0,
+        aResp.locals.CredUser.IDMemb,
+        {
+          CdMethPay: "GiftCert",
+          Note: "Gifted trial fee",
+        },
+        null,
+      );
+    }
+  }
+
   await wUpdOne("Memb", "IDMemb", oIDMemb, oFlds);
 
   // Go to member or member detail page

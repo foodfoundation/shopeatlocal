@@ -6,7 +6,12 @@
 	<img src="{{hPrefixStatic 'memb.svg'}}" alt="" width="40" height="40">
 </div>
 <div>
-	<span class="font-weight-semi">{{NameLogin}}</span><br>
+	<div class="d-flex align-items-center">
+		<span class="font-weight-semi">{{NameLogin}}</span>
+		{{#if IsTrial}}
+		<span class="badge badge-info ml-2">Trial</span>
+		{{/if}}
+	</div>
 	{{>Misc/pIDsLine}}
 </div>
 
