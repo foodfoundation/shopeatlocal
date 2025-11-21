@@ -14,135 +14,226 @@ import { CoopParams } from "../../Site.js";
  */
 export async function wHandGet(aReq, aResp) {
   aResp.locals.Title = `${CoopParams.CoopNameShort} Hub Reports`;
-  const result = await wGetHubReport();
-  aResp.locals.ProducerData = result;
+  // Initial page load - render empty page, data will be fetched via API
   aResp.render("Cashier/hub-reports");
 }
 
-/** Retrieves aggregated sales data for all producers
- *  @returns {Promise<Object>} JSON object containing producer sales data
+/** API endpoint to fetch hub reports data with pagination and filters
+ *  @param {Request} aReq - Express request with query params
+ *  @param {Response} aResp - Express response
+ *  @returns {Promise<void>} Returns JSON with data and pagination info
+ */
+export async function wHandGetData(aReq, aResp) {
+  try {
+    const page = parseInt(aReq.query.page) || 1;
+    const limit = parseInt(aReq.query.limit) || 50;
+    const startDate = aReq.query.startDate;
+    const endDate = aReq.query.endDate;
+    const cycleIds = aReq.query.cycleIds; // Can be comma-separated string
+
+    const result = await wGetHubReport({ page, limit, startDate, endDate, cycleIds });
+    aResp.json(result);
+  } catch (error) {
+    console.error("Error fetching hub report data:", error);
+    aResp.status(500).json({ error: "Failed to fetch hub report data" });
+  }
+}
+
+/** Retrieves aggregated sales data for all producers with pagination and filters
+ *  @param {Object} options - Query options
+ *  @param {number} options.page - Page number (1-indexed)
+ *  @param {number} options.limit - Number of records per page
+ *  @param {string} options.startDate - Start date filter (ISO format)
+ *  @param {string} options.endDate - End date filter (ISO format)
+ *  @param {string} options.cycleIds - Comma-separated cycle IDs
+ *  @returns {Promise<Object>} Object containing data array, pagination info, and metadata
  *  @description Aggregates sales data including quantities, fees, taxes, and product details
  */
-const wGetHubReport = async function () {
-  const oSQL = `SELECT
-    JSON_ARRAYAGG(
-            JSON_OBJECT(
-                    'saleSource',
-                    saleSource,
-                    'location',
-                    NameLoc,
-                    'QtyDeliv',
-                    result.QtyDeliv,
-                    'SaleNom',
-                    SaleNom,
-                    'FeeCoop',
-                    FeeCoop,
-                    'FeeCoopForgiv',
-                    FeeCoopForgiv,
-                    'TaxSale',
-                    TaxSale,
-                    'IDVty',
-                    IDVty,
-                    'IDCyc',
-                    IDCyc,
-                    'NameCat',
-                    NameCat,
-                    'NameSubcat',
-                    NameSubcat,
-                    'NameProduct',
-                    NameProduct,
-                    'IDProduct',
-                    IDProduct,
-                    'IDProducer',
-                    IDProducer,
-                    'Producer',
-                    NameBus,
-                    'IDMemb',
-                    IDMemb,
-                    'CustomerName',
-                    CustomerName,
-                    'CustEmail',
-                    CustEmail,
-                    'CustPhone',
-                    CustPhone
-                )
-        ) as ProducerReport
-from
-    (
-        (
-            SELECT
-                CONCAT('web') as saleSource,
-                Loc.NameLoc,
-                ItCart.QtyDeliv,
-                ItCart.SaleNom,
-                ItCart.FeeCoop,
-                ItCart.FeeCoopForgiv,
-                ItCart.TaxSale,
-                CONCAT(0) as FeeCoopProducer,
-                CONCAT(0) as FeeInvt,
-                Vty.IDVty,
-                Cyc.IDCyc,
-                Cat.NameCat,
-                Subcat.NameSubcat,
-                Product.NameProduct,
-                Product.IDProduct,
-                Producer.IDProducer,
-                Producer.NameBus,
-                Memb.IDMemb,
-                IF(Memb.CkAllowPublicName, CONCAT(Memb.Name1First, ' ',  Memb.Name1Last), '-') as CustomerName,
-                IF(Memb.CkAllowPublicName, Memb.Email1, '-') as CustEmail,
-                IF(Memb.CkAllowPublicName, Memb.Phone1, '-') as CustPhone
-            FROM
-                ItCart
-                    JOIN Cart ON ItCart.IDCart = Cart.IDCart
-                    JOIN Cyc ON Cart.IDCyc = Cyc.IDCyc
-                    JOIN Vty ON ItCart.IDVty = Vty.IDVty
-                    JOIN Product ON Vty.IDProduct = Product.IDProduct
-                    JOIN Subcat ON Product.IDSubcat = Subcat.IDSubcat
-                    JOIN Cat ON Subcat.IDCat = Cat.IDCat
-                    JOIN Producer ON Product.IDProducer = Producer.IDProducer
-                    JOIN Memb ON Cart.IDMemb = Memb.IDMemb
-                    JOIN Loc on Cart.CdLoc = Loc.CdLoc
-            WHERE
-                Cyc.IDCyc >= 300
-        )
-        UNION
-            all (
-            SELECT
-                CONCAT('onsite') as saleSource,
-                CONCAT('Franklin Plaza') as NameLoc,
-                ItCartOnsite.Qty as QtyDeliv,
-                ItCartOnsite.SaleNom,
-                ItCartOnsite.FeeCoopShop,
-                ItCartOnsite.FeeCoopShopForgiv,
-                ItCartOnsite.TaxSale,
-                ItCartOnsite.FeeCoopProducer,
-                ItCartOnsite.FeeInvt,
-                ItCartOnsite.IDVty,
-                Cyc.IDCyc,
-                Cat.NameCat,
-                Subcat.NameSubcat,
-                Product.NameProduct,
-                Product.IDProduct,
-                Producer.IDProducer,
-                Producer.NameBus,
-                Memb.IDMemb,
-                IF(Memb.CkAllowPublicName, CONCAT(Memb.Name1First, ' ',  Memb.Name1Last), '-') as CustomerName,
-                IF(Memb.CkAllowPublicName, Memb.Email1, '-') as CustEmail,
-                IF(Memb.CkAllowPublicName, Memb.Phone1, '-') as CustPhone
-            FROM
-                ItCartOnsite
-                    JOIN CartOnsite CO ON ItCartOnsite.IDCartOnsite = CO.IDCartOnsite
-                    JOIN Cyc ON CO.IDCyc = Cyc.IDCyc
-                    JOIN Vty ON ItCartOnsite.IDVty = Vty.IDVty
-                    JOIN Product ON Vty.IDProduct = Product.IDProduct
-                    JOIN Subcat ON Product.IDSubcat = Subcat.IDSubcat
-                    JOIN Cat ON Subcat.IDCat = Cat.IDCat
-                    JOIN Producer ON Product.IDProducer = Producer.IDProducer
-                    JOIN Memb ON CO.IDMembShop = Memb.IDMemb 
-        )
-    ) as result;`;
-  const result = await Conn.wExecPrep(oSQL);
-  const resultJson = JSON.stringify(result[0][0]["ProducerReport"]);
-  return resultJson;
+const wGetHubReport = async function (options = {}) {
+  const { page = 1, limit = 50, startDate, endDate, cycleIds } = options;
+  const offset = (page - 1) * limit;
+
+  // Build WHERE clause conditions
+  let whereConditions = ["Cyc.IDCyc >= 300"];
+  const params = [];
+
+  // Add date filter if provided
+  if (startDate) {
+    whereConditions.push("Cyc.WhenStartCyc >= ?");
+    params.push(startDate);
+  }
+  if (endDate) {
+    whereConditions.push("Cyc.WhenEndCyc <= ?");
+    params.push(endDate);
+  }
+
+  // Add cycle ID filter if provided
+  if (cycleIds) {
+    const cycleIdArray = cycleIds.split(",").map(id => id.trim());
+    const placeholders = cycleIdArray.map(() => "?").join(",");
+    whereConditions.push(`Cyc.IDCyc IN (${placeholders})`);
+    params.push(...cycleIdArray);
+  }
+
+  const whereClause = whereConditions.join(" AND ");
+
+  // First, get the total count
+  const countSQL = `
+    SELECT COUNT(*) as total
+    FROM (
+      (
+        SELECT 1
+        FROM ItCart
+          JOIN Cart ON ItCart.IDCart = Cart.IDCart
+          JOIN Cyc ON Cart.IDCyc = Cyc.IDCyc
+          JOIN Vty ON ItCart.IDVty = Vty.IDVty
+          JOIN Product ON Vty.IDProduct = Product.IDProduct
+          JOIN Subcat ON Product.IDSubcat = Subcat.IDSubcat
+          JOIN Cat ON Subcat.IDCat = Cat.IDCat
+          JOIN Producer ON Product.IDProducer = Producer.IDProducer
+          JOIN Memb ON Cart.IDMemb = Memb.IDMemb
+          JOIN Loc on Cart.CdLoc = Loc.CdLoc
+        WHERE ${whereClause}
+      )
+      UNION ALL
+      (
+        SELECT 1
+        FROM ItCartOnsite
+          JOIN CartOnsite CO ON ItCartOnsite.IDCartOnsite = CO.IDCartOnsite
+          JOIN Cyc ON CO.IDCyc = Cyc.IDCyc
+          JOIN Vty ON ItCartOnsite.IDVty = Vty.IDVty
+          JOIN Product ON Vty.IDProduct = Product.IDProduct
+          JOIN Subcat ON Product.IDSubcat = Subcat.IDSubcat
+          JOIN Cat ON Subcat.IDCat = Cat.IDCat
+          JOIN Producer ON Product.IDProducer = Producer.IDProducer
+          JOIN Memb ON CO.IDMembShop = Memb.IDMemb
+        WHERE ${whereClause.replace(/Cart\.IDCyc/g, "CO.IDCyc")}
+      )
+    ) as count_result;`;
+
+  const countResult = await Conn.wExecPrep(countSQL, params.concat(params));
+  const totalRecords = countResult[0][0].total;
+
+  // Now get the paginated data
+  const dataSQL = `
+    SELECT
+      saleSource,
+      NameLoc as location,
+      QtyDeliv,
+      SaleNom,
+      FeeCoop,
+      FeeCoopForgiv,
+      TaxSale,
+      IDVty,
+      IDCyc,
+      WhenStartCyc,
+      WhenEndCyc,
+      NameCat,
+      NameSubcat,
+      NameProduct,
+      IDProduct,
+      IDProducer,
+      NameBus as Producer,
+      IDMemb,
+      CustomerName,
+      CustEmail,
+      CustPhone
+    FROM (
+      (
+        SELECT
+          CONCAT('web') as saleSource,
+          Loc.NameLoc,
+          ItCart.QtyDeliv,
+          ItCart.SaleNom,
+          ItCart.FeeCoop,
+          ItCart.FeeCoopForgiv,
+          ItCart.TaxSale,
+          CONCAT(0) as FeeCoopProducer,
+          CONCAT(0) as FeeInvt,
+          Vty.IDVty,
+          Cyc.IDCyc,
+          Cyc.WhenStartCyc,
+          Cyc.WhenEndCyc,
+          Cat.NameCat,
+          Subcat.NameSubcat,
+          Product.NameProduct,
+          Product.IDProduct,
+          Producer.IDProducer,
+          Producer.NameBus,
+          Memb.IDMemb,
+          IF(Memb.CkAllowPublicName, CONCAT(Memb.Name1First, ' ',  Memb.Name1Last), '-') as CustomerName,
+          IF(Memb.CkAllowPublicName, Memb.Email1, '-') as CustEmail,
+          IF(Memb.CkAllowPublicName, Memb.Phone1, '-') as CustPhone
+        FROM
+          ItCart
+            JOIN Cart ON ItCart.IDCart = Cart.IDCart
+            JOIN Cyc ON Cart.IDCyc = Cyc.IDCyc
+            JOIN Vty ON ItCart.IDVty = Vty.IDVty
+            JOIN Product ON Vty.IDProduct = Product.IDProduct
+            JOIN Subcat ON Product.IDSubcat = Subcat.IDSubcat
+            JOIN Cat ON Subcat.IDCat = Cat.IDCat
+            JOIN Producer ON Product.IDProducer = Producer.IDProducer
+            JOIN Memb ON Cart.IDMemb = Memb.IDMemb
+            JOIN Loc on Cart.CdLoc = Loc.CdLoc
+        WHERE ${whereClause}
+      )
+      UNION ALL
+      (
+        SELECT
+          CONCAT('onsite') as saleSource,
+          CONCAT('Franklin Plaza') as NameLoc,
+          ItCartOnsite.Qty as QtyDeliv,
+          ItCartOnsite.SaleNom,
+          ItCartOnsite.FeeCoopShop,
+          ItCartOnsite.FeeCoopShopForgiv,
+          ItCartOnsite.TaxSale,
+          ItCartOnsite.FeeCoopProducer,
+          ItCartOnsite.FeeInvt,
+          ItCartOnsite.IDVty,
+          Cyc.IDCyc,
+          Cyc.WhenStartCyc,
+          Cyc.WhenEndCyc,
+          Cat.NameCat,
+          Subcat.NameSubcat,
+          Product.NameProduct,
+          Product.IDProduct,
+          Producer.IDProducer,
+          Producer.NameBus,
+          Memb.IDMemb,
+          IF(Memb.CkAllowPublicName, CONCAT(Memb.Name1First, ' ',  Memb.Name1Last), '-') as CustomerName,
+          IF(Memb.CkAllowPublicName, Memb.Email1, '-') as CustEmail,
+          IF(Memb.CkAllowPublicName, Memb.Phone1, '-') as CustPhone
+        FROM
+          ItCartOnsite
+            JOIN CartOnsite CO ON ItCartOnsite.IDCartOnsite = CO.IDCartOnsite
+            JOIN Cyc ON CO.IDCyc = Cyc.IDCyc
+            JOIN Vty ON ItCartOnsite.IDVty = Vty.IDVty
+            JOIN Product ON Vty.IDProduct = Product.IDProduct
+            JOIN Subcat ON Product.IDSubcat = Subcat.IDSubcat
+            JOIN Cat ON Subcat.IDCat = Cat.IDCat
+            JOIN Producer ON Product.IDProducer = Producer.IDProducer
+            JOIN Memb ON CO.IDMembShop = Memb.IDMemb
+        WHERE ${whereClause.replace(/Cart\.IDCyc/g, "CO.IDCyc")}
+      )
+    ) as result
+    ORDER BY IDCyc DESC, IDProduct
+    LIMIT ? OFFSET ?;`;
+
+  params.push(limit, offset);
+  const dataResult = await Conn.wExecPrep(dataSQL, params.concat(params));
+
+  return {
+    data: dataResult[0],
+    pagination: {
+      page,
+      limit,
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / limit),
+    },
+    filters: {
+      startDate: startDate || null,
+      endDate: endDate || null,
+      cycleIds: cycleIds || null,
+    },
+  };
 };
