@@ -54,7 +54,7 @@ const wGetHubReport = async function (options = {}) {
   const offset = (page - 1) * limit;
 
   // Build WHERE clause conditions
-  let whereConditions = ["Cyc.IDCyc >= 300"];
+  let whereConditions = ["TRUE"];
   const params = [];
 
   // Add date filter if provided
@@ -219,8 +219,8 @@ const wGetHubReport = async function (options = {}) {
     ORDER BY IDCyc DESC, IDProduct
     LIMIT ? OFFSET ?;`;
 
-  params.push(limit, offset);
-  const dataResult = await Conn.wExecPrep(dataSQL, params.concat(params));
+  const allParams = params.concat(params).concat([limit, offset]);
+  const dataResult = await Conn.wExecPrep(dataSQL, allParams);
 
   return {
     data: dataResult[0],
