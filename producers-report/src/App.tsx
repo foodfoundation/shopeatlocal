@@ -1,233 +1,311 @@
 //@ts-nocheck
 
-import { useState, useEffect } from "react";
-import FilterableTable from "react-filterable-table";
+import { useState, useMemo } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  flexRender,
+  SortingState,
+  ColumnFiltersState,
+  ColumnDef,
+} from "@tanstack/react-table";
+import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import { BsSortUp, BsSortDown } from "react-icons/bs";
 import { json2csv } from "json-2-csv";
 
-// Field definitions
-const fields = [
+// Types
+interface SalesRecord {
+  QtyDeliv: number;
+  saleSource: string;
+  location: string;
+  SaleNom: number;
+  TaxSale: number;
+  FeeCoop: number;
+  FeeCoopForgiv: number;
+  IDCyc: number;
+  WhenStartCyc: string;
+  WhenEndCyc: string;
+  IDVty: number;
+  IDProduct: number;
+  NameProduct: string;
+  NameCat: string;
+  NameSubcat: string;
+  IDProducer: number;
+  Producer: string;
+  IDMemb: number;
+  CustomerName: string;
+  CustEmail: string;
+  CustPhone: string;
+}
+
+interface ApiResponse {
+  data: SalesRecord[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalRecords: number;
+    totalPages: number;
+  };
+}
+
+interface FetchDataParams {
+  page: number;
+  limit: number;
+  startDate: string;
+  endDate: string;
+  cycleIds: string;
+}
+
+// Query Client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
+// Fetch function
+const fetchData = async ({
+  page,
+  limit,
+  startDate,
+  endDate,
+  cycleIds,
+}: FetchDataParams): Promise<ApiResponse> => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
+
+  if (startDate) params.append("startDate", startDate);
+  if (endDate) params.append("endDate", endDate);
+  if (cycleIds) params.append("cycleIds", cycleIds);
+
+  const response = await fetch(`/hub-reports/data?${params.toString()}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return response.json();
+};
+
+// Column Definitions
+const columnDefs: ColumnDef<SalesRecord>[] = [
   {
-    name: "QtyDeliv",
-    displayName: "Quantity",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "QtyDeliv",
+    header: "Quantity",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "saleSource",
-    displayName: "Source",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "saleSource",
+    header: "Source",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "location",
-    displayName: "Location",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "location",
+    header: "Location",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "SaleNom",
-    displayName: "Nominal Sale",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "SaleNom",
+    header: "Nominal Sale",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "TaxSale",
-    displayName: "Sale Tax",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "TaxSale",
+    header: "Sale Tax",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "FeeCoop",
-    displayName: "Market Fee",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "FeeCoop",
+    header: "Market Fee",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "FeeCoopForgiv",
-    displayName: "Market-Fee Forgiv",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "FeeCoopForgiv",
+    header: "Market-Fee Forgiv",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "IDCyc",
-    displayName: "Cycle",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "IDCyc",
+    header: "Cycle",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "WhenStartCyc",
-    displayName: "Cycle Start",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
-    render: value => (value ? new Date(value).toLocaleDateString() : ""),
+    accessorKey: "WhenStartCyc",
+    header: "Cycle Start",
+    enableSorting: true,
+    enableColumnFilter: true,
+    cell: ({ getValue }) => {
+      const value = getValue() as string;
+      return value ? new Date(value).toLocaleDateString() : "";
+    },
   },
   {
-    name: "WhenEndCyc",
-    displayName: "Cycle End",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
-    render: value => (value ? new Date(value).toLocaleDateString() : ""),
+    accessorKey: "WhenEndCyc",
+    header: "Cycle End",
+    enableSorting: true,
+    enableColumnFilter: true,
+    cell: ({ getValue }) => {
+      const value = getValue() as string;
+      return value ? new Date(value).toLocaleDateString() : "";
+    },
   },
   {
-    name: "IDVty",
-    displayName: "Variety",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "IDVty",
+    header: "Variety",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "IDProduct",
-    displayName: "Product ID",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "IDProduct",
+    header: "Product ID",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "NameProduct",
-    displayName: "Product",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "NameProduct",
+    header: "Product",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "NameCat",
-    displayName: "Category",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "NameCat",
+    header: "Category",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "NameSubcat",
-    displayName: "Subcategory",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "NameSubcat",
+    header: "Subcategory",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "IDProducer",
-    displayName: "Producer ID",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "IDProducer",
+    header: "Producer ID",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "Producer",
-    displayName: "Producer",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "Producer",
+    header: "Producer",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "IDMemb",
-    displayName: "Customer ID",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "IDMemb",
+    header: "Customer ID",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "CustomerName",
-    displayName: "Customer",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "CustomerName",
+    header: "Customer",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "CustEmail",
-    displayName: "Email",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "CustEmail",
+    header: "Email",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    name: "CustPhone",
-    displayName: "Phone",
-    inputFilterable: true,
-    exactFilterable: true,
-    sortable: true,
+    accessorKey: "CustPhone",
+    header: "Phone",
+    enableSorting: true,
+    enableColumnFilter: true,
   },
 ];
 
-function App() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 50,
-    totalRecords: 0,
-    totalPages: 0,
-  });
+function DataTable() {
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(50);
 
   // Filter states
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [cycleIds, setCycleIds] = useState("");
 
-  const fetchData = async (page = 1, limit = 50) => {
-    setLoading(true);
-    setError(null);
+  // Table states
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-    try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-      });
+  // Fetch data with Tanstack Query
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["salesData", page, limit, startDate, endDate, cycleIds],
+    queryFn: () => fetchData({ page, limit, startDate, endDate, cycleIds }),
+  });
 
-      if (startDate) params.append("startDate", startDate);
-      if (endDate) params.append("endDate", endDate);
-      if (cycleIds) params.append("cycleIds", cycleIds);
+  const data = useMemo(() => apiResponse?.data || [], [apiResponse]);
+  const pagination = useMemo(
+    () =>
+      apiResponse?.pagination || {
+        page: 1,
+        limit: 50,
+        totalRecords: 0,
+        totalPages: 0,
+      },
+    [apiResponse],
+  );
 
-      const response = await fetch(`/hub-reports/data?${params.toString()}`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-
-      const result = await response.json();
-      setData(result.data || []);
-      setPagination(result.pagination);
-    } catch (err) {
-      setError(err.message);
-      console.error("Error fetching data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData(pagination.page, pagination.limit);
-  }, []);
+  // Table instance
+  const table = useReactTable({
+    data,
+    columns: columnDefs,
+    state: {
+      sorting,
+      columnFilters,
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: true,
+    pageCount: pagination.totalPages,
+  });
 
   const handleApplyFilters = () => {
-    fetchData(1, pagination.limit);
+    setPage(1);
+    refetch();
   };
 
   const handleClearFilters = () => {
     setStartDate("");
     setEndDate("");
     setCycleIds("");
-    // Fetch data with cleared filters
-    setTimeout(() => fetchData(1, pagination.limit), 0);
+    setPage(1);
   };
 
-  const handlePageChange = newPage => {
-    fetchData(newPage, pagination.limit);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
-  const handleLimitChange = newLimit => {
-    fetchData(1, newLimit);
+  const handleLimitChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
   };
 
   const createCsv = () => {
@@ -289,7 +367,7 @@ function App() {
               type="button"
               className="btn btn-primary me-2"
               onClick={handleApplyFilters}
-              disabled={loading}
+              disabled={isLoading}
             >
               Apply Filters
             </button>
@@ -297,7 +375,7 @@ function App() {
               type="button"
               className="btn btn-outline-secondary"
               onClick={handleClearFilters}
-              disabled={loading}
+              disabled={isLoading}
             >
               Clear
             </button>
@@ -318,7 +396,7 @@ function App() {
           type="button"
           className="btn btn-outline-primary"
           onClick={createCsv}
-          disabled={loading || data.length === 0}
+          disabled={isLoading || data.length === 0}
         >
           Export CSV
         </button>
@@ -330,9 +408,9 @@ function App() {
           <label className="me-2">Records per page:</label>
           <select
             className="form-select form-select-sm d-inline-block w-auto"
-            value={pagination.limit}
+            value={limit}
             onChange={e => handleLimitChange(parseInt(e.target.value))}
-            disabled={loading}
+            disabled={isLoading}
           >
             <option value={20}>20</option>
             <option value={50}>50</option>
@@ -345,26 +423,26 @@ function App() {
             type="button"
             className="btn btn-sm btn-outline-secondary"
             onClick={() => handlePageChange(1)}
-            disabled={loading || pagination.page === 1}
+            disabled={isLoading || page === 1}
           >
             First
           </button>
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => handlePageChange(pagination.page - 1)}
-            disabled={loading || pagination.page === 1}
+            onClick={() => handlePageChange(page - 1)}
+            disabled={isLoading || page === 1}
           >
             Previous
           </button>
           <button type="button" className="btn btn-sm btn-outline-secondary" disabled>
-            Page {pagination.page} of {pagination.totalPages}
+            Page {page} of {pagination.totalPages}
           </button>
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => handlePageChange(pagination.page + 1)}
-            disabled={loading || pagination.page >= pagination.totalPages}
+            onClick={() => handlePageChange(page + 1)}
+            disabled={isLoading || page >= pagination.totalPages}
           >
             Next
           </button>
@@ -372,7 +450,7 @@ function App() {
             type="button"
             className="btn btn-sm btn-outline-secondary"
             onClick={() => handlePageChange(pagination.totalPages)}
-            disabled={loading || pagination.page >= pagination.totalPages}
+            disabled={isLoading || page >= pagination.totalPages}
           >
             Last
           </button>
@@ -380,7 +458,7 @@ function App() {
       </div>
 
       {/* Loading/Error States */}
-      {loading && (
+      {isLoading && (
         <div className="text-center p-5">
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -390,28 +468,85 @@ function App() {
 
       {error && (
         <div className="alert alert-danger m-3" role="alert">
-          Error loading data: {error}
+          Error loading data: {(error as Error).message}
         </div>
       )}
 
       {/* Table */}
-      {!loading && !error && (
+      {!isLoading && !error && (
         <div className="reports">
-          <FilterableTable
-            namespace="Producer Reports"
-            initialSort="IDCyc"
-            data={data}
-            fields={fields}
-            noRecordsMessage="There is no data to display"
-            noFilteredRecordsMessage="No rows match your filters!"
-            iconSortedDesc={<BsSortUp />}
-            iconSortedAsc={<BsSortDown />}
-            pageSize={pagination.limit}
-            pagersVisible={false}
-          />
+          <div className="table-responsive">
+            <table className="table table-striped table-hover">
+              <thead className="table-light sticky-top">
+                {table.getHeaderGroups().map(headerGroup => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <th key={header.id} style={{ minWidth: "120px" }}>
+                        <div
+                          className={
+                            header.column.getCanSort() ? "cursor-pointer user-select-none" : ""
+                          }
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {header.column.getIsSorted() === "asc" ? (
+                            <span className="ms-1">
+                              <BsSortDown />
+                            </span>
+                          ) : header.column.getIsSorted() === "desc" ? (
+                            <span className="ms-1">
+                              <BsSortUp />
+                            </span>
+                          ) : null}
+                        </div>
+                        {header.column.getCanFilter() && (
+                          <div className="mt-1">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              value={(header.column.getFilterValue() ?? "") as string}
+                              onChange={e => header.column.setFilterValue(e.target.value)}
+                              placeholder="Filter..."
+                            />
+                          </div>
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.length === 0 ? (
+                  <tr>
+                    <td colSpan={columnDefs.length} className="text-center text-muted py-4">
+                      No rows match your filters!
+                    </td>
+                  </tr>
+                ) : (
+                  table.getRowModel().rows.map(row => (
+                    <tr key={row.id}>
+                      {row.getVisibleCells().map(cell => (
+                        <td key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <DataTable />
+    </QueryClientProvider>
   );
 }
 
