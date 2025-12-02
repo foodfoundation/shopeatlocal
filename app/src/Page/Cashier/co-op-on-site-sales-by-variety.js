@@ -20,7 +20,9 @@ export async function wHandGet(aReq, aResp) {
   const [oCycs, oVtys] = await wCycsVtys(6);
   aResp.locals.Cycs = oCycs;
   aResp.locals.Vtys = oVtys;
-  aResp.locals.Title = `${CoopParams.CoopNameShort} market on-site sales by variety`;
+  aResp.locals.Title = aReq.t("common:pageTitles.marketOnSiteSalesByVariety", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Cashier/co-op-on-site-sales-by-variety");
 }
 
@@ -83,17 +85,17 @@ async function wHandGetExport(aReq, aResp, aPropSales) {
   let oTextVar;
   switch (aPropSales) {
     case "Qty":
-      oTextVar = "quantity";
+      oTextVar = aReq.t("common:salesReports.quantity");
       break;
     case "SaleNom":
-      oTextVar = "nominal sales";
+      oTextVar = aReq.t("common:salesReports.nominalSales");
       break;
     default:
       oTextVar = "UNKNOWN";
       break;
   }
 
-  aResp.attachment(`Market on-site sales (${oTextVar}).csv`);
+  aResp.attachment(aReq.t("common:exportFilenames.marketOnSiteSales", { type: oTextVar }) + ".csv");
   aResp.csv(oLines, true);
 }
 

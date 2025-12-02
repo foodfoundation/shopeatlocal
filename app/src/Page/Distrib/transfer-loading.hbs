@@ -14,15 +14,13 @@
 
 <div class="container py-4">
 	<div class="d-md-flex flex-row justify-content-between align-items-baseline">
-		<h2 class="mb-0">Transfer loading</h2>
+		<h2 class="mb-0">{{t "common:distrib.transferLoadingTitle"}}</h2>
 		<h5 class="mt-2 mt-md-0">{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<div class="d-print-none Flow-md-2 mt-2">
 		<p class="mb-2">
-			This page displays orders for one satellite location, so that the bins and
-			coolers used to transfer satellite orders can be checked as they are
-			loaded into the vehicle.
+			{{t "common:distrib.transferLoadingDescription"}}
 		</p>
 		<p>
 			{{>Misc/pInstructPrint}}
@@ -46,7 +44,7 @@
 				</div>
 			</div>
 
-			<h5 class="ml-auto">{{QtySold}} sold</h5>
+			<h5 class="ml-auto">{{QtySold}} {{t "common:distrib.sold"}}</h5>
 		</div>
 
 		{{#each Stors}}
@@ -59,7 +57,7 @@
 					{{CdStor}}: {{hTextCdStor CdStor}}
 				</h4>
 				<div class="font-weight-semi text-right ml-auto px-0">
-					{{QtySold}} sold
+					{{QtySold}} {{t "common:distrib.sold"}}
 				</div>
 			</div>
 
@@ -67,8 +65,8 @@
 
 			<div class="GridTbl Head d-none d-md-block">
 				<div class="row font-weight-bold">
-					<div class="col">Shopper</div>
-					<div class="col-2 text-md-right">Sold</div>
+					<div class="col">{{t "common:distrib.shopper"}}</div>
+					<div class="col-2 text-md-right">{{t "common:distrib.soldColumn"}}</div>
 				</div>
 			</div>
 
@@ -103,7 +101,7 @@
 							</a>
 						</div>
 						<div class="col-3 text-right">
-							<span class="font-weight-semi">{{QtySold}}</span> items
+							<span class="font-weight-semi">{{QtySold}}</span> {{t "common:distrib.items"}}
 						</div>
 					</div>
 				</div>
@@ -128,7 +126,7 @@
 		</div>
 		{{else}}
 		<div class="jumbotron mt-3">
-			<h2 class="display-4 font-size-200">No orders this location</h2>
+			<h2 class="display-4 font-size-200">{{t "common:distrib.noOrdersThisLocation"}}</h2>
 		</div>
 		{{/each}}
 	</div>

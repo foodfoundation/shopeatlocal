@@ -15,7 +15,9 @@ import _gCSV from "../../CSV.js";
 export async function wHandGet(aReq, aResp) {
   aResp.locals.Stors = await wStors();
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} managed catalog`;
+  aResp.locals.Title = aReq.t("common:pageTitles.managedCatalog", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Onsite/managed-catalog");
 }
 
@@ -24,7 +26,7 @@ export async function wHandGetExport(aReq, aResp) {
 
   for (const oVty of oVtys) Fmt_RowExcel(oVty);
 
-  aResp.attachment("Managed varieties.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.managedVarieties") + ".csv");
   aResp.csv(oVtys, true);
 }
 

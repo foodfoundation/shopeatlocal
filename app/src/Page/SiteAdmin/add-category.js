@@ -7,7 +7,7 @@ import { wCats } from "../../Db.js";
 import { CoopParams, wReady } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} add category`;
+  aResp.locals.Title = aReq.t("common:pageTitles.addCategory", { name: CoopParams.CoopNameShort });
   aResp.render("SiteAdmin/add-category");
 }
 
@@ -23,7 +23,7 @@ export async function wHandPost(aReq, aResp) {
 
     const oCats = await wCats();
     const oCkDup = oCats.some(o => o.NameCat.toUpperCase() === aFld.ValCook.toUpperCase());
-    if (oCkDup) aFld.MsgFail = "This category name is already in use.";
+    if (oCkDup) aFld.MsgFail = aReq.t("common:categories.categoryNameInUse");
   }
 
   const oFlds = {
@@ -50,6 +50,6 @@ export async function wHandPost(aReq, aResp) {
   // Return to Manage Categories
   // ---------------------------
 
-  aResp.Show_Flash("success", null, "The category has been added.");
+  aResp.Show_Flash("success", null, aReq.t("common:categories.categoryAdded"));
   aResp.redirect(303, "/manage-categories");
 }

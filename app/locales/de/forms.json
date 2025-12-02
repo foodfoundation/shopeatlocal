@@ -1,0 +1,80 @@
+{
+  "registration": {
+    "title": "Neue Mitgliederregistrierung",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "strongPasswordHint": "Achten Sie darauf, ein",
+    "strongPasswordLink": "starkes Passwort",
+    "contactInfo": "Kontaktinformationen",
+    "primaryContact": "Hauptkontakt",
+    "alternativeContact": "Alternativer Kontakt",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "businessName": "Firmenname",
+    "streetAddress1": "Straße 1",
+    "streetAddress2": "Straße 2",
+    "city": "Stadt",
+    "state": "Bundesland",
+    "zip": "Postleitzahl",
+    "deliveryInstructions": "Besondere Lieferanweisungen",
+    "allowMail": "Post an diese Adresse erlauben?",
+    "phone1": "Telefon 1 (mit Vorwahl)",
+    "phone2": "Telefon 2 (mit Vorwahl)",
+    "receiveCartMessages1": "Warenkorb-Nachrichten auf Telefon 1 erhalten?",
+    "receiveCartMessages2": "Warenkorb-Nachrichten auf Telefon 2 erhalten?",
+    "email1": "E-Mail 1",
+    "email2": "E-Mail 2",
+    "receiveReminders1": "Einkaufserinnerungen an E-Mail 1 erhalten?",
+    "receiveReminders2": "Einkaufserinnerungen an E-Mail 2 erhalten?",
+    "receiveNewsletters1": "{{name}} Newsletter an E-Mail 1 erhalten?",
+    "receiveNewsletters2": "{{name}} Newsletter an E-Mail 2 erhalten?",
+    "additionalInfo": "Zusätzliche Informationen",
+    "howDidYouHear": "Wie haben Sie von {{name}} erfahren?",
+    "tellUsMore": "Bitte erzählen Sie uns mehr* - Empfehlungen erhalten einen Dankes-Gutschein",
+    "applyEBT": "Ich möchte {{name}}-Einkäufe mit",
+    "applyVolunteer": "Ich möchte bei {{name}} ehrenamtlich helfen",
+    "allowPublicName": "Um eine Lebensmittelgemeinschaft zu fördern, erlauben Sie Produzenten, Ihren Namen und Ihre E-Mail zu sehen, wenn Sie Produkte bei ihnen bestellen.",
+    "readTOS": "Ich habe die {{name}} gelesen und verstanden",
+    "termsOfService": "Nutzungsbedingungen"
+  },
+  "changePassword": {
+    "title": "Passwort ändern",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmNewPassword": "Neues Passwort bestätigen"
+  },
+  "resetPassword": {
+    "title": "Passwort zurücksetzen",
+    "requestTitle": "Passwort-Zurücksetzung anfordern",
+    "emailOrUsername": "E-Mail oder Benutzername",
+    "requestButton": "Passwort-Zurücksetzung anfordern",
+    "newPassword": "Neues Passwort",
+    "confirmNewPassword": "Neues Passwort bestätigen"
+  },
+  "memberEdit": {
+    "title": "Mitgliederregistrierung bearbeiten",
+    "statusTitle": "Mitgliedsstatus bearbeiten",
+    "tagsTitle": "Mitglieder-Tags bearbeiten"
+  },
+  "producerRegistration": {
+    "title": "Produzentenregistrierung",
+    "businessName": "Firmenname",
+    "aboutYou": "Über Sie",
+    "editTitle": "Produzentenregistrierung bearbeiten",
+    "statusTitle": "Produzentenstatus bearbeiten"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "invalidPhone": "Bitte geben Sie eine gültige Telefonnummer ein",
+    "passwordTooShort": "Das Passwort muss mindestens {{min}} Zeichen haben",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "invalidZip": "Bitte geben Sie eine gültige Postleitzahl ein",
+    "invalidState": "Bitte geben Sie ein gültiges 2-Buchstaben-Bundesland ein"
+  },
+  "labels": {
+    "required": "*"
+  }
+}
+

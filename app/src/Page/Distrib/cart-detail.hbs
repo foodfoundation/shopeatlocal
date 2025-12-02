@@ -5,16 +5,13 @@
 <div class="container py-4">
 	<div class="d-md-flex flex-row justify-content-between align-items-baseline
 		mb-2">
-		<h2 class="mb-0">Cart detail</h2>
+		<h2 class="mb-0">{{t "common:distrib.cartDetailTitle"}}</h2>
 		<h5>{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<div class="d-print-none Flow-md-2">
 		<p>
-			This page displays the content of a single cart. To edit the cart,
-			impersonate the member, then change the values in the
-			<span class="font-weight-semi">Cart</span> dialog, just as if you were
-			shopping.
+			{{t "common:distrib.cartDetailDescription"}}
 		</p>
 		<p>
 			{{>Misc/pInstructPrint}}
@@ -25,7 +22,7 @@
 
 	{{#unless Membs}}
 	<div class="jumbotron">
-		<h2 class="display-4 font-size-200">No members with carts</h2>
+		<h2 class="display-4 font-size-200">{{t "common:distrib.noMembersWithCarts"}}</h2>
 	</div>
 	{{else}}
 	<div class="mt-3">
@@ -45,18 +42,18 @@
 				{{!-- Display one of the cycle dates in case an old cart is displayed: --}}
 				{{hTextWhen WhenStartPickup "FullMed" ""}}<br>
 				{{NameLoc}}<br>
-				{{hTextCurrOrOrig Cart.Ttl}} estimated
+				{{hTextCurrOrOrig Cart.Ttl}} {{t "common:distrib.estimated"}}
 			</div>
 		</div>
 
 		<div class="GridTbl Head d-none d-md-block">
 			<div class="row font-weight-bold">
-				<div class="col">Variety</div>
-				<div class="col-1 text-right">Price Nominal</div>
-				<div class="col-1 text-right">Order</div>
-				<div class="col-1 text-right">Prom</div>
-				<div class="col-1 text-right">Wthd</div>
-				<div class="col-1 text-md-right">Subtotal Nominal</div>
+				<div class="col">{{t "common:cart.variety"}}</div>
+				<div class="col-1 text-right">{{t "common:cart.priceNominal"}}</div>
+				<div class="col-1 text-right">{{t "common:cart.order"}}</div>
+				<div class="col-1 text-right">{{t "common:distrib.prom"}}</div>
+				<div class="col-1 text-right">{{t "common:distrib.wthd"}}</div>
+				<div class="col-1 text-md-right">{{t "common:cart.subtotalNominal"}}</div>
 			</div>
 		</div>
 
@@ -102,13 +99,13 @@
 						</div>
 					</div>
 					<div class="col">
-						{{QtyOrd}} order
+						{{QtyOrd}} {{t "common:distrib.orderShort"}}
 					</div>
 					<div class="col">
-						{{QtyProm}} prom
+						{{QtyProm}} {{t "common:distrib.promShort"}}
 					</div>
 					<div class="col">
-						{{QtyWithdr}} withdr
+						{{QtyWithdr}} {{t "common:distrib.wthdShort"}}
 					</div>
 					<div class="col text-right">
 						{{hTextCurrOrOrig SaleNom}}

@@ -1,0 +1,36 @@
+{
+  "page400": {
+    "title": "Ungültige Anfrage",
+    "heading": "Ungültige Anfrage",
+    "message": "Der Server konnte die Anfrage nicht verstehen."
+  },
+  "page401": {
+    "title": "Nicht autorisiert",
+    "heading": "Nicht autorisiert",
+    "message": "Sie sind nicht berechtigt, diese Seite anzuzeigen."
+  },
+  "page403": {
+    "title": "Verboten",
+    "heading": "Sitzungszeitüberschreitung",
+    "message": "Ihre Sitzung ist abgelaufen; bitte versuchen Sie es erneut."
+  },
+  "page404": {
+    "title": "Seite nicht gefunden",
+    "heading": "Seite nicht gefunden",
+    "message": "Die gesuchte Seite existiert nicht."
+  },
+  "page500": {
+    "title": "Serverfehler",
+    "heading": "Serverfehler",
+    "message": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+    "deadlockTitle": "Server-Deadlock",
+    "deadlockHeading": "Server-Deadlock",
+    "deadlockMessage": "Ein anderer Benutzer war mit den gewünschten Daten beschäftigt. Bitte versuchen Sie es erneut."
+  },
+  "general": {
+    "errorOccurred": "Ein Fehler ist aufgetreten",
+    "tryAgain": "Bitte versuchen Sie es erneut",
+    "contactSupport": "Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support."
+  }
+}
+

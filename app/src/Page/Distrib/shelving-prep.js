@@ -8,8 +8,7 @@ import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   if (aResp.PhaseCycLess("EndShop")) {
-    const oMsg =
-      "<strong>Cannot prepare shelves!</strong> The shopping window " + "has not closed.";
+    const oMsg = aReq.t("common:flashMessages.cannotPrepareShelvesShoppingOpen");
     aResp.Show_Flash("danger", null, oMsg);
 
     aResp.redirect(303, "/distribution");
@@ -59,7 +58,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} shelving prep`;
+  aResp.locals.Title = aReq.t("common:pageTitles.shelvingPrep", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/shelving-prep");
 }
 

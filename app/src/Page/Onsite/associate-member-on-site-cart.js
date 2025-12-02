@@ -35,8 +35,7 @@ export async function wHandGet(aReq, aResp) {
     cart.CdCartType === "Wholesale" &&
     oMembShop.CdRegWholesale !== "Approv"
   ) {
-    const oMsg = "Only approved wholesale members can be associated with a wholesale cart.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash("danger", null, aReq.t("common:onSiteCart.onlyApprovedWholesaleMembers"));
     aResp.redirect(303, "/on-site-checkout");
     return;
   }

@@ -16,7 +16,7 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.InvcProducer = oInvc;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer check-in summary`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerCheckInSummary", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/producer-check-in-summary");
 }
 

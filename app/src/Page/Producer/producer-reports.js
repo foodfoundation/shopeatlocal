@@ -6,7 +6,7 @@ import { Conn } from "../../Db.js";
 import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} Producer Reports`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerReports", { name: CoopParams.CoopNameShort });
   const producerId = aResp.locals.CredSelImperUser.IDProducer;
   aResp.locals.ProducerId = producerId;
   const result = await wGetProducerReport(producerId);

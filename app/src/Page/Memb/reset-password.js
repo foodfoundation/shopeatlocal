@@ -9,7 +9,7 @@ import { CoopParams } from "../../Site.js";
 export function HandGet(aReq, aResp) {
   // No particular reason to require that the user be logged-out.
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} password reset`;
+  aResp.locals.Title = aReq.t("common:pageTitles.resetPassword", { name: CoopParams.CoopNameShort });
   aResp.locals.TokResetPass = aReq.params.TokResetPass;
   aResp.render("Memb/reset-password");
 }
@@ -28,7 +28,7 @@ export async function wHandPost(aReq, aResp) {
   // ---------------------
 
   if (oFlds.PassNew.ValCook !== oFlds.PassNewConfirm.ValCook)
-    oFlds.PassNewConfirm.MsgFail = "Your new passwords must match.";
+    oFlds.PassNewConfirm.MsgFail = aReq.t("common:passwordChange.newPasswordsMustMatch");
 
   // Handle validation failure
   // -------------------------
@@ -46,8 +46,8 @@ export async function wHandPost(aReq, aResp) {
   function oHandFail(_aSty, _aHead, _aMsg) {
     aResp.Show_Flash(
       "danger",
-      "Reset request invalid or expired!",
-      `Please request a new reset e-mail or contact ${CoopParams.CoopNameShort} for help.`,
+      aReq.t("common:passwordReset.resetInvalidOrExpired"),
+      aReq.t("common:passwordReset.requestNewResetEmail", { name: CoopParams.CoopNameShort }),
     );
     aResp.redirect(303, "/");
   }
@@ -78,7 +78,7 @@ export async function wHandPost(aReq, aResp) {
   // We could log them in, but maybe an attacker found the login e-mail without
   // knowing the username?
 
-  aResp.Show_Flash("success", null, "Your password has been changed. You may now login.");
+  aResp.Show_Flash("success", null, aReq.t("common:passwordReset.passwordChangedLoginNow"));
   aResp.redirect(303, "/");
 }
 

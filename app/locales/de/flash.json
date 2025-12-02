@@ -1,0 +1,47 @@
+{
+  "success": {
+    "saved": "Ihre Änderungen wurden gespeichert.",
+    "created": "Erfolgreich erstellt.",
+    "updated": "Erfolgreich aktualisiert.",
+    "deleted": "Erfolgreich gelöscht.",
+    "registered": "Registrierung erfolgreich!",
+    "loggedIn": "Sie sind jetzt angemeldet.",
+    "loggedOut": "Sie wurden abgemeldet.",
+    "passwordChanged": "Ihr Passwort wurde geändert.",
+    "passwordReset": "Ihr Passwort wurde zurückgesetzt.",
+    "emailSent": "E-Mail wurde gesendet."
+  },
+  "error": {
+    "saveFailed": "Änderungen konnten nicht gespeichert werden.",
+    "createFailed": "Konnte nicht erstellt werden.",
+    "updateFailed": "Konnte nicht aktualisiert werden.",
+    "deleteFailed": "Konnte nicht gelöscht werden.",
+    "loginFailed": "Ungültiger Benutzername oder Passwort.",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "unauthorized": "Sie sind nicht berechtigt, diese Aktion durchzuführen.",
+    "notFound": "Das angeforderte Element wurde nicht gefunden.",
+    "uploadFailed": "Datei konnte nicht hochgeladen werden.",
+    "fileTooLarge": "Datei darf nicht größer als {{size}}KB sein."
+  },
+  "warning": {
+    "unsavedChanges": "Sie haben ungespeicherte Änderungen.",
+    "confirmDelete": "Sind Sie sicher, dass Sie dieses Element löschen möchten?"
+  },
+  "info": {
+    "noChanges": "Es wurden keine Änderungen vorgenommen.",
+    "processing": "Ihre Anfrage wird bearbeitet..."
+  },
+  "cart": {
+    "itemAdded": "Artikel zum Warenkorb hinzugefügt.",
+    "itemRemoved": "Artikel aus Warenkorb entfernt.",
+    "cartUpdated": "Warenkorb aktualisiert.",
+    "cartCleared": "Warenkorb geleert.",
+    "quantityNotAvailable": "Die angeforderte Menge ist nicht verfügbar."
+  },
+  "image": {
+    "uploadFailed": "Bild konnte nicht hochgeladen werden!",
+    "fileTooLarge": "Datei darf nicht größer als {{size}}KB sein.",
+    "unknownError": "Unbekannter Fehler."
+  }
+}
+

@@ -10,13 +10,13 @@
 			</h1>
 			<div class="BordDk border-md-left pl-md-3">
 				<h1 class="display-4">
-					Forbidden
+					{{t "errors:page403.heading"}}
 				</h1>
 				<div class="lead">
 					{{#if Msg}}
 					{{Msg}}
 					{{else}}
-					You are not allowed to view that page.
+					{{t "errors:page403.message"}}
 					{{/if}}
 				</div>
 			</div>

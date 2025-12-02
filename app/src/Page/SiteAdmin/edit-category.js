@@ -17,7 +17,7 @@ export async function wHandGet(aReq, aResp) {
   }
   Add_Props(aResp.locals, oCat);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit category`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editCategory", { name: CoopParams.CoopNameShort });
   aResp.render("SiteAdmin/edit-category");
 }
 
@@ -35,7 +35,7 @@ export async function wHandPost(aReq, aResp) {
 
     const oCatsExcept = await wCatsExcept(oIDCat);
     const oCkDup = oCatsExcept.some(o => o.NameCat.toUpperCase() === aFld.ValCook.toUpperCase());
-    if (oCkDup) aFld.MsgFail = "This category name is already in use.";
+    if (oCkDup) aFld.MsgFail = aReq.t("common:categories.categoryNameInUse");
   }
 
   const oFlds = {
@@ -62,6 +62,6 @@ export async function wHandPost(aReq, aResp) {
   // Return to Manage Categories
   // ---------------------------
 
-  aResp.Show_Flash("success", null, "The category has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:categories.categoryUpdated"));
   aResp.redirect(303, "/manage-categories?LastCatEdit=" + oIDCat);
 }

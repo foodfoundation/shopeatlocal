@@ -4,15 +4,15 @@ import { CoopParams } from "../../Site.js";
 const TAG_GROUPS = [
   {
     key: "farmers friend",
-    heading: "Farmers' friends",
+    headingKey: "common:distinguishedMembers.farmersFriends",
   },
   {
     key: "sustaining steward",
-    heading: "Sustaining stewards",
+    headingKey: "common:distinguishedMembers.sustainingStewards",
   },
   {
     key: "community cultivator",
-    heading: "Community cultivators",
+    headingKey: "common:distinguishedMembers.communityCultivators",
   },
 ];
 
@@ -29,7 +29,7 @@ function deriveMemberName(member) {
   if (primaryName) return primaryName;
   if (secondaryName) return secondaryName;
   if (businessName) return businessName;
-  return `Member ${member.IDMemb}`;
+  return null; // Will be replaced with translated "Member X" later
 }
 
 function selectGroup(tagsLower) {
@@ -45,7 +45,11 @@ function selectGroup(tagsLower) {
 export async function wHandGet(aReq, aResp) {
   const distinguishedMembers = await queryDistinguishedMembers();
 
-  const sections = TAG_GROUPS.map(group => ({ ...group, members: [] }));
+  const sections = TAG_GROUPS.map(group => ({ 
+    ...group, 
+    heading: aReq.t(group.headingKey),
+    members: [] 
+  }));
   const sectionsByKey = sections.reduce((acc, section) => {
     acc[section.key] = section;
     return acc;
@@ -70,7 +74,10 @@ export async function wHandGet(aReq, aResp) {
     if (!section) continue;
 
     const isAnonymous = tagsLower.includes(ANONYMOUS_TAG);
-    const displayName = isAnonymous ? "Anonymous member" : deriveMemberName(member);
+    const derivedName = deriveMemberName(member);
+    const displayName = isAnonymous 
+      ? aReq.t("common:distinguishedMembers.anonymousMember")
+      : (derivedName || aReq.t("common:distinguishedMembers.memberWithId", { id: member.IDMemb }));
 
     section.members.push({
       id: member.IDMemb,
@@ -89,7 +96,7 @@ export async function wHandGet(aReq, aResp) {
 
   const populatedSections = sections.filter(section => section.members.length > 0);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} distinguished members`;
+  aResp.locals.Title = aReq.t("common:pageTitles.distinguishedMembers", { name: CoopParams.CoopNameShort });
   aResp.locals.Sections = populatedSections;
   aResp.render("Home/distinguished-members");
 }

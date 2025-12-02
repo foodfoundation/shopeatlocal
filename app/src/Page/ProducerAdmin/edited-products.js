@@ -45,7 +45,9 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edited products`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editedProducts", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("ProducerAdmin/edited-products");
 }
 

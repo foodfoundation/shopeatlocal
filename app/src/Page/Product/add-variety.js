@@ -23,7 +23,7 @@ function wFldsDisabledPost(aReq, aIsWholesaleProducer, aIsWholesaleVarietyType) 
 
   if (!oCkStaff) {
     const oData = {
-      Msg: `Only ${CoopParams.CoopNameShort} staff can change this setting.`,
+      Msg: aReq.t("common:flashMessages.onlyStaffCanChange", { name: CoopParams.CoopNameShort }),
     };
     oFlds.CkInvtMgd = oData;
     oFlds.CkInvtMgdNext = oData;
@@ -32,7 +32,7 @@ function wFldsDisabledPost(aReq, aIsWholesaleProducer, aIsWholesaleVarietyType) 
   if (aIsWholesaleVarietyType) {
     if (!aIsWholesaleProducer) {
       const oData = {
-        Msg: "Only wholesale producers can change this setting.",
+        Msg: aReq.t("common:flashMessages.onlyWholesaleCanChange"),
       };
       oFlds.CkListOnsite = oData;
       oFlds.QtyOnsite = oData;
@@ -41,7 +41,7 @@ function wFldsDisabledPost(aReq, aIsWholesaleProducer, aIsWholesaleVarietyType) 
   } else {
     if (!oCkStaff) {
       const oData = {
-        Msg: `Only ${CoopParams.CoopNameShort} staff can change this setting.`,
+        Msg: aReq.t("common:flashMessages.onlyStaffCanChange", { name: CoopParams.CoopNameShort }),
       };
       oFlds.CkListOnsite = oData;
       oFlds.QtyOnsite = oData;
@@ -59,14 +59,14 @@ function FldsDisabledGet(aReq, aIsWholesaleProducer) {
   const oFlds = {};
 
   if (!oCkStaff) {
-    const oData = { Msg: "Only staff can change this setting." };
+    const oData = { Msg: aReq.t("common:flashMessages.onlyStaffCanChangeThis") };
     oFlds.CkInvtMgd = oData;
     oFlds.CkInvtMgdNext = oData;
   }
 
   if (!aIsWholesaleProducer && !oCkStaff) {
     const oData = {
-      Msg: "Only staff or wholesale producer can change this setting.",
+      Msg: aReq.t("common:flashMessages.onlyStaffOrWholesale"),
     };
     oFlds.CkListOnsite = oData;
     oFlds.QtyOnsite = oData;
@@ -85,7 +85,7 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.FldsDisab = FldsDisabledGet(aReq, oIsWholesaleProducer);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} add variety`;
+  aResp.locals.Title = aReq.t("common:pageTitles.addVariety", { name: CoopParams.CoopNameShort });
   aResp.render("Product/add-variety");
 }
 
@@ -141,7 +141,7 @@ export async function wHandPost(aReq, aResp) {
 
   if (oCkList && oFlds.CkArchiv.ValCook) {
     aResp.status(400);
-    aResp.locals.Msg = "Invalid listing/archive combination.";
+    aResp.locals.Msg = aReq.t("common:variety.invalidListingArchiveCombination");
     aResp.render("Misc/400");
     return;
   }
@@ -177,7 +177,7 @@ export async function wHandPost(aReq, aResp) {
   // Returns to previous page
   // ------------------------
 
-  aResp.Show_Flash("success", "Success!", "The variety has been added.");
+  aResp.Show_Flash("success", aReq.t("common:flashMessages.success"), aReq.t("common:variety.varietyAdded"));
 
   const oPage = PageAfterEditProduct(aReq, aResp);
   aResp.redirect(303, oPage);

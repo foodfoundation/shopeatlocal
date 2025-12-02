@@ -10,18 +10,14 @@
 
 {{!-- We will skip the 'container' class to get more horizonal space: --}}
 <div class="p-4">
-	<h2>Accounting summary</h2>
+	<h2>{{t "common:accounting.title"}}</h2>
 
 	<div class="Flow-md-2 pr-4">
 		<p>
-			This page displays various sales totals, fees, taxes, producer earnings,
-			and shopper charges, by cycle ID and cycle end date, over the past six
-			months. Export to see the same totals over the past year.
+			{{t "common:accounting.description1"}}
 		</p>
 		<p>
-			Nominal sale amounts are 'in cart' values, before producer or shopper fees
-			have been assessed. Producer earnings and shopper charges are
-			'transaction' values which include fees and taxes.
+			{{t "common:accounting.description2"}}
 		</p>
 	</div>
 
@@ -29,7 +25,7 @@
 
 	{{#unless Cycs}}
 	<div class="jumbotron">
-		<h2 class="display-4 font-size-200">No completed cycles</h2>
+		<h2 class="display-4 font-size-200">{{t "common:accounting.noCompletedCycles"}}</h2>
 	</div>
 	{{else}}
 	<div class="table-responsive">
@@ -313,7 +309,7 @@
 	{{#if Cycs}}
 	<div class="d-flex flex-row">
 		<a class="btn btn-secondary ml-auto" href="/accounting-summary-export">
-			Export
+			{{t "common:buttons.export"}}
 		</a>
 	</div>
 	{{/if}}

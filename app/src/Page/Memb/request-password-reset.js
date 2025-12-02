@@ -18,7 +18,7 @@ const { v4: gUUID4 } = uuid;
 export function HandGet(aReq, aResp) {
   // No particular reason to require that the user be logged-out.
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} password reset request`;
+  aResp.locals.Title = aReq.t("common:pageTitles.requestPasswordReset", { name: CoopParams.CoopNameShort });
   aResp.render("Memb/request-password-reset");
 }
 
@@ -83,7 +83,7 @@ export async function wHandPost(aReq, aResp) {
 
       const oMsg = {
         to: oAddrsTo,
-        subject: `${CoopParams.CoopNameShort} password reset`,
+        subject: aReq.t("common:passwordReset.emailSubject", { name: CoopParams.CoopNameShort }),
         text: oMsgText,
         html: oMsgHTML,
       };
@@ -101,9 +101,8 @@ export async function wHandPost(aReq, aResp) {
   if (!isLoggedIn || !isStaff) {
     aResp.Show_Flash(
       "info",
-      "Password reset e-mail sent!",
-      "If it doesn't arrive within ten minutes, check your spam folder. If you " +
-        "do not find it, double-check your username.",
+      aReq.t("common:passwordReset.emailSent"),
+      aReq.t("common:passwordReset.checkSpamFolder"),
     );
     aResp.redirect(303, "/");
   }

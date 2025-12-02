@@ -52,6 +52,8 @@ import {
 } from "../Cfg.js";
 import { extname } from "path";
 import { Storage } from "./Storage.js";
+import i18next from "./i18n.js";
+import middleware from "i18next-http-middleware";
 
 const App = gExpr();
 
@@ -181,6 +183,13 @@ Ready(App);
 
 // Trust proxy headers:
 App.set("trust proxy", true);
+
+// ----------------
+// Configure i18next
+// ----------------
+
+// Configure i18next middleware
+App.use(middleware.handle(i18next));
 
 // --------------------
 // Set response headers
@@ -477,9 +486,7 @@ import { wHandGet as distinguishedMembersGet } from "./Page/Home/distinguished-m
 
 App.route("/acknowledgments").all(WaresPostRoute).get(NextOnExcept(acknowledgementsGet));
 
-App.route("/distinguished-members")
-  .all(WaresPostRoute)
-  .get(NextOnExcept(distinguishedMembersGet));
+App.route("/distinguished-members").all(WaresPostRoute).get(NextOnExcept(distinguishedMembersGet));
 
 // New member registration
 // -----------------------

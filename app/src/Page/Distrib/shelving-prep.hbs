@@ -15,15 +15,13 @@
 <div class="container py-4">
 	<div class="d-md-flex flex-row justify-content-between align-items-baseline
 		mb-2">
-		<h2 class="mb-0">Shelving prep</h2>
+		<h2 class="mb-0">{{t "common:shelvingPrep.title"}}</h2>
 		<h5 class="mt-2 mt-md-0">{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<div class="d-print-none Flow-md-2">
 		<p>
-			This page displays promised web order quantities for the current cycle,
-			grouped by producer, so that shelf labels can be placed in distribution
-			storage areas.
+			{{t "common:shelvingPrep.description"}}
 		</p>
 		<p>
 			{{>Misc/pInstructPrint}}
@@ -39,7 +37,7 @@
 				class="d-none d-lg-block ml-1 mr-3" width="30" height="30">
 			{{!-- Should we do this with all the headings?: [TO DO] --}}
 			<h3 class="font-weight-semi">{{CdStor}}: {{hTextCdStor CdStor}}</h3>
-			<h5 class="font-weight-semi ml-auto">{{QtyProm}} promised</h5>
+			<h5 class="font-weight-semi ml-auto">{{QtyProm}} {{t "common:shelvingPrep.promised"}}</h5>
 		</div>
 
 		{{#each Producers}}
@@ -53,7 +51,7 @@
 					{{NameBus}}
 				</div>
 				<div class="text-right ml-auto px-0 font-weight-semi">
-					{{QtyProm}} promised
+					{{QtyProm}} {{t "common:shelvingPrep.promised"}}
 				</div>
 			</div>
 			<hr class="my-1">
@@ -61,10 +59,10 @@
 			{{!-- Desktop and print layout: --}}
 			<div class="GridTbl Head d-none d-md-block">
 				<div class="row font-weight-bold">
-					<div class="col">Product</div>
-					<div class="col">Variety</div>
-					<div class="col-1 text-md-right">Mgd</div>
-					<div class="col-1 text-md-right">Prom</div>
+					<div class="col">{{t "common:shelvingPrep.product"}}</div>
+					<div class="col">{{t "common:shelvingPrep.variety"}}</div>
+					<div class="col-1 text-md-right">{{t "common:shelvingPrep.managed"}}</div>
+					<div class="col-1 text-md-right">{{t "common:shelvingPrep.prom"}}</div>
 				</div>
 			</div>
 			<div class="GridTbl Body d-none d-md-block mb-4">
@@ -114,10 +112,10 @@
 									{{hTextIDVty IDVty}} {{hNameVty this}}
 								</div>
 								<div class="col-3 text-center">
-									{{#if CkInvtMgd}}Mgd{{else}}Unmgd{{/if}}
+									{{#if CkInvtMgd}}{{t "common:shelvingPrep.managed"}}{{else}}{{t "common:shelvingPrep.unmanaged"}}{{/if}}
 								</div>
 								<div class="col-3 text-right">
-									{{QtyProm}} prom
+									{{QtyProm}} {{t "common:shelvingPrep.prom"}}
 								</div>
 							</div>
 							{{/each}}

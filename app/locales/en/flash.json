@@ -1,0 +1,47 @@
+{
+  "success": {
+    "saved": "Your changes have been saved.",
+    "created": "Successfully created.",
+    "updated": "Successfully updated.",
+    "deleted": "Successfully deleted.",
+    "registered": "Registration successful!",
+    "loggedIn": "You are now logged in.",
+    "loggedOut": "You have been logged out.",
+    "passwordChanged": "Your password has been changed.",
+    "passwordReset": "Your password has been reset.",
+    "emailSent": "Email has been sent."
+  },
+  "error": {
+    "saveFailed": "Could not save changes.",
+    "createFailed": "Could not create.",
+    "updateFailed": "Could not update.",
+    "deleteFailed": "Could not delete.",
+    "loginFailed": "Invalid username or password.",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "notFound": "The requested item was not found.",
+    "uploadFailed": "Could not upload file.",
+    "fileTooLarge": "File cannot be larger than {{size}}KB."
+  },
+  "warning": {
+    "unsavedChanges": "You have unsaved changes.",
+    "confirmDelete": "Are you sure you want to delete this item?"
+  },
+  "info": {
+    "noChanges": "No changes were made.",
+    "processing": "Processing your request..."
+  },
+  "cart": {
+    "itemAdded": "Item added to cart.",
+    "itemRemoved": "Item removed from cart.",
+    "cartUpdated": "Cart updated.",
+    "cartCleared": "Cart cleared.",
+    "quantityNotAvailable": "The requested quantity is not available."
+  },
+  "image": {
+    "uploadFailed": "Could not upload image!",
+    "fileTooLarge": "File cannot be larger than {{size}}KB.",
+    "unknownError": "Unknown error."
+  }
+}
+

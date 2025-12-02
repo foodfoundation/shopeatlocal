@@ -50,7 +50,7 @@ function FldsDisab(aReq, aResp, aProducts, aCkCheckIn) {
 
   if (aResp.PhaseCycEq("StartDeliv") || aResp.PhaseCycEq("EndDeliv")) {
     oFlds.QtyOffer = {
-      Msg: "You cannot change the current web inventory during the delivery cycle",
+      Msg: aReq.t("common:inventory.cannotChangeWebInventoryDuringDelivery"),
     };
   }
   return oFlds;
@@ -105,7 +105,7 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.FldsDisab = FldsDisab(aReq, aResp, oProducts, oCkCheckIn);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer inventory`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerInventory", { name: CoopParams.CoopNameShort });
   aResp.render("Producer/producer-inventory");
 }
 
@@ -208,7 +208,7 @@ export async function wHandPost(aReq, aResp) {
       await oConn.wRollback();
 
       aResp.status(400);
-      aResp.locals.Msg = "No varieties to update.";
+      aResp.locals.Msg = aReq.t("common:inventory.noVarietiesToUpdate");
       aResp.render("Misc/400");
       return;
     }
@@ -224,7 +224,7 @@ export async function wHandPost(aReq, aResp) {
         await oConn.wRollback();
 
         aResp.status(400);
-        aResp.locals.Msg = `Invalid variety ID '${oIDVty}'.`;
+        aResp.locals.Msg = aReq.t("common:inventory.invalidVarietyId", { id: oIDVty });
         aResp.render("Misc/400");
         return;
       }
@@ -233,7 +233,7 @@ export async function wHandPost(aReq, aResp) {
         await oConn.wRollback();
 
         aResp.status(400);
-        aResp.locals.Msg = `Variety '${oIDVty}' belongs to another producer.`;
+        aResp.locals.Msg = aReq.t("common:inventory.varietyBelongsToAnotherProducer", { id: oIDVty });
         aResp.render("Misc/400");
         return;
       }
@@ -242,7 +242,7 @@ export async function wHandPost(aReq, aResp) {
         await oConn.wRollback();
 
         aResp.status(400);
-        aResp.locals.Msg = "Non-staff cannot set managed offer quantities.";
+        aResp.locals.Msg = aReq.t("common:inventory.nonStaffCannotSetManagedQuantities");
         aResp.render("Misc/400");
         return;
       }
@@ -256,10 +256,7 @@ export async function wHandPost(aReq, aResp) {
 
         await oConn.wRollback();
 
-        const oMsg =
-          "You cannot change quantities during the delivery window " +
-          "after you have checked-in. You can update your next-cycle " +
-          "quantities when the delivery window closes.";
+        const oMsg = aReq.t("common:inventory.cannotChangeQuantitiesAfterCheckIn");
         aResp.Show_Flash("danger", null, oMsg);
 
         aResp.redirect(303, "/producer-inventory");
@@ -271,7 +268,7 @@ export async function wHandPost(aReq, aResp) {
         await oConn.wRollback();
 
         aResp.status(400);
-        aResp.locals.Msg = `Invalid variety listing status '${oFldsVty.CdListVty.ValCook}'.`;
+        aResp.locals.Msg = aReq.t("common:inventory.invalidVarietyListingStatus", { status: oFldsVty.CdListVty.ValCook });
         aResp.render("Misc/400");
         return;
       }
@@ -289,7 +286,7 @@ export async function wHandPost(aReq, aResp) {
           await oConn.wRollback();
 
           aResp.status(400);
-          aResp.locals.Msg = `Invalid cart item ID '${oIDItCart}'.`;
+          aResp.locals.Msg = aReq.t("common:inventory.invalidCartItemId", { id: oIDItCart });
           aResp.render("Misc/400");
           return;
         }
@@ -301,7 +298,7 @@ export async function wHandPost(aReq, aResp) {
 
           await oConn.wRollback();
 
-          const oMsg = "You cannot change note denial statuses after you have " + "checked-in.";
+          const oMsg = aReq.t("common:inventory.cannotChangeNoteDenialAfterCheckIn");
           aResp.Show_Flash("danger", null, oMsg);
 
           aResp.redirect(303, "/producer-inventory");
@@ -360,25 +357,21 @@ export async function wHandPost(aReq, aResp) {
 
         oIDsVtyChgProm.push(oIDVty);
 
-        let oMsg =
-          "The note you added to <strong>$NameProductVty</strong> " +
-          "cannot be honored by the producer.";
+        let oMsg = aReq.t("common:inventory.noteCannotBeHonored");
         // Don't need to worry about phase changes here, we're just sending a
         // message:
         if (aResp.locals.FlagShop)
-          oMsg += " Please remove the item from your cart if you no longer " + "want it.";
+          oMsg += " " + aReq.t("common:inventory.pleaseRemoveItemIfUnwanted");
         // No need to await:
-        wSend_MsgItCart(oIDItCart, "danger", "Sorry!", oMsg);
+        wSend_MsgItCart(oIDItCart, "danger", aReq.t("common:inventory.sorry"), oMsg);
       } else {
         if (!(await wUndeny_NoteShop(oConn, oIDItCart))) continue;
 
         oIDsVtyChgProm.push(oIDVty);
 
-        const oMsg =
-          "The note you added to <strong>$NameProductVty</strong> " +
-          "will be honored by the producer after all.";
+        const oMsg = aReq.t("common:inventory.noteWillBeHonoredAfterAll");
         // No need to await:
-        wSend_MsgItCart(oIDItCart, "success", "Good news!", oMsg);
+        wSend_MsgItCart(oIDItCart, "success", aReq.t("common:inventory.goodNews"), oMsg);
       }
     }
 
@@ -404,7 +397,7 @@ export async function wHandPost(aReq, aResp) {
   // Return to Producer Inventory page
   // ---------------------------------
 
-  aResp.Show_Flash("success", null, "Your inventory has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:inventory.inventoryUpdated"));
 
   // Can't decide where to go after Cancel or Save. Seems like the producer
   // might be saving their work incrementally, as they probably should do:

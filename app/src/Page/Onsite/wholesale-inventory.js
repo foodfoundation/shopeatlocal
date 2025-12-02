@@ -12,7 +12,9 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.WholesaleVtys = oWholesaleVtys;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} Wholesale inventory`;
+  aResp.locals.Title = aReq.t("common:pageTitles.wholesaleInventory", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Onsite/wholesale-inventory");
 }
 
@@ -34,14 +36,14 @@ export async function wHandPost(aReq, aResp) {
 
   if (CkFail(oFldsUnroll)) {
     aResp.status(400);
-    aResp.locals.Msg = "Invalid data submitted. Please try again.";
+    aResp.locals.Msg = aReq.t("common:wholesaleInventory.invalidDataSubmitted");
     aResp.render("Misc/400");
     return;
   }
 
   if (!oFldsRoll.Vtys) {
     aResp.status(400);
-    aResp.locals.Msg = "No varieties to update.";
+    aResp.locals.Msg = aReq.t("common:wholesaleInventory.noVarietiesToUpdate");
     aResp.render("Misc/400");
     return;
   }
@@ -61,7 +63,7 @@ export async function wHandPost(aReq, aResp) {
         await oConn.wRollback();
 
         aResp.status(400);
-        aResp.locals.Msg = `Invalid variety ID '${oIDVty}'.`;
+        aResp.locals.Msg = aReq.t("common:wholesaleInventory.invalidVarietyId", { id: oIDVty });
         aResp.render("Misc/400");
         return;
       }
@@ -71,7 +73,9 @@ export async function wHandPost(aReq, aResp) {
         await oConn.wRollback();
 
         aResp.status(400);
-        aResp.locals.Msg = `Invalid variety listing status '${oFldsVty.CdListVty.ValCook}'.`;
+        aResp.locals.Msg = aReq.t("common:wholesaleInventory.invalidListingStatus", {
+          status: oFldsVty.CdListVty.ValCook,
+        });
         aResp.render("Misc/400");
         return;
       }
@@ -108,7 +112,7 @@ export async function wHandPost(aReq, aResp) {
 
   // Return to Wholesale Inventory page
   // ---------------------------------
-  aResp.Show_Flash("success", null, "Wholesale inventory has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:wholesaleInventory.inventoryUpdated"));
 
   // Can't decide where to go after Cancel or Save. Seems like the producer
   // might be saving their work incrementally, as they probably should do:

@@ -3,11 +3,13 @@
 // Edit Location controllers
 
 import { Conv as _Conv, Valid as _Valid, wExec, CkFail, Retry, wUpdOne } from "../../Form.js";
-import { wReady } from "../../Site.js";
+import { CoopParams, wReady } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   aResp.locals.CkEdit = true;
-  aResp.locals.Title = "Edit market parameters";
+  aResp.locals.Title = aReq.t("common:pageTitles.editMarketParameters", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("SiteAdmin/edit-coop-parameters");
 }
 
@@ -144,7 +146,7 @@ export async function wHandPost(aReq, aResp) {
   });
   await wReady();
 
-  aResp.Show_Flash("success", null, "Market parameters were updated successfully.");
+  aResp.Show_Flash("success", null, aReq.t("common:flashMessages.marketParametersUpdated"));
 
   aResp.redirect(303, "/site-admin");
 }

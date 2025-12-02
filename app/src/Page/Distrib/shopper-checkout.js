@@ -20,11 +20,9 @@ export async function wHandGet(aReq, aResp) {
   // -------------------
 
   if (!aResp.locals.FlagPickup) {
-    const oMsg =
-      "<strong>Cannot checkout!</strong> " +
-      (aResp.PhaseCycLess("StartPickup")
-        ? "The pickup window has not started."
-        : "The pickup window has closed.");
+    const oMsg = aResp.PhaseCycLess("StartPickup")
+      ? aReq.t("common:checkout.cannotCheckoutPickupNotStarted")
+      : aReq.t("common:checkout.cannotCheckoutPickupClosed");
     aResp.Show_Flash("danger", null, oMsg);
 
     const oPage = PageAfterCheckoutShop(aReq, aResp);
@@ -40,13 +38,10 @@ export async function wHandGet(aReq, aResp) {
 
   const oCart = await wCartFromIDMemb(oIDMemb);
   if (oCart.CdStatCart !== "Pend") {
-    const oMsg =
-      "<strong>" +
-      oMemb.Name1First +
-      " " +
-      oMemb.Name1Last +
-      "</strong> has already been checked-out. No shopper can check out " +
-      "more than once.";
+    const oMsg = aReq.t("common:checkout.alreadyCheckedOut", { 
+      firstName: oMemb.Name1First, 
+      lastName: oMemb.Name1Last 
+    });
     aResp.Show_Flash("danger", null, oMsg);
 
     const oPage = PageAfterCheckoutShop(aReq, aResp);
@@ -71,7 +66,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} shopper checkout`;
+  aResp.locals.Title = aReq.t("common:pageTitles.shopperCheckout", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/shopper-checkout");
 }
 
@@ -98,7 +93,7 @@ export async function wHandPost(aReq, aResp) {
     if (!oFldsRoll.ItsPickup) {
       aResp.status(400);
 
-      aResp.locals.Msg = "No items to checkout";
+      aResp.locals.Msg = aReq.t("common:checkout.noItemsToCheckout");
       aResp.render("Misc/400");
 
       await oConn.wRollback();
@@ -113,7 +108,7 @@ export async function wHandPost(aReq, aResp) {
       // will skip the user-friendly feedback:
       aResp.status(400);
 
-      aResp.locals.Msg = "Validation failure";
+      aResp.locals.Msg = aReq.t("common:checkout.validationFailure");
       aResp.render("Misc/400");
 
       await oConn.wRollback();
@@ -143,9 +138,7 @@ export async function wHandPost(aReq, aResp) {
       //
       // If the user leaves the page open until the next pickup window, the
       // ItCart and ItPickup IDs will fail to match, and 400 will be returned:
-      const oMsg =
-        "The pickup window closed before you saved your changes. It " +
-        "is now too late to check out.";
+      const oMsg = aReq.t("common:checkout.pickupWindowClosed");
       aResp.Show_Flash("danger", null, oMsg);
 
       const oPage = PageAfterCheckoutShop(aReq, aResp);
@@ -156,10 +149,7 @@ export async function wHandPost(aReq, aResp) {
     }
 
     if (oDataCheckout.MsgFail === "MismatchTtl") {
-      const oMsg =
-        "A discrepancy was found in the order totals; it is " +
-        "possible that product or subcategory data changed while you were " +
-        "checking out. You may try the checkout again.";
+      const oMsg = aReq.t("common:checkout.orderTotalDiscrepancy");
       aResp.Show_Flash("danger", null, oMsg);
 
       aResp.redirect(303, `/shopper-checkout/${oIDMemb}`);
@@ -171,7 +161,7 @@ export async function wHandPost(aReq, aResp) {
     if (oDataCheckout.MsgFail === "NoCart") {
       aResp.status(400);
 
-      aResp.locals.Msg = `Cannot get cart for member ${TextIDMemb(oIDMemb)}.`;
+      aResp.locals.Msg = aReq.t("common:checkout.cannotGetCart", { id: TextIDMemb(oIDMemb) });
       aResp.render("Misc/400");
 
       await oConn.wRollback();
@@ -183,7 +173,7 @@ export async function wHandPost(aReq, aResp) {
       // displayed, not an error message: [TO DO]
       aResp.status(400);
 
-      aResp.locals.Msg = `Cart for member ${TextIDMemb(oIDMemb)} already checked-out.`;
+      aResp.locals.Msg = aReq.t("common:checkout.cartAlreadyCheckedOut", { id: TextIDMemb(oIDMemb) });
       aResp.render("Misc/400");
 
       await oConn.wRollback();
@@ -193,7 +183,7 @@ export async function wHandPost(aReq, aResp) {
     if (oDataCheckout.MsgFail) {
       aResp.status(400);
 
-      aResp.locals.Msg = `Checkout failed with error '${oDataCheckout.MsgFail}'`;
+      aResp.locals.Msg = aReq.t("common:checkout.checkoutFailed", { error: oDataCheckout.MsgFail });
       aResp.render("Misc/400");
 
       await oConn.wRollback();

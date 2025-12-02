@@ -25,8 +25,7 @@ export async function wHandGet(aReq, aResp) {
     if (PhaseCycLess(oStApp.CdPhaseCyc, "EndShop")) {
       await oConn.wRollback();
 
-      const oMsg = "<strong>Cannot print labels!</strong> The shopping window " + "has not closed.";
-      aResp.Show_Flash("danger", null, oMsg);
+      aResp.Show_Flash("danger", null, aReq.t("common:printLabels.cannotPrintShoppingNotClosed"));
 
       aResp.redirect(303, "/web-order-labels");
       return;
@@ -36,8 +35,7 @@ export async function wHandGet(aReq, aResp) {
     if (oQtys.QtyWgtUnset) {
       await oConn.wRollback();
 
-      const oMsg = "You must enter all weights before printing labels.";
-      aResp.Show_Flash("danger", null, oMsg);
+      aResp.Show_Flash("danger", null, aReq.t("common:printLabels.mustEnterAllWeights"));
 
       aResp.redirect(303, "/web-order-labels");
       return;
@@ -48,7 +46,7 @@ export async function wHandGet(aReq, aResp) {
     if (!oIts.length) {
       await oConn.wRollback();
 
-      aResp.Show_Flash("danger", null, "There are no labels to be printed.");
+      aResp.Show_Flash("danger", null, aReq.t("common:printLabels.noLabelsToPrint"));
 
       aResp.redirect(303, "/web-order-labels");
       return;
@@ -64,7 +62,9 @@ export async function wHandGet(aReq, aResp) {
   }
 
   // This doesn't work for the PDF: [TO DO]
-  aResp.locals.Title = `${CoopParams.CoopNameShort} web order labels`;
+  aResp.locals.Title = aReq.t("common:pageTitles.webOrderLabels", {
+    name: CoopParams.CoopNameShort,
+  });
 
   // This causes the PDF to be displayed in the browser, rather than downloaded:
   aResp.contentType("application/pdf");

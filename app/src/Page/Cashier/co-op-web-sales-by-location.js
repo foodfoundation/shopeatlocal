@@ -18,15 +18,15 @@ import _gCSV from "../../CSV.js";
 /** Returns the last cycle with a completed pickup window, or displays a flash
  * error message, redirects, and returns 'null', if that is not possible.
  *
+ * @param {object} aReq - Request object
  * @param {object} aResp - Response object
  * @returns {object|null} Last cycle object or null
  */
-function CycOrFlashErr(aResp) {
+function CycOrFlashErr(aReq, aResp) {
   if (aResp.PhaseCycGreaterEq("EndPickup")) return aResp.locals.CycCurr;
 
   if (!aResp.locals.CycPrev) {
-    const oMsg = "Cannot compile web sales; there is no completed shopping " + "window.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash("danger", null, aReq.t("common:salesReports.cannotCompileNoCompletedWindow"));
     aResp.redirect(303, "/cashier");
     return null;
   }
@@ -40,11 +40,13 @@ function CycOrFlashErr(aResp) {
  * @param {object} aResp - Response object
  */
 export async function wHandGet(aReq, aResp) {
-  const oCyc = CycOrFlashErr(aResp);
+  const oCyc = CycOrFlashErr(aReq, aResp);
   if (!oCyc) return;
   aResp.locals.Cyc = oCyc;
   aResp.locals.Locations = await wLocs(oCyc.IDCyc);
-  aResp.locals.Title = `${CoopParams.CoopNameShort} marker web sales by location`;
+  aResp.locals.Title = aReq.t("common:pageTitles.marketWebSalesByLocation", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Cashier/co-op-web-sales-by-location");
 }
 
@@ -54,13 +56,13 @@ export async function wHandGet(aReq, aResp) {
  * @param {object} aResp - Response object
  */
 export async function wHandGetExport(aReq, aResp) {
-  const oCyc = CycOrFlashErr(aResp);
+  const oCyc = CycOrFlashErr(aReq, aResp);
   if (!oCyc) return;
 
   const oLocs = await wLocs(oCyc.IDCyc);
   for (const oLoc of oLocs) Fmt_RowExcel(oLoc);
 
-  aResp.attachment("Web sales by location.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.webSalesByLocation") + ".csv");
   aResp.csv(oLocs, true);
 }
 
@@ -70,7 +72,7 @@ export async function wHandGetExport(aReq, aResp) {
  * @param {object} aResp - Response object
  */
 export async function wHandGetExport10(aReq, aResp) {
-  const oCyc = CycOrFlashErr(aResp);
+  const oCyc = CycOrFlashErr(aReq, aResp);
   if (!oCyc) return;
   let currentCycInt = oCyc.IDCyc;
   //get last 10 cycles
@@ -91,7 +93,7 @@ export async function wHandGetExport10(aReq, aResp) {
   console.log(excelData);
 
   //export
-  aResp.attachment("Web sales by location - 10 Cycles.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.webSalesByLocation10Cycles") + ".csv");
   aResp.csv(excelData, true);
 }
 

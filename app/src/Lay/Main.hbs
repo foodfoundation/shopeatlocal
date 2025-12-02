@@ -4,7 +4,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="{{#if req.language}}{{req.language}}{{else}}en{{/if}}">
 
 <head>
 	<meta charset="utf-8">
@@ -142,18 +142,18 @@
 
 	<noscript>
 		<div class="Flash alert alert-warning mb-0 pt-1 pb-2" role="alert">
-			This site requires JavaScript! Learn
+			{{t "common:warnings.jsRequired"}}
 			<a href="https://www.computerhope.com/issues/ch000891.htm"
-				class="alert-link">how to enable it</a> in your browser.
+				class="alert-link">{{t "common:warnings.jsRequiredLink"}}</a> {{t "common:warnings.jsRequiredSuffix"}}
 		</div>
 	</noscript>
 
 	<div id="WarnIE" class="Flash alert alert-warning mb-0 pt-1 pb-2"
 		role="alert">
 		<div>
-			Sorry, this site will not work properly with
-			<a href="https://www.engadget.com/2019-02-08-microsoft-internet-explorer-technical-debt.html">Internet Explorer</a>!
-			Please upgrade to a modern, secure browser:
+			{{t "common:warnings.ieNotSupported"}}
+			<a href="https://www.engadget.com/2019-02-08-microsoft-internet-explorer-technical-debt.html">{{t "common:warnings.ieNotSupportedLink"}}</a>!
+			{{t "common:warnings.upgradePrompt"}}
 		</div>
 		<ul class="mb-0">
 			<li>
@@ -170,7 +170,7 @@
 
 	{{#if (hCkTest)}}
 	<div id="WarnTest">
-		TEST<br>SERVER
+		{{t "common:warnings.testServer"}}<br>{{t "common:warnings.testServerLine2"}}
 	</div>
 	{{/if}}
 
@@ -195,7 +195,7 @@
 				data-target="#DlgCart">
 				<img src="{{hPrefixStatic 'cart_outline.svg'}}" alt="" class="IconBtn"
 					width="24" height="24">
-				Cart
+				{{t "common:header.cart"}}
 			</button>
 		</div>
 
@@ -208,7 +208,7 @@
 			{{#if FlagBeforeShop}}
 				<div class="d-none d-md-block text-left mr-5">
 						<span class="header-main-text">
-							Cart opens
+							{{t "common:header.cartOpens"}}
 						</span>
 							<br>
 						<span class="header-text-secondary">
@@ -218,7 +218,7 @@
 				{{else if FlagShop}}
 				<div class="d-none d-md-block text-left mr-5">
 						<span class="header-main-text">
-							Cart closes
+							{{t "common:header.cartCloses"}}
 						</span>
 							<br>
 						<span class="header-text-secondary">
@@ -230,7 +230,7 @@
 				{{#if FlagAfterShop}}
 				<div class="d-none d-md-block text-left mr-5">
 						<span class="header-main-text">
-							Next cart opens
+							{{t "common:header.nextCartOpens"}}
 						</span>
 							<br>
 						<span class="header-text-secondary">
@@ -245,7 +245,7 @@
 				{{#if (hCkAnd CoopParams.DonateWebsite CoopParams.DonateButtonText CoopParams.DonateButtonTooltip) }}
 					<div id="ColWelcome" class="d-flex align-items-center">
 						<div class="d-none d-md-block">
-							<span class="header-main-text">Welcome<br>{{CredUser.NameLogin}}!</span>
+							<span class="header-main-text">{{t "common:header.welcome"}}<br>{{CredUser.NameLogin}}!</span>
 						</div>
 						<div id="ColDonate" class="mr-2">
 							<a target="_blank" class="btn header-button-orange ml-2" href="{{CoopParams.DonateWebsite}}">
@@ -262,9 +262,9 @@
 			<div id="ColWelcome" class="d-flex align-items-center">
 				<div class="d-none d-md-block text-left mr-5">
 					<span class="header-main-text">
-						Want to become a producer?
+						{{t "common:header.wantToBeProducer"}}
 						<br>
-						<a class="header-text-link" href="mailto:{{CoopParams.InfoEmail}}">Email {{CoopParams.InfoEmail}}</a>
+						<a class="header-text-link" href="mailto:{{CoopParams.InfoEmail}}">{{t "common:header.emailUs" email=CoopParams.InfoEmail}}</a>
 					</span>
 
 				</div>
@@ -272,7 +272,7 @@
 					<a target="_blank"  class="btn header-button-orange ml-2"
 						href="/member-registration"
 					>
-						Start free trial!
+						{{t "common:header.startFreeTrial"}}
 					</a>
 				</div>
 			</div>
@@ -285,12 +285,12 @@
 				<div>
 					<a href="/logout" class="btn btn-primary" role="button"
 						onclick="Disab_Form()">
-						Logout
+						{{t "common:header.logout"}}
 					</a>
 				</div>
 				{{else}}
 				<button type="button" class="btn" data-toggle="modal"
-					data-target="#DlgLogin">Login</button>
+					data-target="#DlgLogin">{{t "common:header.login"}}</button>
 				{{/if}}
 			</div>
 		</div>
@@ -315,21 +315,21 @@
 
 				<li class="nav-item {{hTextIfView "Home/index" "active"}}">
 					<a href="/" class="nav-link double">
-						Market home
+						{{t "common:navigation.marketHome"}}
 					</a>
 				</li>
 
 				{{#if CoopParams.isProductTypesPageDefined}}
 				<li class="nav-item">
 					<a href="/production-types" class="nav-link double" target="_blank">
-						Production types
+						{{t "common:navigation.productionTypes"}}
 					</a>
 				</li>
 				{{/if}}
 
 				<li class="nav-item {{hTextIfView "Home/distinguished-members" "active"}}">
 					<a href="/distinguished-members" class="nav-link double">
-						Distinguished<br>members
+						{{t "common:navigation.distinguishedMembers"}}
 					</a>
 				</li>
 
@@ -346,7 +346,7 @@
 				{{#if CredUser}}
 				<li class="nav-item {{hTextIfView "Memb/member" "active"}}">
 					<a href="/member" class="nav-link double">
-					Member account
+					{{t "common:navigation.memberAccount"}}
 					</a>
 				</li>
 				{{#if CredImperUser.CkShowProducer}}
@@ -354,7 +354,7 @@
 					<a {{#if CredImperUser.IDProducer}} href="/producer" {{else}}
 						href="/producer-registration" {{/if}}
 						class="nav-link double">
-						Producer account
+						{{t "common:navigation.producerAccount"}}
 						</a>
 				</li>
 				{{/if}}
@@ -368,17 +368,17 @@
 		//    the CSS that hides this when the menu is open, otherwise it would
 		//    appear in the menu: --}}
 		<div id="TitleMob" class="d-md-none navbar-brand">
-			{{hTextIfView "Home/index" "Market home"}}
-			{{hTextIfView "Home/distinguished-members" "Distinguished members"}}
-			{{hTextIfView "Shop/product-search" "Product search"}}
-			{{hTextIfView "Memb/member" "Member"}}
-			{{hTextIfView "Producer/producer" "Producer"}}
-			{{hTextIfView "MembAdmin/member-admin" "Member admin"}}
-			{{hTextIfView "ProducerAdmin/producer-admin" "Producer admin"}}
-			{{hTextIfView "Distrib/distribution" "Distribution"}}
-			{{hTextIfView "Cashier/cashier" "Accounting"}}
-			{{hTextIfView "SiteAdmin/site-admin" "Site admin"}}
-			{{hTextIfView "Onsite/on-site" "On-site"}}
+			{{hTextIfView "Home/index" (t "common:navigation.marketHome")}}
+			{{hTextIfView "Home/distinguished-members" (t "common:navigation.distinguishedMembers")}}
+			{{hTextIfView "Shop/product-search" (t "common:navigation.productSearch")}}
+			{{hTextIfView "Memb/member" (t "common:navigation.member")}}
+			{{hTextIfView "Producer/producer" (t "common:navigation.producer")}}
+			{{hTextIfView "MembAdmin/member-admin" (t "common:navigation.memberAdmin")}}
+			{{hTextIfView "ProducerAdmin/producer-admin" (t "common:navigation.producerAdmin")}}
+			{{hTextIfView "Distrib/distribution" (t "common:navigation.distribution")}}
+			{{hTextIfView "Cashier/cashier" (t "common:navigation.accounting")}}
+			{{hTextIfView "SiteAdmin/site-admin" (t "common:navigation.siteAdmin")}}
+			{{hTextIfView "Onsite/on-site" (t "common:navigation.onSite")}}
 		</div>
 	</nav>
 	{{#if (hCkStaffFromUser)}}
@@ -388,29 +388,29 @@
 				
 				<li class="nav-item {{hTextIfView "MembAdmin/member-admin" "active"}}">
 					<a href="/member-admin" class="nav-link double">
-						Member admin
+						{{t "common:navigation.memberAdmin"}}
 					</a>
 				</li>
 				<li
 					class="nav-item {{hTextIfView "ProducerAdmin/producer-admin" "active"}}">
 					<a href="/producer-admin" class="nav-link double">
-						Producer admin
+						{{t "common:navigation.producerAdmin"}}
 					</a>
 				</li>
 				<li class="nav-item {{hTextIfView "Distrib/distribution" "active"}}">
-					<a href="/distribution" class="nav-link single">Distribution</a>
+					<a href="/distribution" class="nav-link single">{{t "common:navigation.distribution"}}</a>
 				</li>
 				<li class="nav-item {{hTextIfView "Cashier/cashier" "active"}}">
-					<a href="/cashier" class="nav-link single">Accounting</a>
+					<a href="/cashier" class="nav-link single">{{t "common:navigation.accounting"}}</a>
 				</li>
 				<li class="nav-item {{hTextIfView "Onsite/on-site" "active"}}">
 					<a href="/on-site" class="nav-link single">
-						On-site
+						{{t "common:navigation.onSite"}}
 					</a>
 				</li>
 				<li class="nav-item {{hTextIfView "SiteAdmin/site-admin" "active"}}">
 					<a href="/site-admin" class="nav-link double">
-						Site admin
+						{{t "common:navigation.siteAdmin"}}
 					</a>
 				</li>
 				
@@ -424,14 +424,14 @@
 
 	{{#if CredImper}}
 	<div id="BarImper" class="d-flex align-items-center">
-		<p class="d-inline-block my-1 mr-auto">Impersonating
+		<p class="d-inline-block my-1 mr-auto">{{t "common:impersonation.impersonating"}}
 			<a href="/member-detail/{{CredImper.IDMemb}}">
-				Member {{hTextIDMemb CredImper.IDMemb}}
+				{{t "common:impersonation.member"}} {{hTextIDMemb CredImper.IDMemb}}
 				<strong>{{CredImper.Name1First}} {{CredImper.Name1Last}}</strong>
 			</a>
 			{{#if CredImper.IDProducer}}
 			/ <a href="/producer-detail/{{CredImper.IDProducer}}">
-				Producer {{hTextIDProducer CredImper.IDProducer}}
+				{{t "common:impersonation.producer"}} {{hTextIDProducer CredImper.IDProducer}}
 				<strong>{{CredImper.NameBusProducer}}</strong>
 			</a>
 			{{/if}}
@@ -444,7 +444,7 @@
 			<input type="hidden" name="URLReturn" value="{{URL}}">
 
 			<button type="submit" class="btn btn-sm btn-warning">
-				Stop impersonating
+				{{t "common:impersonation.stopImpersonating"}}
 			</button>
 		</form>
 	</div>
@@ -470,13 +470,13 @@
 
 					<div class="modal-body">
 						<div class="form-group">
-							<label for="NameLogin">Username</label>
+							<label for="NameLogin">{{t "common:auth.username"}}</label>
 							<input id="NameLogin" name="NameLogin" type="text" required
 								minlength="1" class="form-control">
 						</div>
 
 						<div class="form-group">
-							<label for="Pass">Password</label>
+							<label for="Pass">{{t "common:auth.password"}}</label>
 							<input id="Pass" name="Pass" type="password" required
 								minlength="1" class="form-control">
 						</div>
@@ -484,14 +484,14 @@
 
 					<div class="modal-footer">
 						<a href="/request-password-reset">
-							Forgot your password?
+							{{t "common:auth.forgotPassword"}}
 						</a>
 						<button type="button" class="btn btn-secondary ml-auto"
 							data-toggle="modal" data-target="#DlgLogin">
-							Cancel
+							{{t "common:auth.cancel"}}
 						</button>
 						<button type="submit" class="btn btn-primary">
-							Login
+							{{t "common:auth.loginButton"}}
 						</button>
 					</div>
 				</form>
@@ -506,23 +506,23 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header alert-warning" style="background-color: #fff3cd !important;">
-						<h5 class="modal-title">Notice</h5>
+						<h5 class="modal-title">{{t "common:notice.title"}}</h5>
 				</div>
 				<div class="modal-body">
 					<p>
-						When the cart closes all items in your cart become your order and are sent to producers to harvest, pick and pack.
+						{{t "common:notice.cartClosesInfo"}}
 					</p>
 					<p>
-						You are committing to pay for the items in your cart at pick up time.
+						{{t "common:notice.paymentCommitment"}}
 					</p>
 					<p>
-						<strong>Happy shopping!</strong> 
+						<strong>{{t "common:notice.happyShopping"}}</strong> 
 					</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary ml-auto"
 						data-toggle="modal" data-target="#DlgNotice">
-						OK
+						{{t "common:notice.ok"}}
 					</button>
 				</div>
 			</div>
@@ -551,17 +551,17 @@
 
 						<h3 class="mb-0">
 							{{#if CkSelImperUserSelf}}
-							Shopping cart
+							{{t "common:cart.title"}}
 							{{else}}
-							{{CredSelImperUser.NameLogin}}'s shopping cart
+							{{t "common:cart.userCart" name=CredSelImperUser.NameLogin}}
 							{{/if}}
 						</h3>
 
 						<div class="d-none d-sm-block text-right font-size-90 ml-auto">
 							{{#if FlagShop}}
-							Cart closes {{hTextDateTimeMed WhenEndShopNext}}<br>
+							{{t "common:cart.cartCloses" date=(hTextDateTimeMed WhenEndShopNext)}}<br>
 							{{/if}}
-							Order pickup starts <a href="{{CoopParams.PickupWebsite}}">
+							{{t "common:cart.orderPickupStarts"}} <a href="{{CoopParams.PickupWebsite}}">
 								{{hTextDateMed WhenStartPickupNext}}</a>
 						</div>
 					</div>
@@ -571,19 +571,19 @@
 							<div class="form-group col-md-3 mb-2 mb-md-0">
 								{{#if SummCartImperUser}}
 									{{#if FlagShop}}
-										<label for="CdLoc">Pickup location</label>
+										<label for="CdLoc">{{t "common:cart.pickupLocation"}}</label>
 										<select id="SelCdLoc" name="CdLoc" value="{{CdLoc}}"
 											class="custom-select">
 											{{>Shop/pSelCdLoc this}}
 										</select>
 									{{else}}
-										<div class="mb-1">Pickup location</div>
+										<div class="mb-1">{{t "common:cart.pickupLocation"}}</div>
 										<div class="text-uppercase font-weight-bold font-size-120">
 											{{hNameLocFromCd SummCartImperUser.CdLoc}}
 										</div>
 									{{/if}}
 								{{else}}
-									<div class="mb-1">Pickup location</div>
+									<div class="mb-1">{{t "common:cart.pickupLocation"}}</div>
 									<div class="text-uppercase font-weight-bold font-size-120">
 										{{hNameLocFromCd CredUser.CdLocLast}}
 									</div>
@@ -603,19 +603,19 @@
 					<div class="modal-footer p-2">
 						<button id="BtnCloseCart" class="btn btn-secondary" type="button"
 							data-toggle="modal" data-target="#DlgCart">
-							Close
+							{{t "common:cart.close"}}
 						</button>
 
 						<button id="BtnCancelCart" class="d-none btn btn-secondary"
 							type="button">
-							Cancel
+							{{t "common:buttons.cancel"}}
 						</button>
 
 						{{!-- Display this even if the cart is empty. The user might want to
 						//    change the pickup location: --}}
 						<button id="BtnSaveCart" class="d-none btn btn-primary"
 							type="submit">
-							Save
+							{{t "common:cart.save"}}
 						</button>
 					</div>
 				</form>
@@ -663,13 +663,13 @@
 			</div>
 
 			<div class="ml-auto mr-3 mr-md-3">
-				<div class="text-uppercase font-size-110 mb-1">Links</div>
+				<div class="text-uppercase font-size-110 mb-1">{{t "common:footer.links"}}</div>
 				{{!-- Couldn't get this to work right with 'row/col'. Containing 'div'
 				//    consumed extra space, yet 'Shopping calendar' line wrapped: --}}
 				<div class="d-md-flex">
 					<div class="mr-md-4">
 						<a href="{{CoopParams.HomeWebsite}}">
-							{{CoopParams.CoopNameShort}} Home
+							{{t "common:footer.home" name=CoopParams.CoopNameShort}}
 						</a>
 						</br>
 						{{#if CoopParams.staticPages}}
@@ -683,20 +683,20 @@
 					</div>
 					<div>
 						<a href="/terms-and-conditions">
-							Terms of service
+							{{t "common:footer.termsOfService"}}
 						</a><br>
 						<a href="/acknowledgments">
-							Acknowledgments
+							{{t "common:footer.acknowledgments"}}
 						</a>
 						{{#if CredUser}}
 						<br>
 						<a target="_blank" href="https://cultivatefoodconnections.org/donate">
-							Make a donation!
+							{{t "common:footer.makeDonation"}}
 						</a>
 						{{else}}
 						<br>
 						<a href="/member-registration">
-							Start free trial!
+							{{t "common:footer.startFreeTrial"}}
 						</a>
 						{{/if}}
 					</div>

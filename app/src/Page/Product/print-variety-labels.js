@@ -74,7 +74,10 @@ export async function wHandGet(aReq, aResp) {
   // This causes the PDF to be displayed in the browser, rather than downloaded:
   aResp.contentType("application/pdf");
 
-  const oName = `${CoopParams.CoopNameShort} Variety ${TextIDVty(oVty.IDVty)} Labels.pdf`;
+  const oName = aReq.t("common:varietyLabels.pdfFilename", {
+    name: CoopParams.CoopNameShort,
+    id: TextIDVty(oVty.IDVty),
+  });
   // This sets the suggested filename if the user chooses to download the file,
   // without causing the download to start on its own:
   aResp.set("Content-Disposition", `inline; filename="${oName}"`);

@@ -7,6 +7,7 @@
 // context.
 
 import Handlebars from "handlebars";
+import i18next from "./i18n.js";
 const { escapeExpression, SafeString } = Handlebars;
 
 import {
@@ -1390,6 +1391,47 @@ Handlebars.registerHelper("hPrefixImageWithStorage", function (aImageName) {
 
 Handlebars.registerHelper("hPrefixStatic", function (aFileName) {
   return `${StaticStoragePrefix}/${aFileName}`;
+});
+
+// Translation helper
+Handlebars.registerHelper("t", function (key, options) {
+  const req = options.data.root.req;
+  const t = req ? req.t : i18next.t.bind(i18next);
+
+  // Support interpolation
+  const params = {};
+  for (const [k, v] of Object.entries(options.hash || {})) {
+    params[k] = v;
+  }
+
+  return t(key, params);
+});
+
+// Pluralization helper
+Handlebars.registerHelper("tn", function (key, count, options) {
+  const req = options.data.root.req;
+  const t = req ? req.t : i18next.t.bind(i18next);
+  return t(key, { count });
+});
+
+Handlebars.registerHelper("hTextDateMedLocale", function (aDate, options) {
+  if (!aDate) return "";
+  const locale = options.data.root.req?.language || "en";
+  return new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(aDate);
+});
+
+Handlebars.registerHelper("hTextCurrLocale", function (aVal, options) {
+  if (!isNumber(aVal)) return "ERROR";
+  const locale = options.data.root.req?.language || "en";
+  const currency = locale === "en" ? "USD" : "EUR"; // Configure per locale
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+  }).format(aVal);
 });
 
 // -------

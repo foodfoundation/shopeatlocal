@@ -9,7 +9,7 @@ import { Add_Props } from "../../Util.js";
 import { CoopParams, wReady } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} site admin`;
+  aResp.locals.Title = aReq.t("common:pageTitles.siteAdmin", { name: CoopParams.CoopNameShort });
 
   const oIPsBlock = await wIPsBlock();
   aResp.locals.CtBlockIP = oIPsBlock.length;
@@ -34,7 +34,7 @@ export async function wHandGet(aReq, aResp) {
 export async function wHandPost(aReq, aResp) {
   await wReady();
 
-  aResp.Show_Flash("success", null, "Market parameters were updated successfully.");
+  aResp.Show_Flash("success", null, aReq.t("common:flashMessages.marketParametersUpdated"));
 
   aResp.redirect(303, "/site-admin");
 }

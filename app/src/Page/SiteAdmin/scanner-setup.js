@@ -5,6 +5,8 @@
 import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} scanner setup`;
+  aResp.locals.Title = aReq.t("common:pageTitles.scannerSetup", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("SiteAdmin/scanner-setup");
 }

@@ -5,42 +5,42 @@
 <div class="container-lg pt-4 pb-2">
 	<div class="row">
 		<div class="col-md">
-			<h5>Sales</h5>
+			<h5>{{t "common:cashier.sales"}}</h5>
 
 			<div class="LinksPg">
-				<a href="/co-op-web-sales-by-subcategory">Market web sales by subcategory</a>
-				<a href="/co-op-web-sales-by-location">Market web sales by location</a>
+				<a href="/co-op-web-sales-by-subcategory">{{t "common:cashier.marketWebSalesBySubcategory"}}</a>
+				<a href="/co-op-web-sales-by-location">{{t "common:cashier.marketWebSalesByLocation"}}</a>
 			</div>
 			<div class="LinksPg">
-				<a href="/co-op-on-site-sales-by-variety">Market on-site sales by variety</a>
-			</div>
-
-			<hr>
-
-			<h5>Accounting</h5>
-
-			<div class="LinksPg">
-				<a href="/accounting-summary">Accounting summary</a>
-			</div>
-
-			<div class="LinksPg">
-				<a href="/shopper-charges">Shopper charges</a>
-				<a href="/producer-earnings">Producer earnings</a>
+				<a href="/co-op-on-site-sales-by-variety">{{t "common:cashier.marketOnSiteSalesByVariety"}}</a>
 			</div>
 
 			<hr>
 
-			<h5>Advanced Hub Reports</h5>
+			<h5>{{t "common:cashier.accounting"}}</h5>
+
+			<div class="LinksPg">
+				<a href="/accounting-summary">{{t "common:cashier.accountingSummary"}}</a>
+			</div>
+
+			<div class="LinksPg">
+				<a href="/shopper-charges">{{t "common:cashier.shopperCharges"}}</a>
+				<a href="/producer-earnings">{{t "common:cashier.producerEarnings"}}</a>
+			</div>
+
+			<hr>
+
+			<h5>{{t "common:cashier.advancedHubReports"}}</h5>
 
 			<div class="LinksPg mb-0">
-				<a href="/hub-reports">Open Reports Table</a>
+				<a href="/hub-reports">{{t "common:cashier.openReportsTable"}}</a>
 			</div>
 		</div>
 
 		<div class="col-md">
 			<hr class="d-block d-md-none mt-0">
 
-			<h3 class="mb-3">Transaction search</h3>
+			<h3 class="mb-3">{{t "common:cashier.transactionSearch"}}</h3>
 
 			<form id="form-main" class="mb-3" action="/cashier" method="POST"
 				autocomplete="off" onsubmit="Disab_Form()">
@@ -49,17 +49,17 @@
 
 				<div class="form-row">
 					<div class="form-group col-md-4">
-						<label for="IDTransact">Transaction ID</label>
+						<label for="IDTransact">{{t "common:cashier.transactionId"}}</label>
 						<input id="IDTransact" name="IDTransact" value="{{IDTransact}}"
 							class="form-control">
 					</div>
 					<div class="form-group col-md-4">
-						<label for="IDMemb">Member ID</label>
+						<label for="IDMemb">{{t "common:admin.memberId"}}</label>
 						<input id="IDMemb" name="IDMemb" value="{{IDMemb}}"
 							class="form-control">
 					</div>
 					<div class="form-group col-md-4">
-						<label for="IDProducer">Producer ID</label>
+						<label for="IDProducer">{{t "common:admin.producerId"}}</label>
 						<input id="IDProducer" name="IDProducer" value="{{IDProducer}}"
 							class="form-control">
 					</div>
@@ -67,7 +67,7 @@
 
 				<div class="form-row">
 					<div class="form-group col-md-12">
-						<label for="CdTypeTransact">Transaction type</label>
+						<label for="CdTypeTransact">{{t "common:cashier.transactionType"}}</label>
 						<select name="CdTypeTransact" value="{{CdTypeTransact}}"
 							class="custom-select">
 							{{hOptsCdTypeTransactOrAny CdTypeTransact}}
@@ -77,7 +77,7 @@
 
 				<div class="form-row">
 					<div class="form-group col-md-12">
-						<label for="CdMethPay">Payment method</label>
+						<label for="CdMethPay">{{t "common:cashier.paymentMethod"}}</label>
 						<select name="CdMethPay" value="{{CdMethPay}}"
 							class="custom-select">
 							{{hOptsCdMethPayOrAny CdMethPay}}
@@ -87,7 +87,7 @@
 
 				<div class="form-row">
 					<div class="form-group col-md-6">
-						<label for="WhenStart{{IDCyc}}">Start date</label>
+						<label for="WhenStart{{IDCyc}}">{{t "common:cashier.startDate"}}</label>
 						<input name="WhenStart{{IDCyc}}" type="date"
 							placeholder="yyyy-mm-dd" value="{{hTextDateTimeInput WhenStart}}"
 							class="WhenStart form-control {{#if MsgFailWhenStart}}is-invalid{{/if}}">
@@ -95,7 +95,7 @@
 					</div>
 					<div class="form-group col-md-6">
 						<label for="WhenEnd{{IDCyc}}">
-							End date <span class="text-info">(inclusive)</span>
+							{{t "common:cashier.endDate"}} <span class="text-info">({{t "common:cashier.inclusive"}})</span>
 						</label>
 						<input name="WhenEnd{{IDCyc}}" type="date" placeholder="yyyy-mm-dd"
 							value="{{hTextDateTimeInput WhenEnd}}"
@@ -105,20 +105,14 @@
 				</div>
 
 				<p class="text-muted font-size-90 mb-2">
-					Transactions matching <em>all</em> of the above criteria will be
-					returned. For fewer results, add <em>more</em> criteria. Leave all
-					fields blank to list all transactions.
+					{{t "common:cashier.transactionSearchHint"}}
 				</p>
 
-				<button type="submit" class="btn btn-primary mt-2">Search</button>
+				<button type="submit" class="btn btn-primary mt-2">{{t "common:buttons.search"}}</button>
 			</form>
 
 			<p class="text-muted font-size-90">
-				To add a transaction, find the member with
-				<a href="/member-admin">Member Admin</a> or
-				<a href="/producer-admin">Producer Admin</a>, then click
-				<span class="font-weight-semi">Add member transaction</span> or
-				<span class="font-weight-semi">Add producer transaction</span>.
+				{{t "common:cashier.addTransactionHint"}}
 			</p>
 		</div>
 	</div>

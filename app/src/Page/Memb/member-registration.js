@@ -17,8 +17,8 @@ export function Prep(aReq, aResp, aNext) {
   if (aReq.user) {
     aResp.Show_Flash(
       "danger",
-      "You are already registered!",
-      `Please contact ${CoopParams.CoopNameShort} if you need help.`,
+      aReq.t("common:registration.alreadyRegistered"),
+      aReq.t("common:registration.contactForHelp", { name: CoopParams.CoopNameShort }),
     );
 
     const oPage = PageAfterEditMemb(aReq, aResp);
@@ -29,7 +29,7 @@ export function Prep(aReq, aResp, aNext) {
 }
 
 export function HandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} member registration`;
+  aResp.locals.Title = aReq.t("common:pageTitles.memberRegistration", { name: CoopParams.CoopNameShort });
   aResp.locals.CoopParams = CoopParams;
   aResp.render("Memb/member-registration");
 }
@@ -39,7 +39,7 @@ export async function wHandPost(aReq, aResp) {
   // ----------------------
 
   function oValid_CkReadTOS(aFld) {
-    if (!aFld.ValCook) aFld.MsgFail = "You must accept the Terms of Service to continue.";
+    if (!aFld.ValCook) aFld.MsgFail = aReq.t("common:registration.mustAcceptTOS");
   }
 
   const oFlds = {
@@ -81,13 +81,13 @@ export async function wHandPost(aReq, aResp) {
   // ---------------------
 
   if (oFlds.Pass.ValCook !== oFlds.PassConfirm.ValCook)
-    oFlds.PassConfirm.MsgFail = "Your passwords must match.";
+    oFlds.PassConfirm.MsgFail = aReq.t("common:registration.passwordsMustMatch");
 
   if (oFlds.Name2First.ValCook && !oFlds.Name2Last.ValCook)
-    oFlds.Name2Last.MsgFail = "Please enter a last name, or clear the first name.";
+    oFlds.Name2Last.MsgFail = aReq.t("common:registration.enterLastNameOrClear");
 
   if (oFlds.Name2Last.ValCook && !oFlds.Name2First.ValCook)
-    oFlds.Name2First.MsgFail = "Please enter a first name, or clear the last name.";
+    oFlds.Name2First.MsgFail = aReq.t("common:registration.enterFirstNameOrClear");
 
   // Clear second name if it matches the first:
   if (
@@ -118,8 +118,8 @@ export async function wHandPost(aReq, aResp) {
   if (existingUser > 0) {
     aResp.Show_Flash(
       "danger",
-      "You are already registered!",
-      `Please contact ${CoopParams.CoopNameShort} if you need help.`,
+      aReq.t("common:registration.alreadyRegistered"),
+      aReq.t("common:registration.contactForHelp", { name: CoopParams.CoopNameShort }),
     );
 
     aResp.redirect("/");

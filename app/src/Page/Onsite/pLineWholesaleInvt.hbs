@@ -31,7 +31,7 @@
 		<div class="col-md">
 			{{#unless Vtys}}
 			<div class="jumbotron mb-0">
-				<h2 class="display-4 font-size-200">No varieties</h2>
+				<h2 class="display-4 font-size-200">{{t "common:product.noVarieties"}}</h2>
 			</div>
 			{{else}}
 
@@ -46,24 +46,24 @@
 					<div class="col-md-4">
 						<div class="form-row pl-0 align-items-center">
 							<div class="form-group col-md-4">
-								Variety
+								{{t "common:cart.variety"}}
 							</div>
 							<div class="form-group col-md-8">
-								Size / kind
+								{{t "common:wholesaleInventory.sizeKind"}}
 							</div>
 						</div>
 					</div>
 					<div class="col-md-2 form-group pr-2 text-center">
-						Wholesale Price
+						{{t "common:wholesaleInventory.wholesalePrice"}}
 					</div>
 					<div class="col-md-2 form-group pr-2 text-center">
-						Quantity
+						{{t "common:wholesaleInventory.quantity"}}
 					</div>
 					<div class="col-md-2 form-group pr-2 text-center">
-						Customer Fee
+						{{t "common:wholesaleInventory.customerFee"}}
 					</div>
 					<div class="col-md-2 form-group  pr-2 text-center">
-						Status
+						{{t "common:cart.status"}}
 					</div>
 				</div>
 			</div>
@@ -86,9 +86,9 @@
 									<div class="d-none d-md-flex form-group col-md-4">
 										{{hTextIDVty IDVty}}
 									</div>
-									<div class="d-md-none form-group col-md-4 font-weight-semi">
-										<span class="d-md-none">Variety </span>{{hTextIDVty IDVty}}
-									</div>
+								<div class="d-md-none form-group col-md-4 font-weight-semi">
+									<span class="d-md-none">{{t "common:cart.variety"}} </span>{{hTextIDVty IDVty}}
+								</div>
 									<div class="d-none d-md-flex form-group col-md-8">
 										{{hNameVty this}}
 									</div>
@@ -107,10 +107,10 @@
 							<div class="d-md-none col font-weight-semi">
 								<div class="form-row pl-0 pb-0">
 									<div class="form-group col text-center">
-										Wholesale Price
+										{{t "common:wholesaleInventory.wholesalePrice"}}
 									</div>
 									<div class="form-group col text-center">
-										Quantity
+										{{t "common:wholesaleInventory.quantity"}}
 									</div>
 								</div>
 							</div>
@@ -131,7 +131,7 @@
 							<hr class="d-md-none col-md">
 
 							<div class="d-md-none col-md form-group col font-weight-semi text-center">
-								Customer Fee
+								{{t "common:wholesaleInventory.customerFee"}}
 							</div>
 
 							<div class="form-group col-md-2 text-md-center">
@@ -152,7 +152,7 @@
 							{{!-- <hr class="d-md-none col-md"> --}}
 
 							<div class="d-md-none col-md form-group col font-weight-semi text-center">
-								Status
+								{{t "common:cart.status"}}
 							</div>
 
 							<div class="form-group col-md-2 pt-1 mb-2 mb-md-1">

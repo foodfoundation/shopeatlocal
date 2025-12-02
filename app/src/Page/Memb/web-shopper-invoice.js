@@ -33,7 +33,10 @@ export async function wHandGet(aReq, aResp) {
 
   await Storage.files.sendFile(aResp, {
     fileName: oInvc.NameFileInvc,
-    documentName: `${CoopParams.CoopNameShort} web shopper invoice ${TextIDInvcShopWeb(oIDInvc)}.pdf`,
+    documentName: aReq.t("common:invoiceFilenames.webShopperInvoice", { 
+      name: CoopParams.CoopNameShort, 
+      id: TextIDInvcShopWeb(oIDInvc) 
+    }) + ".pdf",
   });
 }
 

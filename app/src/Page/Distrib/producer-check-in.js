@@ -13,11 +13,9 @@ export async function wHandGet(aReq, aResp) {
   // ---------------------
 
   if (!aResp.locals.FlagDeliv) {
-    const oMsg =
-      "<strong>Cannot check-in!</strong> " +
-      (aResp.PhaseCycLess("StartDeliv")
-        ? "The delivery window has not started."
-        : "The delivery window has closed.");
+    const oMsg = aResp.PhaseCycLess("StartDeliv")
+      ? aReq.t("common:checkIn.cannotCheckInDeliveryNotStarted")
+      : aReq.t("common:checkIn.cannotCheckInDeliveryClosed");
     aResp.Show_Flash("danger", null, oMsg);
 
     const oPage = PageAfterCheckInProducer(aReq, aResp);
@@ -106,7 +104,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer check-in`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerCheckIn", { name: CoopParams.CoopNameShort });
   aResp.locals.CoopParams = CoopParams;
   aResp.render("Distrib/producer-check-in");
 }
@@ -139,7 +137,7 @@ export async function wHandPost(aReq, aResp) {
       await oConn.wRollback();
 
       aResp.status(400);
-      aResp.locals.Msg = "No items to check-in.";
+      aResp.locals.Msg = aReq.t("common:checkIn.noItemsToCheckIn");
       aResp.render("Misc/400");
       return;
     }
@@ -154,7 +152,7 @@ export async function wHandPost(aReq, aResp) {
       // It should be impossible to submit invalid data with this form, so we will
       // skip the user-friendly feedback:
       aResp.status(400);
-      aResp.locals.Msg = `Validation failure '${oMsgFailValid}'.`;
+      aResp.locals.Msg = aReq.t("common:checkIn.validationFailure", { error: oMsgFailValid });
       aResp.render("Misc/400");
       return;
     }
@@ -180,10 +178,7 @@ export async function wHandPost(aReq, aResp) {
       //
       // If the user leaves the page open until the next delivery window, the
       // ItCart and ItDeliv IDs will fail to match, and 400 will be returned:
-      const oMsg =
-        "The delivery window closed before you saved your changes. " +
-        "It is now too late to check-in. Any items not checked-in have been " +
-        "marked 'truant'.";
+      const oMsg = aReq.t("common:checkIn.deliveryWindowClosed");
       aResp.Show_Flash("danger", null, oMsg);
 
       const oPage = PageAfterCheckInProducer(aReq, aResp);
@@ -194,10 +189,7 @@ export async function wHandPost(aReq, aResp) {
     if (oDataCheckIn.MsgFail === "Dirty") {
       await oConn.wRollback();
 
-      const oMsg =
-        "The inventory for one or more items was updated while you " +
-        "were checking-in. Some quantities or notes have changed. You must " +
-        "restart the check-in.";
+      const oMsg = aReq.t("common:checkIn.inventoryUpdatedDuringCheckIn");
       aResp.Show_Flash("danger", null, oMsg);
 
       const oPage = "/producer-check-in/" + oIDProducer;
@@ -209,7 +201,7 @@ export async function wHandPost(aReq, aResp) {
       await oConn.wRollback();
 
       aResp.status(400);
-      aResp.locals.Msg = `Check-in error '${oDataCheckIn.MsgFail}'.`;
+      aResp.locals.Msg = aReq.t("common:checkIn.checkInError", { error: oDataCheckIn.MsgFail });
       aResp.render("Misc/400");
       return;
     }

@@ -5,32 +5,32 @@
 <div class="container-lg pt-4 pb-2">
 	<div class="row">
 		<div class="col-md">
-			<h5 class="mb-3">Member stats</h5>
+			<h5 class="mb-3">{{t "common:admin.memberStats"}}</h5>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkTrialMemb=true">
-					Current trial members
+					{{t "common:admin.currentTrialMembers"}}
 				</a>
 				&times; <span class="LblPg">{{trialMembersCount}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkPendMemb=true">
-					Trial completed and pending
+					{{t "common:admin.trialCompletedPending"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembPend}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkPendEBT=true">
-					Pending EBT registration
+					{{t "common:admin.pendingEBTRegistration"}}
 				</a>
 				&times; <span class="LblPg">{{CtEBTPend}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkPendVolun=true">
-					Pending volunteer registration
+					{{t "common:admin.pendingVolunteerRegistration"}}
 				</a>
 				&times; <span class="LblPg">{{CtVolunPend}}</span>
 			</div>
@@ -38,61 +38,61 @@
 			<div>
 				<a class="LinkLblPg"
 					href="/member-search-results?CkDelivHomeNoDist=true">
-					Home-delivery without distance
+					{{t "common:admin.homeDeliveryWithoutDistance"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembDelivHomeNoDist}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkWithItsCart=true">
-					With items in cart
+					{{t "common:admin.withItemsInCart"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembWithItsCart}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkBalPos=true">
-					With positive balance
+					{{t "common:admin.withPositiveBalance"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembBalPos}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkBalNeg=true">
-					With negative balance
+					{{t "common:admin.withNegativeBalance"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembBalNeg}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkEBT=true">
-					EBT
+					{{t "common:admin.ebt"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembEBT}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkProducer=true">
-					Producer
+					{{t "common:admin.producer"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembProducer}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkWholesale=true">
-					Wholesale
+					{{t "common:admin.wholesale"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembWholesale}}</span>
 			</div>
 
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkStaff=true">
-					Staff
+					{{t "common:admin.staff"}}
 				</a>
 				&times; <span class="LblPg">{{CtMembStaff}}</span>
 			</div>
 
-			<h5 class="mt-3">Member tags</h4>
+			<h5 class="mt-3">{{t "common:admin.memberTags"}}</h4>
 			{{#each memberTags}}
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?MemberTagID={{IDMemberTag}}&MemberTagName={{Tag}}">
@@ -106,7 +106,7 @@
 		</div>
 
 		<div class="col-md">
-			<h3 class="mb-3">Member search</h3>
+			<h3 class="mb-3">{{t "common:admin.memberSearch"}}</h3>
 
 			<form id="form-main" class="pb-4" action="/member-admin" method="POST"
 				autocomplete="off" onsubmit="Disab_Form()">
@@ -115,11 +115,11 @@
 
 				<div class="form-row">
 					<div class="form-group col-md-4">
-						<label for="IDMemb">Member ID</label>
+						<label for="IDMemb">{{t "common:admin.memberId"}}</label>
 						<input id="IDMemb" name="IDMemb" value="{{IDMemb}}" class="form-control">
 					</div>
 					<div class="form-group col-md-8">
-						<label for="NameBus">Business name</label>
+						<label for="NameBus">{{t "common:admin.businessName"}}</label>
 						<input id="NameBus" name="NameBus" value="{{NameBus}}"
 							class="form-control">
 					</div>
@@ -127,12 +127,12 @@
 
 				<div class="form-row">
 					<div class="form-group col-md-6">
-						<label for="NameFirst">First name</label>
+						<label for="NameFirst">{{t "common:admin.firstName"}}</label>
 						<input id="NameFirst" name="NameFirst" value="{{NameFirst}}"
 							class="form-control">
 					</div>
 					<div class="form-group col-md-6">
-						<label for="NameLast">Last name</label>
+						<label for="NameLast">{{t "common:admin.lastName"}}</label>
 						<input id="NameLast" name="NameLast" value="{{NameLast}}"
 							class="form-control">
 					</div>
@@ -140,25 +140,22 @@
 
 				<div class="form-row">
 					<div class="form-group col-md-5">
-						<label for="City">City</label>
+						<label for="City">{{t "common:admin.city"}}</label>
 						<input id="City" name="City" value="{{City}}" class="form-control">
 					</div>
 					<div class="form-group col-md-3">
-						<label for="St">State</label>
+						<label for="St">{{t "common:admin.state"}}</label>
 						<input id="St" name="St" value="{{St}}" class="form-control">
 					</div>
 					<div class="form-group col-md-4">
-						<label for="Zip">Zip</label>
+						<label for="Zip">{{t "common:admin.zip"}}</label>
 						<input id="Zip" name="Zip" value="{{Zip}}" inputmode="numeric"
 							class="form-control">
 					</div>
 				</div>
 
 				<p class="text-muted font-size-90">
-					Members matching <em>any</em> of the above criteria will be returned,
-					with records matching more criteria sorted to the front.
-					For fewer results, supply <em>fewer</em> criteria.
-					Leave all fields blank to list all members.
+					{{t "common:admin.searchHintAny"}}
 				</p>
 
 				<div class="form-row mb-md-2">
@@ -168,7 +165,7 @@
 								{{hAttrCk CkWithItsCart false}}
 								class="custom-control-input">
 							<label for="CkWithItsCart" class="custom-control-label">
-								With items in cart?
+								{{t "common:admin.withItemsInCartQ"}}
 							</label>
 						</div>
 
@@ -177,7 +174,7 @@
 								{{hAttrCk CkBalPos false}}
 								class="custom-control-input">
 							<label for="CkBalPos" class="custom-control-label">
-								With positive balances?
+								{{t "common:admin.withPositiveBalancesQ"}}
 							</label>
 						</div>
 
@@ -186,7 +183,7 @@
 								{{hAttrCk CkBalNeg false}}
 								class="custom-control-input">
 							<label for="CkBalNeg" class="custom-control-label">
-								With negative balances?
+								{{t "common:admin.withNegativeBalancesQ"}}
 							</label>
 						</div>
 					</div>
@@ -197,7 +194,7 @@
 								{{hAttrCk CkEBT false}}
 								class="custom-control-input">
 							<label for="CkEBT" class="custom-control-label">
-								Approved for EBT?
+								{{t "common:admin.approvedForEBTQ"}}
 							</label>
 						</div>
 
@@ -206,18 +203,17 @@
 								{{hAttrCk CkProducer false}}
 								class="custom-control-input">
 							<label for="CkProducer" class="custom-control-label">
-								Registered as producer?
+								{{t "common:admin.registeredAsProducerQ"}}
 							</label>
 						</div>
 					</div>
 				</div>
 
 				<p class="text-muted font-size-90">
-					Members matching <em>all</em> these criteria will be returned.
-					For fewer results, check <em>more</em> boxes.
+					{{t "common:admin.searchHintAll"}}
 				</p>
 
-				<button type="submit" class="btn btn-primary mt-2">Search</button>
+				<button type="submit" class="btn btn-primary mt-2">{{t "common:buttons.search"}}</button>
 			</form>
 		</div>
 	</div>

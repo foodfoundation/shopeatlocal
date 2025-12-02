@@ -36,26 +36,26 @@
 			{{#if IDInvcProducerWeb}}
 			<div class="d-flex justify-content-between align-items-center">
 				<div>
-					Checked-in <a href="/web-producer-invoice/{{IDInvcProducerWeb}}">
+					{{t "common:distrib.checkedIn"}} <a href="/web-producer-invoice/{{IDInvcProducerWeb}}">
 						{{hTextWhen WhenUpd "Med" "HourMin"}}<br>
 					</a>
-					{{QtyDeliv}} {{hPlural QtyDeliv "item"}} delivered
+					{{QtyDeliv}} {{hPlural QtyDeliv "item"}} {{t "common:distrib.delivered"}}
 				</div>
 				{{#if @root.FlagDeliv}}
 				<div>
 					<a href="/producer-check-in/{{IDProducer}}"
-						class="btn btn-sm btn-outline-primary">Check-in</a>
+						class="btn btn-sm btn-outline-primary">{{t "common:distrib.checkIn"}}</a>
 				</div>
 				{{/if}}
 			</div>
 			{{else}}
 			<div class="d-flex justify-content-between align-items-center">
 				<div>
-					{{QtyProm}} {{hPlural QtyProm "item"}} promised
+					{{QtyProm}} {{hPlural QtyProm "item"}} {{t "common:distrib.promised"}}
 				</div>
 				{{#if @root.FlagDeliv}}
 				<a href="/producer-check-in/{{IDProducer}}"
-					class="btn btn-sm btn-outline-primary">Check-in</a>
+					class="btn btn-sm btn-outline-primary">{{t "common:distrib.checkIn"}}</a>
 				{{/if}}
 			</div>
 			{{/if}}
@@ -66,11 +66,11 @@
 {{/inline}}
 
 <div class="container py-4">
-	<h2>Delivery progress</h2>
+	<h2>{{t "common:distrib.deliveryProgress"}}</h2>
 	<hr>
 
 	{{#unless FlagDeliv}}
-	<p class="lead">The delivery window has closed</p>
+	<p class="lead">{{t "common:distrib.deliveryWindowClosed"}}</p>
 	{{else}}
 	<div id="ProducersPend">
 		{{#unless Pend.Producers}}
@@ -79,7 +79,7 @@
 			<div class="d-none d-md-block mr-2">
 				<img src="{{hPrefixStatic 'question.svg'}}" alt="" width="35" height="35">
 			</div>
-			<h5 class="mb-0">No pending deliveries</h5>
+			<h5 class="mb-0">{{t "common:distrib.noPendingDeliveries"}}</h5>
 		</div>
 		{{else}}
 		<div class="d-md-flex align-items-center HeadSheet border rounded py-1 px-2
@@ -87,11 +87,11 @@
 			<div class="d-none d-md-block mr-2">
 				<img src="{{hPrefixStatic 'question.svg'}}" alt="" width="35" height="35">
 			</div>
-			<h5 class="mb-0">Pending deliveries</h5>
+			<h5 class="mb-0">{{t "common:distrib.pendingDeliveries"}}</h5>
 			<div class="font-weight-semi text-md-right ml-auto">
 				{{Pend.Producers.length}}
 				{{hPlural Pend.Producers.length "producer"}}<br>
-				{{Pend.CtIt}} {{hPlural Pend.CtIt "item"}} promised
+				{{Pend.CtIt}} {{hPlural Pend.CtIt "item"}} {{t "common:distrib.promised"}}
 			</div>
 		</div>
 
@@ -107,7 +107,7 @@
 			<div class="d-none d-md-block mr-2">
 				<img src="{{hPrefixStatic 'done.svg'}}" alt="" width="35" height="35">
 			</div>
-			<h5 class="mb-0">No checked-in producers</h5>
+			<h5 class="mb-0">{{t "common:distrib.noCheckedInProducers"}}</h5>
 		</div>
 		{{else}}
 		<div class="d-md-flex align-items-center HeadSheet border rounded py-1 px-2
@@ -115,11 +115,11 @@
 			<div class="d-none d-md-block mr-2">
 				<img src="{{hPrefixStatic 'done.svg'}}" alt="" width="35" height="35">
 			</div>
-			<h5 class="mb-0">Checked-in producers</h5>
+			<h5 class="mb-0">{{t "common:distrib.checkedInProducers"}}</h5>
 			<div class="font-weight-semi text-md-right ml-auto">
 				{{Done.Producers.length}}
 				{{hPlural Done.Producers.length "producer"}}<br>
-				{{Done.CtIt}} {{hPlural Done.CtIt "item"}} delivered
+				{{Done.CtIt}} {{hPlural Done.CtIt "item"}} {{t "common:distrib.delivered"}}
 			</div>
 		</div>
 

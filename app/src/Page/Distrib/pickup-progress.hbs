@@ -45,30 +45,30 @@
 			{{#if (hCkEq CdStatCart "Pend")}}
 			<div class="d-flex justify-content-between align-items-center">
 				<div>
-					{{QtyDeliv}} {{hPlural QtyDeliv "item"}} for pickup
+					{{QtyDeliv}} {{hPlural QtyDeliv "item"}} {{t "common:distrib.forPickup"}}
 				</div>
 				{{#if @root.FlagPickup}}
 				<div>
 					<a href="/order-fulfillment/{{IDMemb}}"
-						class="btn btn-sm btn-outline-primary">Fulfill order</a>
+						class="btn btn-sm btn-outline-primary">{{t "common:distrib.fulfillOrder"}}</a>
 					<a href="/shopper-checkout/{{IDMemb}}"
-						class="btn btn-sm btn-outline-primary">Check out</a>
+						class="btn btn-sm btn-outline-primary">{{t "common:distrib.checkOut"}}</a>
 				</div>
 				{{/if}}
 			</div>
 			{{else}}
 			<div class="d-flex justify-content-between align-items-center">
 				<div>
-					Checked-out <a href="/web-shopper-invoice/{{IDInvcShopWeb}}">
+					{{t "common:distrib.checkedOut"}} <a href="/web-shopper-invoice/{{IDInvcShopWeb}}">
 						{{hTextWhen WhenUpd "Med" "HourMin"}}<br>
 					</a>
-					{{QtySold}} {{hPlural QtySold "item"}} sold
+					{{QtySold}} {{hPlural QtySold "item"}} {{t "common:distrib.sold"}}
 				</div>
 				<div>
 					{{!-- This button shouldn't be necessary at this point, but just in
 					//    case: --}}
 					<a href="/order-fulfillment/{{IDMemb}}"
-						class="btn btn-sm btn-outline-primary">Fulfill order</a>
+						class="btn btn-sm btn-outline-primary">{{t "common:distrib.fulfillOrder"}}</a>
 				</div>
 			</div>
 			{{/if}}
@@ -81,14 +81,14 @@
 
 <div class="container py-4">
 	<div class="d-flex justify-content-between align-items-baseline">
-		<h2 class="mb-0">Pickup progress</h2>
+		<h2 class="mb-0">{{t "common:distrib.pickupProgress"}}</h2>
 		<h4 class="mb-0">{{Loc.NameLoc}}</h4>
 	</div>
 
 	<hr>
 
 	{{#unless FlagPickup}}
-	<p class="lead">The pickup window has closed</p>
+	<p class="lead">{{t "common:distrib.pickupWindowClosed"}}</p>
 	{{else}}
 	<div id="MembsPend">
 		<div class="HeadGrp d-md-flex align-items-center HeadSheet border rounded
@@ -96,15 +96,15 @@
 			<div class="d-none d-md-block mr-2">
 				<img src="{{hPrefixStatic 'question.svg'}}" alt="" width="35" height="35">
 			</div>
-			<h5 class="mb-0">Pending pickups</h5>
+			<h5 class="mb-0">{{t "common:distrib.pendingPickups"}}</h5>
 
 			<div class="font-weight-semi text-md-right ml-auto">
 				{{#if Pend.Membs}}
 				{{Pend.Membs.length}}
 				{{hPlural Pend.Membs.length "shopper"}}<br>
-				{{Pend.CtIt}} {{hPlural Pend.CtIt "item"}} for pickup
+				{{Pend.CtIt}} {{hPlural Pend.CtIt "item"}} {{t "common:distrib.forPickup"}}
 				{{else}}
-				<h5 class="mb-0">NONE</h5>
+				<h5 class="mb-0">{{t "common:distrib.none"}}</h5>
 				{{/if}}
 			</div>
 		</div>
@@ -121,15 +121,15 @@
 			<div class="d-none d-md-block mr-2">
 				<img src="{{hPrefixStatic 'done.svg'}}" alt="" width="35" height="35">
 			</div>
-			<h5 class="mb-0">Completed pickups</h5>
+			<h5 class="mb-0">{{t "common:distrib.completedPickups"}}</h5>
 
 			<div class="font-weight-semi text-md-right ml-auto">
 				{{#if Done.Membs}}
 				{{Done.Membs.length}}
 				{{hPlural Done.Membs.length "shopper"}}<br>
-				{{Done.CtIt}} {{hPlural Done.CtIt "item"}} sold
+				{{Done.CtIt}} {{hPlural Done.CtIt "item"}} {{t "common:distrib.sold"}}
 				{{else}}
-				<h5 class="mb-0">NONE</h5>
+				<h5 class="mb-0">{{t "common:distrib.none"}}</h5>
 				{{/if}}
 			</div>
 		</div>
@@ -145,22 +145,21 @@
 			<div class="d-none d-md-block mr-2">
 				<img src="{{hPrefixStatic 'cancel.svg'}}" alt="" width="35" height="35">
 			</div>
-			<h5 class="mb-0">Unfulfillable orders</h5>
+			<h5 class="mb-0">{{t "common:distrib.unfulfillableOrders"}}</h5>
 
 			<div class="font-weight-semi text-md-right ml-auto">
 				{{#if Undeliv.Membs}}
 				{{Undeliv.Membs.length}}
 				{{hPlural Undeliv.Membs.length "shopper"}}
 				{{else}}
-				<h5 class="mb-0">NONE</h5>
+				<h5 class="mb-0">{{t "common:distrib.none"}}</h5>
 				{{/if}}
 			</div>
 		</div>
 
 		{{#if Undeliv.Membs}}
 		<p>
-			No items from these orders were delivered to {{CoopParams.CoopNameShort}}, so they cannot be
-			fulfilled. The members have already been e-mailed.
+			{{t "common:distrib.noItemsDelivered" name=CoopParams.CoopNameShort}}
 		</p>
 		{{>pMembs Undeliv.Membs}}
 		{{/if}}

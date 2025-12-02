@@ -16,6 +16,6 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.Bal = oMemb.BalMoney + oMemb.BalEBT;
   aResp.locals.FeeMembNext = await wFeeMembNextFromIDMemb(oIDMemb);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} member`;
+  aResp.locals.Title = aReq.t("common:pageTitles.member", { name: CoopParams.CoopNameShort });
   aResp.render("Memb/member");
 }

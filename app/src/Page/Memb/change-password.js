@@ -10,14 +10,14 @@ import { CoopParams } from "../../Site.js";
 
 export function HandGet(aReq, aResp) {
   if (aResp.locals.CredImper) {
-    const oMsg = "You cannot change the password while impersonating a member.";
+    const oMsg = aReq.t("common:passwordChange.cannotChangeWhileImpersonating");
     aResp.Show_Flash("danger", null, oMsg);
 
     aResp.redirect(303, "/member");
     return;
   }
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} password change`;
+  aResp.locals.Title = aReq.t("common:pageTitles.changePassword", { name: CoopParams.CoopNameShort });
   aResp.render("Memb/change-password");
 }
 
@@ -47,13 +47,13 @@ export async function wHandPost(aReq, aResp) {
   // ---------------------
 
   if (oFlds.PassNew.ValCook !== oFlds.PassNewConfirm.ValCook)
-    oFlds.PassNewConfirm.MsgFail = "Your new passwords must match.";
+    oFlds.PassNewConfirm.MsgFail = aReq.t("common:passwordChange.newPasswordsMustMatch");
 
   // Original password check
   // -----------------------
 
   if (!(await wComp(oFlds.PassOrig.ValCook, aReq.user.HashPass)))
-    oFlds.PassOrig.MsgFail = "Your password is wrong.";
+    oFlds.PassOrig.MsgFail = aReq.t("common:passwordChange.wrongPassword");
 
   // Handle validation failure
   // -------------------------
@@ -74,7 +74,7 @@ export async function wHandPost(aReq, aResp) {
   // Return to previous page
   // -----------------------
 
-  aResp.Show_Flash("success", null, "Your password has been changed.");
+  aResp.Show_Flash("success", null, aReq.t("common:passwordChange.passwordChanged"));
 
   const oPage = PageAfterEditMemb(aReq, aResp);
   aResp.redirect(303, oPage);

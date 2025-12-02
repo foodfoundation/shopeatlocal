@@ -11,8 +11,11 @@ export async function wHandGet(aReq, aResp) {
   // -------------------------
 
   if (aResp.PhaseCycLess("EndShop")) {
-    const oMsg = "<strong>Cannot enter weights!</strong> The shopping window has not closed.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash(
+      "danger",
+      null,
+      aReq.t("common:webOrderLabelWeights.cannotEnterWeightsShoppingNotClosed"),
+    );
 
     aResp.redirect(303, "/web-order-labels");
     return;
@@ -27,7 +30,9 @@ export async function wHandGet(aReq, aResp) {
   const oIDProducer = aResp.locals.CredImperUser.IDProducer;
   aResp.locals.Vtys = await wVtys(oIDProducer);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit web order label weights`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editWebOrderLabelWeights", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Producer/edit-web-order-label-weights");
 }
 
@@ -69,7 +74,7 @@ export async function wHandPost(aReq, aResp) {
       await oConn.wRollback();
 
       aResp.status(400);
-      aResp.locals.Msg = "No weights to store.";
+      aResp.locals.Msg = aReq.t("common:webOrderLabelWeights.noWeightsToStore");
       aResp.render("Misc/400");
       return;
     }
@@ -85,7 +90,7 @@ export async function wHandPost(aReq, aResp) {
       await oConn.wRollback();
 
       aResp.status(400);
-      aResp.locals.Msg = "One or more items belong to another producer.";
+      aResp.locals.Msg = aReq.t("common:webOrderLabelWeights.itemsBelongToAnotherProducer");
       aResp.render("Misc/400");
       return;
     }
@@ -107,7 +112,9 @@ export async function wHandPost(aReq, aResp) {
             oWgt.WgtPer = oFldsRoll.WgtsLbl[oWgt.IDWgtLblOrdWeb].WgtPer.ValRaw;
       aResp.locals.Vtys = oVtys;
 
-      aResp.locals.Title = `${CoopParams.CoopNameShort} edit web order label weights`;
+      aResp.locals.Title = aReq.t("common:pageTitles.editWebOrderLabelWeights", {
+        name: CoopParams.CoopNameShort,
+      });
       aResp.render("Producer/edit-web-order-label-weights");
       return;
     }
@@ -134,11 +141,11 @@ export async function wHandPost(aReq, aResp) {
       if (!oCtUpd) {
         await oConn.wRollback();
 
-        const oMsg =
-          "The inventory for one or more items was updated while " +
-          "you were editing weights. Some quantities or notes have changed. " +
-          "You must re-enter the weights.";
-        aResp.Show_Flash("danger", null, oMsg);
+        aResp.Show_Flash(
+          "danger",
+          null,
+          aReq.t("common:webOrderLabelWeights.inventoryUpdatedDuringEdit"),
+        );
 
         aResp.redirect(303, "/edit-web-order-label-weights");
         return;
@@ -148,8 +155,7 @@ export async function wHandPost(aReq, aResp) {
     // Return to Web Order Labels page
     // -------------------------------
 
-    const oMsg = "Your web order label weights have been updated.";
-    aResp.Show_Flash("success", null, oMsg);
+    aResp.Show_Flash("success", null, aReq.t("common:webOrderLabelWeights.weightsUpdated"));
 
     aResp.redirect(303, "/web-order-labels");
 

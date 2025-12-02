@@ -12,8 +12,7 @@ export async function wHandGet(aReq, aResp) {
   // delivered quantities, which aren't set at all the relevant producers have
   // checked-in:
   if (aResp.PhaseCycLess("EndDeliv")) {
-    const oMsg = "<strong>Cannot view shoppers!</strong> The delivery window has not closed.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash("danger", null, aReq.t("common:shopperSummary.cannotViewDeliveryNotClosed"));
 
     aResp.redirect(303, "/distribution");
     return;
@@ -87,7 +86,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} shopper summary`;
+  aResp.locals.Title = aReq.t("common:pageTitles.shopperSummary", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/shopper-summary");
 }
 

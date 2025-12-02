@@ -80,7 +80,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} cart summary`;
+  aResp.locals.Title = aReq.t("common:pageTitles.cartSummary", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/cart-summary");
 }
 

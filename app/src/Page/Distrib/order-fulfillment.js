@@ -11,11 +11,9 @@ export async function wHandGet(aReq, aResp) {
   // -------------------
 
   if (!aResp.locals.FlagPickup) {
-    const oMsg =
-      "<strong>Cannot fulfill!</strong> " +
-      (aResp.PhaseCycLess("StartPickup")
-        ? "The pickup window has not started."
-        : "The pickup window has closed.");
+    const oMsg = aResp.PhaseCycLess("StartPickup")
+      ? aReq.t("common:fulfillment.cannotFulfillPickupNotStarted")
+      : aReq.t("common:fulfillment.cannotFulfillPickupClosed");
     aResp.Show_Flash("danger", null, oMsg);
 
     const oPage = PageAfterCheckoutShop(aReq, aResp);
@@ -29,7 +27,7 @@ export async function wHandGet(aReq, aResp) {
   const oIDMemb = aResp.locals.CredSelImperUser.IDMemb;
   const oCart = await wCartFromIDMemb(oIDMemb);
   if (!oCart) {
-    aResp.locals.Msg = "No cart for that member in this cycle.";
+    aResp.locals.Msg = aReq.t("common:fulfillment.noCartForMember");
     aResp.status(400);
     aResp.render("Misc/400");
     return;
@@ -44,7 +42,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.Loc = Locs[oCart.CdLoc];
   aResp.locals.Stors = await wStors(oIDMemb);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} order fulfillment`;
+  aResp.locals.Title = aReq.t("common:pageTitles.orderFulfillment", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/order-fulfillment");
 }
 

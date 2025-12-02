@@ -33,7 +33,7 @@ export async function wHandGet(aReq, aResp) {
   if (aResp.locals.CredImperUser?.IDMemb)
     await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, aResp.locals.Products);
 
-  aResp.locals.Title = "About " + oProducer.NameBus;
+  aResp.locals.Title = aReq.t("common:pageTitles.aboutProducer", { name: oProducer.NameBus });
   aResp.render("Home/about-producer");
 }
 

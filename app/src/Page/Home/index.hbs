@@ -140,14 +140,14 @@
 					<a href="/member-registration"
 						class="Title lead font-size-150 font-size-md-225">
 						<button id="meet-button" style="color:#fff; background-color: #f5912e; border:1px solid #f5912e; border-radius: 35px; padding:12px; margin-bottom:5px; font-size:25px; width: 100%">
-							Start Free Trial - Shop Now
+							{{t "common:home.startFreeTrialShopNow"}}
 						</button>
 					</a>
 					{{/unless}}
 					<a href="/producers"
 						class="Title lead font-size-150 font-size-md-225">
 						<button id="meet-button" style="color:#fff; background-color: #036667; border:1px solid #036667; border-radius: 35px; padding:12px; font-size:27px; width: 100%">
-							Meet Our Producers
+							{{t "common:home.meetOurProducers"}}
 						</button>
 					</a>
 				</div>
@@ -171,7 +171,7 @@
 			</div>
 			<div class="font-size-150 font-size-lg-200">
 				<span class="Title">
-					Shop our products
+					{{t "common:home.shopOurProducts"}}
 				</span>
 			</div>
 		</div>
@@ -183,21 +183,21 @@
 					<div id="button-container" style="width:13%; display:flex; flex-direction:column;">
 						{{#if CredUser}}
 						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search?favorites=true'">
-							Favorites
+							{{t "common:home.favorites"}}
 							<img src="{{hPrefixStatic 'logo-carrot.svg'}}" alt="Add to Favorites" class="d-none d-md-inline-block align-top" width="25" height="25">
 						</div>
 						{{/if}}
 						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search'">
-							New Products
+							{{t "common:home.newProducts"}}
 						</div>
 						{{#if CredUser}}
 						<div class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;" onclick="window.location.href='/product-search?CkPast=true'">
-							Past Purchases
+							{{t "common:home.pastPurchases"}}
 						</div>
 						{{/if}}
 						<div id="prodlist-mobile" style="display:none;">
 							<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList2()">
-								Production Type
+								{{t "common:home.productionType"}}
 							</div>
 							<div id="production-list2" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667; position:absolute; display:none; background-color: #036667;">
 								{{#each AttrsProduct}}						
@@ -216,12 +216,12 @@
 					<div id="searchbutton-container" style="width:13%; display:flex; flex-direction:column; justify-content: center;">
 						<button type="submit" class="btn btn-primary mt-2 mt-sm-0" style="background-color: #737577; border:1px solid #737577; margin:1px;">
 							<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">
-							Search
+							{{t "common:home.search"}}
 						</button>
 						<div id="prodlist-full">
 							<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick" style="background-color: #036667; border:1px solid #036667; margin:1px;" onclick="showProdList()">
 								<!--<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20" class="IconBtn" style="position: relative; top: -2px">-->
-								Production Type
+								{{t "common:home.productionType"}}
 							</div>
 							<div id="production-list" class="production-list-noclick" style=" text-align:left; padding-left: 15px; width:280px; border:1px solid #036667; position:absolute; display:none; background-color: #036667;">
 								{{#each AttrsProduct}}						
@@ -233,7 +233,7 @@
 								{{/each}}
 								{{#if CoopParams.isProductTypesPageDefined}}
 								<div style="width: 100%; text-align:center; padding-right: 15px; margin-bottom:10px;">
-									<a href="/production-types" target="_blank"><b>Production Type Info</b></a>
+									<a href="/production-types" target="_blank"><b>{{t "common:home.productionTypeInfo"}}</b></a>
 								</div>
 								{{/if}}
 							</div>

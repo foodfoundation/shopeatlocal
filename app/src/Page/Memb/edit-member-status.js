@@ -13,11 +13,11 @@ function FldsDisab(aReq, aResp) {
   const oFlds = {};
 
   if (aResp.locals.CkSelImperUserSelf)
-    oFlds.CdStaff = { Msg: "You cannot change your own staff status." };
+    oFlds.CdStaff = { Msg: aReq.t("common:memberStatus.cannotChangeOwnStaffStatus") };
 
   if (!aResp.locals.CredUser.CkStaffMgr())
     oFlds.CdStaff = {
-      Msg: `Only ${CoopParams.CoopNameShort} managers can change the staff status.`,
+      Msg: aReq.t("common:memberStatus.onlyManagersCanChangeStaffStatus", { name: CoopParams.CoopNameShort }),
     };
 
   return oFlds;
@@ -33,7 +33,7 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.FldsDisab = FldsDisab(aReq, aResp);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit member status`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editMemberStatus", { name: CoopParams.CoopNameShort });
   aResp.render("Memb/edit-member-status");
 }
 
@@ -62,7 +62,7 @@ export async function wHandPost(aReq, aResp) {
   if (CkFail(oFlds)) {
     Retry(aResp, oFlds);
 
-    aResp.locals.Title = `${CoopParams.CoopNameShort} edit member status`;
+    aResp.locals.Title = aReq.t("common:pageTitles.editMemberStatus", { name: CoopParams.CoopNameShort });
     aResp.render("Memb/edit-member-status");
     return;
   }
@@ -77,7 +77,9 @@ export async function wHandPost(aReq, aResp) {
   const oIDMemb = aResp.locals.CredSelImperUser.IDMemb;
   if (shouldHandleTrialFee) {
     const oAmt = Site.FeeMembInit;
-    const aNote = shouldGiftTrialFee ? "Gifted trial fee" : "Trial fee charged manually";
+    const aNote = shouldGiftTrialFee 
+      ? aReq.t("common:memberStatus.giftedTrialFee") 
+      : aReq.t("common:memberStatus.trialFeeChargedManually");
     await wAdd_Transact(
       oIDMemb,
       "FeeMembInit",
@@ -99,7 +101,7 @@ export async function wHandPost(aReq, aResp) {
         aResp.locals.CredUser.IDMemb,
         {
           CdMethPay: "GiftCert",
-          Note: "Gifted trial fee",
+          Note: aReq.t("common:memberStatus.giftedTrialFee"),
         },
         null,
       );
@@ -111,7 +113,7 @@ export async function wHandPost(aReq, aResp) {
   // Go to member or member detail page
   // ----------------------------------
 
-  aResp.Show_Flash("success", null, "The member status has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:memberStatus.statusUpdated"));
 
   const oPage = PageAfterEditMemb(aReq, aResp);
   aResp.redirect(303, oPage);

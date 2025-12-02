@@ -9,7 +9,7 @@
 </style>
 
 <div class="container py-4">
-	<h2><strong>{{#if (hIsWholesaleType CdCartType)}}Wholesale{{else}}Retail{{/if}}</strong> On-site checkout</h2>
+	<h2><strong>{{#if (hIsWholesaleType CdCartType)}}{{t "common:onsite.wholesale"}}{{else}}{{t "common:onsite.retail"}}{{/if}}</strong> {{t "common:onsite.onSiteCheckout"}}</h2>
 
 	<div class="row">
 		<div class="col-lg mb-2 mb-lg-0">
@@ -183,7 +183,7 @@
 	//    ----------- --}}
 
 	{{#with Ttls}}
-	<h3 class="mt-4 mb-3">Totals</h3>
+	<h3 class="mt-4 mb-3">{{t "common:cart.totals"}}</h3>
 
 	<div class="row">
 		<div class="col-md-4 mb-2 mb-md-0">
@@ -191,11 +191,11 @@
 				<table class="table table-sm table-striped mb-0">
 					<tbody>
 						<tr>
-							<td class="font-weight-bold">Non-taxable sales</td>
+							<td class="font-weight-bold">{{t "common:cart.nonTaxableSales"}}</td>
 							<td class="text-right">{{hTextCurrOrOrig SaleNomNontaxab}}</td>
 						</tr>
 						<tr>
-							<td class="font-weight-bold">Market fee on non-taxable sales
+							<td class="font-weight-bold">{{t "common:cart.marketFeeNonTaxable"}}
 							</td>
 							<td class="text-right">
 								{{#if @root.CkEBTElig}}
@@ -206,7 +206,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="font-weight-bold">Non-taxable subtotal</td>
+							<td class="font-weight-bold">{{t "common:cart.nonTaxableSubtotal"}}</td>
 							<td class="text-right">{{hTextCurrOrOrig SubNontaxab}}
 							</td>
 						</tr>
@@ -219,11 +219,11 @@
 				<table class="table table-sm table-striped mb-0">
 					<tbody>
 						<tr>
-							<td class="font-weight-bold">&dagger; Taxable sales</td>
+							<td class="font-weight-bold">{{t "common:cart.taxableSales"}}</td>
 							<td class="text-right">{{hTextCurrOrOrig SaleNomTaxab}}</td>
 						</tr>
 						<tr>
-							<td class="font-weight-bold">Market fee on taxable sales</td>
+							<td class="font-weight-bold">{{t "common:cart.marketFeeTaxable"}}</td>
 							<td class="text-right">
 								{{#if @root.CkEBTElig}}
 								EBT
@@ -233,7 +233,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="font-weight-bold">Taxable subtotal</td>
+							<td class="font-weight-bold">{{t "common:cart.taxableSubtotal"}}</td>
 							<td class="text-right">{{hTextCurrOrOrig SubTaxab}}</td>
 						</tr>
 					</tbody>
@@ -245,11 +245,11 @@
 				<table class="table table-sm table-striped mb-0">
 					<tbody>
 						<tr>
-							<td class="font-weight-bold">Sales tax</td>
+							<td class="font-weight-bold">{{t "common:cart.salesTax"}}</td>
 							<td class="text-right">{{hTextCurrOrOrig TaxSale}}</td>
 						</tr>
 						<tr>
-							<td class="font-weight-bold">Total</td>
+							<td class="font-weight-bold">{{t "common:distrib.total"}}</td>
 							<td class="text-right">{{hTextCurrOrOrig Ttl}}</td>
 						</tr>
 					</tbody>
@@ -298,7 +298,7 @@
 	<div class="d-flex flex-row">
 		<button type="button" class="btn btn-primary ml-auto" data-toggle="modal"
 			data-target="#DlgConfirm">
-			Checkout
+			{{t "common:onsite.checkoutButton"}}
 		</button>
 	</div>
 </div>
@@ -318,7 +318,7 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Complete checkout?</h5>
+					<h5 class="modal-title">{{t "common:onsite.completeCheckout"}}</h5>
 				</div>
 
 				<div class="modal-body">
@@ -374,10 +374,10 @@
 
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">
-						Cancel
+						{{t "common:buttons.cancel"}}
 					</button>
 					<button type="submit" class="btn btn-primary">
-						OK
+						{{t "common:buttons.ok"}}
 					</button>
 				</div>
 			</div>

@@ -5,14 +5,13 @@
 <div class="container py-4">
 	<div class="d-md-flex flex-row justify-content-between align-items-baseline
 		mb-2">
-		<h2 class="mb-0">Shopper summary</h2>
+		<h2 class="mb-0">{{t "common:distrib.shopperSummaryTitle"}}</h2>
 		<h5>{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<div class="d-print-none Flow-md-2">
 		<p>
-			This page displays contact information and EBT flags for shoppers in the
-			current cycle, so that EBT vouchers can be sent to satellite locations.
+			{{t "common:distrib.shopperSummaryDescription"}}
 		</p>
 		<p>
 			{{>Misc/pInstructPrint}}
@@ -33,7 +32,7 @@
 			</div>
 			<div class="text-right font-weight-semi ml-auto px-0">
 				{{Membs.length}} {{hPlural Membs.length "order"}}<br>
-				{{QtyDeliv}} delivered {{hPlural QtyDeliv "item"}}
+				{{QtyDeliv}} {{t "common:distrib.deliveredItems"}} {{hPlural QtyDeliv "item"}}
 			</div>
 		</div>
 
@@ -41,11 +40,11 @@
 
 		<div class="d-none d-md-block GridTbl Head">
 			<div class="row font-weight-bold">
-				<div class="col-md-4">Shopper</div>
-				<div class="col-md-4">E-mail</div>
-				<div class="col-md-2">Phone</div>
-				<div class="col-md-1">EBT</div>
-				<div class="col-md-1 text-md-right">Total</div>
+				<div class="col-md-4">{{t "common:distrib.shopper"}}</div>
+				<div class="col-md-4">{{t "common:distrib.email"}}</div>
+				<div class="col-md-2">{{t "common:distrib.phone"}}</div>
+				<div class="col-md-1">{{t "common:distrib.ebtColumn"}}</div>
+				<div class="col-md-1 text-md-right">{{t "common:distrib.total"}}</div>
 			</div>
 		</div>
 
@@ -76,7 +75,7 @@
 					</div>
 					<div class="col col-md-1 text-right">
 						<span class="d-md-none">
-							{{#if (hCkRegEBT this)}}EBT{{else}}No EBT{{/if}}
+							{{#if (hCkRegEBT this)}}{{t "common:distrib.ebtColumn"}}{{else}}{{t "common:distrib.noEbt"}}{{/if}}
 						</span>
 						<span class="d-none d-md-block">
 							{{hTextCurrOrOrig Cart.Ttl}}

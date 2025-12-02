@@ -8,11 +8,11 @@
 		//    possible, without responsive border class: --}}
 		<div class="col-sm pr-sm-4 border-right mb-0">
 
-			<h5>Cycle management</h5>
+			<h5>{{t "common:distribution.cycleManagement"}}</h5>
 
 			<div class="d-md-flex flex-row justify-content-between mt-3">
 				<div>
-					Current cycle
+					{{t "common:distribution.currentCycle"}}
 				</div>
 				<div class="text-md-right font-weight-bold">
 					{{hTextIDCyc CycCurr.IDCyc}}
@@ -20,59 +20,59 @@
 			</div>
 
 			<div class="LinksPg mb-2">
-				<a href="/cycle-summary">Cycle summary</a>
-				<a href="/cart-summary">Cart summary</a>
+				<a href="/cycle-summary">{{t "common:distribution.cycleSummary"}}</a>
+				<a href="/cart-summary">{{t "common:distribution.cartSummary"}}</a>
 			</div>
 
 			<div class="d-md-flex flex-row justify-content-between">
 				<div>
-					Shopping window
+					{{t "common:distribution.shoppingWindow"}}
 				</div>
 				<div class="text-md-right font-weight-bold">
 					{{#if FlagBeforeShop}}{{hTextWhen WhenStartShopNext "FullMed" "HourMin"}}{{/if}}
-					{{#if FlagShop}}Open{{/if}}
-					{{#if FlagAfterShop}}Closed{{/if}}
+					{{#if FlagShop}}{{t "common:distribution.open"}}{{/if}}
+					{{#if FlagAfterShop}}{{t "common:distribution.closed"}}{{/if}}
 				</div>
 			</div>
 			<div class="d-md-flex flex-row justify-content-between mt-2 mt-md-0">
 				<div>
-					Delivery window
+					{{t "common:distribution.deliveryWindow"}}
 				</div>
 				<div class="text-md-right font-weight-bold">
 					{{#if FlagBeforeDeliv}}{{hTextWhen WhenStartDelivNext "FullMed" "HourMin"}}{{/if}}
-					{{#if FlagDeliv}}Open{{/if}}
-					{{#if FlagAfterDeliv}}Closed{{/if}}
+					{{#if FlagDeliv}}{{t "common:distribution.open"}}{{/if}}
+					{{#if FlagAfterDeliv}}{{t "common:distribution.closed"}}{{/if}}
 				</div>
 			</div>
 			<div class="d-md-flex flex-row justify-content-between mt-2 mt-md-0">
 				<div>
-					Pickup window
+					{{t "common:distribution.pickupWindow"}}
 				</div>
 				<div class="text-md-right font-weight-bold">
 					{{#if FlagBeforePickup}}{{hTextWhen WhenStartPickupNext "FullMed" "HourMin"}}{{/if}}
-					{{#if FlagPickup}}Open{{/if}}
-					{{#if FlagAfterPickup}}Closed{{/if}}
+					{{#if FlagPickup}}{{t "common:distribution.open"}}{{/if}}
+					{{#if FlagAfterPickup}}{{t "common:distribution.closed"}}{{/if}}
 				</div>
 			</div>
 
 			<div class="LinksPg">
 				<a href="/edit-cycle-times" class="{{hClassDisabLackSuper}}">
-					Edit cycle times
+					{{t "common:distribution.editCycleTimes"}}
 				</a>
-				<a href="/cycle-history">Cycle history</a>
+				<a href="/cycle-history">{{t "common:distribution.cycleHistory"}}</a>
 			</div>
 
 			<hr>
 
-			<h5>Producer delivery</h5>
+			<h5>{{t "common:distribution.producerDelivery"}}</h5>
 
 			<div class="LinksPg">
-				<a href="/shelving-prep">Shelving prep</a>
-				<a href="/delivery-progress">Delivery progress</a>
+				<a href="/shelving-prep">{{t "common:distribution.shelvingPrep"}}</a>
+				<a href="/delivery-progress">{{t "common:distribution.deliveryProgress"}}</a>
 			</div>
 
 			{{#if LocsPickup}}
-			<h6>Location fulfillment</h6>
+			<h6>{{t "common:distribution.locationFulfillment"}}</h6>
 
 			<div class="LinksPg">
 				{{#each LocsPickup}}
@@ -85,14 +85,14 @@
 		<div class="col-sm pl-md-4">
 			<hr class="d-sm-none mt-0">
 
-			<h5>Shopper pickup</h5>
+			<h5>{{t "common:distribution.shopperPickup"}}</h5>
 
 			<div class="LinksPg">
-				<a href="/shopper-summary">Shopper summary</a>
+				<a href="/shopper-summary">{{t "common:distribution.shopperSummary"}}</a>
 			</div>
 
 			{{#if LocsPickupPend}}
-			<h6>Pickup progress pending</h6>
+			<h6>{{t "common:distribution.pickupProgressPending"}}</h6>
 
 			<div class="LinksPg">
 				{{#each LocsPickupPend}}
@@ -102,7 +102,7 @@
 			{{/if}}
 
 			{{#if LocsPickupDone}}
-			<h6>Pickup progress complete</h6>
+			<h6>{{t "common:distribution.pickupProgressComplete"}}</h6>
 
 			<div class="LinksPg mb-2">
 				{{#each LocsPickupDone}}
@@ -112,15 +112,12 @@
 			{{/if}}
 
 			<div class="text-muted font-size-90">
-				Delivery distances should be set for
-				<a href="/member-search-results?CkWithItsCart=true&CkDelivHomeNoDist=true">
-				home-delivery shoppers</a> before they are checked-out. No mileage fees
-				will be assessed to shoppers with unset distances.
+				{{t "common:distribution.deliveryDistanceHint"}}
 			</div>
 
 			<hr>
 
-			<h5>Transfer loading</h5>
+			<h5>{{t "common:distribution.transferLoading"}}</h5>
 
 			<div class="LinksPg mb-0">
 				{{#each LocsSatel}}

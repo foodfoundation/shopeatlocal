@@ -26,16 +26,16 @@ export async function wHandGet(aReq, aResp) {
 
   switch (type) {
     case "RefundFeeMembInit":
-      typeText = "Refund";
+      typeText = aReq.t("common:transactions.refund");
       break;
     case "PayRecv":
-      typeText = "Payment receipt";
+      typeText = aReq.t("common:transactions.paymentReceipt");
       break;
     case "PaySent":
-      typeText = "Payment disbursement";
+      typeText = aReq.t("common:transactions.paymentDisbursement");
       break;
     case "Adj":
-      typeText = "Adjustment";
+      typeText = aReq.t("common:transactions.adjustment");
       break;
   }
 
@@ -56,7 +56,7 @@ export async function wHandGet(aReq, aResp) {
     if (reverse) {
       aResp.locals.URLPost = aResp.locals.URLPost + "?reverse=yes";
     }
-    aResp.locals.Title = `${CoopParams.CoopNameShort} add producer transaction`;
+    aResp.locals.Title = aReq.t("common:pageTitles.addProducerTransaction", { name: CoopParams.CoopNameShort });
 
     if (!aResp.locals.CdTypeTransact) aResp.locals.CdTypeTransact = "PaySent";
   }
@@ -68,7 +68,7 @@ export async function wHandGet(aReq, aResp) {
     if (reverse) {
       aResp.locals.URLPost = aResp.locals.URLPost + "?reverse=yes";
     }
-    aResp.locals.Title = `${CoopParams.CoopNameShort} add member transaction`;
+    aResp.locals.Title = aReq.t("common:pageTitles.addMemberTransaction", { name: CoopParams.CoopNameShort });
 
     if (!aResp.locals.CdTypeTransact) aResp.locals.CdTypeTransact = "PayRecv";
   }
@@ -111,7 +111,7 @@ export async function wHandPost(aReq, aResp) {
     delete oFlds.CdMethPay;
 
     if (oFlds.AmtMoney.ValCook === 0.0 && oFlds.AmtEBT.ValCook === 0.0)
-      oFlds.AmtMoney.MsgFail = "You must enter at least one non-zero amount.";
+      oFlds.AmtMoney.MsgFail = aReq.t("common:transactions.mustEnterNonZeroAmount");
   } else {
     switch (oFlds.CdMethPay.ValCook) {
       case "EBTElec":
@@ -119,7 +119,7 @@ export async function wHandPost(aReq, aResp) {
         delete oFlds.AmtMoney;
 
         if (oFlds.AmtEBT.ValCook <= 0.0)
-          oFlds.AmtEBT.MsgFail = "You must enter a positive non-zero amount.";
+          oFlds.AmtEBT.MsgFail = aReq.t("common:transactions.mustEnterPositiveAmount");
         break;
 
       case "Cash":
@@ -133,7 +133,7 @@ export async function wHandPost(aReq, aResp) {
 
         if (oFlds.AmtMoney.ValCook <= 0.0 && !aReq.query.reverse)
           //don't allow negatives unless it's a reversal
-          oFlds.AmtMoney.MsgFail = "You must enter a positive non-zero amount.";
+          oFlds.AmtMoney.MsgFail = aReq.t("common:transactions.mustEnterPositiveAmount");
         break;
     }
   }

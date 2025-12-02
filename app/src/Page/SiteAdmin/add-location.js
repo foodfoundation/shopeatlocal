@@ -8,7 +8,7 @@ import { CoopParams, wReady } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   aResp.locals.CkEdit = false;
-  aResp.locals.Title = `${CoopParams.CoopNameShort} add location`;
+  aResp.locals.Title = aReq.t("common:pageTitles.addLocation", { name: CoopParams.CoopNameShort });
   aResp.render("SiteAdmin/add-location");
 }
 
@@ -24,7 +24,7 @@ export async function wHandPost(aReq, aResp) {
 
     const oLocs = await wLocs();
     const oCkDup = oLocs.some(o => o.CdLoc.toUpperCase() === aFld.ValCook.toUpperCase());
-    if (oCkDup) aFld.MsgFail = "This location code is already in use.";
+    if (oCkDup) aFld.MsgFail = aReq.t("common:locations.locationCodeInUse");
   }
 
   async function owValid_Name(aFld) {
@@ -33,7 +33,7 @@ export async function wHandPost(aReq, aResp) {
 
     const oLocs = await wLocs();
     const oCkDup = oLocs.some(o => o.NameLoc.toUpperCase() === aFld.ValCook.toUpperCase());
-    if (oCkDup) aFld.MsgFail = "This location name is already in use.";
+    if (oCkDup) aFld.MsgFail = aReq.t("common:locations.locationNameInUse");
   }
 
   const oFlds = {
@@ -67,6 +67,6 @@ export async function wHandPost(aReq, aResp) {
   // Return to Manage Locations
   // ---------------------------
 
-  aResp.Show_Flash("success", null, "The location has been added.");
+  aResp.Show_Flash("success", null, aReq.t("common:locations.locationAdded"));
   aResp.redirect(303, "/manage-locations");
 }

@@ -30,7 +30,7 @@
 
 <div class="container py-4">
 	<div class="d-flex flex-row justify-content-between">
-		<h2 class="mb-0">Wholesale inventory</h2>
+		<h2 class="mb-0">{{t "common:onsite.wholesaleInventoryTitle"}}</h2>
 	</div>
 
 	<hr>
@@ -90,17 +90,17 @@
 			<div class="d-flex mt-3">
 				<div class="flex-shrink-0 ml-auto">
 					<button type="button" class="BtnCancel d-none btn btn-secondary">
-						Cancel
+						{{t "common:buttons.cancel"}}
 					</button>
 					<button type="button" class="BtnSave d-none btn btn-primary ml-1">
-						Save
+						{{t "common:buttons.save"}}
 					</button>
 				</div>
 			</div>
 		{{else}}
 			<div class="jumbotron">
 				<h2 class="display-4 font-size-200">
-					There is no Wholesale varieties.
+					{{t "common:onsite.noWholesaleVarieties"}}
 				</h2>
 			</div>
 		{{/if}}

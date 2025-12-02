@@ -56,13 +56,13 @@
 						<div class="text-center">
 							{{#if CkNew}}
 							<div class="mt-0">
-								<a href="/product-search" class="text-danger font-weight-bold">NEW</a>
+								<a href="/product-search" class="text-danger font-weight-bold">{{t "common:productGrid.new"}}</a>
 							</div>
 							{{/if}}
 
 							{{#if (hCkLessEq QtyOfferWebProduct QtyPromWebProduct)}}
 							<div class="font-weight-bold text-danger">
-								OUT OF STOCK
+								{{t "common:productGrid.outOfStock"}}
 							</div>
 							{{/if}}
 
@@ -91,7 +91,7 @@
 							<hr>
 
 							<div class="jumbotron">
-								<h2 class="display-4 font-size-200">No varieties</h2>
+								<h2 class="display-4 font-size-200">{{t "common:productGrid.noVarieties"}}</h2>
 							</div>
 							{{/if}}
 						</div>
@@ -106,7 +106,7 @@
 
 			<div class="modal-footer p-2">
 				<button type="button" class="btn btn-secondary ml-auto" data-toggle="modal"
-					data-target="#DlgDtlProduct{{IDProduct}}">Close</button>
+					data-target="#DlgDtlProduct{{IDProduct}}">{{t "common:buttons.close"}}</button>
 			</div>
 		</div>
 	</div>

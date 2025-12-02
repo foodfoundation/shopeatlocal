@@ -11,7 +11,7 @@
 		{{hTextCurrOrOrig PriceFullWeb}}{{#if WgtMin}}/lb{{/if}}
 	</div>
 	<div class="col text-right">
-		{{hQtyAvailAdd this}}<span class="d-md-none"> avail</span>
+		{{hQtyAvailAdd this}}<span class="d-md-none"> {{t "common:cart.availShort"}}</span>
 	</div>
 	{{#if (hPropCurrOrRoot "CredUser")}}
 	{{!-- For some reason, this column wraps in the Product Search result dialogs
@@ -40,7 +40,7 @@
 	{{else}}
 	<div class="col-3 col-sm-2 text-right">
 		<button class="btn btn-secondary" style="font-size:12px;" disabled>
-			Login to Purchase
+			{{t "common:shop.loginToPurchase"}}
 		</button>
 	</div>
 	{{/if}}

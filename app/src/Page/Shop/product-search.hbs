@@ -15,7 +15,7 @@
 			<div class="btn btn-primary mt-2 mt-sm-0 production-list-noclick"
 				style="background-color: #036667; border:1px solid #036667; margin:1px;"
 				onclick="showProdList()">
-				Production Type
+				{{t "common:search.productionType"}}
 			</div>
 			<div id="production-list" class="production-list-noclick"
 				style="text-align:left; padding-left: 15px; width:280px;
@@ -34,7 +34,7 @@
 				{{#if CoopParams.isProductTypesPageDefined}}
 				<div style="width:100%; text-align:center; padding-right:15px; margin-bottom:10px;">
 					<a id="production-info-link" href="/production-types" target="_blank">
-						<b>Production Type Info</b>
+						<b>{{t "common:search.productionTypeInfo"}}</b>
 					</a>
 				</div>
 				{{/if}}
@@ -62,7 +62,7 @@
 			        style="background-color:#737577; border:1px solid #737577;">
 				<img src="{{hPrefixStatic 'search.svg'}}" alt="" width="20" height="20"
 				     class="IconBtn" style="position: relative; top:-2px">
-				Search
+				{{t "common:search.search"}}
 			</button>
 
 			{{#if CredUser}}
@@ -70,7 +70,7 @@
 			//    search terms apply to the past purchases search: --}}
 			<div class="border-left ml-2 pl-2 mt-2 mt-sm-0">
 				<a class="btn btn-secondary" href="/product-search?CkPast=true">
-					Past purchases
+					{{t "common:search.pastPurchases"}}
 				</a>
 			</div>
 			{{/if}}
@@ -96,8 +96,8 @@
 	<div class="d-flex flex-row mt-3 pl-1">
 		{{#if CkPaging}}
 		<div class="ml-auto">
-			{{{hBtnPageSearch PathPagePrev "Previous"}}}
-			{{{hBtnPageSearch PathPageNext "Next"}}}
+			{{{hBtnPageSearch PathPagePrev (t "common:search.previous")}}}
+			{{{hBtnPageSearch PathPageNext (t "common:search.next")}}}
 		</div>
 		{{/if}}
 	</div>
@@ -123,4 +123,3 @@
 		}
 	}); 
 </script>
-

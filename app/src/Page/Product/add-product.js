@@ -21,7 +21,7 @@ function wFldsDisabledPost(aReq, aIsWholesaleProducer, aIsWholesaleVarietyType) 
 
   if (!oCkStaff) {
     const oData = {
-      Msg: `Only ${CoopParams.CoopNameShort} staff can change this setting.`,
+      Msg: aReq.t("common:flashMessages.onlyStaffCanChange", { name: CoopParams.CoopNameShort }),
     };
     oFlds.CkListOnsite = oData;
     oFlds.CkInvtMgd = oData;
@@ -33,7 +33,7 @@ function wFldsDisabledPost(aReq, aIsWholesaleProducer, aIsWholesaleVarietyType) 
   if (aIsWholesaleVarietyType) {
     if (!aIsWholesaleProducer) {
       const oData = {
-        Msg: "Only wholesale producers can change this setting.",
+        Msg: aReq.t("common:flashMessages.onlyWholesaleCanChange"),
       };
       oFlds.CkListOnsite = oData;
       oFlds.QtyOnsite = oData;
@@ -41,7 +41,7 @@ function wFldsDisabledPost(aReq, aIsWholesaleProducer, aIsWholesaleVarietyType) 
     }
   } else {
     if (!oCkStaff) {
-      const oData = { Msg: "Only IFC staff  can change this setting." };
+      const oData = { Msg: aReq.t("common:flashMessages.onlyStaffCanChangeThis") };
       oFlds.CkListOnsite = oData;
       oFlds.QtyOnsite = oData;
       oFlds.PriceNomOnsite = oData;
@@ -58,7 +58,7 @@ function FldsDisabledGet(aReq, aIsWholesaleProducer) {
   const oFlds = {};
 
   if (!oCkStaff) {
-    const oData = { Msg: "Only staff can change this setting." };
+    const oData = { Msg: aReq.t("common:flashMessages.onlyStaffCanChangeThis") };
     oFlds.CkInvtMgd = oData;
     oFlds.CkInvtMgdNext = oData;
     oFlds.CkExcludeConsumerFee = oData;
@@ -67,7 +67,7 @@ function FldsDisabledGet(aReq, aIsWholesaleProducer) {
 
   if (!aIsWholesaleProducer && !oCkStaff) {
     const oData = {
-      Msg: "Only staff or wholesale producer can change this setting.",
+      Msg: aReq.t("common:flashMessages.onlyStaffOrWholesale"),
     };
     oFlds.CkListOnsite = oData;
     oFlds.QtyOnsite = oData;
@@ -84,9 +84,8 @@ export async function wHandGet(aReq, aResp) {
   if (!aResp.locals.Subcats.length) {
     aResp.Show_Flash(
       "danger",
-      "Cannot add product!",
-      "You must select one or more product categories in your producer " +
-        "registration before you add a product.",
+      aReq.t("common:flashMessages.cannotAddProduct"),
+      aReq.t("common:flashMessages.cannotAddProductSelectCategories"),
     );
     aResp.redirect(303, "/edit-producer-registration");
     return;
@@ -95,7 +94,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.FldsDisab = FldsDisabledGet(aReq, oIsWholesaleProducer);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} add product`;
+  aResp.locals.Title = aReq.t("common:pageTitles.addProduct", { name: CoopParams.CoopNameShort });
   aResp.render("Product/add-product");
 }
 
@@ -256,7 +255,7 @@ export async function wHandPost(aReq, aResp) {
   // Go to Product Detail
   // --------------------
 
-  aResp.Show_Flash("success", "Success!", "The product has been added.");
+  aResp.Show_Flash("success", aReq.t("common:flashMessages.success"), aReq.t("common:flashMessages.productAdded"));
 
   const oPage = PageAfterEditProduct(aReq, aResp);
   aResp.redirect(303, oPage);

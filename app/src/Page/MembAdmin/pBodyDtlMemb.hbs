@@ -32,31 +32,30 @@
 
 		<div class="d-flex flex-row justify-content-between">
 			<div>
-				Home delivery distance
+				{{t "common:memberDetail.homeDeliveryDistance"}}
 			</div>
 			<div>
 				<strong>
 					{{#if (hCkNotNull DistDeliv)}}
-					{{hTextFixedOrOrig DistDeliv 2}} miles
+					{{hTextFixedOrOrig DistDeliv 2}} {{t "common:memberDetail.miles"}}
 					{{else}}
-					Unknown
+					{{t "common:memberDetail.unknown"}}
 					{{/if}}
 				</strong>
 			</div>
 		</div>
 
 		<div class="LinksPg">
-			<a href="/edit-member-registration/{{IDMemb}}">Edit member
-				registration</a>
+			<a href="/edit-member-registration/{{IDMemb}}">{{t "common:memberDetail.editMemberRegistration"}}</a>
 		</div>
 
 		<hr>
 
-		<h5>Status</h5>
+		<h5>{{t "common:memberDetail.status"}}</h5>
 
 		<div class="d-flex flex-row justify-content-between">
 			<div>
-				Membership status
+				{{t "common:memberDetail.membershipStatus"}}
 			</div>
 			<div>
 				<strong>{{hTextCdReg CdRegMemb}}</strong>
@@ -65,7 +64,7 @@
 
 		<div class="d-flex flex-row justify-content-between">
 			<div>
-				EBT status
+				{{t "common:memberDetail.ebtStatus"}}
 			</div>
 			<div>
 				<strong>{{hTextCdReg CdRegEBT}}</strong>
@@ -75,7 +74,7 @@
 		<div class="mt-2">
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Show Producer page
+					{{t "common:memberDetail.showProducerPage"}}
 				</div>
 				<div>
 					<strong>{{hYesNoBlank CkShowProducer}}</strong>
@@ -84,7 +83,7 @@
 
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Volunteer status
+					{{t "common:memberDetail.volunteerStatus"}}
 				</div>
 				<div>
 					<strong>{{hTextCdReg CdRegVolun}}</strong>
@@ -93,7 +92,7 @@
 
 			<div class="d-flex flex-row justify-content-between">
 					<div>
-						Wholesale Customer status
+						{{t "common:memberDetail.wholesaleStatus"}}
 					</div>
 					<div>
 						<strong>{{hTextCdReg CdRegWholesale}}</strong>
@@ -102,7 +101,7 @@
 
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Staff status
+					{{t "common:memberDetail.staffStatus"}}
 				</div>
 				<div>
 					<strong>{{hTextCdStaff CdStaff}}</strong>
@@ -112,7 +111,7 @@
 
 		<div class="d-flex flex-row justify-content-between mt-2">
 			<div>
-				Member since
+				{{t "common:memberDetail.memberSince"}}
 			</div>
 			<div>
 				<strong>{{hTextWhen WhenRegMemb "Med"}}</strong>
@@ -126,23 +125,23 @@
 		{{/if}}
 
 		<div class="LinksPg mb-0">
-			<a href="/edit-member-status/{{IDMemb}}">Edit member status</a>
+			<a href="/edit-member-status/{{IDMemb}}">{{t "common:memberDetail.editMemberStatus"}}</a>
 		</div>
 	</div>
 
 	<div class="col-lg pl-lg-4">
 		<hr class="d-lg-none mb-3">
 
-		<h5>Fulfillment</h5>
+		<h5>{{t "common:memberDetail.fulfillment"}}</h5>
 
 		<div class="LinksPg mb-2">
 			<a href="/order-fulfillment/{{IDMemb}}"
 				class="{{hClassDisab (hNot QtyProm)}}">
-				Order fulfillment
+				{{t "common:memberDetail.orderFulfillment"}}
 			</a>
 			<a href="/shopper-checkout/{{IDMemb}}"
 				class="{{hClassDisab (hNot QtyProm)}}">
-				Shopper checkout
+				{{t "common:memberDetail.shopperCheckout"}}
 			</a>
 		</div>
 		<div>
@@ -151,27 +150,27 @@
 				{{QtyProm}} {{hPlural QtyProm "item"}} promised for purchase
 			</a>
 			{{else}}
-			No items promised for purchase
+			{{t "common:memberDetail.noItemsPromised"}}
 			{{/if}}
 		</div>
 
 		<hr>
 
-		<h5>On-site</h5>
+		<h5>{{t "common:memberDetail.onSite"}}</h5>
 
 		<div class="LinksPg">
 			<a href="/associate-member-on-site-cart/{{IDMemb}}">
-				Associate with on-site cart
+				{{t "common:memberDetail.associateWithCart"}}
 			</a>
 		</div>
 
 		<hr>
 
-		<h5>Billing</h5>
+		<h5>{{t "common:memberDetail.billing"}}</h5>
 
 		<div class="d-flex flex-row justify-content-between mb-2">
 			<div>
-				Account balance
+				{{t "common:memberDetail.accountBalance"}}
 			</div>
 			{{#if BalEBT}}
 			<div>{{>Memb/pTblBalEBT this}}</div>
@@ -183,42 +182,42 @@
 		</div>
 		<div class="d-flex flex-row justify-content-between mb-2">
 			<div>
-				Last member fee
+				{{t "common:memberDetail.lastMemberFee"}}
 			</div>
 			<div class="text-right">
 				<strong>
 				{{#if WhenFeeMembLast}}
 				{{hTextDateLong WhenFeeMembLast}}
 				{{else}}
-				Not assessed
+				{{t "common:memberDetail.notAssessed"}}
 				{{/if}}
 				</strong>
 			</div>
 		</div>
 
 		<div class="LinksPg mb-0">
-			<a href="/shopper-invoices/{{IDMemb}}">Shopper invoices</a>
-			<a href="/transactions/{{IDMemb}}">Transactions</a>
+			<a href="/shopper-invoices/{{IDMemb}}">{{t "common:memberDetail.shopperInvoices"}}</a>
+			<a href="/transactions/{{IDMemb}}">{{t "common:memberDetail.transactions"}}</a>
 			<a href="/add-member-transaction/{{IDMemb}}"
 				class="{{hClassDisabLackAccts}}">
-				Add member transaction
+				{{t "common:memberDetail.addMemberTransaction"}}
 			</a>
 		</div>
 
 		<hr>
 
-		<h5>Member tags</h5>
+		<h5>{{t "common:memberDetail.memberTags"}}</h5>
 
 		{{#each MemberTagAssignments}}
 			<span class="badge badge-secondary">{{Tag}}</span>
 		{{/each}}
 
 		{{#if (hNot MemberTagAssignments.length)}}
-			No member tags
+			{{t "common:memberDetail.noMemberTags"}}
 		{{/if}}
 
 		<div class="LinksPg mb-0">
-			<a href="/edit-member-tags/{{IDMemb}}">Edit member tags</a>
+			<a href="/edit-member-tags/{{IDMemb}}">{{t "common:memberDetail.editMemberTags"}}</a>
 		</div>
 	</div>
 </div>

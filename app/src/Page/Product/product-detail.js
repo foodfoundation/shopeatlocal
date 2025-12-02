@@ -30,6 +30,6 @@ export async function wHandGet(aReq, aResp) {
   const oProduct = { ...aResp.locals.Product, Images: oImages };
   aResp.locals.Product = oProduct;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} product detail`;
+  aResp.locals.Title = aReq.t("common:pageTitles.productDetail", { name: CoopParams.CoopNameShort });
   aResp.render("Product/product-detail");
 }

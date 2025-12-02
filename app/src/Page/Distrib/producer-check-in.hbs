@@ -60,7 +60,7 @@
 </style>
 
 <div class="container py-4">
-	<h2>Producer check-in</h2>
+	<h2>{{t "common:distrib.producerCheckIn"}}</h2>
 
 	<div class="row">
 		<div class="col-md">
@@ -126,7 +126,7 @@
 			{{else}}
 			<hr>
 			<div class="jumbotron">
-				<h2 class="display-4 font-size-200">No items promised</h2>
+				<h2 class="display-4 font-size-200">{{t "common:distrib.noItemsPromised"}}</h2>
 			</div>
 			{{/each}}
 		</div>
@@ -137,10 +137,10 @@
 		<div class="d-flex justify-content-between">
 			<button type="button" class="btn btn-secondary" data-toggle="modal"
 				data-target="#DlgConfirmReset">
-				Reset
+				{{t "common:buttons.reset"}}
 			</button>
 			<button id="BtnCkSave" type="button" class="btn btn-primary">
-				Save
+				{{t "common:buttons.save"}}
 			</button>
 		</div>
 		{{/if}}

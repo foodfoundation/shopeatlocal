@@ -25,7 +25,9 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.CatSubcatsExcept = await wCatSubcatsExcept(oIDSubcatDel);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} delete subcategory`;
+  aResp.locals.Title = aReq.t("common:pageTitles.deleteSubcategory", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("SiteAdmin/delete-subcategory");
 }
 
@@ -45,7 +47,8 @@ export async function wHandPost(aReq, aResp) {
     if (aFld.MsgFail) return;
 
     // Shouldn't be possible to do this in the first place:
-    if (aFld.ValCook === oIDSubcatDel) aFld.MsgFail = "You must select a different subcategory.";
+    if (aFld.ValCook === oIDSubcatDel)
+      aFld.MsgFail = aReq.t("common:categories.mustSelectDifferentSubcategory");
   }
 
   const oFlds = {
@@ -72,7 +75,7 @@ export async function wHandPost(aReq, aResp) {
   // Return to Manage Categories
   // ---------------------------
 
-  aResp.Show_Flash("success", null, "The subcategory has been deleted.");
+  aResp.Show_Flash("success", null, aReq.t("common:categories.subcategoryDeleted"));
   aResp.redirect(303, "/manage-categories");
 }
 

@@ -13,7 +13,9 @@ export async function wHandGet(aReq, aResp) {
   const oIDCycStart = aResp.locals.CycCurr.IDCyc - 12;
   aResp.locals.Cycs = await wCycs(aResp.locals.VtySel.IDVty, oIDCycStart);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} variety order history`;
+  aResp.locals.Title = aReq.t("common:pageTitles.varietyOrderHistory", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Product/variety-order-history");
 }
 

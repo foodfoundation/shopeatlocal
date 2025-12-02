@@ -9,18 +9,18 @@
 <div class="jumbotron py-4 py-md-5 my-3">
 	{{#if FlagShop}}
 		<h1 class="display-4 font-size-200 font-size-md-250">
-			Your cart is empty!
+			{{t "common:cart.yourCartIsEmpty"}}
 		</h1>
 		<p class="lead mb-2">
-			<a href="/product-search">Search</a> our products,
-			view <a href="/product-search?CkPast=true">past purchases</a>,
-			shop by <a href="/">product category</a>,
-			or meet <a href="/producers">our producers</a>.
+			<a href="/product-search">{{t "common:cart.search"}}</a> {{t "common:cart.ourProducts"}},
+			{{t "common:cart.view"}} <a href="/product-search?CkPast=true">{{t "common:cart.pastPurchases"}}</a>,
+			{{t "common:cart.shopBy"}} <a href="/">{{t "common:cart.productCategory"}}</a>,
+			{{t "common:cart.orMeet"}} <a href="/producers">{{t "common:cart.ourProducers"}}</a>.
 		</p>
 	{{else}}
-		<h1 class="display-4 font-size-250">The cart is closed</h1>
+		<h1 class="display-4 font-size-250">{{t "common:cart.cartIsClosed"}}</h1>
 		<p class="lead">
-			You will be able to shop when the cart opens on
+			{{t "common:cart.ableToShopWhen"}}
 			{{hTextDateTimeLong WhenStartShopNext}}.
 		</p>
 	{{/if}}
@@ -37,25 +37,25 @@
 <div class="GridTbl Head d-none d-md-block mt-md-3">
 	<div class="form-row font-weight-bold align-items-center">
 		<div class="form-group col-md d-flex flex-row justify-content-between">
-			<span>Variety</span>
-			<span>Producer</span>
+			<span>{{t "common:cart.variety"}}</span>
+			<span>{{t "common:cart.producer"}}</span>
 		</div>
 		<div class="form-group col-md-1 text-right">
-			Price Nominal
+			{{t "common:cart.priceNominal"}}
 		</div>
 		<div class="form-group col-md-1 text-right">
-			Order
+			{{t "common:cart.order"}}
 		</div>
 		{{#if FlagShop}}
 		<div class="form-group col-md-1 text-right">
-			Avail
+			{{t "common:cart.avail"}}
 		</div>
 		{{/if}}
 		<div class="form-group col-md-1 text-right">
-			Status
+			{{t "common:cart.status"}}
 		</div>
 		<div class="form-group col-md-1 text-right">
-			Subtotal Nominal
+			{{t "common:cart.subtotalNominal"}}
 		</div>
 		{{#if FlagShop}}
 		<div class="form-group col-md-1">
@@ -105,15 +105,15 @@
 			{{#if @root.FlagShop}}
 			<div class="form-group col-3 col-md-1 text-md-right">
 				{{hQtyAvailTtl QtyOffer QtyPromVty QtyProm}}
-				<span class="d-md-none">avail</span>
+				<span class="d-md-none">{{t "common:cart.availShort"}}</span>
 			</div>
 			{{/if}}
 
 			<div class="form-group col col-md-1 text-center text-md-right">
 				{{#if (hCkLess QtyProm QtyOrd)}}
-				<span class="OOS">{{hDiff QtyOrd QtyProm}} OOS</span>
+				<span class="OOS">{{hDiff QtyOrd QtyProm}} {{t "common:cart.oos"}}</span>
 				{{else}}
-				OK
+				{{t "common:cart.ok"}}
 				{{/if}}
 			</div>
 
@@ -127,14 +127,14 @@
 			<div class="form-group col col-sm-2 col-md-1 text-md-right">
 				{{#if CkInvtMgd}}
 				<div class="line-height-120 font-size-80 font-italic mr-1">
-					Cannot note<br>this item
+					{{t "common:cart.cannotNoteThisItem"}}
 				</div>
 				{{else}}
 				<button type="button" data-id-it-cart="{{IDItCart}}"
 					id="BtnAddNoteShop{{IDItCart}}"
 					class="BtnAddNoteShop btn btn-sm btn-outline-primary my-1 my-md-0
 						{{#if (hCkOr NoteShop NoteShopDenied)}}d-none{{/if}}">
-					Note
+					{{t "common:cart.note"}}
 				</button>
 				{{/if}}
 			</div>
@@ -149,7 +149,7 @@
 
 			<div class="form-row">
 				<div class="form-group col-md-1 font-size-90">
-					<label for="NoteShop{{IDItCart}}">Note for producer</label>
+					<label for="NoteShop{{IDItCart}}">{{t "common:cart.noteForProducer"}}</label>
 				</div>
 
 				<div class="form-group col-md-7">
@@ -162,11 +162,9 @@
 
 					{{#if NoteShopDenied}}
 					<div class="WarnNoteShop font-size-90">
-						Sorry, the producer cannot honor this request.
+						{{t "common:cart.producerCannotHonorRequest"}}
 						{{#if @root.FlagShop}}
-						You can remove the item, you can delete the note and receive the
-						item without the processing you requested, or you can try a
-						different note.
+						{{t "common:cart.canRemoveItemOrDeleteNote"}}
 						{{/if}}
 					</div>
 					{{/if}}
@@ -177,7 +175,7 @@
 					<button type="button" data-id-it-cart="{{IDItCart}}"
 						id="BtnDelNoteShop{{IDItCart}}"
 						class="BtnDelNoteShop btn btn-sm btn-outline-danger mt-1 mt-md-0">
-						Delete note
+						{{t "common:cart.deleteNote"}}
 					</button>
 					{{/if}}
 				</div>
@@ -193,18 +191,10 @@
 
 <div class="form-row">
 	<div class="col-md font-size-90 mb-3 mb-sm-0">
-		Be sure to click the <strong>Save</strong> button after changing location,
-		quantities, or notes. Your order will be placed automatically at
-		<strong>{{hTextWhen WhenEndShopNext "" "HourMin"}}</strong> on
-		<strong>{{hTextWhen WhenEndShopNext "Med" ""}}</strong>. You may not add or
-		remove items after that time.
+		{{t "common:cart.saveButtonInstructions" whenEndTime=(hTextWhen WhenEndShopNext "" "HourMin") whenEndDate=(hTextWhen WhenEndShopNext "Med" "")}}
 	</div>
 	<div class="col-md text-md-right font-size-90 mt-2 mt-md-0">
-		You can add a note to most items to request special processing from
-		the producer, but the note will be 'denied' if the producer cannot meet
-		your request. You must remove the denied item if you no longer want it.
-		Notes create extra work for producers and staff, so please do not use
-		them to say 'thank you'. Click the producer name and send an e-mail instead!
+		{{t "common:cart.noteInstructions"}}
 	</div>
 </div>
 {{/if}}
@@ -215,11 +205,10 @@
 
 <div class="form-row mt-3">
 	<div class="col-md-2">
-		<h4 class="mb-2 mb-sm-0">Totals</h4>
+		<h4 class="mb-2 mb-sm-0">{{t "common:cart.totals"}}</h4>
 	</div>
 	<div class="col-md text-md-right font-size-90 mt-2 mt-md-0">
-		* Weighted item subtotals are estimates. The final price will be
-		determined by the actual weight of these items.
+		{{t "common:cart.weightedItemNote"}}
 	</div>
 </div>
 <div class="form-row mt-3">
@@ -228,24 +217,24 @@
 			<table class="table table-sm table-striped">
 				<tbody>
 					<tr>
-						<td class="font-weight-bold">Non-taxable sales</td>
+						<td class="font-weight-bold">{{t "common:cart.nonTaxableSales"}}</td>
 						<td class="text-right">
 							{{hTextCurrOrOrig SummCartImperUser.SaleNomNontaxab}}
 						</td>
 					</tr>
 					<tr>
-						<td class="font-weight-bold">Market fee on non-taxable sales
+						<td class="font-weight-bold">{{t "common:cart.marketFeeNonTaxable"}}
 						</td>
 						<td class="text-right">
 							{{#if (hCkRegEBT @root.CredUser)}}
-							EBT
+							{{t "common:cart.ebt"}}
 							{{else}}
 							{{hTextCurrOrOrig SummCartImperUser.FeeCoopShopNontaxab}}
 							{{/if}}
 						</td>
 					</tr>
 					<tr>
-						<td class="font-weight-bold">Non-taxable subtotal</td>
+						<td class="font-weight-bold">{{t "common:cart.nonTaxableSubtotal"}}</td>
 						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.SubNontaxab}}
 						</td>
 					</tr>
@@ -258,22 +247,22 @@
 			<table class="table table-sm table-striped">
 				<tbody>
 					<tr>
-						<td class="font-weight-bold">&dagger; Taxable sales</td>
+						<td class="font-weight-bold">&dagger; {{t "common:cart.taxableSales"}}</td>
 						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.SaleNomTaxab}}
 						</td>
 					</tr>
 					<tr>
-						<td class="font-weight-bold">Market fee on taxable sales</td>
+						<td class="font-weight-bold">{{t "common:cart.marketFeeTaxable"}}</td>
 						<td class="text-right">
 							{{#if (hCkRegEBT @root.CredUser)}}
-							EBT
+							{{t "common:cart.ebt"}}
 							{{else}}
 							{{hTextCurrOrOrig SummCartImperUser.FeeCoopShopTaxab}}
 							{{/if}}
 						</td>
 					</tr>
 					<tr>
-						<td class="font-weight-bold">Taxable subtotal</td>
+						<td class="font-weight-bold">{{t "common:cart.taxableSubtotal"}}</td>
 						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.SubTaxab}}
 						</td>
 					</tr>
@@ -286,21 +275,21 @@
 			<table class="table table-sm table-striped">
 				<tbody>
 					<tr>
-						<td class="font-weight-bold">Sales tax</td>
+						<td class="font-weight-bold">{{t "common:cart.salesTax"}}</td>
 						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.TaxSale}}</td>
 					</tr>
 					<tr>
-						<td class="font-weight-bold">Transfer/delivery fee</td>
+						<td class="font-weight-bold">{{t "common:cart.transferDeliveryFee"}}</td>
 						<td class="text-right">
 							{{#if (hCkNaN SummCartImperUser.FeeDelivTransfer)}}
-							PENDING
+							{{t "common:cart.pending"}}
 							{{else}}
 							{{hTextCurrOrOrig SummCartImperUser.FeeDelivTransfer}}
 							{{/if}}
 						</td>
 					</tr>
 					<tr>
-						<td class="font-weight-bold">Estimated total *</td>
+						<td class="font-weight-bold">{{t "common:cart.estimatedTotal"}}</td>
 						<td class="text-right">{{hTextCurrOrOrig SummCartImperUser.Ttl}}</td>
 					</tr>
 				</tbody>

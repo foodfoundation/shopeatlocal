@@ -70,11 +70,10 @@
 
 <div class="container-md pb-4">
 	<div class="lead text-center font-size-150 mt-3">
-		{{CoopParams.CoopNameShort}} has partnered with <strong>{{Producers.length}} local independent
-		producers</strong> to meet your shopping needs.
+		{{t "common:producers.partneredWith" name=CoopParams.CoopNameShort}} <strong>{{Producers.length}} {{t "common:producers.localProducers"}}</strong> {{t "common:producers.toMeetNeeds"}}
 	</div>
 	<div class="lead text-center font-size-140">
-		Click below to learn more about each producer, and to see products.
+		{{t "common:producers.clickToLearn"}}
 	</div>
 
 	<div id="CardsProducer" class="mt-3">

@@ -19,7 +19,7 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.Cats = await wCats();
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit subcategory`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editSubcategory", { name: CoopParams.CoopNameShort });
   aResp.render("SiteAdmin/edit-subcategory");
 }
 
@@ -51,7 +51,7 @@ export async function wHandPost(aReq, aResp) {
     const oNameNewUp = oFlds.NameSubcat.ValCook.toUpperCase();
     const oSubcatsExcept = await wSubcatsByCatExcept(oIDCatNew, oIDSubcat);
     const oCkDup = oSubcatsExcept.some(o => o.NameSubcat.toUpperCase() === oNameNewUp);
-    if (oCkDup) oFlds.NameSubcat.MsgFail = "This subcategory name is already in use.";
+    if (oCkDup) oFlds.NameSubcat.MsgFail = aReq.t("common:categories.subcategoryNameInUse");
   }
 
   // Handle validation failure
@@ -73,6 +73,6 @@ export async function wHandPost(aReq, aResp) {
   // Return to Manage Categories
   // ---------------------------
 
-  aResp.Show_Flash("success", null, "The subcategory has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:categories.subcategoryUpdated"));
   aResp.redirect(303, "/manage-categories?LastSubCatEdit=" + oIDSubcat);
 }

@@ -36,12 +36,12 @@
 
 					{{#if CkNew}}
 					<div class="text-center mt-2 mt-md-0">
-						<a href="/product-search" class="text-danger font-weight-bold">NEW</a>
+						<a href="/product-search" class="text-danger font-weight-bold">{{t "common:product.new"}}</a>
 					</div>
 					{{/if}}
 
 					{{#if (hCkLessEq QtyOfferWebProduct QtyPromWebProduct)}}
-					<div class="text-center font-weight-bold text-danger">OUT OF STOCK</div>
+					<div class="text-center font-weight-bold text-danger">{{t "common:product.outOfStock"}}</div>
 					{{/if}}
 
 					<div class="text-center">
@@ -61,7 +61,7 @@
 						{{else}}
 						<hr>
 						<div class="jumbotron">
-							<h2 class="display-4 font-size-200">No varieties</h2>
+							<h2 class="display-4 font-size-200">{{t "common:product.noVarieties"}}</h2>
 						</div>
 						{{/if}}
 					</div>

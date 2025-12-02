@@ -15,8 +15,8 @@ export async function wHandGet(aReq, aResp) {
   if (!aResp.locals.CredUser.CkStaff() && aResp.locals.CredSelImperUser.CdRegProducer === "Approv")
     aResp.Show_Flash(
       "danger",
-      "Please take note!",
-      "Editing your registration will return your producer account to the " + "'pending' status.",
+      aReq.t("common:producerEditRegistration.pleaseNote"),
+      aReq.t("common:producerEditRegistration.editingWillReturnToPending"),
     );
 
   const oIDProducer = aResp.locals.CredSelImperUser.IDProducer;
@@ -31,7 +31,7 @@ export async function wHandGet(aReq, aResp) {
   } else oCats = await wCatsProducerCk(oIDProducer);
   aResp.locals.Cats = oCats;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit producer registration`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editProducerRegistration", { name: CoopParams.CoopNameShort });
   aResp.render("Producer/edit-producer-registration");
 }
 
@@ -114,7 +114,7 @@ export async function wHandPost(aReq, aResp) {
   // Go to Producer or Producer Detail page
   // --------------------------------------
 
-  aResp.Show_Flash("success", null, "The registration has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:producerEditRegistration.registrationUpdated"));
 
   const oPage = PageAfterEditProducer(aReq, aResp);
   aResp.redirect(303, oPage);

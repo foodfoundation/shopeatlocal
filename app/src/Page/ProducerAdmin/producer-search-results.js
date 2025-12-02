@@ -22,8 +22,8 @@ export async function wHandGet(aReq, aResp) {
   const { Ct: oCt, Producers: oProducers } = await wProducers(aReq.query);
   const oDataPage = DataPage(aReq.query, oCt, CtResultSearchListPage);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer search results`;
-  aResp.locals.SummsParam = SummsParam(aReq.query);
+  aResp.locals.Title = aReq.t("common:pageTitles.producerSearchResults", { name: CoopParams.CoopNameShort });
+  aResp.locals.SummsParam = SummsParam(aReq.query, aReq.t);
   aResp.locals.Producers = oProducers;
   aResp.locals.TextRg = oDataPage.Text;
   aResp.locals.PathPagePrev = PathPage(oDataPage.IdxPagePrev);
@@ -44,13 +44,13 @@ export async function wHandGetExport(aReq, aResp) {
     Fmt_RowExcel(o);
   }
 
-  aResp.attachment("Producer search results.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.producerSearchResults") + ".csv");
   aResp.csv(oProducers, true);
 }
 
 /** Returns an array of label/value objects that describe the search parameters,
  *  exclusive of the page index. */
-function SummsParam(aParams) {
+function SummsParam(aParams, t) {
   const oSumms = [];
 
   function oAdd(aName, aLbl) {
@@ -62,15 +62,15 @@ function SummsParam(aParams) {
     oSumms.push({ Lbl: aLbl, Val: oParam });
   }
 
-  oAdd("IDProducer", "Producer ID:");
-  oAdd("CdProducer", "Producer code:");
-  oAdd("NameBus", "Business name:");
-  oAdd("NameFirst", "First name:");
-  oAdd("NameLast", "Last name:");
+  oAdd("IDProducer", t("common:producerSearchLabels.producerId"));
+  oAdd("CdProducer", t("common:producerSearchLabels.producerCode"));
+  oAdd("NameBus", t("common:producerSearchLabels.businessName"));
+  oAdd("NameFirst", t("common:producerSearchLabels.firstName"));
+  oAdd("NameLast", t("common:producerSearchLabels.lastName"));
 
-  if (aParams.CkPendProducer) oSumms.push({ Lbl: "Pending registration" });
-  if (aParams.CkList) oSumms.push({ Lbl: "Listed" });
-  if (aParams.CkWithSale) oSumms.push({ Lbl: "With sales this cycle" });
+  if (aParams.CkPendProducer) oSumms.push({ Lbl: t("common:producerSearchLabels.pendingRegistration") });
+  if (aParams.CkList) oSumms.push({ Lbl: t("common:producerSearchLabels.listed") });
+  if (aParams.CkWithSale) oSumms.push({ Lbl: t("common:producerSearchLabels.withSalesThisCycle") });
 
   return oSumms;
 }

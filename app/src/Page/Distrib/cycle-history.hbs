@@ -3,12 +3,11 @@
 //    Cycle History view --}}
 
 <div class="container-xl py-4">
-	<h2>Cycle history</h2>
+	<h2>{{t "common:cycleHistory.title"}}</h2>
 
 	<div class="d-print-none row">
 		<div class="col">
-			This page displays dates and times for the current cycle plus all
-			completed cycles.
+			{{t "common:cycleHistory.description"}}
 		</div>
 		<div class="col">
 			{{>Misc/pInstructPrint}}
@@ -19,19 +18,19 @@
 
 	{{#unless Cycs}}
 	<div class="jumbotron mt-4">
-		<h2 class="display-4 font-size-200">No completed cycles</h2>
+		<h2 class="display-4 font-size-200">{{t "common:accounting.noCompletedCycles"}}</h2>
 	</div>
 	{{else}}
 	<div class="table-responsive mt-3">
 		<table class="table table-sm table-striped table-hover">
 			<thead>
 				<tr>
-					<th scope="col">Cycle ID</th>
-					<th scope="col">Cycle start</th>
-					<th scope="col" class="text-center">Shopping</th>
-					<th scope="col" class="text-center">Delivery</th>
-					<th scope="col" class="text-center">Pickup</th>
-					<th scope="col" class="text-right">Cycle end</th>
+					<th scope="col">{{t "common:cycleHistory.cycleId"}}</th>
+					<th scope="col">{{t "common:cycleHistory.cycleStart"}}</th>
+					<th scope="col" class="text-center">{{t "common:cycleHistory.shopping"}}</th>
+					<th scope="col" class="text-center">{{t "common:cycleHistory.delivery"}}</th>
+					<th scope="col" class="text-center">{{t "common:cycleHistory.pickup"}}</th>
+					<th scope="col" class="text-right">{{t "common:cycleHistory.cycleEnd"}}</th>
 				</tr>
 			</thead>
 			<tbody>

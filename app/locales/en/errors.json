@@ -1,0 +1,36 @@
+{
+  "page400": {
+    "title": "Bad request",
+    "heading": "Bad request",
+    "message": "The server could not understand the request."
+  },
+  "page401": {
+    "title": "Unauthorized",
+    "heading": "Unauthorized",
+    "message": "You are not authorized to view this page."
+  },
+  "page403": {
+    "title": "Forbidden",
+    "heading": "Session timeout",
+    "message": "Your session has timed-out; please try again."
+  },
+  "page404": {
+    "title": "Page not found",
+    "heading": "Page not found",
+    "message": "The page you are looking for does not exist."
+  },
+  "page500": {
+    "title": "Server error",
+    "heading": "Server error",
+    "message": "An unexpected error occurred. Please try again later.",
+    "deadlockTitle": "Server deadlock",
+    "deadlockHeading": "Server deadlock",
+    "deadlockMessage": "Another user was busy with the data you want to use. Please try again."
+  },
+  "general": {
+    "errorOccurred": "An error occurred",
+    "tryAgain": "Please try again",
+    "contactSupport": "If the problem persists, please contact support."
+  }
+}
+

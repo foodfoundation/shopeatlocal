@@ -5,7 +5,7 @@ export async function wHandGet(aReq, aResp) {
   const staticPage = await getSanityClient().queryStaticPageContent(slug);
 
   if (!staticPage) {
-    aResp.locals.Title = "Page not found";
+    aResp.locals.Title = aReq.t("common:pageTitles.pageNotFound");
     aResp.status(404);
     aResp.render("Misc/404");
     return;
