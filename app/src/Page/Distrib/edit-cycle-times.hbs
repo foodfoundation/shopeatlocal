@@ -18,7 +18,7 @@
 </style>
 
 <div class="container-xl py-4">
-	<h2>Edit cycle times</h2>
+	<h2>{{t "common:cycleTimes.editTitle"}}</h2>
 
 	<div class="row mb-3">
 		<div class="col-lg mb-2 mb-lg-0">
@@ -115,8 +115,8 @@
 			//    after an unsuccessful update, yet the browser's refresh would repeat
 			//    the POST, which would not give the desired result, and would also
 			//    cause the 'confirm form resubmission' dialog to appear: --}}
-			<a class="btn btn-secondary" href="/edit-cycle-times">Reload</a>
-			<button type="submit" class="btn btn-primary">Save</button>
+			<a class="btn btn-secondary" href="/edit-cycle-times">{{t "common:cycleTimes.reload"}}</a>
+			<button type="submit" class="btn btn-primary">{{t "common:buttons.save"}}</button>
 		</div>
 	</form>
 </div>

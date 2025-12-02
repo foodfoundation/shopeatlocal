@@ -25,7 +25,7 @@
 		<div class="col-md-1 text-right px-2">
 			<hr class="d-md-none mt-0 mb-2">
 			<a href="/edit-location/{{CdLoc}}"
-				class="btn btn-sm btn-outline-primary">Edit</a>
+				class="btn btn-sm btn-outline-primary">{{t "common:buttons.edit"}}</a>
 		</div>
 	</div>
 	{{/each}}
@@ -34,24 +34,24 @@
 
 <div class="container py-4">
 	<div class="d-flex justify-content-between align-items-start">
-		<h2 class="mb-0">Manage locations</h2>
+		<h2 class="mb-0">{{t "common:siteAdmin.manageLocations"}}</h2>
 
-		<a href="/add-location" class="btn btn-primary">Add location</a>
+		<a href="/add-location" class="btn btn-primary">{{t "common:locationAdmin.addLocation"}}</a>
 	</div>
 
 	<hr>
 
 	{{#unless LocsActiv}}
-	<p class="lead mt-4">No active locations</p>
+	<p class="lead mt-4">{{t "common:locationAdmin.noActiveLocations"}}</p>
 	{{else}}
-	<h3 class="mt-4">Active locations</h3>
+	<h3 class="mt-4">{{t "common:locationAdmin.activeLocations"}}</h3>
 	{{>pLocs LocsActiv}}
 	{{/unless}}
 
 	{{#unless LocsInactiv}}
-	<p class="lead mt-5">No inactive locations</p>
+	<p class="lead mt-5">{{t "common:locationAdmin.noInactiveLocations"}}</p>
 	{{else}}
-	<h3 class="mt-5">Inactive locations</h3>
+	<h3 class="mt-5">{{t "common:locationAdmin.inactiveLocations"}}</h3>
 	{{>pLocs LocsInactiv}}
 	{{/unless}}
 </div>

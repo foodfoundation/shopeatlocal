@@ -5,8 +5,8 @@
 {{#if FlagShop}}
 
     {{#if (hCkAnd SummCartImperUser SummCartImperUser.QtyProm)}}
-        {{hTextCurrOrOrig SummCartImperUser.Ttl}} in<br>
-        {{hDeterminerUser CredImperUser false}} cart
+        {{hTextCurrOrOrig SummCartImperUser.Ttl}} {{t "common:cart.in"}}<br>
+        {{hDeterminerUser CredImperUser false}} {{t "common:cart.cartLower"}}
         {{#if ShowFirstItemInCartNotice}}
             <script>
                 $(document).ready(function() {
@@ -15,9 +15,9 @@
             </script>
         {{/if}}
     {{else}}
-        {{hDeterminerUser CredSelImperUser true}} cart is<br>empty
+        {{hDeterminerUser CredSelImperUser true}} {{t "common:cart.cartIsEmpty"}}
     {{/if}}
 
 {{else}}
-    The cart is<br>closed
+    {{t "common:cart.theCartIsClosed"}}
 {{/if}}

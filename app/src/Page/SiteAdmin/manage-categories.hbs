@@ -4,10 +4,10 @@
 
 <div class="container py-4">
 	<div class="d-flex align-items-center">
-		<h2 class="mb-0">Manage categories</h2>
+		<h2 class="mb-0">{{t "common:siteAdmin.manageCategories"}}</h2>
 
 		<div class="ml-auto mr-1">
-			<a href="/add-category" class="btn btn-primary">Add category</a>
+			<a href="/add-category" class="btn btn-primary">{{t "common:categoryAdmin.addCategory"}}</a>
 		</div>
 		<div>
 			{{!-- At first, I was going to place copies of this button below each
@@ -16,7 +16,7 @@
 			//    however, as they would have to navigate to the desired category
 			//    before adding, and this allows the Edit Subcategory form controls to
 			//    be reused without modification: --}}
-			<a href="/add-subcategory" class="btn btn-primary">Add subcategory</a>
+			<a href="/add-subcategory" class="btn btn-primary">{{t "common:categoryAdmin.addSubcategory"}}</a>
 		</div>
 	</div>
 
@@ -27,7 +27,7 @@
 		</div>
 		<div id="Cat{{IDCat}}" class="font-size-120">
 			<div>
-				Category {{hTextIDCat IDCat}}
+				{{t "common:categoryAdmin.category"}} {{hTextIDCat IDCat}}
 			</div>
 			<div class="font-weight-bold">
 				{{NameCat}}
@@ -36,7 +36,7 @@
 		<div class="ml-auto">
 			<a href="/edit-category/{{IDCat}}"
 				class="btn btn-outline-primary">
-				Edit category
+				{{t "common:categoryAdmin.editCategory"}}
 			</a>
 		</div>
 	</div>
@@ -45,16 +45,16 @@
 
 	{{#unless Subcats}}
 	<div class="jumbotron my-3">
-		<h2 class="display-4 font-size-200">No subcategories</h2>
+		<h2 class="display-4 font-size-200">{{t "common:categoryAdmin.noSubcategories"}}</h2>
 	</div>
 	{{else}}
 	<div class="table-responsive">
 		<table class="table table-sm table-striped mb-0">
 			<thead>
 				<tr>
-					<th scope="col">Subcategory</th>
-					<th scope="col" class="text-right">Taxable</th>
-					<th scope="col" class="text-right">EBT</th>
+					<th scope="col">{{t "common:categoryAdmin.subcategory"}}</th>
+					<th scope="col" class="text-right">{{t "common:categoryAdmin.taxable"}}</th>
+					<th scope="col" class="text-right">{{t "common:categoryAdmin.ebt"}}</th>
 					<th scope="col"></th>
 				</tr>
 			</thead>
@@ -68,7 +68,7 @@
 					<td class="align-middle text-right">{{hYesNoBlank CkEBT}}</td>
 					<td class="align-middle text-right">
 						<a href="/edit-subcategory/{{IDSubcat}}"
-							class="btn btn-sm btn-outline-primary ml-1 mr-md-1">Edit</a>
+							class="btn btn-sm btn-outline-primary ml-1 mr-md-1">{{t "common:buttons.edit"}}</a>
 					</td>
 				</tr>
 				{{/each}}
@@ -77,7 +77,7 @@
 	</div>
 	{{/unless}}
 	{{else}}
-	<p class="lead">No categories</p>
+	<p class="lead">{{t "common:categoryAdmin.noCategories"}}</p>
 	{{/each}}
 </div>
 

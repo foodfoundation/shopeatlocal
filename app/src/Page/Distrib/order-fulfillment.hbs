@@ -5,15 +5,13 @@
 <div class="container py-4">
 	<div class="d-md-flex flex-row justify-content-between align-items-baseline
 		mb-2">
-		<h2 class="mb-0">Order fulfillment</h2>
+		<h2 class="mb-0">{{t "common:distrib.orderFulfillmentTitle"}}</h2>
 		<h5>{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<div class="d-print-none Flow-md-2">
 		<p class="mb-2">
-			Print this page, tape it to a bin or cart, and use it to pick the
-			shopper's order. When you are done, bring the bin or cart (with this page
-			attached) to a checkout station.
+			{{t "common:distrib.orderFulfillmentDescription"}}
 		</p>
 		<p>
 			{{>Misc/pInstructPrint}}
@@ -76,10 +74,10 @@
 
 			<div class="GridTbl Head d-none d-md-block">
 				<div class="row font-weight-bold">
-					<div class="col-3">Producer</div>
-					<div class="col-5">Product</div>
-					<div class="col-3">Variety</div>
-					<div class="col-1 text-right">Deliv</div>
+					<div class="col-3">{{t "common:cart.producer"}}</div>
+					<div class="col-5">{{t "common:distrib.productColumn"}}</div>
+					<div class="col-3">{{t "common:cart.variety"}}</div>
+					<div class="col-1 text-right">{{t "common:distrib.delivColumn"}}</div>
 				</div>
 			</div>
 
@@ -101,7 +99,7 @@
 							{{hTextIDVty IDVty}} {{hNameVty this}}
 						</div>
 						<div class="col-md-1 mb-1 mb-md-0 text-md-right">
-							{{QtyDeliv}}<span class="d-md-none"> deliv</span>
+							{{QtyDeliv}}<span class="d-md-none"> {{t "common:distrib.delivShort"}}</span>
 						</div>
 					</div>
 					{{#if NoteShop}}
@@ -118,7 +116,7 @@
 	{{else}}
 		<hr>
 		<div class="jumbotron">
-			<h2 class="display-4 font-size-200">No items delivered</h2>
+			<h2 class="display-4 font-size-200">{{t "common:distrib.noItemsDeliveredShort"}}</h2>
 		</div>
 	{{/each}}
 </div>

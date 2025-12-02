@@ -10,7 +10,7 @@
 		</div>
 
 		<div class="text-md-left">
-			Product {{hTextIDProduct IDProduct}}<br>
+			{{t "common:productDetail.product"}} {{hTextIDProduct IDProduct}}<br>
 			<a href="/product/{{IDProduct}}">{{NameProduct}}</a>
 		</div>
 
@@ -34,7 +34,7 @@
 
 				<div class="d-flex justify-content-between">
 					<div>
-						Category
+						{{t "common:productDetail.category"}}
 					</div>
 					<div>
 						<a href="/product-search?IDCat={{IDCat}}" class="font-weight-bold">
@@ -45,7 +45,7 @@
 
 				<div class="d-flex justify-content-between">
 					<div>
-						Sub-category
+						{{t "common:productDetail.subcategory"}}
 					</div>
 					<div>
 						<a href="/product-search?IDSubcat={{IDSubcat}}"
@@ -57,7 +57,7 @@
 
 				<div class="d-flex justify-content-between">
 					<div>
-						Storage
+						{{t "common:productDetail.storage"}}
 					</div>
 					<div>
 						<strong>{{hTextCdStor CdStor}}</strong>
@@ -66,14 +66,14 @@
 
 				<div class="d-flex justify-content-between mt-3 mb-2">
 					<div>
-						Attributes
+						{{t "common:productDetail.attributes"}}
 					</div>
 					<div class="w-75 text-right">
 						{{#if (hCkAttrProduct this)}}
 						{{>Misc/pLinksAttrProduct}}
 						{{else}}
 						<div class="font-weight-bold mb-2">
-							None
+							{{t "common:productDetail.none"}}
 						</div>
 						{{/if}}
 					</div>
@@ -81,7 +81,7 @@
 
 				<div class="d-flex justify-content-between">
 					<div>
-						Created
+						{{t "common:productDetail.created"}}
 					</div>
 					<div>
 						<strong>{{hTextDateTimeLong WhenCreate}}</strong>
@@ -90,7 +90,7 @@
 
 				<div class="d-flex justify-content-end my-3">
 					<a href="/edit-product/{{IDProduct}}"
-						class="btn btn-sm btn-primary">Edit product</a>
+						class="btn btn-sm btn-primary">{{t "common:productDetail.editProduct"}}</a>
 				</div>
 
 				<hr>
@@ -99,7 +99,7 @@
 					{{#if Descrip}}
 					{{hHTMLLinesP Descrip}}
 					{{else}}
-					(no description)
+					({{t "common:productDetail.noDescription"}})
 					{{/if}}
 				</div>
 			</div>
@@ -112,13 +112,13 @@
 				{{>Product/pTblVtyProducer Vtys}}
 				{{else}}
 				<div class="jumbotron">
-					<h2 class="display-4 font-size-200">No varieties</h2>
+					<h2 class="display-4 font-size-200">{{t "common:product.noVarieties"}}</h2>
 				</div>
 				{{/if}}
 
 				<div class="d-flex justify-content-end">
 					<a href="/add-variety/{{IDProduct}}" class="btn btn-sm btn-primary">
-						Add variety
+						{{t "common:productDetail.addVariety"}}
 					</a>
 				</div>
 			</div>

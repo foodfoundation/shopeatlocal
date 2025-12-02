@@ -5,14 +5,13 @@
 <div class="container py-4">
 	<div class="d-md-flex flex-row justify-content-between align-items-baseline
 		mb-2">
-		<h2 class="mb-0">Cart summary</h2>
+		<h2 class="mb-0">{{t "common:distrib.cartSummary"}}</h2>
 		<h5>{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<div class="d-print-none Flow-md-2">
 		<p>
-			This page displays cart totals for shoppers in the current cycle.
-			Click any row to display the cart's contents.
+			{{t "common:distrib.cartSummaryDescription"}}
 		</p>
 		<p>
 			{{>Misc/pInstructPrint}}
@@ -23,15 +22,15 @@
 
 	{{#unless Membs}}
 	<div class="jumbotron">
-		<h2 class="display-4 font-size-200">No members with cart items</h2>
+		<h2 class="display-4 font-size-200">{{t "common:distrib.noMembersWithCartItems"}}</h2>
 	</div>
 	{{else}}
 	<div class="GridTbl Head d-none d-md-block">
 		<div class="row font-weight-bold">
-			<div class="col">Member</div>
-			<div class="col-3 text-right">Pickup</div>
-			<div class="col-2 text-right">Prom</div>
-			<div class="col-2 text-md-right">Total</div>
+			<div class="col">{{t "common:distrib.member"}}</div>
+			<div class="col-3 text-right">{{t "common:distrib.pickup"}}</div>
+			<div class="col-2 text-right">{{t "common:distrib.prom"}}</div>
+			<div class="col-2 text-md-right">{{t "common:distrib.total"}}</div>
 		</div>
 	</div>
 
@@ -75,7 +74,7 @@
 				</div>
 				<div class="col-3">
 					<a href="/cart-detail/{{IDCart}}" class="stretched-link"></a>
-					{{QtyProm}} prom
+					{{QtyProm}} {{t "common:distrib.promShort"}}
 				</div>
 				<div class="col-3 text-right">
 					<a href="/cart-detail/{{IDCart}}" class="stretched-link"></a>
