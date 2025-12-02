@@ -13,14 +13,14 @@
 					{{#if Head}}
 					{{Head}}
 					{{else}}
-					Server error
+					{{t "errors:page500.heading"}}
 					{{/if}}
 				</h1>
 				<div class="lead">
 					{{#if Msg}}
 					{{Msg}}
 					{{else}}
-					Something went wrong on this side. Please contact {{CoopParams.CoopNameShort}} for help.
+					{{t "errors:page500.message"}}
 					{{/if}}
 				</div>
 			</div>

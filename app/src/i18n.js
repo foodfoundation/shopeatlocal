@@ -3,12 +3,13 @@ import i18next from "i18next";
 import Backend from "i18next-fs-backend";
 import middleware from "i18next-http-middleware";
 import { join } from "path";
+import { defaultLang } from "../Cfg.js";
 
 i18next
   .use(Backend)
   .use(middleware.LanguageDetector)
   .init({
-    fallbackLng: "en",
+    fallbackLng: defaultLang ?? "en",
     supportedLngs: ["en", "de"],
     preload: ["en", "de"],
     ns: ["common", "forms", "errors", "flash"],

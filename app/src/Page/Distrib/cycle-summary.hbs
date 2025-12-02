@@ -59,13 +59,10 @@
 <div class="containerx py-4 px-3 px-xl-5">
 	<div class="d-lg-flex">
 		<div class="w-lg-15 d-lg-flex flex-column text-lg-center mb-3 mb-lg-0 mr-3">
-			<h2 class="mb-0">Cycle summary</h2>
+			<h2 class="mb-0">{{t "common:cycleSummary.title"}}</h2>
 			<h5 class="mt-2 mb-0">{{CtShop}} {{hPlural CtShop "shopper"}}</h5>
 			<div class="mt-2 mt-lg-auto">
-				This page displays item counts and nominal web sales by item fulfillment
-				status, so that shopping and fulfillment progress can be tracked as
-				the cycle progresses. Nominal sales are 'in cart' values, before
-				producer or shopper fees have been assessed.
+				{{t "common:cycleSummary.description"}}
 			</div>
 		</div>
 
@@ -73,7 +70,7 @@
 			<div class="{{#if FlagShop}}During{{else}}After{{/if}} d-lg-flex
 			align-items-center mb-3">
 
-				<h5 class="w-lg-15">Shopping</h5>
+				<h5 class="w-lg-15">{{t "common:cycleSummary.shopping"}}</h5>
 				{{>pStat StatOrd}}
 				<div class="d-none d-lg-block font-size-150 font-weight-bold ml-2">
 					&#x279C;</div>
@@ -82,7 +79,7 @@
 			<div class="{{#if FlagShop}}During{{else}}After{{/if}} d-lg-flex
 				align-items-center mb-3">
 
-				<h5 class="w-lg-15">Production</h5>
+				<h5 class="w-lg-15">{{t "common:cycleSummary.production"}}</h5>
 				{{>pStat StatWithdr}}
 				{{>pStat StatProm}}
 				<div class="d-none d-lg-block font-size-150 font-weight-bold ml-2">
@@ -92,7 +89,7 @@
 			<div class="{{#if FlagBeforeDeliv}}Before{{else if FlagDeliv}}During{{else}}After{{/if}}
 				d-lg-flex align-items-center mb-3">
 
-				<h5 class="w-lg-15">Delivery</h5>
+				<h5 class="w-lg-15">{{t "common:cycleSummary.delivery"}}</h5>
 				{{>pStat StatCheckin}}
 				{{>pStat StatTruant}}
 				{{>pStat StatDeliv}}
@@ -102,7 +99,7 @@
 
 			<div class="{{#if FlagBeforePickup}}Before{{else if FlagPickup}}During{{else}}After{{/if}}
 				d-lg-flex align-items-center">
-				<h5 class="w-lg-15">Pickup</h5>
+				<h5 class="w-lg-15">{{t "common:cycleSummary.pickup"}}</h5>
 				{{>pStat StatCheckout}}
 				{{>pStat StatLost}}
 				{{>pStat StatReject}}
@@ -111,7 +108,7 @@
 
 			<div class="d-lg-flex mt-2">
 				<div class="w-lg-15"></div>
-				<div>* Average item weights are assumed.</div>
+				<div>* {{t "common:cycleSummary.averageWeights"}}</div>
 			</div>
 		</div>
 	</div>

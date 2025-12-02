@@ -10,13 +10,13 @@
 			</h1>
 			<div class="BordDk border-md-left pl-md-3">
 				<h1 class="display-4">
-					Bad request
+					{{t "errors:page400.heading"}}
 				</h1>
 				<div class="lead">
 					{{#if Msg}}
 					{{Msg}}
 					{{else}}
-					Your request is invalid.
+					{{t "errors:page400.message"}}
 					{{/if}}
 				</div>
 			</div>

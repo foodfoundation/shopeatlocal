@@ -19,7 +19,7 @@
 					</a>
 					{{>Shop/pFavoriteButton ShowButton=../CredUser}}
 					{{#if CkNew}}
-						<a class="New" href="/product-search">NEW</a>
+						<a class="New" href="/product-search">{{t "common:productGrid.new"}}</a>
 					{{/if}}
 				</div>
 
@@ -51,7 +51,7 @@
 				{{/unless}}
 				{{#if (hCkLessEq QtyOfferWebProduct QtyPromWebProduct)}}
 				<div class="OOS">
-					OUT OF STOCK
+					{{t "common:productGrid.outOfStock"}}
 				</div>
 				{{/if}}
 

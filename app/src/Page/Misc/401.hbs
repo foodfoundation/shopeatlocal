@@ -10,13 +10,13 @@
 			</h1>
 			<div class="BordDk border-md-left pl-md-3">
 				<h1 class="display-4">
-					Unauthorized
+					{{t "errors:page401.heading"}}
 				</h1>
 				<div class="lead">
 					{{#if Msg}}
 					{{Msg}}
 					{{else}}
-					You must login to view that page.
+					{{t "errors:page401.message"}}
 					{{/if}}
 				</div>
 			</div>

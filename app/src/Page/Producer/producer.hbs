@@ -33,17 +33,17 @@
 			</div>
 
 			<div class="LinksPg">
-				<a href="/edit-about-producer">Edit 'About producer'</a>
-				<a href="/edit-producer-registration">Edit producer registration</a>
+				<a href="/edit-about-producer">{{t "common:producer.editAbout"}}</a>
+				<a href="/edit-producer-registration">{{t "common:producer.editRegistration"}}</a>
 			</div>
 
 			<hr>
 
-			<h5>Status</h5>
+			<h5>{{t "common:producer.status"}}</h5>
 
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Producer status
+					{{t "common:producer.producerStatus"}}
 				</div>
 				<div>
 					<strong>{{hTextCdReg Producer.CdRegProducer}}</strong>
@@ -52,7 +52,7 @@
 
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Wholesale status
+					{{t "common:producer.wholesaleStatus"}}
 				</div>
 				<div>
 					<strong>{{hTextCdReg Producer.CdRegWholesale}}</strong>
@@ -61,7 +61,7 @@
 
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Listing status
+					{{t "common:producer.listingStatus"}}
 				</div>
 				<div>
 					<strong>{{hTextCkListProducer Producer.CkListProducer}}</strong>
@@ -69,68 +69,63 @@
 			</div>
 
 			<div class="LinksPg mb-0">
-				<a href="/edit-producer-status">Edit producer status</a>
+				<a href="/edit-producer-status">{{t "common:producer.editStatus"}}</a>
 			</div>
 
 			<hr>
 
-			<h5>Advanced Producer Reports</h5>
+			<h5>{{t "common:producer.advancedReports"}}</h5>
 
 			<div class="LinksPg mb-0">
-				<a href="/producer-reports">Open Reports Table</a>
+				<a href="/producer-reports">{{t "common:producer.openReportsTable"}}</a>
 			</div>
 		</div>
 
 		<div class="col-sm pl-md-4">
 			<hr class="d-sm-none">
 
-			<h5>Products</h5>
+			<h5>{{t "common:producer.products"}}</h5>
 
 			<div class="LinksPg mb-2">
-				<a href="/producer-catalog">Producer catalog</a>
-				<a href="/producer-inventory">Producer {{#if (hCkProducerWholesale)}}retail {{/if}}inventory</a>
+				<a href="/producer-catalog">{{t "common:producer.producerCatalog"}}</a>
+				<a href="/producer-inventory">{{#if (hCkProducerWholesale)}}{{t "common:producer.producerRetailInventory"}}{{else}}{{t "common:producer.producerInventory"}}{{/if}}</a>
 			</div>
 
 			<p class="text-muted font-size-90 mb-2">
-				Use the <a href="/producer-catalog">catalog</a> to create
-				products and varieties before shopping starts. Use the
-				<a href="/producer-inventory">inventory</a> to manage
-				quantities and shopper notes during shopping.
+				{{t "common:producer.catalogHelp"}}
 			</p>
 
 			<hr>
 
-			<h5>Delivery</h5>
+			<h5>{{t "common:producer.delivery"}}</h5>
 
 			<div class="LinksPg">
-				<a href="/web-order-summary">Web order summary</a>
-				<a href="/web-order-labels">Web order labels</a>
+				<a href="/web-order-summary">{{t "common:producer.webOrderSummary"}}</a>
+				<a href="/web-order-labels">{{t "common:producer.webOrderLabels"}}</a>
 			</div>
 
 			<hr>
 
-			<h5>Earnings</h5>
+			<h5>{{t "common:producer.earnings"}}</h5>
 
 			<div class="d-flex flex-row justify-content-between mb-2">
 				<div>
-					Account balance
+					{{t "common:producer.accountBalance"}}
 				</div>
 				<div class="font-weight-bold">
 					{{hTextCurrOrOrig (hSum Producer.BalMoney Producer.BalEBT)}}
 				</div>
 			</div>
 			<p class="text-muted font-size-90 mb-2">
-				Positive balances are owed <em>to</em> the market. Negative balances are
-				owed <em>by</em> the market. Any payments you send will be subtracted
-				from this balance 7-10 days after {{CoopParams.CoopNameShort}} receives them.
+				{{t "common:producer.balanceExplanation" name=CoopParams.CoopNameShort}}
 			</p>
 
 			<div class="LinksPg mb-2">
-				<a href="/producer-invoices">Producer invoices</a>
-				<a href="/producer-web-sales-by-variety">Producer web sales by variety</a>
+				<a href="/producer-invoices">{{t "common:producer.producerInvoices"}}</a>
+				<a href="/producer-web-sales-by-variety">{{t "common:producer.webSalesByVariety"}}</a>
 			</div>
 			<p class="text-muted font-size-90 mb-2">
-				Web producer earnings are posted at the end of the delivery window.
+				{{t "common:producer.earningsPosted"}}
 			</p>
 		</div>
 	</div>

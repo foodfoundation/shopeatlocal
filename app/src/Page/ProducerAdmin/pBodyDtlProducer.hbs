@@ -28,18 +28,17 @@
 		</div>
 
 		<div class="LinksPg">
-			<a href="/edit-about-producer/{{IDProducer}}">Edit 'About producer'</a>
-			<a href="/edit-producer-registration/{{IDProducer}}">Edit producer
-				registration</a>
+			<a href="/edit-about-producer/{{IDProducer}}">{{t "common:producerDetail.editAboutProducer"}}</a>
+			<a href="/edit-producer-registration/{{IDProducer}}">{{t "common:producerDetail.editProducerRegistration"}}</a>
 		</div>
 
 		<hr>
 
-		<h5>Status</h5>
+		<h5>{{t "common:producerDetail.status"}}</h5>
 
 		<div class="d-flex flex-row justify-content-between">
 			<div>
-				Producer status
+				{{t "common:producerDetail.producerStatus"}}
 			</div>
 			<div>
 				<strong>{{hTextCdReg CdRegProducer}}</strong>
@@ -48,7 +47,7 @@
 
 		<div class="d-flex flex-row justify-content-between">
 			<div>
-				Wholesale status
+				{{t "common:producerDetail.wholesaleStatus"}}
 			</div>
 			<div>
 				<strong>{{hTextCdReg CdRegWholesale}}</strong>
@@ -57,7 +56,7 @@
 
 		<div class="d-flex flex-row justify-content-between">
 			<div>
-				Listing status
+				{{t "common:producerDetail.listingStatus"}}
 			</div>
 			<div>
 				<strong>{{hTextCkListProducer CkListProducer}}</strong>
@@ -66,7 +65,7 @@
 
 		<div class="d-flex flex-row justify-content-between mt-2">
 			<div>
-				Producer since
+				{{t "common:producerDetail.producerSince"}}
 			</div>
 			<div>
 				<strong>{{hTextWhen WhenRegProducer "Med"}}</strong>
@@ -74,19 +73,19 @@
 		</div>
 
 		<div class="LinksPg mb-0">
-			<a href="/edit-producer-status/{{IDProducer}}">Edit producer status</a>
+			<a href="/edit-producer-status/{{IDProducer}}">{{t "common:producerDetail.editProducerStatus"}}</a>
 		</div>
 	</div>
 
 	<div class="col-lg pl-lg-4">
 		<hr class="d-lg-none mb-3">
 
-		<h5>Delivery</h5>
+		<h5>{{t "common:producerDetail.delivery"}}</h5>
 
 		<div class="LinksPg mb-2">
 			<a href="/producer-check-in/{{IDProducer}}"
 				class="{{hClassDisab (hNot QtyProm)}}">
-				Producer check-in
+				{{t "common:producerDetail.producerCheckIn"}}
 			</a>
 		</div>
 		<div>
@@ -95,17 +94,17 @@
 				{{QtyProm}} {{hPlural QtyProm "item"}} promised for delivery
 			</a>
 			{{else}}
-			No items promised for delivery
+			{{t "common:producerDetail.noItemsForDelivery"}}
 			{{/if}}
 		</div>
 
 		<hr>
 
-		<h5>Earnings</h5>
+		<h5>{{t "common:producerDetail.earnings"}}</h5>
 
 		<div class="d-flex flex-row justify-content-between mb-2">
 			<div>
-				Account balance
+				{{t "common:producerDetail.accountBalance"}}
 			</div>
 			<div class="font-weight-bold">
 				{{hTextCurrOrOrig (hSum BalMoney BalEBT)}}
@@ -113,11 +112,11 @@
 		</div>
 
 		<div class="LinksPg mb-0">
-			<a href="/producer-invoices/{{IDProducer}}">Producer invoices</a>
-			<a href="/transactions/{{IDMemb}}">Transactions</a>
+			<a href="/producer-invoices/{{IDProducer}}">{{t "common:producerDetail.producerInvoices"}}</a>
+			<a href="/transactions/{{IDMemb}}">{{t "common:producerDetail.transactions"}}</a>
 			<a href="/add-producer-transaction/{{IDProducer}}"
 				class="{{hClassDisabLackAccts}}">
-				Add producer transaction
+				{{t "common:producerDetail.addProducerTransaction"}}
 			</a>
 		</div>
 	</div>

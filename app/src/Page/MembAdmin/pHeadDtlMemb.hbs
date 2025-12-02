@@ -9,7 +9,7 @@
 	<div class="d-flex align-items-center">
 		<span class="font-weight-semi">{{NameLogin}}</span>
 		{{#if IsTrial}}
-		<span class="badge badge-info ml-2">Trial</span>
+		<span class="badge badge-info ml-2">{{t "common:memberDetail.trial"}}</span>
 		{{/if}}
 	</div>
 	{{>Misc/pIDsLine}}
@@ -26,6 +26,6 @@
 		<input type="hidden" name="IDMembImper" value="{{IDMemb}}">
 		<input type="hidden" name="CkShowProducer" value="{{CkShowProducer}}">
 
-		<button type="submit" class="btn btn-warning">Impersonate</button>
+		<button type="submit" class="btn btn-warning">{{t "common:memberDetail.impersonate"}}</button>
 	</form>
 </div>

@@ -36,6 +36,9 @@ export const SecretCookSess = "XXXXXXXX";
 /** The default 'from' address for outgoing e-mails. */
 export const EmailFromDef = "noreply@example.com";
 
+/** Language settings */
+export const defaultLang = "en";
+
 /** Outgoing mail server settings. */
 export const ServEmail = {
   service: "SMTP", // "Gmail" or "SMTP" - SMTP is the recommended email server

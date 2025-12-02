@@ -3,7 +3,7 @@
 //    Member Search Results view --}}
 
 <div class="container-md py-4">
-	<h2>Member search results</h2>
+	<h2>{{t "common:admin.memberSearchResults"}}</h2>
 
 	<div class="d-sm-flex flex-row">
 		<div class="lead">
@@ -11,7 +11,7 @@
 			{{Lbl}}{{#if Val}}
 			<strong>{{Val}}</strong>{{/if}}{{#unless @last}}, {{/unless}}
 			{{else}}
-			All members
+			{{t "common:admin.allMembers"}}
 			{{/each}}
 		</div>
 
@@ -22,21 +22,21 @@
 
 	{{#unless Membs}}
 	<div class="jumbotron">
-		<h2 class="display-4 font-size-200">No matches</h2>
+		<h2 class="display-4 font-size-200">{{t "common:admin.noMatches"}}</h2>
 	</div>
 	{{else}}
 	<div class="table-responsive mt-3">
 		<table class="table table-sm table-striped table-hover mb-0">
 			<thead>
 				<tr>
-					<th scope="col">Member ID</th>
-					<th scope="col">Member business</th>
-					<th scope="col">Name 1</th>
-					<th scope="col">Name 2</th>
-					<th scope="col">City</th>
-					<th scope="col">St</th>
-					<th scope="col">Zip</th>
-					<th scope="col" class="text-right">Balance</th>
+					<th scope="col">{{t "common:admin.memberId"}}</th>
+					<th scope="col">{{t "common:admin.memberBusiness"}}</th>
+					<th scope="col">{{t "common:admin.name1"}}</th>
+					<th scope="col">{{t "common:admin.name2"}}</th>
+					<th scope="col">{{t "common:admin.city"}}</th>
+					<th scope="col">{{t "common:admin.state"}}</th>
+					<th scope="col">{{t "common:admin.zip"}}</th>
+					<th scope="col" class="text-right">{{t "common:admin.balance"}}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -64,14 +64,14 @@
 		<div class="d-sm-flex flex-row justify-content-between">
 			{{#if Membs}}
 			<div>
-				<a class="btn btn-secondary" href="{{PathExport}}">Export</a>
+				<a class="btn btn-secondary" href="{{PathExport}}">{{t "common:buttons.export"}}</a>
 			</div>
 			{{/if}}
 
 			{{#if CkPaging}}
 			<div>
-				{{{hBtnPageSearch PathPagePrev "Previous"}}}
-				{{{hBtnPageSearch PathPageNext "Next"}}}
+				{{{hBtnPageSearch PathPagePrev (t "common:search.previous")}}}
+				{{{hBtnPageSearch PathPageNext (t "common:search.next")}}}
 			</div>
 			{{/if}}
 		</div>
@@ -101,7 +101,7 @@
 
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary ml-auto"
-					data-toggle="modal" data-target="#DlgDtlMemb{{IDMemb}}">Close</button>
+					data-toggle="modal" data-target="#DlgDtlMemb{{IDMemb}}">{{t "common:buttons.close"}}</button>
 			</div>
 		</div>
 	</div>

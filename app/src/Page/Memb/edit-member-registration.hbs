@@ -7,7 +7,7 @@
 
 <div class="container w-lg-75 w-xl-50 py-4">
 	<div class="d-flex flex-row justify-content-between">
-		<h2 class="mb-3">Edit member registration</h2>
+		<h2 class="mb-3">{{t "forms:memberEdit.title"}}</h2>
 
 		{{#unless CkSelImperUserSelf}}
 		<div class="text-right">
@@ -31,21 +31,21 @@
 		<div class="form-row">
 			<div class="form-group col-md">
 				<label class="float-right text-info d-md-none">
-					<small>Primary contact</small>
+					<small>{{t "forms:registration.primaryContact"}}</small>
 				</label>
 
-				<label for="Name1First">First name *</label>
+				<label for="Name1First">{{t "forms:registration.firstName"}} {{t "forms:labels.required"}}</label>
 				<input id="Name1First" name="Name1First" value="{{Name1First}}"
 					maxlength="50" required autocomplete="given-name"
 					class="form-control {{#if MsgFailName1First}}is-invalid{{/if}}">
 				{{hDivMsgFail MsgFailName1First}}
 
 				<p class="text-info d-none d-md-block">
-					<small>Primary contact</small>
+					<small>{{t "forms:registration.primaryContact"}}</small>
 				</p>
 			</div>
 			<div class="form-group col-md">
-				<label for="Name1Last">Last name *</label>
+				<label for="Name1Last">{{t "forms:registration.lastName"}} {{t "forms:labels.required"}}</label>
 				<input id="Name1Last" name="Name1Last" value="{{Name1Last}}"
 					maxlength="50" required autocomplete="family-name"
 					class="form-control {{#if MsgFailName1Last}}is-invalid{{/if}}">
@@ -56,21 +56,21 @@
 		<div class="form-row">
 			<div class="form-group col-md">
 				<label class="float-right text-info d-md-none">
-					<small>Alternative contact</small>
+					<small>{{t "forms:registration.alternativeContact"}}</small>
 				</label>
 
-				<label for="Name2First">First name</label>
+				<label for="Name2First">{{t "forms:registration.firstName"}}</label>
 				<input id="Name2First" name="Name2First" value="{{Name2First}}"
 					maxlength="50" autocomplete="off"
 					class="form-control {{#if MsgFailName2First}}is-invalid{{/if}}">
 				{{hDivMsgFail MsgFailName2First}}
 
 				<p class="text-info d-none d-md-block">
-					<small>Alternative contact</small>
+					<small>{{t "forms:registration.alternativeContact"}}</small>
 				</p>
 			</div>
 			<div class="form-group col-md">
-				<label for="Name2Last">Last name</label>
+				<label for="Name2Last">{{t "forms:registration.lastName"}}</label>
 				<input id="Name2Last" name="Name2Last" value="{{Name2Last}}"
 					maxlength="50" autocomplete="off"
 					class="form-control {{#if MsgFailName2Last}}is-invalid{{/if}}">
@@ -83,7 +83,7 @@
 		{{#if (hCkStaffFromUser)}}
 		<div class="form-row">
 			<div class="form-group col-md">
-				<label for="DistDeliv">Home delivery distance (in miles)</label>
+				<label for="DistDeliv">{{t "common:member.homeDeliveryDistance"}} ({{t "common:member.miles"}})</label>
 				<input id="DistDeliv" name="DistDeliv" value="{{hTextFixedOrOrig DistDeliv 2}}"
 					maxlength="5" autocomplete="off"
 					class="w-md-15 form-control {{#if MsgFailDistDeliv}}is-invalid{{/if}}">
@@ -94,7 +94,7 @@
 
 		<div class="form-row">
 			<div class="form-group col-md">
-				<label for="NameBus">Business name</label>
+				<label for="NameBus">{{t "forms:registration.businessName"}}</label>
 				<input id="NameBus" name="NameBus" value="{{NameBus}}" maxlength="80"
 					autocomplete="organization"
 					class="form-control {{#if MsgFailNameBus}}is-invalid{{/if}}">
@@ -104,7 +104,7 @@
 
 		<div class="form-row">
 			<div class="form-group col-md">
-				<label for="Addr1">Street address 1 *</label>
+				<label for="Addr1">{{t "forms:registration.streetAddress1"}} {{t "forms:labels.required"}}</label>
 				<input id="Addr1" name="Addr1" value="{{Addr1}}" maxlength="80" required
 					autocomplete="address-line1"
 					class="form-control {{#if MsgFailAddr1}}is-invalid{{/if}}">
@@ -114,7 +114,7 @@
 
 		<div class="form-row">
 			<div class="form-group col-md">
-				<label for="Addr2">Street address 2</label>
+				<label for="Addr2">{{t "forms:registration.streetAddress2"}}</label>
 				<input id="Addr2" name="Addr2" value="{{Addr2}}" maxlength="80"
 					autocomplete="address-line2"
 					class="form-control {{#if MsgFailAddr2}}is-invalid{{/if}}">
@@ -124,21 +124,21 @@
 
 		<div class="form-row">
 			<div class="form-group col-md-6">
-				<label for="City">City *</label>
+				<label for="City">{{t "forms:registration.city"}} {{t "forms:labels.required"}}</label>
 				<input id="City" name="City" value="{{City}}" maxlength="50" required
 					autocomplete="address-level2"
 					class="form-control {{#if MsgFailCity}}is-invalid{{/if}}">
 				{{hDivMsgFail MsgFailCity}}
 			</div>
 			<div class="form-group col-md-2">
-				<label for="St">State *</label>
+				<label for="St">{{t "forms:registration.state"}} {{t "forms:labels.required"}}</label>
 				<input id="St" name="St" value="{{St}}" maxlength="2"
 					pattern="[A-Za-z]{2}" required autocomplete="address-level1"
 					class="form-control {{#if MsgFailSt}}is-invalid{{/if}}">
 				{{hDivMsgFail MsgFailSt}}
 			</div>
 			<div class="form-group col-md-4">
-				<label for="Zip">Zip *</label>
+				<label for="Zip">{{t "forms:registration.zip"}} {{t "forms:labels.required"}}</label>
 				<input id="Zip" name="Zip" value="{{Zip}}" maxlength="10"
 					pattern="(\d{5}|\d{9}\d{5}[ \-]\d{4})" required
 					autocomplete="postal-code" inputmode="numeric"
@@ -149,7 +149,7 @@
 
 		<div class="form-row">
 			<div class="form-group col-md">
-				<label for="InstructDeliv">Special delivery instructions</label>
+				<label for="InstructDeliv">{{t "forms:registration.deliveryInstructions"}}</label>
 				{{!-- Don't wrap between the two tags, doing so adds whitespace to
 				//    the input: --}}
 				<textarea name="InstructDeliv" maxlength="200"
@@ -163,7 +163,7 @@
 					<input id="CkAllowMail" name="CkAllowMail" type="checkbox"
 						{{hAttrCk CkAllowMail true}} class="custom-control-input">
 					<label for="CkAllowMail" class="custom-control-label">
-						Allow USPS mail at this address?
+						{{t "forms:registration.allowMail"}}
 					</label>
 				</div>
 			</div>
@@ -175,7 +175,7 @@
 					<input id="CkAllowPublicName" name="CkAllowPublicName" type="checkbox" 
 						 {{hAttrCk CkAllowPublicName true}} class="custom-control-input">
 					<label for="CkAllowPublicName" class="custom-control-label">
-						In order to encourage a food community, allow producers to see your Name and Email when you order products from them.
+						{{t "forms:registration.allowPublicName"}}
 					</label>
 				</div>
 			</div>
@@ -185,7 +185,7 @@
 
 		<div class="form-row align-items-end">
 			<div class="form-group col-md">
-				<label for="Phone1">Phone 1 (with area code) *</label>
+				<label for="Phone1">{{t "forms:registration.phone1"}} {{t "forms:labels.required"}}</label>
 				<input id="Phone1" name="Phone1" type="tel"
 					value="{{hTextPhoneOrOrig Phone1}}" maxlength="30" required
 					autocomplete="tel" inputmode="tel"
@@ -197,12 +197,12 @@
 						type="checkbox" {{hAttrCk CkAllowPhone1MsgCart true}}
 						class="custom-control-input">
 					<label for="CkAllowPhone1MsgCart" class="custom-control-label">
-						Receive cart messages at phone 1?
+						{{t "forms:registration.receiveCartMessages1"}}
 					</label>
 				</div>
 			</div>
 			<div class="form-group col-md">
-				<label for="Phone2">Phone 2 (with area code)</label>
+				<label for="Phone2">{{t "forms:registration.phone2"}}</label>
 				<input id="Phone2" name="Phone2" type="tel"
 					value="{{hTextPhoneOrOrig Phone2}}" maxlength="30" autocomplete="off"
 					inputmode="tel"
@@ -214,7 +214,7 @@
 						type="checkbox" {{hAttrCk CkAllowPhone2MsgCart true}}
 						class="custom-control-input">
 					<label for="CkAllowPhone2MsgCart" class="custom-control-label">
-						Receive cart messages at phone 2?
+						{{t "forms:registration.receiveCartMessages2"}}
 					</label>
 				</div>
 			</div>
@@ -234,7 +234,7 @@
 				{{/unless}}
 				{{/if}}
 
-				<label for="Email1">E-mail 1 *</label>
+				<label for="Email1">{{t "forms:registration.email1"}} {{t "forms:labels.required"}}</label>
 				<input id="Email1" name="Email1" type="email" value="{{Email1}}"
 					maxlength="80" required autocomplete="email" inputmode="email"
 					class="form-control {{#if MsgFailEmail1}}is-invalid{{/if}}">
@@ -245,19 +245,19 @@
 						type="checkbox" {{hAttrCk CkAllowEmail1RemindShop true}}
 						class="custom-control-input">
 					<label for="CkAllowEmail1RemindShop" class="custom-control-label">
-						Receive shopping reminders at e-mail 1?
+						{{t "forms:registration.receiveReminders1"}}
 					</label>
 				</div>
 				<div class="custom-control custom-checkbox mt-2">
 					<input id="CkAllowEmail1News" name="CkAllowEmail1News" type="checkbox"
 						{{hAttrCk CkAllowEmail1News true}} class="custom-control-input">
 					<label for="CkAllowEmail1News" class="custom-control-label">
-						Receive {{CoopParams.CoopNameShort}} newsletters at e-mail 1?
+						{{t "forms:registration.receiveNewsletters1" name=CoopParams.CoopNameShort}}
 					</label>
 				</div>
 			</div>
 			<div class="form-group col-md">
-				<label for="Email2">E-mail 2</label>
+				<label for="Email2">{{t "forms:registration.email2"}}</label>
 				<input id="Email2" name="Email2" type="email" value="{{Email2}}"
 					maxlength="80" autocomplete="off" inputmode="email"
 					class="form-control {{#if MsgFailEmail2}}is-invalid{{/if}}">
@@ -268,14 +268,14 @@
 						type="checkbox" {{hAttrCk CkAllowEmail2RemindShop true}}
 						class="custom-control-input">
 					<label for="CkAllowEmail2RemindShop" class="custom-control-label">
-						Receive shopping reminders at e-mail 2?
+						{{t "forms:registration.receiveReminders2"}}
 					</label>
 				</div>
 				<div class="custom-control custom-checkbox mt-2">
 					<input id="CkAllowEmail2News" name="CkAllowEmail2News" type="checkbox"
 						{{hAttrCk CkAllowEmail2News true}} class="custom-control-input">
 					<label for="CkAllowEmail2News" class="custom-control-label">
-						Receive {{CoopParams.CoopNameShort}} newsletters at e-mail 2?
+						{{t "forms:registration.receiveNewsletters2" name=CoopParams.CoopNameShort}}
 					</label>
 				</div>
 			</div>
@@ -284,7 +284,7 @@
 		<hr>
 
 		<div class="d-flex">
-			<button type="submit" class="btn btn-primary ml-auto">Save</button>
+			<button type="submit" class="btn btn-primary ml-auto">{{t "common:buttons.save"}}</button>
 		</div>
 	</form>
 </div>

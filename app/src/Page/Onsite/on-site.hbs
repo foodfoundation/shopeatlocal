@@ -7,53 +7,50 @@
 		{{!-- Doesn't seem necessary to hide the border on small displays, or
 		//    possible, without responsive border class: --}}
 		<div class="col-sm pr-sm-4 border-right">
-			<h5>Managed inventory</h5>
+			<h5>{{t "common:onsite.managedInventory"}}</h5>
 
 			<p class="text-muted font-size-90">
-				Managed inventory is labeled by {{CoopParams.CoopNameShort}} staff, stored at {{CoopParams.CoopNameShort}}, and checked-in
-				by {{CoopParams.CoopNameShort}} staff on behalf of original producers.
+				{{t "common:onsite.managedInventoryHelp" name=CoopParams.CoopNameShort}}
 			</p>
 
 			<div class="LinksPg">
-				<a href="/managed-catalog">Managed catalog</a>
+				<a href="/managed-catalog">{{t "common:onsite.managedCatalog"}}</a>
 			</div>
 		</div>
 
 		<div class="col-sm pl-md-4">
 			<hr class="d-sm-none mt-0">
 
-			<h5>On-site store</h5>
+			<h5>{{t "common:onsite.onSiteStore"}}</h5>
 
 			<p class="text-muted font-size-90">
-				To process an on-site retail or Wholesale order, click <a href="/on-site-cart">On-site
-				cart</a> and scan the items.
-				<br>Locate items in the on-site 
-				<a href="/on-site-catalog">Retail catalog</a> or
-				<a href="/wholesale-catalog">Wholesale catalog</a> and click
-				<span class="font-weight-semi">Add to on-site cart</span> to add without
-				scanning.
+				{{t "common:onsite.onSiteStoreHelp"}}
+				<br>{{t "common:onsite.locateItems"}} 
+				<a href="/on-site-catalog">{{t "common:onsite.retailCatalog"}}</a> {{t "common:onsite.or"}}
+				<a href="/wholesale-catalog">{{t "common:onsite.wholesaleCatalog"}}</a> {{t "common:onsite.andClick"}}
+				<span class="font-weight-semi">{{t "common:onsite.addToOnsiteCart"}}</span> {{t "common:onsite.toAddWithoutScanning"}}
 			</p>
 
 			<div class="LinksPg">
-				<a href="/on-site-catalog">Retail catalog</a>
-				<a href="/wholesale-catalog">Wholesale catalog</a>
+				<a href="/on-site-catalog">{{t "common:onsite.retailCatalog"}}</a>
+				<a href="/wholesale-catalog">{{t "common:onsite.wholesaleCatalog"}}</a>
 			</div>
 			<div class="LinksPg">
-				<a href="/on-site-cart">On-site cart</a>
-				<a href="/on-site-checkout">On-site checkout</a>
-			</div>
-
-			<hr>
-
-			<div class="LinksPg">
-				<a href="/on-site-shopper-invoices">Retail shopper invoices</a>
-				<a href="/wholesale-shopper-invoices">Wholesale shopper invoices</a>
+				<a href="/on-site-cart">{{t "common:onsite.onSiteCart"}}</a>
+				<a href="/on-site-checkout">{{t "common:onsite.onSiteCheckout"}}</a>
 			</div>
 
 			<hr>
 
 			<div class="LinksPg">
-				<a href="/wholesale-inventory">Wholesale inventory</a>
+				<a href="/on-site-shopper-invoices">{{t "common:onsite.retailShopperInvoices"}}</a>
+				<a href="/wholesale-shopper-invoices">{{t "common:onsite.wholesaleShopperInvoices"}}</a>
+			</div>
+
+			<hr>
+
+			<div class="LinksPg">
+				<a href="/wholesale-inventory">{{t "common:onsite.wholesaleInventory"}}</a>
 			</div>
 		</div>
 	</div>

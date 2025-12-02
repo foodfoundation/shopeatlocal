@@ -3,9 +3,9 @@
 //    Distinguished members view --}}
 
 <div class="container-md py-4">
-	<h1 class="display-4 text-center mb-4">Distinguished members</h1>
+	<h1 class="display-4 text-center mb-4">{{t "common:distinguishedMembers.title"}}</h1>
 	<p class="lead text-center mb-5">
-		Meet the members who go above and beyond in supporting our community.
+		{{t "common:distinguishedMembers.subtitle"}}
 	</p>
 
 	{{#if Sections}}
@@ -27,7 +27,7 @@
 		{{/each}}
 	{{else}}
 	<section class="text-center">
-		<p class="lead">No distinguished members have been identified yet. Check back soon!</p>
+		<p class="lead">{{t "common:distinguishedMembers.noMembers"}}</p>
 	</section>
 	{{/if}}
 </div>

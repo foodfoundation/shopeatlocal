@@ -10,13 +10,13 @@
 			</h1>
 			<div class="BordDk border-md-left pl-md-3">
 				<h1 class="display-4">
-					Page not found
+					{{t "errors:page404.heading"}}
 				</h1>
 				<div class="lead">
 					{{#if Msg}}
 					{{Msg}}
 					{{else}}
-					That page does not exist.
+					{{t "errors:page404.message"}}
 					{{/if}}
 				</div>
 			</div>

@@ -1,0 +1,80 @@
+{
+  "registration": {
+    "title": "New member registration",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "strongPasswordHint": "Be sure to choose a",
+    "strongPasswordLink": "strong password",
+    "contactInfo": "Contact information",
+    "primaryContact": "Primary contact",
+    "alternativeContact": "Alternative contact",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "businessName": "Business name",
+    "streetAddress1": "Street address 1",
+    "streetAddress2": "Street address 2",
+    "city": "City",
+    "state": "State",
+    "zip": "Zip",
+    "deliveryInstructions": "Special delivery instructions",
+    "allowMail": "Allow USPS mail at this address?",
+    "phone1": "Phone 1 (with area code)",
+    "phone2": "Phone 2 (with area code)",
+    "receiveCartMessages1": "Receive cart messages at phone 1?",
+    "receiveCartMessages2": "Receive cart messages at phone 2?",
+    "email1": "E-mail 1",
+    "email2": "E-mail 2",
+    "receiveReminders1": "Receive shopping reminders at e-mail 1?",
+    "receiveReminders2": "Receive shopping reminders at e-mail 2?",
+    "receiveNewsletters1": "Receive {{name}} newsletters at e-mail 1?",
+    "receiveNewsletters2": "Receive {{name}} newsletters at e-mail 2?",
+    "additionalInfo": "Additional information",
+    "howDidYouHear": "How did you hear about {{name}}?",
+    "tellUsMore": "Please tell us more* - referrals will receive a thank you coupon",
+    "applyEBT": "I would like to make {{name}} purchases with",
+    "applyVolunteer": "I would like to volunteer at {{name}}",
+    "allowPublicName": "In order to encourage a food community, allow producers to see your Name and Email when you order products from them.",
+    "readTOS": "I have read and understood the {{name}}",
+    "termsOfService": "Terms of Service"
+  },
+  "changePassword": {
+    "title": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password"
+  },
+  "resetPassword": {
+    "title": "Reset password",
+    "requestTitle": "Request password reset",
+    "emailOrUsername": "E-mail or username",
+    "requestButton": "Request password reset",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password"
+  },
+  "memberEdit": {
+    "title": "Edit member registration",
+    "statusTitle": "Edit member status",
+    "tagsTitle": "Edit member tags"
+  },
+  "producerRegistration": {
+    "title": "Producer registration",
+    "businessName": "Business name",
+    "aboutYou": "About you",
+    "editTitle": "Edit producer registration",
+    "statusTitle": "Edit producer status"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidPhone": "Please enter a valid phone number",
+    "passwordTooShort": "Password must be at least {{min}} characters",
+    "passwordMismatch": "Passwords do not match",
+    "invalidZip": "Please enter a valid zip code",
+    "invalidState": "Please enter a valid 2-letter state code"
+  },
+  "labels": {
+    "required": "*"
+  }
+}
+

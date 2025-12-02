@@ -7,145 +7,145 @@
 		{{!-- Doesn't seem necessary to hide the border on small displays, or
 		//    possible, without responsive border class: --}}
 		<div class="col-sm pr-sm-4 border-right">
-			<h5>General</h5>
+			<h5>{{t "common:siteAdmin.general"}}</h5>
 
 			<div class="LinksPg">
 				<a href="/manage-locations" class="{{hClassDisabLackMgr}}">
-					Manage locations
+					{{t "common:siteAdmin.manageLocations"}}
 				</a>
 				<a href="/manage-categories" class="{{hClassDisabLackMgr}}">
-					Manage categories
+					{{t "common:siteAdmin.manageCategories"}}
 				</a>
 			</div>
 
 			<hr>
 
-			<h5>Security</h5>
+			<h5>{{t "common:siteAdmin.security"}}</h5>
 
 			<div class="LinksPg mb-2">
-				<a href="/unblock-ip-address">Unblock IP address</a>
-				<a href="/request-password-reset">Reset Member Password</a>
+				<a href="/unblock-ip-address">{{t "common:siteAdmin.unblockIpAddress"}}</a>
+				<a href="/request-password-reset">{{t "common:siteAdmin.resetMemberPassword"}}</a>
 			</div>
 
 			<div>
 				{{#if CtBlockIP}}
 
 				{{#if (hCkGreater CtBlockIP 1)}}
-				There are {{CtBlockIP}} blocked IPs.
+				{{t "common:siteAdmin.blockedIPs" count=CtBlockIP}}
 				{{else}}
-				There is one blocked IP.
+				{{t "common:siteAdmin.oneBlockedIP"}}
 				{{/if}}
 
 				{{else}}
-				There are no blocked IPs.
+				{{t "common:siteAdmin.noBlockedIPs"}}
 				{{/if}}
 			</div>
 
 			<hr>
 
-			<h5>Market management</h5>
+			<h5>{{t "common:siteAdmin.marketManagement"}}</h5>
 
 			<div class="d-flex flex-row justify-content-between">
-				<div>Member trial length</div>
+				<div>{{t "common:siteAdmin.memberTrialLength"}}</div>
 				<div>
-					<strong>{{CtMonthTrialMembNew}} month{{#if (hCkGreater CtMonthTrialMembNew 1)}}s{{/if}}{{#if (hCkEq CtMonthTrialMembNew 0)}}s{{/if}}</strong>
+					<strong>{{CtMonthTrialMembNew}} {{#if (hCkGreater CtMonthTrialMembNew 1)}}{{t "common:siteAdmin.months"}}{{else}}{{#if (hCkEq CtMonthTrialMembNew 0)}}{{t "common:siteAdmin.months"}}{{else}}{{t "common:siteAdmin.month"}}{{/if}}{{/if}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Member fee</div>
+				<div>{{t "common:siteAdmin.memberFee"}}</div>
 				<div>
 					<strong>${{FeeMembInit}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Member renewal fee</div>
+				<div>{{t "common:siteAdmin.memberRenewalFee"}}</div>
 				<div>
 					<strong>${{FeeMembRenew}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Inventory fee</div>
+				<div>{{t "common:siteAdmin.inventoryFee"}}</div>
 				<div>
 					<strong>${{FeeInvtIt}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Producer fee</div>
+				<div>{{t "common:siteAdmin.producerFee"}}</div>
 				<div>
 					<strong>{{hTextFixedOrOrig FracFeeCoopProducer 2}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Shop fee</div>
+				<div>{{t "common:siteAdmin.shopFee"}}</div>
 				<div>
 					<strong>{{hTextFixedOrOrig FracFeeCoopShop 2}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Transfer fee</div>
+				<div>{{t "common:siteAdmin.transferFee"}}</div>
 				<div>
 					<strong>${{FeeTransfer}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Delivery fee base</div>
+				<div>{{t "common:siteAdmin.deliveryFeeBase"}}</div>
 				<div>
 					<strong>${{FeeDelivBase}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Delivery fee per mile</div>
+				<div>{{t "common:siteAdmin.deliveryFeePerMile"}}</div>
 				<div>
 					<strong>${{FeeDelivMile}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Tax</div>
+				<div>{{t "common:siteAdmin.tax"}}</div>
 				<div>
 					<strong>{{hTextFixedOrOrig FracTaxSale 2}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Wholesale shop fee for members</div>
+				<div>{{t "common:siteAdmin.wholesaleShopFeeMembers"}}</div>
 				<div>
 					<strong>{{hTextFixedOrOrig FracFeeCoopWholesaleMemb 2}}</strong>
 				</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
-				<div>Wholesale shop fee for producers</div>
+				<div>{{t "common:siteAdmin.wholesaleShopFeeProducers"}}</div>
 				<div>
 					<strong>{{hTextFixedOrOrig FracFeeCoopWholesaleProducer 2}}</strong>
 				</div>
 			</div>
 
 			<div class="d-flex flex-row justify-content-end pt-4">
-				<a class="btn btn-primary" href="/edit-site-configuration">Edit</a>
+				<a class="btn btn-primary" href="/edit-site-configuration">{{t "common:buttons.edit"}}</a>
 			</div>
 		</div>
 
 		<div class="col-sm pl-md-4">
 			<hr class="d-sm-none">
 
-			<h5>Help</h5>
+			<h5>{{t "common:siteAdmin.help"}}</h5>
 
 			<div class="LinksPg">
-				<a href="/cycle-events">Cycle events</a>
-				<a href="/registration-statuses">Registration statuses</a>
-				<a href="/staff-types">Staff types</a>
-				<a href="/member-fees">Member fees</a>
-				<a href="/member-balances">Member balances</a>
-				<a href="/scanner-use">Scanner use</a>
-				<a href="/scanner-setup">Scanner setup</a>
+				<a href="/cycle-events">{{t "common:siteAdmin.cycleEvents"}}</a>
+				<a href="/registration-statuses">{{t "common:siteAdmin.registrationStatuses"}}</a>
+				<a href="/staff-types">{{t "common:siteAdmin.staffTypes"}}</a>
+				<a href="/member-fees">{{t "common:siteAdmin.memberFees"}}</a>
+				<a href="/member-balances">{{t "common:siteAdmin.memberBalances"}}</a>
+				<a href="/scanner-use">{{t "common:siteAdmin.scannerUse"}}</a>
+				<a href="/scanner-setup">{{t "common:siteAdmin.scannerSetup"}}</a>
 			</div>
 
 			{{#if (hCkDev)}}
 			<hr>
 
-			<h5>Development</h5>
+			<h5>{{t "common:siteAdmin.development"}}</h5>
 
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Database
+					{{t "common:siteAdmin.database"}}
 				</div>
 				<div>
 					<strong>{{NameDB}}</strong>
@@ -154,7 +154,7 @@
 
 			<div class="d-flex flex-row justify-content-between">
 				<div>
-					Session ID
+					{{t "common:siteAdmin.sessionId"}}
 				</div>
 				<div>
 					<strong>{{IDSess}}</strong>
@@ -164,19 +164,19 @@
 
 			<hr>
 
-			<h5>Site management</h5>
+			<h5>{{t "common:siteAdmin.siteManagement"}}</h5>
 
-			<p>Edit your market site parameters, such as name, logo and business information. After you are done with editing, please make sure to press the refresh button in this section for the changes to take action.</p>
+			<p>{{t "common:siteAdmin.siteManagementHelp"}}</p>
 
 			<div class="d-flex flex-row justify-content-between">
-				<a class="btn btn-primary" target="_blank" href="{{sanityUrl}}/structure/coopDetails">Edit</a>
+				<a class="btn btn-primary" target="_blank" href="{{sanityUrl}}/structure/coopDetails">{{t "common:buttons.edit"}}</a>
 			</div>
 
 			<form id="form-refresh" class="pb-4" action="/site-admin"
 				method="POST" novalidate onsubmit="Disab_Form()">
 
 				<input type="hidden" name="_csrf" value="{{TokCSRF}}">
-				<button type="submit" class="btn btn-primary mt-3">Refresh</button>
+				<button type="submit" class="btn btn-primary mt-3">{{t "common:siteAdmin.refresh"}}</button>
 			</form>
 		</div>
 	</div>
