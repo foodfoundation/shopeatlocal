@@ -29,7 +29,7 @@ export async function wHandGet(aReq, aResp) {
   if (aResp.locals.Qty === undefined) aResp.locals.Qty = 1;
 
   aResp.locals.CdCartType = aResp.locals.VtySel.CdVtyType ?? "Retail";
-  aResp.locals.Title = `${CoopParams.CoopNameShort} add to on-site cart`;
+  aResp.locals.Title = aReq.t("common:pageTitles.addToOnSiteCart", { name: CoopParams.CoopNameShort });
   aResp.render("Onsite/add-to-on-site-cart");
 }
 
@@ -71,7 +71,7 @@ export async function wHandPost(aReq, aResp) {
   // Empty inputs will have 'null' cooked values:
   oWgtsCook = oWgtsCook.filter(o => o !== null);
 
-  if (oVty.CkPriceVar && !oWgtsCook.length) oMsgFailWgts = "You must enter one or more weights.";
+  if (oVty.CkPriceVar && !oWgtsCook.length) oMsgFailWgts = aReq.t("common:onSiteCart.mustEnterWeights");
 
   // Handle validation failure
   // -------------------------
@@ -100,15 +100,13 @@ export async function wHandPost(aReq, aResp) {
   const oCart = await wCartOnsitePend(oIDSess);
   if (!!oCart) {
     if (oIsWholesaleVty && oCart.CdCartType !== "Wholesale") {
-      const oMsg = "You cannot mix wholesale and non-wholesale items in the same cart.";
-      aResp.Show_Flash("danger", null, oMsg);
+      aResp.Show_Flash("danger", null, aReq.t("common:onSiteCart.cannotMixWholesale"));
       aResp.redirect(303, "/on-site-catalog");
       return;
     }
 
     if (!oIsWholesaleVty && oCart.CdCartType === "Wholesale") {
-      const oMsg = "You cannot mix wholesale and non-wholesale items in the same cart.";
-      aResp.Show_Flash("danger", null, oMsg);
+      aResp.Show_Flash("danger", null, aReq.t("common:onSiteCart.cannotMixWholesale"));
       aResp.redirect(303, "/wholesale-catalog");
       return;
     }
@@ -121,10 +119,10 @@ export async function wHandPost(aReq, aResp) {
     for (const oWgt of oWgtsCook) await wAdd_ItCartOnsitePend(oIDSess, oVty.IDVty, oWgt, 1);
   } else await wAdd_ItCartOnsitePend(oIDSess, oVty.IDVty, 0, oFlds.Qty.ValCook);
 
-  const oMsg =
-    `Added <strong>Variety ${TextIDVty(oVty.IDVty)}</strong> ` +
-    `<strong>'${NameVty(oVty)}'</strong> to on-site cart.`;
-  aResp.Show_Flash("success", null, oMsg);
+  aResp.Show_Flash("success", null, aReq.t("common:onSiteCart.addedToCart", {
+    varietyId: TextIDVty(oVty.IDVty),
+    varietyName: NameVty(oVty),
+  }));
 
   aResp.redirect(303, "/on-site-cart");
 }

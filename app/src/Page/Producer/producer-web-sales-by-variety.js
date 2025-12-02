@@ -31,7 +31,9 @@ export async function wHandGet(aReq, aResp) {
     ? oPathExportSale + "/" + oIDProducer
     : oPathExportSale;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer web sales by variety`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerWebSalesByVariety", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Producer/producer-web-sales-by-variety");
 }
 
@@ -87,17 +89,17 @@ async function wHandGetExport(aReq, aResp, aPropSales) {
   let oTextVar;
   switch (aPropSales) {
     case "QtyDeliv":
-      oTextVar = "quantity delivered";
+      oTextVar = aReq.t("common:producerWebSales.quantityDelivered");
       break;
     case "SaleNom":
-      oTextVar = "nominal sales";
+      oTextVar = aReq.t("common:producerWebSales.nominalSales");
       break;
     default:
       oTextVar = "UNKNOWN";
       break;
   }
 
-  aResp.attachment(`Producer web sales (${oTextVar}).csv`);
+  aResp.attachment(aReq.t("common:exportFilenames.producerWebSales", { type: oTextVar }) + ".csv");
   aResp.csv(oLines, true);
 }
 

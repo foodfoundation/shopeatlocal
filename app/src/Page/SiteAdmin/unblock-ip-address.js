@@ -8,7 +8,9 @@ import { CoopParams } from "../../Site.js";
 import { CtFailLoginBlock } from "../../../Cfg.js";
 
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} unblock IP address`;
+  aResp.locals.Title = aReq.t("common:pageTitles.unblockIpAddress", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.locals.CtFailLoginBlock = CtFailLoginBlock;
   aResp.render("SiteAdmin/unblock-ip-address");
 }
@@ -43,8 +45,8 @@ export async function wHandPost(aReq, aResp) {
   // --------------
 
   if (oCtDel)
-    aResp.Show_Flash("info", null, `IP address <strong>${oIP}</strong> has been unblocked.`);
-  else aResp.Show_Flash("danger", null, `IP address <strong>${oIP}</strong> was not blocked.`);
+    aResp.Show_Flash("info", null, aReq.t("common:unblockIp.ipUnblocked", { ip: oIP }));
+  else aResp.Show_Flash("danger", null, aReq.t("common:unblockIp.ipWasNotBlocked", { ip: oIP }));
 
   aResp.redirect(303, "/unblock-ip-address");
 }

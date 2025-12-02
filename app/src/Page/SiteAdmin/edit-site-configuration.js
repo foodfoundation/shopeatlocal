@@ -4,7 +4,7 @@
 
 import { querySiteConfigurations } from "../../Db.js";
 import { Conv as _Conv, Valid as _Valid, wExec, CkFail, Retry, wUpdOne } from "../../Form.js";
-import { wReady } from "../../Site.js";
+import { CoopParams, wReady } from "../../Site.js";
 import { Add_Props } from "../../Util.js";
 
 export async function wHandGet(aReq, aResp) {
@@ -13,7 +13,9 @@ export async function wHandGet(aReq, aResp) {
   Add_Props(aResp.locals, siteConfigurations[0]);
 
   aResp.locals.CkEdit = true;
-  aResp.locals.Title = "Edit site configuration";
+  aResp.locals.Title = aReq.t("common:pageTitles.editSiteConfiguration", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("SiteAdmin/edit-site-configuration");
 }
 
@@ -79,7 +81,7 @@ export async function wHandPost(aReq, aResp) {
   await wUpdOne("Site", "z", "1", fields);
   await wReady();
 
-  aResp.Show_Flash("success", null, "Site information has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:siteConfiguration.siteInfoUpdated"));
 
   aResp.redirect(303, "/site-admin");
 }

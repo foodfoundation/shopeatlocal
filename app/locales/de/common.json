@@ -41,7 +41,8 @@
     "impersonating": "Imitiert",
     "member": "Mitglied",
     "producer": "Produzent",
-    "stopImpersonating": "Imitation beenden"
+    "stopImpersonating": "Imitation beenden",
+    "cannotImpersonateSelf": "Sie können sich nicht selbst verkörpern!"
   },
   "auth": {
     "username": "Benutzername",
@@ -623,6 +624,10 @@
     "webOrderLabels": "{{name}} Web-Bestelletiketten",
     "producerRegistration": "{{name}} Produzentenregistrierung",
     "producerReports": "{{name}} Produzentenberichte",
+    "editedProducts": "{{name}} bearbeitete Produkte",
+    "pageNotFound": "Seite nicht gefunden",
+    "editMarketParameters": "{{name}} Marktparameter bearbeiten",
+    "editSiteConfiguration": "{{name}} Site-Konfiguration bearbeiten",
     "aboutProducer": "{{name}} Über den Produzenten",
     "acknowledgments": "{{name}} Danksagungen",
     "distinguishedMembers": "{{name}} Ausgezeichnete Mitglieder",
@@ -650,7 +655,6 @@
     "coopWebSalesByLocation": "{{name}} Webverkäufe nach Standort",
     "coopOnSiteSalesByVariety": "{{name}} Vor-Ort-Verkäufe nach Variante",
     "producerSearchResults": "{{name}} Produzenten-Suchergebnisse",
-    "editedProducts": "{{name}} Bearbeitete Produkte",
     "producerDetail": "{{name}} Produzentendetail",
     "memberDetail": "{{name}} Mitgliederdetail",
     "editProducerStatus": "{{name}} Produzentenstatus bearbeiten",
@@ -689,7 +693,6 @@
     "editSubcategory": "{{name}} Unterkategorie bearbeiten",
     "addLocation": "{{name}} Standort hinzufügen",
     "editLocation": "{{name}} Standort bearbeiten",
-    "editSiteConfiguration": "{{name}} Seitenkonfiguration bearbeiten",
     "memberBalances": "{{name}} Mitgliedersalden",
     "memberFees": "{{name}} Mitgliedsgebühren",
     "registrationStatuses": "{{name}} Registrierungsstatus",
@@ -786,6 +789,18 @@
     "memberTransactions": "Mitglieder-Transaktionen",
     "accountingSummary": "Buchhaltungsübersicht",
     "onSiteVarieties": "Vor-Ort-Varianten",
+    "onSiteShopperInvoices": "Vor-Ort-Kundenrechnungen",
+    "wholesaleVarieties": "Großhandelsvarianten",
+    "managedVarieties": "Verwaltete Varianten",
+    "producerWebSales": "Produzenten-Web-Verkäufe ({{type}})",
+    "marketOnSiteSales": "Markt-Vor-Ort-Verkäufe ({{type}})",
+    "marketWebSales": "Markt-Web-Verkäufe ({{type}})",
+    "webSalesByLocation": "Web-Verkäufe nach Standort",
+    "webSalesByLocation10Cycles": "Web-Verkäufe nach Standort - 10 Zyklen",
+    "webEarnings": "Web-Einnahmen",
+    "onSiteEarnings": "Vor-Ort-Einnahmen",
+    "webCharges": "Web-Gebühren",
+    "onSiteCharges": "Vor-Ort-Gebühren",
     "webOrderSummary": "Web_Bestellübersicht",
     "webOrderPicklist": "Web_Bestellliste"
   },
@@ -905,12 +920,19 @@
     "registrationUpdated": "Die Registrierung wurde aktualisiert."
   },
   "invoiceFilenames": {
-    "webShopperInvoice": "{{name}} Web-Kundenrechnung {{id}}"
+    "webShopperInvoice": "{{name}} Web-Kundenrechnung {{id}}",
+    "onSiteShopperInvoice": "{{name}} Vor-Ort-Kundenrechnung {{id}}",
+    "onSiteProducerInvoice": "{{name}} Vor-Ort-Produzentenrechnung {{id}}",
+    "webProducerInvoice": "{{name}} Web-Produzentenrechnung {{id}}"
   },
   "categories": {
     "categoryNameInUse": "Dieser Kategoriename wird bereits verwendet.",
     "categoryAdded": "Die Kategorie wurde hinzugefügt.",
     "categoryUpdated": "Die Kategorie wurde aktualisiert.",
+    "categoryDeleted": "Die Kategorie wurde gelöscht.",
+    "mustSelectDifferentCategory": "Sie müssen eine andere Kategorie auswählen.",
+    "subcategoryDeleted": "Die Unterkategorie wurde gelöscht.",
+    "mustSelectDifferentSubcategory": "Sie müssen eine andere Unterkategorie auswählen.",
     "subcategoryNameInUse": "Dieser Unterkategoriename wird bereits verwendet.",
     "subcategoryAdded": "Die Unterkategorie wurde hinzugefügt.",
     "subcategoryUpdated": "Die Unterkategorie wurde aktualisiert."
@@ -942,6 +964,55 @@
     "ordersAwaitingCheckout": "Eine oder mehrere {{location}}-Bestellungen warten auf den Checkout."
   },
   "varietyLabels": {
-    "cannotPrintMoreThan": "Sie können nicht mehr als {{count}} Etiketten auf einmal drucken"
+    "cannotPrintMoreThan": "Sie können nicht mehr als {{count}} Etiketten auf einmal drucken",
+    "pdfFilename": "{{name}} Variante {{id}} Etiketten.pdf"
+  },
+  "wholesaleInventory": {
+    "invalidDataSubmitted": "Ungültige Daten übermittelt. Bitte versuchen Sie es erneut.",
+    "noVarietiesToUpdate": "Keine Varianten zum Aktualisieren.",
+    "invalidVarietyId": "Ungültige Varianten-ID '{{id}}'.",
+    "invalidListingStatus": "Ungültiger Varianten-Listungsstatus '{{status}}'.",
+    "inventoryUpdated": "Großhandelsinventar wurde aktualisiert."
+  },
+  "webOrderLabelWeights": {
+    "cannotEnterWeightsShoppingNotClosed": "<strong>Gewichte können nicht eingegeben werden!</strong> Das Einkaufsfenster wurde noch nicht geschlossen.",
+    "noWeightsToStore": "Keine Gewichte zum Speichern.",
+    "itemsBelongToAnotherProducer": "Ein oder mehrere Artikel gehören zu einem anderen Produzenten.",
+    "inventoryUpdatedDuringEdit": "Das Inventar für ein oder mehrere Artikel wurde während der Gewichtsbearbeitung aktualisiert. Einige Mengen oder Notizen haben sich geändert. Sie müssen die Gewichte erneut eingeben.",
+    "weightsUpdated": "Ihre Web-Bestelletiketten-Gewichte wurden aktualisiert."
+  },
+  "producerWebSales": {
+    "quantityDelivered": "gelieferte Menge",
+    "nominalSales": "Nominale Verkäufe"
+  },
+  "printLabels": {
+    "cannotPrintShoppingNotClosed": "<strong>Etiketten können nicht gedruckt werden!</strong> Das Einkaufsfenster wurde noch nicht geschlossen.",
+    "mustEnterAllWeights": "Sie müssen alle Gewichte eingeben, bevor Sie Etiketten drucken.",
+    "noLabelsToPrint": "Es gibt keine Etiketten zum Drucken."
+  },
+  "salesReports": {
+    "quantity": "Menge",
+    "quantitySold": "verkaufte Menge",
+    "nominalSales": "Nominale Verkäufe",
+    "cannotCompileNoCompletedWindow": "Web-Verkäufe können nicht kompiliert werden; es gibt kein abgeschlossenes Einkaufsfenster."
+  },
+  "producerEarnings": {
+    "cannotCompileNoPreviousCycle": "Produzenteneinnahmen können nicht kompiliert werden; es gibt keinen vorherigen Zyklus."
+  },
+  "shopperCharges": {
+    "cannotCompileNoPreviousCycle": "Kundengebühren können nicht kompiliert werden; es gibt keinen vorherigen Zyklus."
+  },
+  "onSiteCart": {
+    "mustEnterWeights": "Sie müssen ein oder mehrere Gewichte eingeben.",
+    "cannotMixWholesale": "Sie können Großhandels- und Nicht-Großhandelsartikel nicht im selben Warenkorb mischen.",
+    "addedToCart": "<strong>Variante {{varietyId}}</strong> <strong>'{{varietyName}}'</strong> wurde zum Vor-Ort-Warenkorb hinzugefügt.",
+    "onlyApprovedWholesaleMembers": "Nur genehmigte Großhandelsmitglieder können einem Großhandels-Warenkorb zugeordnet werden."
+  },
+  "unblockIp": {
+    "ipUnblocked": "IP-Adresse <strong>{{ip}}</strong> wurde entsperrt.",
+    "ipWasNotBlocked": "IP-Adresse <strong>{{ip}}</strong> war nicht gesperrt."
+  },
+  "siteConfiguration": {
+    "siteInfoUpdated": "Site-Informationen wurden aktualisiert."
   }
 }

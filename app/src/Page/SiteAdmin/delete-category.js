@@ -19,7 +19,9 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.CatsExcept = await wCatsExcept(oIDCatDel);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} delete category`;
+  aResp.locals.Title = aReq.t("common:pageTitles.deleteCategory", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("SiteAdmin/delete-category");
 }
 
@@ -34,7 +36,8 @@ export async function wHandPost(aReq, aResp) {
     if (aFld.MsgFail) return;
 
     // Shouldn't be possible to do this in the first place:
-    if (aFld.ValCook === oIDCatDel) aFld.MsgFail = "You must select a different category.";
+    if (aFld.ValCook === oIDCatDel)
+      aFld.MsgFail = aReq.t("common:categories.mustSelectDifferentCategory");
   }
 
   const oFlds = {
@@ -61,7 +64,7 @@ export async function wHandPost(aReq, aResp) {
   // Return to Manage Categories
   // ---------------------------
 
-  aResp.Show_Flash("success", null, "The category has been deleted.");
+  aResp.Show_Flash("success", null, aReq.t("common:categories.categoryDeleted"));
   aResp.redirect(303, "/manage-categories");
 }
 

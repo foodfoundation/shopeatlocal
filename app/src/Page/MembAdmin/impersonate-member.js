@@ -22,7 +22,7 @@ export async function wHandPost(aReq, aResp) {
     // We can do this, at least:
     delete aReq.session.IDMembImper;
 
-    aResp.Show_Flash("danger", null, "You cannot impersonate yourself!");
+    aResp.Show_Flash("danger", null, aReq.t("common:impersonation.cannotImpersonateSelf"));
     aResp.redirect(303, "/member");
     return;
   }

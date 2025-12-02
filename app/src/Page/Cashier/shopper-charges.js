@@ -28,8 +28,7 @@ async function wCycFromReqOrResp(aReq, aResp) {
   oCyc = aResp.locals.CycPrev;
   if (oCyc) return oCyc;
 
-  const oMsg = "Cannot compile shopper charges; there is no previous cycle.";
-  aResp.Show_Flash("danger", null, oMsg);
+  aResp.Show_Flash("danger", null, aReq.t("common:shopperCharges.cannotCompileNoPreviousCycle"));
   aResp.redirect(303, "/cashier");
   return null;
 }
@@ -46,7 +45,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} shopper charges`;
+  aResp.locals.Title = aReq.t("common:pageTitles.shopperCharges", { name: CoopParams.CoopNameShort });
   aResp.render("Cashier/shopper-charges");
 }
 
@@ -58,7 +57,7 @@ export async function wHandGetExportWeb(aReq, aResp) {
 
   for (const oMemb of oMembs) Fmt_RowExcel(oMemb);
 
-  aResp.attachment("Web charges.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.webCharges") + ".csv");
   aResp.csv(oMembs, true);
 }
 
@@ -72,7 +71,7 @@ export async function wHandGetExportOnsite(aReq, aResp) {
 
   for (const oMemb of oMembs) Fmt_RowExcel(oMemb);
 
-  aResp.attachment("On-site charges.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.onSiteCharges") + ".csv");
   aResp.csv(oMembs, true);
 }
 

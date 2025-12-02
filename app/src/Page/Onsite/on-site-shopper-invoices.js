@@ -42,7 +42,9 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} on-site shopper invoices`;
+  aResp.locals.Title = aReq.t("common:pageTitles.onSiteShopperInvoices", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.locals.Invcs = oInvcs;
   aResp.locals.TextRg = oDataPage.Text;
   aResp.locals.PathPagePrev = PathPage(oDataPage.IdxPagePrev);
@@ -70,7 +72,7 @@ export async function wHandGetExport(aReq, aResp) {
     Fmt_RowExcel(oInvc);
   }
 
-  aResp.attachment("On-site shopper invoices.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.onSiteShopperInvoices") + ".csv");
   aResp.csv(oInvcs, true);
 }
 

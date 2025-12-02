@@ -24,7 +24,9 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.Cycs = oCycs;
   aResp.locals.Subcats = oSubcats;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} market web sales by subcategory`;
+  aResp.locals.Title = aReq.t("common:pageTitles.marketWebSalesBySubcategory", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Cashier/co-op-web-sales-by-subcategory");
 }
 
@@ -82,17 +84,17 @@ async function wHandGetExport(aReq, aResp, aPropSales) {
   let oTextVar;
   switch (aPropSales) {
     case "QtySold":
-      oTextVar = "quantity sold";
+      oTextVar = aReq.t("common:salesReports.quantitySold");
       break;
     case "SaleNom":
-      oTextVar = "nominal sales";
+      oTextVar = aReq.t("common:salesReports.nominalSales");
       break;
     default:
       oTextVar = "UNKNOWN";
       break;
   }
 
-  aResp.attachment(`Market web sales (${oTextVar}).csv`);
+  aResp.attachment(aReq.t("common:exportFilenames.marketWebSales", { type: oTextVar }) + ".csv");
   aResp.csv(oLines, true);
 }
 

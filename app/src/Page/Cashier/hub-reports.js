@@ -13,7 +13,7 @@ import { CoopParams } from "../../Site.js";
  *  @returns {Promise<void>} Renders hub reports view with producer data
  */
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} Hub Reports`;
+  aResp.locals.Title = aReq.t("common:pageTitles.hubReports", { name: CoopParams.CoopNameShort });
   const result = await wGetHubReport();
   aResp.locals.ProducerData = result;
   aResp.render("Cashier/hub-reports");

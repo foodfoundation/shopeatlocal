@@ -16,7 +16,9 @@ export async function wHandGet(aReq, aResp) {
   const tags = allTags.map(t => ({ ...t, Ck: assignedSet.has(t.IDMemberTag) }));
   aResp.locals.Tags = tags;
 
-  aResp.locals.Title = aReq.t("common:pageTitles.editMemberTags", { name: CoopParams.CoopNameShort });
+  aResp.locals.Title = aReq.t("common:pageTitles.editMemberTags", {
+    name: CoopParams.CoopNameShort,
+  });
   aResp.render("Memb/edit-member-tags");
 }
 

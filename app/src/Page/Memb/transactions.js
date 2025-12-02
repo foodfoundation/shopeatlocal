@@ -45,7 +45,7 @@ export async function wHandGetExport(aReq, aResp) {
     Fmt_RowExcel(oTransact);
   }
 
-  aResp.attachment("Member transactions.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.memberTransactions") + ".csv");
   aResp.csv(oTransacts, true);
 }
 

@@ -33,7 +33,11 @@ export async function wHandGet(aReq, aResp) {
 
   await Storage.files.sendFile(aResp, {
     fileName: oInvc.NameFileInvc,
-    documentName: `${CoopParams.CoopNameShort} on-site producer invoice ${TextIDInvcProducerOnsite(oIDInvc)}.pdf`,
+    documentName:
+      aReq.t("common:invoiceFilenames.onSiteProducerInvoice", {
+        name: CoopParams.CoopNameShort,
+        id: TextIDInvcProducerOnsite(oIDInvc),
+      }) + ".pdf",
   });
 }
 

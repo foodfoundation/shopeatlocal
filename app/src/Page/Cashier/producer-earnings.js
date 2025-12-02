@@ -33,8 +33,7 @@ async function wCycFromReq(aReq, aResp) {
   oCyc = aResp.locals.CycPrev;
   if (oCyc) return oCyc;
 
-  const oMsg = "Cannot compile producer earnings; there is no previous cycle.";
-  aResp.Show_Flash("danger", null, oMsg);
+  aResp.Show_Flash("danger", null, aReq.t("common:producerEarnings.cannotCompileNoPreviousCycle"));
   aResp.redirect(303, "/cashier");
   return null;
 }
@@ -53,7 +52,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.ProducersOnsiteRetail = await wProducersOnsite(oCyc.IDCyc, "Retail");
   aResp.locals.ProducersOnsiteWholesale = await wProducersOnsite(oCyc.IDCyc, "Wholesale");
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer earnings`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerEarnings", { name: CoopParams.CoopNameShort });
   aResp.render("Cashier/producer-earnings");
 }
 
@@ -70,7 +69,7 @@ export async function wHandGetExportWeb(aReq, aResp) {
 
   for (const oProducer of oProducers) Fmt_RowExcel(oProducer);
 
-  aResp.attachment("Web earnings.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.webEarnings") + ".csv");
   aResp.csv(oProducers, true);
 }
 
@@ -89,7 +88,7 @@ export async function wHandGetExportOnsite(aReq, aResp) {
 
   for (const oProducer of oProducers) Fmt_RowExcel(oProducer);
 
-  aResp.attachment("On-site earnings.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.onSiteEarnings") + ".csv");
   aResp.csv(oProducers, true);
 }
 

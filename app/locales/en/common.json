@@ -41,7 +41,8 @@
     "impersonating": "Impersonating",
     "member": "Member",
     "producer": "Producer",
-    "stopImpersonating": "Stop impersonating"
+    "stopImpersonating": "Stop impersonating",
+    "cannotImpersonateSelf": "You cannot impersonate yourself!"
   },
   "auth": {
     "username": "Username",
@@ -623,6 +624,10 @@
     "webOrderLabels": "{{name}} web order labels",
     "producerRegistration": "{{name}} producer registration",
     "producerReports": "{{name}} producer reports",
+    "editedProducts": "{{name}} edited products",
+    "pageNotFound": "Page not found",
+    "editMarketParameters": "{{name}} edit market parameters",
+    "editSiteConfiguration": "{{name}} edit site configuration",
     "aboutProducer": "{{name}} about producer",
     "acknowledgments": "{{name}} acknowledgments",
     "distinguishedMembers": "{{name}} distinguished members",
@@ -650,7 +655,6 @@
     "coopWebSalesByLocation": "{{name}} web sales by location",
     "coopOnSiteSalesByVariety": "{{name}} on-site sales by variety",
     "producerSearchResults": "{{name}} producer search results",
-    "editedProducts": "{{name}} edited products",
     "producerDetail": "{{name}} producer detail",
     "memberDetail": "{{name}} member detail",
     "editProducerStatus": "{{name}} edit producer status",
@@ -689,7 +693,6 @@
     "editSubcategory": "{{name}} edit subcategory",
     "addLocation": "{{name}} add location",
     "editLocation": "{{name}} edit location",
-    "editSiteConfiguration": "{{name}} edit site configuration",
     "memberBalances": "{{name}} member balances",
     "memberFees": "{{name}} member fees",
     "registrationStatuses": "{{name}} registration statuses",
@@ -786,6 +789,18 @@
     "memberTransactions": "Member transactions",
     "accountingSummary": "Accounting summary",
     "onSiteVarieties": "On-site varieties",
+    "onSiteShopperInvoices": "On-site shopper invoices",
+    "wholesaleVarieties": "Wholesale varieties",
+    "managedVarieties": "Managed varieties",
+    "producerWebSales": "Producer web sales ({{type}})",
+    "marketOnSiteSales": "Market on-site sales ({{type}})",
+    "marketWebSales": "Market web sales ({{type}})",
+    "webSalesByLocation": "Web sales by location",
+    "webSalesByLocation10Cycles": "Web sales by location - 10 Cycles",
+    "webEarnings": "Web earnings",
+    "onSiteEarnings": "On-site earnings",
+    "webCharges": "Web charges",
+    "onSiteCharges": "On-site charges",
     "webOrderSummary": "Web_order_summary",
     "webOrderPicklist": "Web_order_picklist"
   },
@@ -905,12 +920,19 @@
     "registrationUpdated": "The registration has been updated."
   },
   "invoiceFilenames": {
-    "webShopperInvoice": "{{name}} web shopper invoice {{id}}"
+    "webShopperInvoice": "{{name}} web shopper invoice {{id}}",
+    "onSiteShopperInvoice": "{{name}} on-site shopper invoice {{id}}",
+    "onSiteProducerInvoice": "{{name}} on-site producer invoice {{id}}",
+    "webProducerInvoice": "{{name}} web producer invoice {{id}}"
   },
   "categories": {
     "categoryNameInUse": "This category name is already in use.",
     "categoryAdded": "The category has been added.",
     "categoryUpdated": "The category has been updated.",
+    "categoryDeleted": "The category has been deleted.",
+    "mustSelectDifferentCategory": "You must select a different category.",
+    "subcategoryDeleted": "The subcategory has been deleted.",
+    "mustSelectDifferentSubcategory": "You must select a different subcategory.",
     "subcategoryNameInUse": "This subcategory name is already in use.",
     "subcategoryAdded": "The subcategory has been added.",
     "subcategoryUpdated": "The subcategory has been updated."
@@ -942,6 +964,55 @@
     "ordersAwaitingCheckout": "One or more {{location}} orders are awaiting check out."
   },
   "varietyLabels": {
-    "cannotPrintMoreThan": "You cannot print more than {{count}} labels at a time"
+    "cannotPrintMoreThan": "You cannot print more than {{count}} labels at a time",
+    "pdfFilename": "{{name}} Variety {{id}} Labels.pdf"
+  },
+  "wholesaleInventory": {
+    "invalidDataSubmitted": "Invalid data submitted. Please try again.",
+    "noVarietiesToUpdate": "No varieties to update.",
+    "invalidVarietyId": "Invalid variety ID '{{id}}'.",
+    "invalidListingStatus": "Invalid variety listing status '{{status}}'.",
+    "inventoryUpdated": "Wholesale inventory has been updated."
+  },
+  "webOrderLabelWeights": {
+    "cannotEnterWeightsShoppingNotClosed": "<strong>Cannot enter weights!</strong> The shopping window has not closed.",
+    "noWeightsToStore": "No weights to store.",
+    "itemsBelongToAnotherProducer": "One or more items belong to another producer.",
+    "inventoryUpdatedDuringEdit": "The inventory for one or more items was updated while you were editing weights. Some quantities or notes have changed. You must re-enter the weights.",
+    "weightsUpdated": "Your web order label weights have been updated."
+  },
+  "producerWebSales": {
+    "quantityDelivered": "quantity delivered",
+    "nominalSales": "nominal sales"
+  },
+  "printLabels": {
+    "cannotPrintShoppingNotClosed": "<strong>Cannot print labels!</strong> The shopping window has not closed.",
+    "mustEnterAllWeights": "You must enter all weights before printing labels.",
+    "noLabelsToPrint": "There are no labels to be printed."
+  },
+  "salesReports": {
+    "quantity": "quantity",
+    "quantitySold": "quantity sold",
+    "nominalSales": "nominal sales",
+    "cannotCompileNoCompletedWindow": "Cannot compile web sales; there is no completed shopping window."
+  },
+  "producerEarnings": {
+    "cannotCompileNoPreviousCycle": "Cannot compile producer earnings; there is no previous cycle."
+  },
+  "shopperCharges": {
+    "cannotCompileNoPreviousCycle": "Cannot compile shopper charges; there is no previous cycle."
+  },
+  "onSiteCart": {
+    "mustEnterWeights": "You must enter one or more weights.",
+    "cannotMixWholesale": "You cannot mix wholesale and non-wholesale items in the same cart.",
+    "addedToCart": "Added <strong>Variety {{varietyId}}</strong> <strong>'{{varietyName}}'</strong> to on-site cart.",
+    "onlyApprovedWholesaleMembers": "Only approved wholesale members can be associated with a wholesale cart."
+  },
+  "unblockIp": {
+    "ipUnblocked": "IP address <strong>{{ip}}</strong> has been unblocked.",
+    "ipWasNotBlocked": "IP address <strong>{{ip}}</strong> was not blocked."
+  },
+  "siteConfiguration": {
+    "siteInfoUpdated": "Site information has been updated."
   }
 }
