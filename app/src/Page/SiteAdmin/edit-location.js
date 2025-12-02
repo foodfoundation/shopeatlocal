@@ -18,7 +18,7 @@ export async function wHandGet(aReq, aResp) {
   Add_Props(aResp.locals, oLoc);
 
   aResp.locals.CkEdit = true;
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit location`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editLocation", { name: CoopParams.CoopNameShort });
   aResp.render("SiteAdmin/edit-location");
 }
 
@@ -42,7 +42,7 @@ export async function wHandPost(aReq, aResp) {
 
     const oLocsExcept = await wLocsExcept(oCdLoc);
     const oCkDup = oLocsExcept.some(o => o.NameLoc.toUpperCase() === aFld.ValCook.toUpperCase());
-    if (oCkDup) aFld.MsgFail = "This location name is already in use.";
+    if (oCkDup) aFld.MsgFail = aReq.t("common:locations.locationNameInUse");
   }
 
   const oFlds = {
@@ -76,7 +76,7 @@ export async function wHandPost(aReq, aResp) {
   // Return to Manage Categories
   // ---------------------------
 
-  aResp.Show_Flash("success", null, "The location has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:locations.locationUpdated"));
   aResp.redirect(303, "/manage-locations");
 }
 

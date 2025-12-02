@@ -206,7 +206,13 @@
     "reverseTransaction": "Transaktion stornieren",
     "reversalNotAvailable": "Stornierung für diesen Transaktionstyp nicht verfügbar",
     "money": "Geld",
-    "ebt": "EBT"
+    "ebt": "EBT",
+    "refund": "Rückerstattung",
+    "paymentReceipt": "Zahlungseingang",
+    "paymentDisbursement": "Zahlungsausgang",
+    "adjustment": "Anpassung",
+    "mustEnterNonZeroAmount": "Sie müssen mindestens einen Betrag ungleich Null eingeben.",
+    "mustEnterPositiveAmount": "Sie müssen einen positiven Betrag ungleich Null eingeben."
   },
   "search": {
     "productionType": "Produktionsart",
@@ -696,7 +702,9 @@
     "editAboutProducer": "{{name}} Über den Produzenten bearbeiten",
     "editProducerRegistration": "{{name}} Produzentenregistrierung bearbeiten",
     "producerWebSalesByVariety": "{{name}} Produzenten-Webverkäufe nach Variante",
-    "product": "{{name}} Produkt"
+    "product": "{{name}} Produkt",
+    "addProducerTransaction": "{{name}} Produzenten-Transaktion hinzufügen",
+    "addMemberTransaction": "{{name}} Mitglieder-Transaktion hinzufügen"
   },
   "memberSearchLabels": {
     "memberId": "Mitglieds-ID:",
@@ -777,7 +785,9 @@
     "transactionSearchResults": "Transaktions-Suchergebnisse",
     "memberTransactions": "Mitglieder-Transaktionen",
     "accountingSummary": "Buchhaltungsübersicht",
-    "onSiteVarieties": "Vor-Ort-Varianten"
+    "onSiteVarieties": "Vor-Ort-Varianten",
+    "webOrderSummary": "Web_Bestellübersicht",
+    "webOrderPicklist": "Web_Bestellliste"
   },
   "errors": {
     "invalidSearchParameter": "Ungültiger Suchparameter."
@@ -888,5 +898,27 @@
   },
   "producerAbout": {
     "aboutDataUpdated": "Die Über-Daten wurden aktualisiert."
+  },
+  "producerEditRegistration": {
+    "pleaseNote": "Bitte beachten!",
+    "editingWillReturnToPending": "Das Bearbeiten Ihrer Registrierung setzt Ihr Produzentenkonto auf den Status 'ausstehend' zurück.",
+    "registrationUpdated": "Die Registrierung wurde aktualisiert."
+  },
+  "invoiceFilenames": {
+    "webShopperInvoice": "{{name}} Web-Kundenrechnung {{id}}"
+  },
+  "categories": {
+    "categoryNameInUse": "Dieser Kategoriename wird bereits verwendet.",
+    "categoryAdded": "Die Kategorie wurde hinzugefügt.",
+    "categoryUpdated": "Die Kategorie wurde aktualisiert.",
+    "subcategoryNameInUse": "Dieser Unterkategoriename wird bereits verwendet.",
+    "subcategoryAdded": "Die Unterkategorie wurde hinzugefügt.",
+    "subcategoryUpdated": "Die Unterkategorie wurde aktualisiert."
+  },
+  "locations": {
+    "locationCodeInUse": "Dieser Standortcode wird bereits verwendet.",
+    "locationNameInUse": "Dieser Standortname wird bereits verwendet.",
+    "locationAdded": "Der Standort wurde hinzugefügt.",
+    "locationUpdated": "Der Standort wurde aktualisiert."
   }
 }

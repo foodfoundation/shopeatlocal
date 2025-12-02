@@ -10,6 +10,6 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.LocsActiv = oLocs.filter(o => o.CkActiv);
   aResp.locals.LocsInactiv = oLocs.filter(o => !o.CkActiv);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} manage locations`;
+  aResp.locals.Title = aReq.t("common:pageTitles.manageLocations", { name: CoopParams.CoopNameShort });
   aResp.render("SiteAdmin/manage-locations");
 }

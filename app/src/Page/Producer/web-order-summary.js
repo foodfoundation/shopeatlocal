@@ -22,7 +22,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} web order summary`;
+  aResp.locals.Title = aReq.t("common:pageTitles.webOrderSummary", { name: CoopParams.CoopNameShort });
   aResp.render("Producer/web-order-summary");
 }
 
@@ -41,7 +41,7 @@ export async function wHandGetExport(aReq, aResp) {
     Fmt_RowExcel(dataRow);
   }
 
-  aResp.attachment("Web_order_summary.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.webOrderSummary") + ".csv");
   aResp.csv(arrayOfExportData, true);
 }
 
@@ -54,7 +54,7 @@ export async function wHandGetPicklist(aReq, aResp) {
     Fmt_RowExcel(dataRow);
   }
 
-  aResp.attachment("Web_order_picklist.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.webOrderPicklist") + ".csv");
   aResp.csv(arrayOfExportData, true);
 }
 

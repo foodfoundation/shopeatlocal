@@ -15,6 +15,6 @@ export async function wHandGet(aReq, aResp) {
   }
 
   aResp.locals.Transact = oTransact;
-  aResp.locals.Title = `${CoopParams.CoopNameShort} transaction detail`;
+  aResp.locals.Title = aReq.t("common:pageTitles.transactionDetail", { name: CoopParams.CoopNameShort });
   aResp.render("Cashier/transaction-detail");
 }

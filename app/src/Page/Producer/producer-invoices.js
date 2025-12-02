@@ -18,7 +18,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer invoices`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerInvoices", { name: CoopParams.CoopNameShort });
   aResp.render("Producer/producer-invoices");
 }
 

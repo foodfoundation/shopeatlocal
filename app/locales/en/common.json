@@ -206,7 +206,13 @@
     "reverseTransaction": "Reverse Transaction",
     "reversalNotAvailable": "Reversal not available for this transaction type",
     "money": "Money",
-    "ebt": "EBT"
+    "ebt": "EBT",
+    "refund": "Refund",
+    "paymentReceipt": "Payment receipt",
+    "paymentDisbursement": "Payment disbursement",
+    "adjustment": "Adjustment",
+    "mustEnterNonZeroAmount": "You must enter at least one non-zero amount.",
+    "mustEnterPositiveAmount": "You must enter a positive non-zero amount."
   },
   "search": {
     "productionType": "Production Type",
@@ -696,7 +702,9 @@
     "editAboutProducer": "{{name}} edit about producer",
     "editProducerRegistration": "{{name}} edit producer registration",
     "producerWebSalesByVariety": "{{name}} producer web sales by variety",
-    "product": "{{name}} product"
+    "product": "{{name}} product",
+    "addProducerTransaction": "{{name}} add producer transaction",
+    "addMemberTransaction": "{{name}} add member transaction"
   },
   "memberSearchLabels": {
     "memberId": "Member ID:",
@@ -777,7 +785,9 @@
     "transactionSearchResults": "Transaction search results",
     "memberTransactions": "Member transactions",
     "accountingSummary": "Accounting summary",
-    "onSiteVarieties": "On-site varieties"
+    "onSiteVarieties": "On-site varieties",
+    "webOrderSummary": "Web_order_summary",
+    "webOrderPicklist": "Web_order_picklist"
   },
   "errors": {
     "invalidSearchParameter": "Invalid search parameter."
@@ -888,5 +898,27 @@
   },
   "producerAbout": {
     "aboutDataUpdated": "The About data has been updated."
+  },
+  "producerEditRegistration": {
+    "pleaseNote": "Please take note!",
+    "editingWillReturnToPending": "Editing your registration will return your producer account to the 'pending' status.",
+    "registrationUpdated": "The registration has been updated."
+  },
+  "invoiceFilenames": {
+    "webShopperInvoice": "{{name}} web shopper invoice {{id}}"
+  },
+  "categories": {
+    "categoryNameInUse": "This category name is already in use.",
+    "categoryAdded": "The category has been added.",
+    "categoryUpdated": "The category has been updated.",
+    "subcategoryNameInUse": "This subcategory name is already in use.",
+    "subcategoryAdded": "The subcategory has been added.",
+    "subcategoryUpdated": "The subcategory has been updated."
+  },
+  "locations": {
+    "locationCodeInUse": "This location code is already in use.",
+    "locationNameInUse": "This location name is already in use.",
+    "locationAdded": "The location has been added.",
+    "locationUpdated": "The location has been updated."
   }
 }
