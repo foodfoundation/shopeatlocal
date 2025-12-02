@@ -4,14 +4,13 @@
 
 <div class="container py-4">
 	<div class="d-md-flex flex-row align-items-end">
-		<h2>Managed catalog</h2>
+		<h2>{{t "common:onsite.managedCatalogTitle"}}</h2>
 
 		<h5 class="ml-auto">{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<p class="d-print-none">
-		This page displays all listed managed varieties, with web inventory
-		quantities and prices.
+		{{t "common:onsite.managedCatalogDescription"}}
 	</p>
 
 	<hr>
@@ -35,11 +34,11 @@
 			<div class="GridTbl Head">
 				<div class="row font-weight-bold align-items-end">
 					{{!-- The button column needs extra width on medium layouts: --}}
-					<div class="col">Producer / Product / Variety</div>
-					<div class="col-2 text-right">Web price</div>
-					<div class="col-1 text-right">Offer</div>
-					<div class="col-1 text-right">Prom</div>
-					<div class="col-1 text-right">Avail</div>
+					<div class="col">{{t "common:onsite.producerProductVariety"}}</div>
+					<div class="col-2 text-right">{{t "common:onsite.webPrice"}}</div>
+					<div class="col-1 text-right">{{t "common:onsite.offer"}}</div>
+					<div class="col-1 text-right">{{t "common:distrib.prom"}}</div>
+					<div class="col-1 text-right">{{t "common:cart.avail"}}</div>
 					<div class="d-print-none col-1"></div>
 				</div>
 			</div>
@@ -69,7 +68,7 @@
 							pl-0">
 							<a href="/variety-labels/{{IDVty}}"
 								class="btn btn-sm btn-outline-secondary">
-								Labels
+								{{t "common:onsite.labels"}}
 							</a>
 						</div>
 					</div>
@@ -79,7 +78,7 @@
 		</div>
 		{{else}}
 		<div class="jumbotron">
-			<h2 class="display-4 font-size-200">No managed items</h2>
+			<h2 class="display-4 font-size-200">{{t "common:onsite.noManagedItems"}}</h2>
 		</div>
 		{{/each}}
 	</div>
@@ -117,13 +116,13 @@
 								{{hTextCurrOrOrig PriceNomWeb}}{{#if WgtMin}}/lb{{/if}}
 							</div>
 							<div class="col-3 text-center">
-								<span class="font-weight-semi">{{QtyOffer}}</span> offer
+								<span class="font-weight-semi">{{QtyOffer}}</span> {{t "common:onsite.offerShort"}}
 							</div>
 							<div class="col-3 text-center">
-								<span class="font-weight-semi">{{QtyProm}}</span> prom
+								<span class="font-weight-semi">{{QtyProm}}</span> {{t "common:distrib.promShort"}}
 							</div>
 							<div class="col-3 text-right">
-								<span class="font-weight-semi">{{hQtyAvailAdd this}}</span> avail
+								<span class="font-weight-semi">{{hQtyAvailAdd this}}</span> {{t "common:cart.avail"}}
 							</div>
 						</div>
 
@@ -133,7 +132,7 @@
 					<div class="d-flex justify-content-end mt-2">
 						<a href="/variety-labels/{{IDVty}}"
 							class="btn btn-sm btn-outline-secondary">
-							Labels
+							{{t "common:onsite.labels"}}
 						</a>
 					</div>
 				</div>
@@ -142,7 +141,7 @@
 		</div>
 		{{else}}
 		<div class="jumbotron">
-			<h2 class="display-4 font-size-200">No managed items</h2>
+			<h2 class="display-4 font-size-200">{{t "common:onsite.noManagedItems"}}</h2>
 		</div>
 		{{/each}}
 	</div>
@@ -151,7 +150,7 @@
 	<hr>
 	<div class="d-flex">
 		<a class="btn btn-secondary ml-auto" href="/managed-catalog-export">
-			Export
+			{{t "common:buttons.export"}}
 		</a>
 	</div>
 	{{/if}}

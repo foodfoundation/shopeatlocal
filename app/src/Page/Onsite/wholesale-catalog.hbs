@@ -4,14 +4,13 @@
 
 <div class="container py-4">
 	<div class="d-md-flex flex-row align-items-end">
-		<h2>Wholesale on-site catalog</h2>
+		<h2>{{t "common:onsite.wholesaleOnsiteCatalog"}}</h2>
 
 		<h5 class="ml-auto">{{hTextWhen (hNow) "FullMed" "HourMin"}}</h5>
 	</div>
 
 	<p class="d-print-none">
-		This page displays all listed wholesale varieties, with wholesale quantities and
-		prices.
+		{{t "common:onsite.wholesaleCatalogDescription"}}
 	</p>
 
 	{{!-- Desktop layout
@@ -33,9 +32,9 @@
 			<div class="GridTbl Head">
 				<div class="row font-weight-bold align-items-end">
 					{{!-- The button column needs extra width on medium layouts: --}}
-					<div class="col">Producer / Product / Variety</div>
-					<div class="col-2 text-right">Wholesale price</div>
-					<div class="col-1 text-right">Quantity wholesale</div>
+					<div class="col">{{t "common:onsite.producerProductVariety"}}</div>
+					<div class="col-2 text-right">{{t "common:onsite.wholesalePrice"}}</div>
+					<div class="col-1 text-right">{{t "common:onsite.quantityWholesale"}}</div>
 					<div class="d-print-none col-3 col-lg-2"></div>
 				</div>
 			</div>
@@ -63,11 +62,11 @@
 							align-items-end pl-0">
 							<a href="/variety-labels/{{IDVty}}"
 								class="btn btn-sm btn-outline-secondary">
-								Labels
+								{{t "common:onsite.labels"}}
 							</a>
 							<a href="/add-to-on-site-cart/{{IDVty}}"
 								class="btn btn-sm btn-outline-primary ml-0 mt-1">
-								Add to wholesale cart
+								{{t "common:onsite.addToWholesaleCart"}}
 							</a>
 						</div>
 					</div>
@@ -78,7 +77,7 @@
 		{{else}}
 		<hr>
 		<div class="jumbotron">
-			<h2 class="display-4 font-size-200">No wholesale items</h2>
+			<h2 class="display-4 font-size-200">{{t "common:onsite.noWholesaleItems"}}</h2>
 		</div>
 		{{/each}}
 	</div>
@@ -116,7 +115,7 @@
 								{{hTextCurrOrOrig PriceNomOnsite}}{{#if WgtMin}}/lb{{/if}}
 							</div>
 							<div class="col-3 text-right">
-								<span class="font-weight-semi">{{QtyOnsite}}</span> wholesale
+								<span class="font-weight-semi">{{QtyOnsite}}</span> {{t "common:onsite.wholesaleShort"}}
 							</div>
 						</div>
 
@@ -126,11 +125,11 @@
 					<div class="d-flex flex-row align-items-end text-right mt-2">
 						<a href="/variety-labels/{{IDVty}}"
 							class="btn btn-sm btn-outline-secondary">
-							Labels
+							{{t "common:onsite.labels"}}
 						</a>
 						<a href="/add-to-wholesale-cart/{{IDVty}}"
 							class="btn btn-sm btn-outline-primary ml-auto">
-							Add to wholesale cart
+							{{t "common:onsite.addToWholesaleCart"}}
 						</a>
 					</div>
 				</div>
@@ -140,7 +139,7 @@
 		{{else}}
 		<hr>
 		<div class="jumbotron">
-			<h2 class="display-4 font-size-200">No wholesale items</h2>
+			<h2 class="display-4 font-size-200">{{t "common:onsite.noWholesaleItems"}}</h2>
 		</div>
 		{{/each}}
 	</div>
@@ -149,7 +148,7 @@
 	<hr>
 	<div class="d-flex">
 		<a class="btn btn-secondary ml-auto" href="/wholesale-catalog-export">
-			Export
+			{{t "common:buttons.export"}}
 		</a>
 	</div>
 	{{/if}}
