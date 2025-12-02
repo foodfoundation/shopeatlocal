@@ -24,13 +24,13 @@ function FldsDisab(aReq, aResp) {
 
   if (aResp.PhaseCycEq("StartDeliv") || aResp.PhaseCycEq("EndDeliv")) {
     oFlds.CdStor = {
-      Msg: "You cannot change the storage during the delivery cycle",
+      Msg: aReq.t("common:product.cannotChangeStorageDuringDelivery"),
     };
   }
 
   const oCkStaff = aReq.user.CkStaff();
   if (!oCkStaff) {
-    const oData = { Msg: "Only staff can change this setting." };
+    const oData = { Msg: aReq.t("common:product.onlyStaffCanChange") };
     oFlds.CkExcludeConsumerFee = oData;
     oFlds.CkExcludeProducerFee = oData;
   }
@@ -49,9 +49,8 @@ export async function wHandGet(aReq, aResp) {
   if (!aResp.locals.Subcats.length) {
     aResp.Show_Flash(
       "danger",
-      "Cannot edit product!",
-      "You must select one or more product categories in your producer " +
-        "registration before you edit a product.",
+      aReq.t("common:product.cannotEditProduct"),
+      aReq.t("common:product.mustSelectCategoriesBeforeEdit"),
     );
     aResp.redirect(303, "/edit-producer-registration");
     return;
@@ -59,7 +58,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.FldsDisab = FldsDisab(aReq, aResp);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit product`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editProduct", { name: CoopParams.CoopNameShort });
   console.log(aResp.locals);
   aResp.render("Product/edit-product");
 }
@@ -150,7 +149,7 @@ export async function wHandPost(aReq, aResp) {
   // Returns to previous page
   // ------------------------
 
-  aResp.Show_Flash("success", null, "The product has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:flashMessages.productUpdated"));
 
   const oPage = PageAfterEditProduct(aReq, aResp);
   aResp.redirect(303, oPage);

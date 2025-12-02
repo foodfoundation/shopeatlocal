@@ -13,7 +13,7 @@ import _gCSV from "../../CSV.js";
 
 export async function wHandGet(aReq, aResp) {
   /** Returns a path that adds the specified page number to the current search
-   *  query, or 'undefined', if aIdxPage is undefined. */
+   *   query, or 'undefined', if aIdxPage is undefined. */
   function PathPage(aIdxPage) {
     return aIdxPage === undefined
       ? undefined
@@ -23,7 +23,7 @@ export async function wHandGet(aReq, aResp) {
   const oParams = DataWhenDateUTC(aReq.query);
   if (!oParams) {
     aResp.status(400);
-    aResp.locals.Msg = "Invalid search parameter.";
+    aResp.locals.Msg = aReq.t("common:errors.invalidSearchParameter");
     aResp.render("Misc/400");
     return;
   }
@@ -32,8 +32,8 @@ export async function wHandGet(aReq, aResp) {
 
   const oDataPage = DataPage(aReq.query, oCt, CtResultSearchListPage);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} transaction search results`;
-  aResp.locals.SummsParam = SummsParam(aReq.query);
+  aResp.locals.Title = aReq.t("common:pageTitles.transactionSearchResults", { name: CoopParams.CoopNameShort });
+  aResp.locals.SummsParam = SummsParam(aReq.query, aReq.t);
   aResp.locals.Transacts = oTransacts;
   aResp.locals.TextRg = oDataPage.Text;
   aResp.locals.PathPagePrev = PathPage(oDataPage.IdxPagePrev);
@@ -47,7 +47,7 @@ export async function wHandGetExport(aReq, aResp) {
   const oParams = DataWhenDateUTC(aReq.query);
   if (!oParams) {
     aResp.status(400);
-    aResp.locals.Msg = "Invalid search parameter.";
+    aResp.locals.Msg = aReq.t("common:errors.invalidSearchParameter");
     aResp.render("Misc/400");
     return;
   }
@@ -65,13 +65,13 @@ export async function wHandGetExport(aReq, aResp) {
     Fmt_RowExcel(oTransact);
   }
 
-  aResp.attachment("Transaction search results.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.transactionSearchResults") + ".csv");
   aResp.csv(oTransacts, true);
 }
 
 /** Returns an array of label/value objects that describe the search parameters,
  *  exclusive of the page index. */
-function SummsParam(aParams) {
+function SummsParam(aParams, t) {
   const oSumms = [];
 
   function oAdd(aName, aLbl, aCds) {
@@ -87,13 +87,13 @@ function SummsParam(aParams) {
     oSumms.push({ Lbl: aLbl, Val: oTextVal });
   }
 
-  oAdd("IDTransact", "Transaction ID:");
-  oAdd("IDMemb", "Member ID:");
-  oAdd("IDProducer", "Producer ID:");
-  oAdd("CdTypeTransact", "Transaction type:", CdsTypeTransact);
-  oAdd("CdMethPay", "Payment method:", CdsMethPay);
-  oAdd("WhenStart", "Start date:");
-  oAdd("WhenEnd", "End date:");
+  oAdd("IDTransact", t("common:transactionSearchLabels.transactionId"));
+  oAdd("IDMemb", t("common:transactionSearchLabels.memberId"));
+  oAdd("IDProducer", t("common:transactionSearchLabels.producerId"));
+  oAdd("CdTypeTransact", t("common:transactionSearchLabels.transactionType"), CdsTypeTransact);
+  oAdd("CdMethPay", t("common:transactionSearchLabels.paymentMethod"), CdsMethPay);
+  oAdd("WhenStart", t("common:transactionSearchLabels.startDate"));
+  oAdd("WhenEnd", t("common:transactionSearchLabels.endDate"));
 
   return oSumms;
 }

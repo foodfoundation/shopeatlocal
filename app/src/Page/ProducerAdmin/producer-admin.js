@@ -13,7 +13,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.CtProductEdit = await wCtProductEdit();
   aResp.locals.CtProducerIsWholesale = await wCtProducerIsWholesale();
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer admin`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerAdmin", { name: CoopParams.CoopNameShort });
   aResp.render("ProducerAdmin/producer-admin");
 }
 

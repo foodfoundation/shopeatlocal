@@ -71,16 +71,16 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.StatReject.Percent = aResp.locals.StatReject.Qty / aResp.locals.StatDeliv.Qty || 0;
   aResp.locals.StatSold.Percent = aResp.locals.StatSold.Qty / aResp.locals.StatDeliv.Qty || 0;
 
-  aResp.locals.StatOrd.Name = "ordered";
-  aResp.locals.StatWithdr.Name = "withdrawn";
-  aResp.locals.StatProm.Name = "promised";
-  aResp.locals.StatCheckin.Name = "to check-in";
-  aResp.locals.StatTruant.Name = "truant";
-  aResp.locals.StatDeliv.Name = "delivered";
-  aResp.locals.StatCheckout.Name = "to checkout";
-  aResp.locals.StatLost.Name = "lost";
-  aResp.locals.StatReject.Name = "rejected";
-  aResp.locals.StatSold.Name = "sold";
+  aResp.locals.StatOrd.Name = aReq.t("common:cycleStats.ordered");
+  aResp.locals.StatWithdr.Name = aReq.t("common:cycleStats.withdrawn");
+  aResp.locals.StatProm.Name = aReq.t("common:cycleStats.promised");
+  aResp.locals.StatCheckin.Name = aReq.t("common:cycleStats.toCheckIn");
+  aResp.locals.StatTruant.Name = aReq.t("common:cycleStats.truant");
+  aResp.locals.StatDeliv.Name = aReq.t("common:cycleStats.delivered");
+  aResp.locals.StatCheckout.Name = aReq.t("common:cycleStats.toCheckout");
+  aResp.locals.StatLost.Name = aReq.t("common:cycleStats.lost");
+  aResp.locals.StatReject.Name = aReq.t("common:cycleStats.rejected");
+  aResp.locals.StatSold.Name = aReq.t("common:cycleStats.sold");
 
   aResp.locals.StatOrd.CkEstim = true;
   aResp.locals.StatWithdr.CkEstim = true;
@@ -95,7 +95,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} cycle summary`;
+  aResp.locals.Title = aReq.t("common:pageTitles.cycleSummary", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/cycle-summary");
 }
 

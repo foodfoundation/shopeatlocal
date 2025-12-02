@@ -8,7 +8,7 @@ import { CoopParams } from "../../Site.js";
 export async function wHandGet(aReq, aResp) {
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
   aResp.locals.Cats = await wCats();
-  aResp.locals.Title = `${CoopParams.CoopNameShort} market home`;
+  aResp.locals.Title = aReq.t("common:pageTitles.marketHome", { name: CoopParams.CoopNameShort });
 
   aResp.render("Home/index");
 }

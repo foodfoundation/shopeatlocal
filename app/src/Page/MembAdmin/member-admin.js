@@ -22,7 +22,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.CtMembWholesale = await wCtMembWholesale();
   aResp.locals.memberTags = await queryMemberTagAssignmentCountByTagName();
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} member admin`;
+  aResp.locals.Title = aReq.t("common:pageTitles.memberAdmin", { name: CoopParams.CoopNameShort });
   aResp.render("MembAdmin/member-admin");
 }
 

@@ -13,7 +13,7 @@ import { CoopParams } from "../../Site.js";
  *  @returns {Promise<void>} Renders cashier view
  */
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} cashier`;
+  aResp.locals.Title = aReq.t("common:pageTitles.cashier", { name: CoopParams.CoopNameShort });
   aResp.render("Cashier/cashier");
 }
 

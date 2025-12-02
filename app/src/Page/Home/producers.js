@@ -7,6 +7,6 @@ import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   aResp.locals.Producers = await wProducersActivWeb();
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producers`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producers", { name: CoopParams.CoopNameShort });
   aResp.render("Home/producers");
 }

@@ -20,7 +20,7 @@ export async function wHandGet(aReq, aResp) {
     ? "/transactions-export/" + oIDMemb
     : "/transactions-export";
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} transactions`;
+  aResp.locals.Title = aReq.t("common:pageTitles.transactions", { name: CoopParams.CoopNameShort });
   aResp.render("Memb/transactions");
 }
 

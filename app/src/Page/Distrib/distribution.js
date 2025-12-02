@@ -6,7 +6,7 @@ import { wLocsSatelActiv, Conn } from "../../Db.js";
 import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
-  aResp.locals.Title = `${CoopParams.CoopNameShort} distribution`;
+  aResp.locals.Title = aReq.t("common:pageTitles.distribution", { name: CoopParams.CoopNameShort });
   aResp.locals.LocsPickup = await wLocsPickup();
   aResp.locals.LocsPickupPend = await wLocsPickupPend();
   aResp.locals.LocsPickupDone = await wLocsPickupDone();

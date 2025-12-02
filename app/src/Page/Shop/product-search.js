@@ -7,7 +7,7 @@ import { CoopParams, Cats, Subcats } from "../../Site.js";
 import { ArrayFromCds, CdsAttrProduct, wPopulateIsFavorited, wProducerFromID } from "../../Db.js";
 import { CtProductPage } from "../../../Cfg.js";
 import _ from "lodash";
-import {wProductImages} from "./product.js";
+import { wProductImages } from "./product.js";
 
 export async function wHandGet(aReq, aResp) {
   /** Returns a path that adds the specified page number to the current search
@@ -48,11 +48,11 @@ export async function wHandGet(aReq, aResp) {
     await wPopulateIsFavorited(aResp.locals.CredImperUser.IDMemb, oProducts);
 
   aResp.locals.AttrsProduct = ArrayFromCds(CdsAttrProduct);
-  aResp.locals.Title = `${CoopParams.CoopNameShort} product search`;
-  aResp.locals.SummsParam = await wSummsParam(aReq.query);
+  aResp.locals.Title = aReq.t("common:search.productSearch", { name: CoopParams.CoopNameShort });
+  aResp.locals.SummsParam = await wSummsParam(aReq.query, aReq.t);
   aResp.locals.Terms = aReq.query.Terms || "";
   aResp.locals.Products = oProducts;
-  for(const Product of aResp.locals.Products){
+  for (const Product of aResp.locals.Products) {
     const oImages = await wProductImages(Product.IDProduct);
     Product.Images = oImages;
   }
@@ -82,21 +82,21 @@ async function findMatchingAttrs(queryObject, attrsArray) {
 
 /** Returns an array of label/value objects that describe the search parameters,
  *  exclusive of the page index. */
-async function wSummsParam(aParams) {
+async function wSummsParam(aParams, t) {
   const oKeysParam = Object.keys(aParams);
   const oCkNew =
     oKeysParam.length === 0 || (oKeysParam.length === 1 && oKeysParam[0] === "IdxPage");
-  if (oCkNew) return [{ Lbl: "New products" }];
+  if (oCkNew) return [{ Lbl: t("common:search.newProducts") }];
 
   const oSumms = [];
 
   if (aParams.favorites) {
-    oSumms.push({ Lbl: "Favorites" });
+    oSumms.push({ Lbl: t("common:search.favorites") });
   }
 
   if (aParams.Terms)
     oSumms.push({
-      Lbl: "Terms",
+      Lbl: t("common:search.terms"),
       Val: aParams.Terms,
     });
 
@@ -104,7 +104,7 @@ async function wSummsParam(aParams) {
     const oCat = Cats[aParams.IDCat];
     if (oCat)
       oSumms.push({
-        Lbl: "Category",
+        Lbl: t("common:search.category"),
         Val: oCat.NameCat,
       });
   }
@@ -113,7 +113,7 @@ async function wSummsParam(aParams) {
     const oSubcat = Subcats[aParams.IDSubcat];
     if (oSubcat)
       oSumms.push({
-        Lbl: "Subcategory",
+        Lbl: t("common:search.subcategory"),
         Val: oSubcat.NameSubcat,
       });
   }
@@ -121,7 +121,7 @@ async function wSummsParam(aParams) {
   for (const oNameAttr in CdsAttrProduct) {
     if (aParams["Ck" + oNameAttr])
       oSumms.push({
-        Lbl: CdsAttrProduct[oNameAttr].Text + " products",
+        Lbl: CdsAttrProduct[oNameAttr].Text + " " + t("common:search.productsSuffix"),
       });
   }
 
@@ -130,14 +130,14 @@ async function wSummsParam(aParams) {
     const oName = oProducer ? oProducer.NameBus : aParams.IDProducer;
 
     oSumms.push({
-      Lbl: "Producer",
+      Lbl: t("common:search.producer"),
       Val: oName,
     });
   }
 
   if (aParams.CkPast)
     oSumms.push({
-      Lbl: "Past purchases",
+      Lbl: t("common:search.pastPurchases"),
     });
 
   return oSumms;
