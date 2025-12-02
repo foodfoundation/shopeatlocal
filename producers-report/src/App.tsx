@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   flexRender,
   SortingState,
   ColumnFiltersState,
@@ -52,8 +53,6 @@ interface ApiResponse {
 }
 
 interface FetchDataParams {
-  page: number;
-  limit: number;
   startDate: string;
   endDate: string;
   cycleIds: string;
@@ -64,22 +63,34 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
       retry: 1,
+      staleTime: Infinity,
     },
   },
 });
 
-// Fetch function
+// Helper function to get beginning of current month
+const getBeginningOfMonth = (): string => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}-01`;
+};
+
+// Store the initial date to avoid recalculation
+const INITIAL_START_DATE = getBeginningOfMonth();
+
+// Fetch function - loads all data with limit 5000
 const fetchData = async ({
-  page,
-  limit,
   startDate,
   endDate,
   cycleIds,
-}: FetchDataParams): Promise<ApiResponse> => {
+}: FetchDataParams): Promise<SalesRecord[]> => {
   const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
+    page: "1",
+    limit: "5000", // Load all data
   });
 
   if (startDate) params.append("startDate", startDate);
@@ -92,64 +103,74 @@ const fetchData = async ({
     throw new Error("Failed to fetch data");
   }
 
-  return response.json();
+  const result: ApiResponse = await response.json();
+  return result.data || [];
 };
 
-// Column Definitions
+// Column Definitions with proper filter functions
 const columnDefs: ColumnDef<SalesRecord>[] = [
   {
     accessorKey: "QtyDeliv",
     header: "Quantity",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "saleSource",
     header: "Source",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "location",
     header: "Location",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "SaleNom",
     header: "Nominal Sale",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "TaxSale",
     header: "Sale Tax",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "FeeCoop",
     header: "Market Fee",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "FeeCoopForgiv",
     header: "Market-Fee Forgiv",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "IDCyc",
     header: "Cycle",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "WhenStartCyc",
     header: "Cycle Start",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
     cell: ({ getValue }) => {
       const value = getValue() as string;
       return value ? new Date(value).toLocaleDateString() : "";
@@ -160,6 +181,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     header: "Cycle End",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
     cell: ({ getValue }) => {
       const value = getValue() as string;
       return value ? new Date(value).toLocaleDateString() : "";
@@ -170,109 +192,122 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     header: "Variety",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "IDProduct",
     header: "Product ID",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "NameProduct",
     header: "Product",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "NameCat",
     header: "Category",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "NameSubcat",
     header: "Subcategory",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "IDProducer",
     header: "Producer ID",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "Producer",
     header: "Producer",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "IDMemb",
     header: "Customer ID",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "CustomerName",
     header: "Customer",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "CustEmail",
     header: "Email",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
   {
     accessorKey: "CustPhone",
     header: "Phone",
     enableSorting: true,
     enableColumnFilter: true,
+    filterFn: "includesString",
   },
 ];
 
 function DataTable() {
-  // Pagination state
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(50);
-
-  // Filter states
-  const [startDate, setStartDate] = useState("");
+  // Filter states - with default start date
+  const [startDate, setStartDate] = useState(INITIAL_START_DATE);
   const [endDate, setEndDate] = useState("");
   const [cycleIds, setCycleIds] = useState("");
+
+  // Track if user has requested data
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  // Applied filters (what was last submitted)
+  const [appliedFilters, setAppliedFilters] = useState({
+    startDate: INITIAL_START_DATE,
+    endDate: "",
+    cycleIds: "",
+  });
 
   // Table states
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  // Fetch data with Tanstack Query
+  // Fetch data with Tanstack Query - only when enabled
   const {
-    data: apiResponse,
+    data: allData,
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["salesData", page, limit, startDate, endDate, cycleIds],
-    queryFn: () => fetchData({ page, limit, startDate, endDate, cycleIds }),
+    queryKey: [
+      "salesData",
+      appliedFilters.startDate,
+      appliedFilters.endDate,
+      appliedFilters.cycleIds,
+    ],
+    queryFn: () => fetchData(appliedFilters),
+    enabled: shouldFetch,
   });
 
-  const data = useMemo(() => apiResponse?.data || [], [apiResponse]);
-  const pagination = useMemo(
-    () =>
-      apiResponse?.pagination || {
-        page: 1,
-        limit: 50,
-        totalRecords: 0,
-        totalPages: 0,
-      },
-    [apiResponse],
-  );
+  const tableData = useMemo(() => allData || [], [allData]);
 
-  // Table instance
+  // Table instance with client-side pagination
   const table = useReactTable({
-    data,
+    data: tableData,
     columns: columnDefs,
     state: {
       sorting,
@@ -283,39 +318,50 @@ function DataTable() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    manualPagination: true,
-    pageCount: pagination.totalPages,
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 50,
+      },
+    },
   });
 
   const handleApplyFilters = () => {
-    setPage(1);
-    refetch();
+    setAppliedFilters({
+      startDate,
+      endDate,
+      cycleIds,
+    });
+    setShouldFetch(true);
+    table.setPageIndex(0);
+    setColumnFilters([]);
   };
 
   const handleClearFilters = () => {
-    setStartDate("");
+    setStartDate(INITIAL_START_DATE);
     setEndDate("");
     setCycleIds("");
-    setPage(1);
-  };
-
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (newLimit: number) => {
-    setLimit(newLimit);
-    setPage(1);
+    setAppliedFilters({
+      startDate: INITIAL_START_DATE,
+      endDate: "",
+      cycleIds: "",
+    });
+    table.setPageIndex(0);
+    setColumnFilters([]);
+    setShouldFetch(false);
   };
 
   const createCsv = () => {
     try {
-      if (!data || data.length === 0) {
+      // Export all filtered data (not just current page)
+      const filteredData = table.getFilteredRowModel().rows.map(row => row.original);
+
+      if (!filteredData || filteredData.length === 0) {
         alert("No data available to export.");
         return;
       }
 
-      const csv = json2csv(data);
+      const csv = json2csv(filteredData);
 
       const blob = new Blob([csv], { type: "text/csv" });
       const url = window.URL.createObjectURL(blob);
@@ -323,11 +369,19 @@ function DataTable() {
       a.setAttribute("href", url);
       a.setAttribute("download", "producer-sales-report.csv");
       a.click();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("CSV export error:", error);
       alert("We encountered an error generating your CSV. Please try again later.");
     }
   };
+
+  const currentPage = table.getState().pagination.pageIndex + 1;
+  const pageSize = table.getState().pagination.pageSize;
+  const totalFilteredRows = table.getFilteredRowModel().rows.length;
+  const totalPages = table.getPageCount();
+  const startRow = totalFilteredRows > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+  const endRow = Math.min(currentPage * pageSize, totalFilteredRows);
 
   return (
     <div className="App">
@@ -369,7 +423,7 @@ function DataTable() {
               onClick={handleApplyFilters}
               disabled={isLoading}
             >
-              Apply Filters
+              {isLoading ? "Loading..." : "Apply Filters"}
             </button>
             <button
               type="button"
@@ -387,18 +441,19 @@ function DataTable() {
       <div className="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
         <div>
           <span className="text-muted">
-            Showing {data.length > 0 ? (pagination.page - 1) * pagination.limit + 1 : 0} to{" "}
-            {Math.min(pagination.page * pagination.limit, pagination.totalRecords)} of{" "}
-            {pagination.totalRecords} records
+            Showing {startRow} to {endRow} of {totalFilteredRows} records
+            {totalFilteredRows < tableData.length && (
+              <span> (filtered from {tableData.length} total)</span>
+            )}
           </span>
         </div>
         <button
           type="button"
           className="btn btn-outline-primary"
           onClick={createCsv}
-          disabled={isLoading || data.length === 0}
+          disabled={isLoading || tableData.length === 0}
         >
-          Export CSV
+          Export CSV ({totalFilteredRows} records)
         </button>
       </div>
 
@@ -408,49 +463,50 @@ function DataTable() {
           <label className="me-2">Records per page:</label>
           <select
             className="form-select form-select-sm d-inline-block w-auto"
-            value={limit}
-            onChange={e => handleLimitChange(parseInt(e.target.value))}
+            value={pageSize}
+            onChange={e => table.setPageSize(Number(e.target.value))}
             disabled={isLoading}
           >
             <option value={20}>20</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={200}>200</option>
+            <option value={500}>500</option>
           </select>
         </div>
         <div className="btn-group" role="group">
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => handlePageChange(1)}
-            disabled={isLoading || page === 1}
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
           >
             First
           </button>
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => handlePageChange(page - 1)}
-            disabled={isLoading || page === 1}
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
           >
             Previous
           </button>
           <button type="button" className="btn btn-sm btn-outline-secondary" disabled>
-            Page {page} of {pagination.totalPages}
+            Page {currentPage} of {totalPages || 1}
           </button>
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => handlePageChange(page + 1)}
-            disabled={isLoading || page >= pagination.totalPages}
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
           >
             Next
           </button>
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => handlePageChange(pagination.totalPages)}
-            disabled={isLoading || page >= pagination.totalPages}
+            onClick={() => table.setPageIndex(Math.max(0, totalPages - 1))}
+            disabled={!table.getCanNextPage()}
           >
             Last
           </button>
@@ -463,6 +519,7 @@ function DataTable() {
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
+          <p className="mt-3 text-muted">Loading data...</p>
         </div>
       )}
 
@@ -472,8 +529,16 @@ function DataTable() {
         </div>
       )}
 
+      {/* Initial State - No data loaded yet */}
+      {!isLoading && !error && !shouldFetch && (
+        <div className="text-center p-5 text-muted">
+          <p className="fs-5">Click "Apply Filters" to load data</p>
+          <p className="text-secondary">Default filter is set to beginning of current month</p>
+        </div>
+      )}
+
       {/* Table */}
-      {!isLoading && !error && (
+      {!isLoading && !error && shouldFetch && tableData.length > 0 && (
         <div className="reports">
           <div className="table-responsive">
             <table className="table table-striped table-hover">
@@ -536,6 +601,14 @@ function DataTable() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* No data returned from API */}
+      {!isLoading && !error && shouldFetch && tableData.length === 0 && (
+        <div className="text-center p-5 text-muted">
+          <p className="fs-5">No data found for the selected filters</p>
+          <p className="text-secondary">Try adjusting your date range or cycle IDs</p>
         </div>
       )}
     </div>
