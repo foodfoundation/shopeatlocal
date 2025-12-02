@@ -647,6 +647,7 @@
     "editedProducts": "{{name}} edited products",
     "producerDetail": "{{name}} producer detail",
     "memberDetail": "{{name}} member detail",
+    "editProducerStatus": "{{name}} edit producer status",
     "cycleHistory": "{{name}} cycle history",
     "editCycleTimes": "{{name}} edit cycle times",
     "deliveryProgress": "{{name}} delivery progress",
@@ -662,6 +663,7 @@
     "cartDetail": "{{name}} cart detail",
     "webCheckoutSummary": "{{name}} web checkout summary",
     "onSiteCart": "{{name}} on-site cart",
+    "onSiteCartWholesale": "{{name}} on-site cart - Wholesale",
     "onSiteCatalog": "{{name}} on-site catalog",
     "wholesaleCatalog": "{{name}} wholesale catalog",
     "managedCatalog": "{{name}} managed catalog",
@@ -693,7 +695,6 @@
     "productionTypes": "{{name}} production types",
     "editAboutProducer": "{{name}} edit about producer",
     "editProducerRegistration": "{{name}} edit producer registration",
-    "editProducerStatus": "{{name}} edit producer status",
     "producerWebSalesByVariety": "{{name}} producer web sales by variety",
     "product": "{{name}} product"
   },
@@ -774,7 +775,9 @@
     "memberSearchResults": "Member search results",
     "producerSearchResults": "Producer search results",
     "transactionSearchResults": "Transaction search results",
-    "memberTransactions": "Member transactions"
+    "memberTransactions": "Member transactions",
+    "accountingSummary": "Accounting summary",
+    "onSiteVarieties": "On-site varieties"
   },
   "errors": {
     "invalidSearchParameter": "Invalid search parameter."
@@ -804,5 +807,86 @@
     "deliveryWindowClosed": "The delivery window closed before you saved your changes. It is now too late to check-in. Any items not checked-in have been marked 'truant'.",
     "inventoryUpdatedDuringCheckIn": "The inventory for one or more items was updated while you were checking-in. Some quantities or notes have changed. You must restart the check-in.",
     "checkInError": "Check-in error '{{error}}'."
+  },
+  "memberStatus": {
+    "cannotChangeOwnStaffStatus": "You cannot change your own staff status.",
+    "onlyManagersCanChangeStaffStatus": "Only {{name}} managers can change the staff status.",
+    "giftedTrialFee": "Gifted trial fee",
+    "trialFeeChargedManually": "Trial fee charged manually",
+    "statusUpdated": "The member status has been updated."
+  },
+  "passwordChange": {
+    "cannotChangeWhileImpersonating": "You cannot change the password while impersonating a member.",
+    "newPasswordsMustMatch": "Your new passwords must match.",
+    "wrongPassword": "Your password is wrong.",
+    "passwordChanged": "Your password has been changed."
+  },
+  "passwordReset": {
+    "resetInvalidOrExpired": "Reset request invalid or expired!",
+    "requestNewResetEmail": "Please request a new reset e-mail or contact {{name}} for help.",
+    "passwordChangedLoginNow": "Your password has been changed. You may now login.",
+    "emailSubject": "{{name}} password reset",
+    "emailSent": "Password reset e-mail sent!",
+    "checkSpamFolder": "If it doesn't arrive within ten minutes, check your spam folder. If you do not find it, double-check your username."
+  },
+  "producerStatus": {
+    "mustCompleteRegistration": "You must complete the producer registration before using that page.",
+    "unapprovedCannotBeListed": "Unapproved producers cannot be listed.",
+    "unapprovedCannotBeWholesale": "Unapproved producers cannot be approved for wholesale.",
+    "statusUpdated": "The producer status has been updated."
+  },
+  "producerRegistration": {
+    "contactToBecome": "You must contact {{name}} if you wish to become a producer.",
+    "alreadyRegistered": "You have already registered as a producer.",
+    "mustAffirmTerms": "You must affirm the Terms and Agreements to continue.",
+    "hyperlinksMustIncludeHttp": "Your hyperlinks must include 'http:' or 'https:'.",
+    "mustSelectCategory": "You must select at least one product category.",
+    "thankYou": "Thank you!",
+    "willReceiveEmail": "You will receive an e-mail when your registration has been reviewed."
+  },
+  "variety": {
+    "invalidListingArchiveCombination": "Invalid listing/archive combination.",
+    "varietyAdded": "The variety has been added.",
+    "varietyUpdated": "The variety has been updated."
+  },
+  "cycleTimes": {
+    "cycleDataOutOfDate": "That cycle data is out of date. Refresh the page and try again.",
+    "shoppingStartMustExceedCycleStart": "The shopping start must equal or exceed the cycle start.",
+    "shoppingEndMustExceedStart": "The shopping end must exceed the shopping start.",
+    "deliveryStartMustExceedShoppingEnd": "The delivery start must equal or exceed the shopping end.",
+    "deliveryEndMustExceedStart": "The delivery end must exceed the pickup start.",
+    "pickupStartMustExceedDeliveryEnd": "The pickup start must equal or exceed the delivery end.",
+    "pickupEndMustExceedStart": "The pickup end must exceed the pickup start.",
+    "cycleEndMustExceedPickupEnd": "The cycle end must equal or exceed the pickup end.",
+    "cycleMustBeMinDays": "The cycle must be at least {{days}} days long.",
+    "cyclesUpdated": "The cycles have been updated.",
+    "passedTimesNotChanged": "However, any of the original times that passed while the page was open have <strong>not</strong> been changed. Please check the values before you go."
+  },
+  "inventory": {
+    "cannotChangeWebInventoryDuringDelivery": "You cannot change the current web inventory during the delivery cycle",
+    "noVarietiesToUpdate": "No varieties to update.",
+    "invalidVarietyId": "Invalid variety ID '{{id}}'.",
+    "varietyBelongsToAnotherProducer": "Variety '{{id}}' belongs to another producer.",
+    "nonStaffCannotSetManagedQuantities": "Non-staff cannot set managed offer quantities.",
+    "cannotChangeQuantitiesAfterCheckIn": "You cannot change quantities during the delivery window after you have checked-in. You can update your next-cycle quantities when the delivery window closes.",
+    "invalidVarietyListingStatus": "Invalid variety listing status '{{status}}'.",
+    "invalidCartItemId": "Invalid cart item ID '{{id}}'.",
+    "cannotChangeNoteDenialAfterCheckIn": "You cannot change note denial statuses after you have checked-in.",
+    "inventoryUpdated": "Your inventory has been updated.",
+    "noteCannotBeHonored": "The note you added to <strong>$NameProductVty</strong> cannot be honored by the producer.",
+    "pleaseRemoveItemIfUnwanted": "Please remove the item from your cart if you no longer want it.",
+    "sorry": "Sorry!",
+    "noteWillBeHonoredAfterAll": "The note you added to <strong>$NameProductVty</strong> will be honored by the producer after all.",
+    "goodNews": "Good news!"
+  },
+  "memberRegistration": {
+    "enterLastNameOrClearFirst": "Please enter a last name, or clear the first name.",
+    "enterFirstNameOrClearLast": "Please enter a first name, or clear the last name.",
+    "emailUpdatedSubject": "Member Email Updated",
+    "emailUpdatedBody": "{{firstName}} {{lastName}} has updated their email address to {{email}}.",
+    "registrationUpdated": "The registration has been updated."
+  },
+  "producerAbout": {
+    "aboutDataUpdated": "The About data has been updated."
   }
 }

@@ -13,7 +13,7 @@ export function Prep(aReq, aResp, aNext) {
     aResp.Show_Flash(
       "danger",
       null,
-      "You must complete the producer registration before using that page.",
+      aReq.t("common:producerStatus.mustCompleteRegistration"),
     );
     aResp.redirect(303, "/producer-registration");
     return;
@@ -29,7 +29,7 @@ export async function wHandGet(aReq, aResp) {
   const oProducer = await wProducerFromID(oIDProducerEff);
   Object.assign(aResp.locals, oProducer);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit producer status`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editProducerStatus", { name: CoopParams.CoopNameShort });
   aResp.render("Producer/edit-producer-status");
 }
 
@@ -62,12 +62,12 @@ export async function wHandPost(aReq, aResp) {
 
   // Check the producer status before allowing the producer to be listed:
   if (oFlds.CkListProducer.ValCook && oCdReg !== "Approv") {
-    oFlds.CkListProducer.MsgFail = "Unapproved producers cannot be listed.";
+    oFlds.CkListProducer.MsgFail = aReq.t("common:producerStatus.unapprovedCannotBeListed");
   }
 
   // Check the producer status before allowing the producer to be listed:
   if (oFlds.CdRegWholesale?.ValCook === "Approv" && oCdReg !== "Approv") {
-    oFlds.CdRegWholesale.MsgFail = "Unapproved producers cannot be approved for wholesale.";
+    oFlds.CdRegWholesale.MsgFail = aReq.t("common:producerStatus.unapprovedCannotBeWholesale");
   }
 
   // Handle validation failure
@@ -76,7 +76,7 @@ export async function wHandPost(aReq, aResp) {
   if (CkFail(oFlds)) {
     Retry(aResp, oFlds);
 
-    aResp.locals.Title = `${CoopParams.CoopNameShort} edit producer status`;
+    aResp.locals.Title = aReq.t("common:pageTitles.editProducerStatus", { name: CoopParams.CoopNameShort });
     aResp.render("Producer/edit-producer-status");
     return;
   }
@@ -90,7 +90,7 @@ export async function wHandPost(aReq, aResp) {
   // Go to Producer or Producer Detail page
   // --------------------------------------
 
-  aResp.Show_Flash("success", null, "The producer status has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:producerStatus.statusUpdated"));
 
   const oPage = PageAfterEditProducer(aReq, aResp);
   aResp.redirect(303, oPage);

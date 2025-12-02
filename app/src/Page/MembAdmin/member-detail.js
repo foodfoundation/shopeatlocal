@@ -17,6 +17,6 @@ export async function wHandGet(aReq, aResp) {
   // Member tags for rendering in pBodyDtlMemb.hbs
   aResp.locals.Memb.MemberTagAssignments = await queryMemberTagAssignments(oIDMemb);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} member detail`;
+  aResp.locals.Title = aReq.t("common:pageTitles.memberDetail", { name: CoopParams.CoopNameShort });
   aResp.render("MembAdmin/member-detail");
 }

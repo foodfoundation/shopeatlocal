@@ -11,7 +11,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} cycle history`;
+  aResp.locals.Title = aReq.t("common:pageTitles.cycleHistory", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/cycle-history");
 }
 

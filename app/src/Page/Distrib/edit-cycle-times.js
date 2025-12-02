@@ -10,7 +10,7 @@ import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   //this is the GET when the page is called
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit cycle times`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editCycleTimes", { name: CoopParams.CoopNameShort });
 
   aResp.locals.WhenNow = new Date();
 
@@ -127,7 +127,7 @@ export async function wHandPost(aReq, aResp) {
 
     if (!oFldsCycCurr || !oFldsCycNext) {
       aResp.status(400);
-      aResp.locals.Msg = "That cycle data is out of date. Refresh the page and try again.";
+      aResp.locals.Msg = aReq.t("common:cycleTimes.cycleDataOutOfDate");
       aResp.render("Misc/400");
 
       await oConn.wRollback();
@@ -185,32 +185,29 @@ export async function wHandPost(aReq, aResp) {
       oCycNextJoin.Flds = oFldsCycNext;
       [oCycCurrJoin, oCycNextJoin].forEach(aCyc => {
         if (aCyc.WhenStartShop < aCyc.WhenStartCyc)
-          aCyc.Flds.WhenStartShop.MsgFail =
-            "The shopping start must equal or exceed the cycle start.";
+          aCyc.Flds.WhenStartShop.MsgFail = aReq.t("common:cycleTimes.shoppingStartMustExceedCycleStart");
 
         if (aCyc.WhenEndShop <= aCyc.WhenStartShop)
-          aCyc.Flds.WhenEndShop.MsgFail = "The shopping end must exceed the shopping start.";
+          aCyc.Flds.WhenEndShop.MsgFail = aReq.t("common:cycleTimes.shoppingEndMustExceedStart");
 
         if (aCyc.WhenStartDeliv < aCyc.WhenEndShop)
-          aCyc.Flds.WhenStartDeliv.MsgFail =
-            "The delivery start must equal or exceed the shopping end.";
+          aCyc.Flds.WhenStartDeliv.MsgFail = aReq.t("common:cycleTimes.deliveryStartMustExceedShoppingEnd");
 
         if (aCyc.WhenEndDeliv <= aCyc.WhenStartDeliv)
-          aCyc.Flds.WhenEndPickup.MsgFail = "The delivery end must exceed the pickup start.";
+          aCyc.Flds.WhenEndPickup.MsgFail = aReq.t("common:cycleTimes.deliveryEndMustExceedStart");
 
         if (aCyc.WhenStartPickup < aCyc.WhenEndDeliv)
-          aCyc.Flds.WhenStartPickup.MsgFail =
-            "The pickup start must equal or exceed the delivery end.";
+          aCyc.Flds.WhenStartPickup.MsgFail = aReq.t("common:cycleTimes.pickupStartMustExceedDeliveryEnd");
 
         if (aCyc.WhenEndPickup <= aCyc.WhenStartPickup)
-          aCyc.Flds.WhenEndPickup.MsgFail = "The pickup end must exceed the pickup start.";
+          aCyc.Flds.WhenEndPickup.MsgFail = aReq.t("common:cycleTimes.pickupEndMustExceedStart");
 
         if (aCyc.WhenEndCyc < aCyc.WhenEndPickup)
-          aCyc.Flds.WhenEndCyc.MsgFail = "The cycle end must equal or exceed the pickup end.";
+          aCyc.Flds.WhenEndCyc.MsgFail = aReq.t("common:cycleTimes.cycleEndMustExceedPickupEnd");
 
         const oLenCycDays = DiffDays(aCyc.WhenEndCyc, aCyc.WhenStartCyc);
         if (oLenCycDays < MinLenCycDays)
-          aCyc.Flds.WhenEndCyc.MsgFail = `The cycle must be at least ${MinLenCycDays} days long.`;
+          aCyc.Flds.WhenEndCyc.MsgFail = aReq.t("common:cycleTimes.cycleMustBeMinDays", { days: MinLenCycDays });
       });
 
       /*if (oCycNextJoin.WhenStartCyc.getTime()
@@ -269,11 +266,8 @@ export async function wHandPost(aReq, aResp) {
     // Display updated values
     // ----------------------
 
-    const oHead = "The cycles have been updated.";
-    const oMsg =
-      "However, any of the original times that passed while the " +
-      "page was open have <strong>not</strong> been changed. Please check " +
-      "the values before you go.";
+    const oHead = aReq.t("common:cycleTimes.cyclesUpdated");
+    const oMsg = aReq.t("common:cycleTimes.passedTimesNotChanged");
     aResp.Show_Flash("success", oHead, oMsg);
 
     // Seems best to show this page with the updated values:

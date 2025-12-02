@@ -25,8 +25,8 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.Title =
     oCdCartType === "Wholesale"
-      ? `${CoopParams.CoopNameShort} on-site cart - Wholesale`
-      : `${CoopParams.CoopNameShort} on-site cart`;
+      ? aReq.t("common:pageTitles.onSiteCartWholesale", { name: CoopParams.CoopNameShort })
+      : aReq.t("common:pageTitles.onSiteCart", { name: CoopParams.CoopNameShort });
   aResp.locals.CdCartType = !!oCdCartType ? oCdCartType : "";
   aResp.locals.AllVtys = await getAllVtys();
 

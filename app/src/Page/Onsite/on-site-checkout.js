@@ -38,7 +38,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.Producers = oDataCartPend.Producers;
   aResp.locals.Ttls = oDataCartPend.Ttls;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} on-site checkout`;
+  aResp.locals.Title = aReq.t("common:pageTitles.onSiteCheckout", { name: CoopParams.CoopNameShort });
   aResp.render("Onsite/on-site-checkout");
 }
 

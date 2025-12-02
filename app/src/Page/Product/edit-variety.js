@@ -300,7 +300,7 @@ export async function wHandPost(aReq, aResp) {
   // Return or go to Product Detail
   // ------------------------------
 
-  aResp.Show_Flash("success", null, "The variety has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:variety.varietyUpdated"));
 
   const oPage = PageAfterEditProduct(aReq, aResp);
   aResp.redirect(303, oPage);

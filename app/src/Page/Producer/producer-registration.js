@@ -18,13 +18,13 @@ export function Prep(aReq, aResp, aNext) {
       aResp.Show_Flash(
         "danger",
         null,
-        `You must contact ${CoopParams.CoopNameShort} if you wish to become a producer.`,
+        aReq.t("common:producerRegistration.contactToBecome", { name: CoopParams.CoopNameShort }),
       );
     aResp.redirect(303, "/member");
     return;
   }
   if (aResp.locals.CredSelImperUser.IDProducer) {
-    aResp.Show_Flash("danger", null, "You have already registered as a producer.");
+    aResp.Show_Flash("danger", null, aReq.t("common:producerRegistration.alreadyRegistered"));
     aResp.redirect(303, "/producer");
     return;
   }
@@ -38,7 +38,7 @@ export async function wHandGet(aReq, aResp) {
     for (const oCat of oCats) oCat.Ck = aResp.locals.zIDsCats.indexOf(oCat.IDCat) >= 0;
   aResp.locals.Cats = oCats;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} producer registration`;
+  aResp.locals.Title = aReq.t("common:pageTitles.producerRegistration", { name: CoopParams.CoopNameShort });
   aResp.render("Producer/producer-registration");
 }
 
@@ -47,7 +47,7 @@ export async function wHandPost(aReq, aResp) {
   // ----------------------
 
   function Valid_CkAffirmTerms(aFld) {
-    if (!aFld.ValCook) aFld.MsgFail = "You must affirm the Terms and Agreements to continue.";
+    if (!aFld.ValCook) aFld.MsgFail = aReq.t("common:producerRegistration.mustAffirmTerms");
   }
   function isValidHttpUrl(string) {
     console.log(string.ValCook);
@@ -56,13 +56,13 @@ export async function wHandPost(aReq, aResp) {
       url = new URL(string.ValCook);
       console.log(url);
     } catch (_) {
-      string.MsgFail = "Your hyperlinks must include 'http:' or 'https:'.";
+      string.MsgFail = aReq.t("common:producerRegistration.hyperlinksMustIncludeHttp");
       return false;
     }
     if (url.protocol === "http:" || url.protocol === "https:") {
       return true;
     } else {
-      string.MsgFail = "Your hyperlinks must include 'http:' or 'https:'.";
+      string.MsgFail = aReq.t("common:producerRegistration.hyperlinksMustIncludeHttp");
       return false;
     }
   }
@@ -120,7 +120,7 @@ export async function wHandPost(aReq, aResp) {
   if (oIDsCats.length < 1)
     // This element is associated with the category checkboxes as a group, not
     // with any particular field:
-    aResp.locals.MsgFailCats = "You must select at least one product category.";
+    aResp.locals.MsgFailCats = aReq.t("common:producerRegistration.mustSelectCategory");
 
   // Handle validation failure
   // -------------------------
@@ -151,8 +151,8 @@ export async function wHandPost(aReq, aResp) {
 
   aResp.Show_Flash(
     "success",
-    "Thank you!",
-    "You will receive an e-mail when your registration has been reviewed.",
+    aReq.t("common:producerRegistration.thankYou"),
+    aReq.t("common:producerRegistration.willReceiveEmail"),
   );
   aResp.redirect(303, "/producer");
 }

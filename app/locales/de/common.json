@@ -647,6 +647,7 @@
     "editedProducts": "{{name}} Bearbeitete Produkte",
     "producerDetail": "{{name}} Produzentendetail",
     "memberDetail": "{{name}} Mitgliederdetail",
+    "editProducerStatus": "{{name}} Produzentenstatus bearbeiten",
     "cycleHistory": "{{name}} Zyklusverlauf",
     "editCycleTimes": "{{name}} Zykluszeiten bearbeiten",
     "deliveryProgress": "{{name}} Lieferfortschritt",
@@ -662,6 +663,7 @@
     "cartDetail": "{{name}} Warenkorbdetail",
     "webCheckoutSummary": "{{name}} Web-Checkout-Übersicht",
     "onSiteCart": "{{name}} Vor-Ort-Warenkorb",
+    "onSiteCartWholesale": "{{name}} Vor-Ort-Warenkorb - Großhandel",
     "onSiteCatalog": "{{name}} Vor-Ort-Katalog",
     "wholesaleCatalog": "{{name}} Großhandelskatalog",
     "managedCatalog": "{{name}} Verwalteter Katalog",
@@ -693,7 +695,6 @@
     "productionTypes": "{{name}} Produktionsarten",
     "editAboutProducer": "{{name}} Über den Produzenten bearbeiten",
     "editProducerRegistration": "{{name}} Produzentenregistrierung bearbeiten",
-    "editProducerStatus": "{{name}} Produzentenstatus bearbeiten",
     "producerWebSalesByVariety": "{{name}} Produzenten-Webverkäufe nach Variante",
     "product": "{{name}} Produkt"
   },
@@ -774,7 +775,9 @@
     "memberSearchResults": "Mitglieder-Suchergebnisse",
     "producerSearchResults": "Produzenten-Suchergebnisse",
     "transactionSearchResults": "Transaktions-Suchergebnisse",
-    "memberTransactions": "Mitglieder-Transaktionen"
+    "memberTransactions": "Mitglieder-Transaktionen",
+    "accountingSummary": "Buchhaltungsübersicht",
+    "onSiteVarieties": "Vor-Ort-Varianten"
   },
   "errors": {
     "invalidSearchParameter": "Ungültiger Suchparameter."
@@ -804,5 +807,86 @@
     "deliveryWindowClosed": "Das Lieferfenster wurde geschlossen, bevor Sie Ihre Änderungen speichern konnten. Es ist jetzt zu spät zum Einchecken. Alle nicht eingecheckten Artikel wurden als 'nicht erschienen' markiert.",
     "inventoryUpdatedDuringCheckIn": "Das Inventar für einen oder mehrere Artikel wurde aktualisiert, während Sie eingecheckt haben. Einige Mengen oder Notizen haben sich geändert. Sie müssen den Check-in neu starten.",
     "checkInError": "Check-in-Fehler '{{error}}'."
+  },
+  "memberStatus": {
+    "cannotChangeOwnStaffStatus": "Sie können Ihren eigenen Personalstatus nicht ändern.",
+    "onlyManagersCanChangeStaffStatus": "Nur {{name}}-Manager können den Personalstatus ändern.",
+    "giftedTrialFee": "Geschenkte Testgebühr",
+    "trialFeeChargedManually": "Testgebühr manuell berechnet",
+    "statusUpdated": "Der Mitgliedsstatus wurde aktualisiert."
+  },
+  "passwordChange": {
+    "cannotChangeWhileImpersonating": "Sie können das Passwort nicht ändern, während Sie ein Mitglied imitieren.",
+    "newPasswordsMustMatch": "Ihre neuen Passwörter müssen übereinstimmen.",
+    "wrongPassword": "Ihr Passwort ist falsch.",
+    "passwordChanged": "Ihr Passwort wurde geändert."
+  },
+  "passwordReset": {
+    "resetInvalidOrExpired": "Zurücksetzungsanfrage ungültig oder abgelaufen!",
+    "requestNewResetEmail": "Bitte fordern Sie eine neue Zurücksetzungs-E-Mail an oder kontaktieren Sie {{name}} für Hilfe.",
+    "passwordChangedLoginNow": "Ihr Passwort wurde geändert. Sie können sich jetzt anmelden.",
+    "emailSubject": "{{name}} Passwort zurücksetzen",
+    "emailSent": "Passwort-Zurücksetzungs-E-Mail gesendet!",
+    "checkSpamFolder": "Wenn sie nicht innerhalb von zehn Minuten ankommt, überprüfen Sie Ihren Spam-Ordner. Wenn Sie sie nicht finden, überprüfen Sie Ihren Benutzernamen."
+  },
+  "producerStatus": {
+    "mustCompleteRegistration": "Sie müssen die Produzentenregistrierung abschließen, bevor Sie diese Seite nutzen können.",
+    "unapprovedCannotBeListed": "Nicht genehmigte Produzenten können nicht gelistet werden.",
+    "unapprovedCannotBeWholesale": "Nicht genehmigte Produzenten können nicht für Großhandel genehmigt werden.",
+    "statusUpdated": "Der Produzentenstatus wurde aktualisiert."
+  },
+  "producerRegistration": {
+    "contactToBecome": "Sie müssen {{name}} kontaktieren, wenn Sie Produzent werden möchten.",
+    "alreadyRegistered": "Sie haben sich bereits als Produzent registriert.",
+    "mustAffirmTerms": "Sie müssen die Geschäftsbedingungen bestätigen, um fortzufahren.",
+    "hyperlinksMustIncludeHttp": "Ihre Hyperlinks müssen 'http:' oder 'https:' enthalten.",
+    "mustSelectCategory": "Sie müssen mindestens eine Produktkategorie auswählen.",
+    "thankYou": "Vielen Dank!",
+    "willReceiveEmail": "Sie erhalten eine E-Mail, wenn Ihre Registrierung überprüft wurde."
+  },
+  "variety": {
+    "invalidListingArchiveCombination": "Ungültige Kombination von Listung und Archivierung.",
+    "varietyAdded": "Die Variante wurde hinzugefügt.",
+    "varietyUpdated": "Die Variante wurde aktualisiert."
+  },
+  "cycleTimes": {
+    "cycleDataOutOfDate": "Diese Zyklusdaten sind veraltet. Aktualisieren Sie die Seite und versuchen Sie es erneut.",
+    "shoppingStartMustExceedCycleStart": "Der Einkaufsstart muss gleich oder nach dem Zyklusstart sein.",
+    "shoppingEndMustExceedStart": "Das Einkaufsende muss nach dem Einkaufsstart liegen.",
+    "deliveryStartMustExceedShoppingEnd": "Der Lieferstart muss gleich oder nach dem Einkaufsende sein.",
+    "deliveryEndMustExceedStart": "Das Lieferende muss nach dem Abholstart liegen.",
+    "pickupStartMustExceedDeliveryEnd": "Der Abholstart muss gleich oder nach dem Lieferende sein.",
+    "pickupEndMustExceedStart": "Das Abholende muss nach dem Abholstart liegen.",
+    "cycleEndMustExceedPickupEnd": "Das Zyklusende muss gleich oder nach dem Abholende sein.",
+    "cycleMustBeMinDays": "Der Zyklus muss mindestens {{days}} Tage lang sein.",
+    "cyclesUpdated": "Die Zyklen wurden aktualisiert.",
+    "passedTimesNotChanged": "Allerdings wurden Zeiten, die während der Seitenöffnung vergangen sind, <strong>nicht</strong> geändert. Bitte überprüfen Sie die Werte, bevor Sie gehen."
+  },
+  "inventory": {
+    "cannotChangeWebInventoryDuringDelivery": "Sie können den aktuellen Web-Bestand während des Lieferzyklus nicht ändern",
+    "noVarietiesToUpdate": "Keine Varianten zum Aktualisieren.",
+    "invalidVarietyId": "Ungültige Varianten-ID '{{id}}'.",
+    "varietyBelongsToAnotherProducer": "Variante '{{id}}' gehört einem anderen Produzenten.",
+    "nonStaffCannotSetManagedQuantities": "Nicht-Mitarbeiter können keine verwalteten Angebotsmengen festlegen.",
+    "cannotChangeQuantitiesAfterCheckIn": "Sie können Mengen während des Lieferfensters nach dem Check-in nicht ändern. Sie können Ihre Mengen für den nächsten Zyklus aktualisieren, wenn das Lieferfenster schließt.",
+    "invalidVarietyListingStatus": "Ungültiger Varianten-Listungsstatus '{{status}}'.",
+    "invalidCartItemId": "Ungültige Warenkorb-Artikel-ID '{{id}}'.",
+    "cannotChangeNoteDenialAfterCheckIn": "Sie können Notiz-Ablehnungsstatus nach dem Check-in nicht ändern.",
+    "inventoryUpdated": "Ihr Bestand wurde aktualisiert.",
+    "noteCannotBeHonored": "Die Notiz, die Sie zu <strong>$NameProductVty</strong> hinzugefügt haben, kann vom Produzenten nicht berücksichtigt werden.",
+    "pleaseRemoveItemIfUnwanted": "Bitte entfernen Sie den Artikel aus Ihrem Warenkorb, wenn Sie ihn nicht mehr möchten.",
+    "sorry": "Entschuldigung!",
+    "noteWillBeHonoredAfterAll": "Die Notiz, die Sie zu <strong>$NameProductVty</strong> hinzugefügt haben, wird vom Produzenten doch berücksichtigt.",
+    "goodNews": "Gute Nachrichten!"
+  },
+  "memberRegistration": {
+    "enterLastNameOrClearFirst": "Bitte geben Sie einen Nachnamen ein oder löschen Sie den Vornamen.",
+    "enterFirstNameOrClearLast": "Bitte geben Sie einen Vornamen ein oder löschen Sie den Nachnamen.",
+    "emailUpdatedSubject": "Mitglieder-E-Mail aktualisiert",
+    "emailUpdatedBody": "{{firstName}} {{lastName}} hat die E-Mail-Adresse zu {{email}} aktualisiert.",
+    "registrationUpdated": "Die Registrierung wurde aktualisiert."
+  },
+  "producerAbout": {
+    "aboutDataUpdated": "Die Über-Daten wurden aktualisiert."
   }
 }

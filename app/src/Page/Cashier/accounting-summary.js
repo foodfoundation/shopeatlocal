@@ -20,7 +20,7 @@ export async function wHandGet(aReq, aResp) {
   // There isn't room to show an entire year without horizontal scrolling:
   aResp.locals.Cycs = await wCycs(6);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} accounting summary`;
+  aResp.locals.Title = aReq.t("common:pageTitles.accountingSummary", { name: CoopParams.CoopNameShort });
   aResp.render("Cashier/accounting-summary");
 }
 
@@ -102,7 +102,7 @@ export async function wHandGetExport(aReq, aResp) {
   oAdd("ChargeShopOnsiteMembWholesale", "Member on-site wholesale shopper charges");
   oAdd("ChargeShopOnsiteNonmembWholesale", "Non-member on-site wholesale shopper charges");
 
-  aResp.attachment("Accounting summary.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.accountingSummary") + ".csv");
   aResp.csv(oLines, true);
 }
 

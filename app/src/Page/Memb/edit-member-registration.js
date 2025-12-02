@@ -15,7 +15,7 @@ export async function wHandGet(aReq, aResp) {
   // system assumes the fields are in the context root: [TO DO]
   Object.assign(aResp.locals, oMemb);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit member registration`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editMemberRegistration", { name: CoopParams.CoopNameShort });
   aResp.render("Memb/edit-member-registration");
 }
 
@@ -57,10 +57,10 @@ export async function wHandPost(aReq, aResp) {
   // ---------------------
 
   if (oFlds.Name2First.ValCook && !oFlds.Name2Last.ValCook)
-    oFlds.Name2Last.MsgFail = "Please enter a last name, or clear the first name.";
+    oFlds.Name2Last.MsgFail = aReq.t("common:memberRegistration.enterLastNameOrClearFirst");
 
   if (oFlds.Name2Last.ValCook && !oFlds.Name2First.ValCook)
-    oFlds.Name2First.MsgFail = "Please enter a first name, or clear the last name.";
+    oFlds.Name2First.MsgFail = aReq.t("common:memberRegistration.enterFirstNameOrClearLast");
 
   // Clear second name if it matches the first:
   if (
@@ -79,7 +79,7 @@ export async function wHandPost(aReq, aResp) {
   if (CkFail(oFlds)) {
     Retry(aResp, oFlds);
 
-    aResp.locals.Title = `${CoopParams.CoopNameShort} edit member registration`;
+    aResp.locals.Title = aReq.t("common:pageTitles.editMemberRegistration", { name: CoopParams.CoopNameShort });
     aResp.render("Memb/edit-member-registration");
     return;
   }
@@ -97,8 +97,12 @@ export async function wHandPost(aReq, aResp) {
   if (oRows[0].Email1 != aReq.body.Email1) {
     const oMsg = {
       to: CoopParams.MembershipNotificationEmail,
-      subject: "Member Email Updated",
-      text: `${aReq.body.Name1First} ${aReq.body.Name1Last} has updated their email address to ${aReq.body.Email1}.`,
+      subject: aReq.t("common:memberRegistration.emailUpdatedSubject"),
+      text: aReq.t("common:memberRegistration.emailUpdatedBody", {
+        firstName: aReq.body.Name1First,
+        lastName: aReq.body.Name1Last,
+        email: aReq.body.Email1,
+      }),
     };
 
     await wSend(oMsg);
@@ -123,7 +127,7 @@ export async function wHandPost(aReq, aResp) {
   // Go to Member or Member Detail page
   // ----------------------------------
 
-  aResp.Show_Flash("success", null, "The registration has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:memberRegistration.registrationUpdated"));
 
   const oPage = PageAfterEditMemb(aReq, aResp);
   aResp.redirect(303, oPage);

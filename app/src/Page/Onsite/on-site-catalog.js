@@ -12,7 +12,7 @@ import _gCSV from "../../CSV.js";
 export async function wHandGet(aReq, aResp) {
   aResp.locals.Stors = await wStors();
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} on-site catalog`;
+  aResp.locals.Title = aReq.t("common:pageTitles.onSiteCatalog", { name: CoopParams.CoopNameShort });
   aResp.render("Onsite/on-site-catalog");
 }
 
@@ -21,7 +21,7 @@ export async function wHandGetExport(aReq, aResp) {
 
   for (const oVty of oVtys) Fmt_RowExcel(oVty);
 
-  aResp.attachment("On-site varieties.csv");
+  aResp.attachment(aReq.t("common:exportFilenames.onSiteVarieties") + ".csv");
   aResp.csv(oVtys, true);
 }
 

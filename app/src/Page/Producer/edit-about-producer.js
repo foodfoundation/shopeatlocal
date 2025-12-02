@@ -24,7 +24,7 @@ export async function wHandGet(aReq, aResp) {
   console.log(oProducer);
   Object.assign(aResp.locals, oProducer);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit about producer`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editAboutProducer", { name: CoopParams.CoopNameShort });
   aResp.render("Producer/edit-about-producer");
 }
 
@@ -39,13 +39,13 @@ export async function wHandPost(aReq, aResp) {
       url = new URL(string.ValCook);
       console.log(url);
     } catch (_) {
-      string.MsgFail = "Your hyperlinks must include 'http:' or 'https:'.";
+      string.MsgFail = aReq.t("common:producerRegistration.hyperlinksMustIncludeHttp");
       return false;
     }
     if (url.protocol === "http:" || url.protocol === "https:") {
       return true;
     } else {
-      string.MsgFail = "Your hyperlinks must include 'http:' or 'https:'.";
+      string.MsgFail = aReq.t("common:producerRegistration.hyperlinksMustIncludeHttp");
       return false;
     }
   }
@@ -80,7 +80,7 @@ export async function wHandPost(aReq, aResp) {
     Retry(aResp, oFlds);
     aResp.locals.NameImgProducer = oNameImg;
 
-    aResp.locals.Title = `${CoopParams.CoopNameShort} edit about producer`;
+    aResp.locals.Title = aReq.t("common:pageTitles.editAboutProducer", { name: CoopParams.CoopNameShort });
     aResp.render("Producer/edit-about-producer");
     return;
   }
@@ -102,7 +102,7 @@ export async function wHandPost(aReq, aResp) {
   // Go to Producer or Producer Detail page
   // --------------------------------------
 
-  aResp.Show_Flash("success", null, "The About data has been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:producerAbout.aboutDataUpdated"));
 
   const oPage = PageAfterEditProducer(aReq, aResp);
   aResp.redirect(303, oPage);
