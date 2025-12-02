@@ -21,7 +21,7 @@ export async function wHandGet(aReq, aResp) {
   const oProduct = await wProductFromID(oVty.IDProduct);
   const oProducer = await wProducerFromID(oProduct.IDProducer);
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} variety labels`;
+  aResp.locals.Title = aReq.t("common:pageTitles.varietyLabels", { name: CoopParams.CoopNameShort });
   aResp.locals.Product = oProduct;
   aResp.locals.Producer = oProducer;
   aResp.render("Product/variety-labels");
@@ -57,7 +57,7 @@ export async function wHandPost(aReq, aResp) {
     if (aFld.MsgFail) return;
 
     if (aFld.ValCook > CtLblMax)
-      aFld.MsgFail = `You cannot print more than ${CtLblMax} labels at a time`;
+      aFld.MsgFail = aReq.t("common:varietyLabels.cannotPrintMoreThan", { count: CtLblMax });
   }
 
   const oFlds = {};

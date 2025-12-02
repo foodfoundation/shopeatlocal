@@ -7,8 +7,7 @@ import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   if (aResp.PhaseCycLess("StartDeliv")) {
-    const oMsg = "<strong>Cannot check-in!</strong> The delivery window has not started.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash("danger", null, aReq.t("common:deliveryProgress.cannotCheckInDeliveryNotStarted"));
 
     aResp.redirect(303, "/distribution");
     return;
@@ -40,7 +39,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} delivery progress`;
+  aResp.locals.Title = aReq.t("common:pageTitles.deliveryProgress", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/delivery-progress");
 }
 

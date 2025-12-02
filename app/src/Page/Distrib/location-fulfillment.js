@@ -8,8 +8,7 @@ import { Struct } from "../../Util.js";
 
 export async function wHandGet(aReq, aResp) {
   if (aResp.PhaseCycLess("StartDeliv")) {
-    const oMsg = "<strong>Cannot fulfill location!</strong> The delivery window has not started.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash("danger", null, aReq.t("common:locationFulfillment.cannotFulfillDeliveryNotStarted"));
 
     aResp.redirect(303, "/distribution");
     return;
@@ -31,7 +30,7 @@ export async function wHandGet(aReq, aResp) {
   // -----------
 
   aResp.locals.Stors = await wStors(oCdLoc);
-  aResp.locals.Title = `${CoopParams.CoopNameShort} location fulfillment`;
+  aResp.locals.Title = aReq.t("common:pageTitles.locationFulfillment", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/location-fulfillment");
 }
 

@@ -7,8 +7,7 @@ import { Locs, CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   if (aResp.PhaseCycLess("StartPickup")) {
-    const oMsg = "<strong>Cannot check out!</strong> The pickup window has not started.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash("danger", null, aReq.t("common:pickupProgress.cannotCheckOutPickupNotStarted"));
 
     aResp.redirect(303, "/distribution");
     return;
@@ -56,7 +55,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} pickup progress`;
+  aResp.locals.Title = aReq.t("common:pageTitles.pickupProgress", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/pickup-progress");
 }
 

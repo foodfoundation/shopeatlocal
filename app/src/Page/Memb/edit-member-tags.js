@@ -16,7 +16,7 @@ export async function wHandGet(aReq, aResp) {
   const tags = allTags.map(t => ({ ...t, Ck: assignedSet.has(t.IDMemberTag) }));
   aResp.locals.Tags = tags;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} edit member tags`;
+  aResp.locals.Title = aReq.t("common:pageTitles.editMemberTags", { name: CoopParams.CoopNameShort });
   aResp.render("Memb/edit-member-tags");
 }
 
@@ -33,7 +33,7 @@ export async function wHandPost(aReq, aResp) {
 
   await wUpd_MembTags(oIDMemb, uniqueIds);
 
-  aResp.Show_Flash("success", null, "The member tags have been updated.");
+  aResp.Show_Flash("success", null, aReq.t("common:memberTags.tagsUpdated"));
 
   const oPage = PageAfterEditMemb(aReq, aResp);
   aResp.redirect(303, oPage);

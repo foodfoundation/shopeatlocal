@@ -920,5 +920,28 @@
     "locationNameInUse": "This location name is already in use.",
     "locationAdded": "The location has been added.",
     "locationUpdated": "The location has been updated."
+  },
+  "memberTags": {
+    "tagsUpdated": "The member tags have been updated."
+  },
+  "deliveryProgress": {
+    "cannotCheckInDeliveryNotStarted": "<strong>Cannot check-in!</strong> The delivery window has not started."
+  },
+  "pickupProgress": {
+    "cannotCheckOutPickupNotStarted": "<strong>Cannot check out!</strong> The pickup window has not started."
+  },
+  "locationFulfillment": {
+    "cannotFulfillDeliveryNotStarted": "<strong>Cannot fulfill location!</strong> The delivery window has not started."
+  },
+  "shopperSummary": {
+    "cannotViewDeliveryNotClosed": "<strong>Cannot view shoppers!</strong> The delivery window has not closed."
+  },
+  "transferLoading": {
+    "cannotLoadPickupNotStarted": "<strong>Cannot load transfers!</strong> The pickup window has not started.",
+    "cannotTransfer": "Cannot transfer!",
+    "ordersAwaitingCheckout": "One or more {{location}} orders are awaiting check out."
+  },
+  "varietyLabels": {
+    "cannotPrintMoreThan": "You cannot print more than {{count}} labels at a time"
   }
 }

@@ -920,5 +920,28 @@
     "locationNameInUse": "Dieser Standortname wird bereits verwendet.",
     "locationAdded": "Der Standort wurde hinzugefügt.",
     "locationUpdated": "Der Standort wurde aktualisiert."
+  },
+  "memberTags": {
+    "tagsUpdated": "Die Mitglieder-Tags wurden aktualisiert."
+  },
+  "deliveryProgress": {
+    "cannotCheckInDeliveryNotStarted": "<strong>Check-in nicht möglich!</strong> Das Lieferfenster hat noch nicht begonnen."
+  },
+  "pickupProgress": {
+    "cannotCheckOutPickupNotStarted": "<strong>Checkout nicht möglich!</strong> Das Abholfenster hat noch nicht begonnen."
+  },
+  "locationFulfillment": {
+    "cannotFulfillDeliveryNotStarted": "<strong>Standort kann nicht erfüllt werden!</strong> Das Lieferfenster hat noch nicht begonnen."
+  },
+  "shopperSummary": {
+    "cannotViewDeliveryNotClosed": "<strong>Käufer können nicht angezeigt werden!</strong> Das Lieferfenster wurde noch nicht geschlossen."
+  },
+  "transferLoading": {
+    "cannotLoadPickupNotStarted": "<strong>Transfers können nicht geladen werden!</strong> Das Abholfenster hat noch nicht begonnen.",
+    "cannotTransfer": "Transfer nicht möglich!",
+    "ordersAwaitingCheckout": "Eine oder mehrere {{location}}-Bestellungen warten auf den Checkout."
+  },
+  "varietyLabels": {
+    "cannotPrintMoreThan": "Sie können nicht mehr als {{count}} Etiketten auf einmal drucken"
   }
 }

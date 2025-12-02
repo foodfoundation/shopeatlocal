@@ -8,8 +8,7 @@ import { Locs, CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   if (aResp.PhaseCycLess("StartPickup")) {
-    const oMsg = "<strong>Cannot load transfers!</strong> The pickup window has not started.";
-    aResp.Show_Flash("danger", null, oMsg);
+    aResp.Show_Flash("danger", null, aReq.t("common:transferLoading.cannotLoadPickupNotStarted"));
 
     aResp.redirect(303, "/distribution");
     return;
@@ -34,9 +33,7 @@ export async function wHandGet(aReq, aResp) {
   const oMembs = await wMembsByStor(oCdLoc);
   const oCkPendCart = oMembs.some(o => o.CdStatCart === "Pend");
   if (oCkPendCart) {
-    const oHead = "Cannot transfer!";
-    const oMsg = `One or more ${oLoc.NameLoc} orders are awaiting check out.`;
-    aResp.Show_Flash("danger", oHead, oMsg);
+    aResp.Show_Flash("danger", aReq.t("common:transferLoading.cannotTransfer"), aReq.t("common:transferLoading.ordersAwaitingCheckout", { location: oLoc.NameLoc }));
 
     const oPage = "/pickup-progress/" + oLoc.CdLoc;
     aResp.redirect(303, oPage);
@@ -68,7 +65,7 @@ export async function wHandGet(aReq, aResp) {
   // Render page
   // -----------
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} transfer loading`;
+  aResp.locals.Title = aReq.t("common:pageTitles.transferLoading", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/transfer-loading");
 }
 

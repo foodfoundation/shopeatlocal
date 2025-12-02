@@ -16,7 +16,7 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.InvcMemb = oInvc;
 
-  aResp.locals.Title = `${CoopParams.CoopNameShort} web checkout summary`;
+  aResp.locals.Title = aReq.t("common:pageTitles.webCheckoutSummary", { name: CoopParams.CoopNameShort });
   aResp.render("Distrib/web-checkout-summary");
 }
 
