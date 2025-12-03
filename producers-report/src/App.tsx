@@ -57,7 +57,8 @@ interface ApiResponse {
 interface FetchDataParams {
   startDate: string;
   endDate: string;
-  cycleIds: string;
+  cycleFrom: string;
+  cycleTo: string;
 }
 
 // Filter input types
@@ -175,7 +176,8 @@ const fetchPage = async (
   limit: number,
   startDate: string,
   endDate: string,
-  cycleIds: string,
+  cycleFrom: string,
+  cycleTo: string,
 ): Promise<ApiResponse> => {
   const params = new URLSearchParams({
     page: String(page),
@@ -184,7 +186,8 @@ const fetchPage = async (
 
   if (startDate) params.append("startDate", startDate);
   if (endDate) params.append("endDate", endDate);
-  if (cycleIds) params.append("cycleIds", cycleIds);
+  if (cycleFrom) params.append("cycleFrom", cycleFrom);
+  if (cycleTo) params.append("cycleTo", cycleTo);
 
   const response = await fetch(`/hub-reports/data?${params.toString()}`);
 
@@ -199,12 +202,13 @@ const fetchPage = async (
 const fetchData = async ({
   startDate,
   endDate,
-  cycleIds,
+  cycleFrom,
+  cycleTo,
 }: FetchDataParams): Promise<SalesRecord[]> => {
   const PAGE_SIZE = 2000; // Records per page
 
   // First, fetch page 1 to get total pages and total records
-  const firstPage = await fetchPage(1, PAGE_SIZE, startDate, endDate, cycleIds);
+  const firstPage = await fetchPage(1, PAGE_SIZE, startDate, endDate, cycleFrom, cycleTo);
   const { totalPages, totalRecords } = firstPage.pagination;
 
   // Check if data exceeds maximum allowed records
@@ -222,7 +226,7 @@ const fetchData = async ({
     const remainingPages = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
 
     const pagePromises = remainingPages.map(page =>
-      fetchPage(page, PAGE_SIZE, startDate, endDate, cycleIds),
+      fetchPage(page, PAGE_SIZE, startDate, endDate, cycleFrom, cycleTo),
     );
 
     const results = await Promise.all(pagePromises);
@@ -422,7 +426,7 @@ function NumberRangeFilterInput({ column }: { column: Column<SalesRecord, unknow
   const filterValue = (column.getFilterValue() as NumberRangeFilterValue) || ["", ""];
 
   return (
-    <div className="d-flex flex-column gap-1 mt-1">
+    <div className="d-flex flex-column gap-2">
       <input
         type="number"
         className="form-control form-control-sm"
@@ -432,7 +436,7 @@ function NumberRangeFilterInput({ column }: { column: Column<SalesRecord, unknow
           const val = e.target.value === "" ? "" : Number(e.target.value);
           column.setFilterValue([val, filterValue[1]]);
         }}
-        style={{ minWidth: "60px" }}
+        style={{ minWidth: "70px" }}
       />
       <input
         type="number"
@@ -443,7 +447,7 @@ function NumberRangeFilterInput({ column }: { column: Column<SalesRecord, unknow
           const val = e.target.value === "" ? "" : Number(e.target.value);
           column.setFilterValue([filterValue[0], val]);
         }}
-        style={{ minWidth: "60px" }}
+        style={{ minWidth: "70px" }}
       />
     </div>
   );
@@ -462,11 +466,11 @@ function ColumnFilterInput({ column }: { column: Column<SalesRecord, unknown> })
     return (
       <input
         type="number"
-        className="form-control form-control-sm mt-1"
+        className="form-control form-control-sm"
         value={(filterValue ?? "") as string}
         onChange={e => column.setFilterValue(e.target.value)}
         placeholder="Filter..."
-        style={{ minWidth: "70px" }}
+        style={{ minWidth: "80px" }}
       />
     );
   }
@@ -475,10 +479,10 @@ function ColumnFilterInput({ column }: { column: Column<SalesRecord, unknown> })
     return (
       <input
         type="date"
-        className="form-control form-control-sm mt-1"
+        className="form-control form-control-sm"
         value={(filterValue ?? "") as string}
         onChange={e => column.setFilterValue(e.target.value)}
-        style={{ minWidth: "130px" }}
+        style={{ minWidth: "140px" }}
       />
     );
   }
@@ -487,11 +491,11 @@ function ColumnFilterInput({ column }: { column: Column<SalesRecord, unknown> })
   return (
     <input
       type="text"
-      className="form-control form-control-sm mt-1"
+      className="form-control form-control-sm"
       value={(filterValue ?? "") as string}
       onChange={e => column.setFilterValue(e.target.value)}
       placeholder="Filter..."
-      style={{ minWidth: "80px" }}
+      style={{ minWidth: "90px" }}
     />
   );
 }
@@ -500,7 +504,8 @@ function DataTable() {
   // Filter states for API call - with default start date
   const [startDate, setStartDate] = useState(INITIAL_START_DATE);
   const [endDate, setEndDate] = useState("");
-  const [cycleIds, setCycleIds] = useState("");
+  const [cycleFrom, setCycleFrom] = useState("");
+  const [cycleTo, setCycleTo] = useState("");
 
   // Track if user has requested data
   const [shouldFetch, setShouldFetch] = useState(false);
@@ -509,7 +514,8 @@ function DataTable() {
   const [appliedFilters, setAppliedFilters] = useState({
     startDate: INITIAL_START_DATE,
     endDate: "",
-    cycleIds: "",
+    cycleFrom: "",
+    cycleTo: "",
   });
 
   // Table states for client-side sorting and filtering
@@ -526,7 +532,8 @@ function DataTable() {
       "salesData",
       appliedFilters.startDate,
       appliedFilters.endDate,
-      appliedFilters.cycleIds,
+      appliedFilters.cycleFrom,
+      appliedFilters.cycleTo,
     ],
     queryFn: () => fetchData(appliedFilters),
     enabled: shouldFetch,
@@ -550,12 +557,13 @@ function DataTable() {
     getFilteredRowModel: getFilteredRowModel(), // Client-side filtering
   });
 
-  // Apply server-side filters (date range, cycle IDs) and fetch data
+  // Apply server-side filters (date range, cycle range) and fetch data
   const handleApplyFilters = () => {
     setAppliedFilters({
       startDate,
       endDate,
-      cycleIds,
+      cycleFrom,
+      cycleTo,
     });
     setShouldFetch(true);
     setColumnFilters([]); // Clear client-side column filters
@@ -565,11 +573,13 @@ function DataTable() {
   const handleClearFilters = () => {
     setStartDate(INITIAL_START_DATE);
     setEndDate("");
-    setCycleIds("");
+    setCycleFrom("");
+    setCycleTo("");
     setAppliedFilters({
       startDate: INITIAL_START_DATE,
       endDate: "",
-      cycleIds: "",
+      cycleFrom: "",
+      cycleTo: "",
     });
     setColumnFilters([]);
     setShouldFetch(false);
@@ -611,11 +621,11 @@ function DataTable() {
 
   return (
     <div className="App">
-      {/* Server-side Filter Section (Date Range & Cycle IDs) */}
-      <div className="p-3 bg-light border-bottom">
-        <div className="row g-3 align-items-end">
-          <div className="col-md-3">
-            <label className="form-label fw-bold">Start Date</label>
+      {/* Server-side Filter Section (Date Range & Cycle Range) */}
+      <div className="px-3 py-3 bg-light border-bottom">
+        <div className="row g-2 align-items-end">
+          <div className="col-md-2">
+            <label className="form-label fw-semibold mb-1">Start Date</label>
             <input
               type="date"
               className="form-control"
@@ -623,8 +633,8 @@ function DataTable() {
               onChange={e => setStartDate(e.target.value)}
             />
           </div>
-          <div className="col-md-3">
-            <label className="form-label fw-bold">End Date</label>
+          <div className="col-md-2">
+            <label className="form-label fw-semibold mb-1">End Date</label>
             <input
               type="date"
               className="form-control"
@@ -632,50 +642,67 @@ function DataTable() {
               onChange={e => setEndDate(e.target.value)}
             />
           </div>
-          <div className="col-md-3">
-            <label className="form-label fw-bold">Cycle IDs</label>
+          <div className="col-md-2">
+            <label className="form-label fw-semibold mb-1">Cycle From</label>
             <input
-              type="text"
+              type="number"
               className="form-control"
-              placeholder="e.g., 300,301,302"
-              value={cycleIds}
-              onChange={e => setCycleIds(e.target.value)}
+              placeholder="e.g., 300"
+              value={cycleFrom}
+              onChange={e => setCycleFrom(e.target.value)}
             />
           </div>
-          <div className="col-md-3">
-            <button
-              type="button"
-              className="btn btn-primary me-2"
-              onClick={handleApplyFilters}
-              disabled={isLoading}
-            >
-              {isLoading ? "Loading..." : "Apply Filters"}
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              onClick={handleClearFilters}
-              disabled={isLoading}
-            >
-              Clear
-            </button>
+          <div className="col-md-2">
+            <label className="form-label fw-semibold mb-1">Cycle To</label>
+            <input
+              type="number"
+              className="form-control"
+              placeholder="e.g., 350"
+              value={cycleTo}
+              onChange={e => setCycleTo(e.target.value)}
+            />
+          </div>
+          <div className="col-md-4 mt-3 mt-md-0">
+            <div className="d-flex gap-2">
+              <button
+                type="button"
+                className="btn btn-primary flex-grow-1"
+                onClick={handleApplyFilters}
+                disabled={isLoading}
+              >
+                {isLoading ? "Loading..." : "Load data"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={handleClearFilters}
+                disabled={isLoading}
+              >
+                Clear
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Actions Bar */}
-      <div className="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
-        <div>
+      <div className="d-flex flex-row justify-content-between align-items-center px-3 py-2 bg-white border-bottom">
+        <div className="d-flex align-items-center gap-3">
           <span className="text-muted">
-            Showing {filteredRows} of {totalRows} records
-            {hasColumnFilters && <span className="text-info ms-2">(column filters applied)</span>}
+            Showing <strong className="text-dark">{filteredRows.toLocaleString()}</strong> of{" "}
+            <strong className="text-dark">{totalRows.toLocaleString()}</strong> records
           </span>
+          {hasColumnFilters && (
+            <span className="badge bg-info text-dark" style={{ fontSize: "0.75rem" }}>
+              Column filters active
+            </span>
+          )}
         </div>
-        <div>
+        <div className="d-flex gap-2">
           {hasColumnFilters && (
             <button
               type="button"
-              className="btn btn-sm btn-outline-secondary me-2"
+              className="btn btn-sm btn-outline-secondary"
               onClick={handleClearColumnFilters}
             >
               Clear Column Filters
@@ -683,61 +710,107 @@ function DataTable() {
           )}
           <button
             type="button"
-            className="btn btn-outline-primary"
+            className="btn btn-sm btn-outline-primary"
             onClick={createCsv}
             disabled={isLoading || filteredRows === 0}
           >
-            Export CSV ({filteredRows} records)
+            Export CSV ({filteredRows.toLocaleString()} records)
           </button>
         </div>
       </div>
 
       {/* Loading State */}
       {isLoading && (
-        <div className="text-center p-5">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
+        <div className="text-center py-5 my-5">
+          <div
+            className="spinner-border text-primary mb-3"
+            role="status"
+            style={{ width: "3rem", height: "3rem" }}
+          >
+            <span className="visually-hidden" />
           </div>
-          <p className="mt-3 text-muted">Loading data...</p>
+          <p className="text-muted fs-5 fw-medium" />
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div className="alert alert-danger m-3" role="alert">
-          Error loading data: {(error as Error).message}
+        <div className="mx-4 my-4">
+          <div className="alert alert-danger shadow-sm" role="alert">
+            <h5 className="alert-heading">Error loading data</h5>
+            <p className="mb-0">{(error as Error).message}</p>
+          </div>
         </div>
       )}
 
       {/* Initial State - No data loaded yet */}
       {!isLoading && !error && !shouldFetch && (
-        <div className="text-center p-5 text-muted">
-          <p className="fs-5">Click "Apply Filters" to load data</p>
-          <p className="text-secondary">Default filter is set to beginning of current month</p>
+        <div className="text-center py-5 my-5">
+          <div className="mb-4">
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-muted"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <h4 className="mb-3">Ready to load data</h4>
+          <p className="text-muted mb-1">Click "Load data" to load data</p>
+          <p className="text-secondary small">
+            Default filter is set to beginning of current month
+          </p>
         </div>
       )}
 
       {/* Data Table */}
       {!isLoading && !error && shouldFetch && tableData.length > 0 && (
         <div className="reports">
-          <div className="table-responsive" style={{ maxHeight: "calc(100vh - 250px)" }}>
-            <table className="table table-striped table-hover table-sm">
-              <thead className="table-light sticky-top">
+          <div
+            className="table-responsive"
+            style={{ maxHeight: "calc(100vh - 260px)", overflow: "auto" }}
+          >
+            <table className="table table-striped table-hover table-sm mb-0">
+              <thead className="table-light sticky-top" style={{ top: 0, zIndex: 10 }}>
                 {table.getHeaderGroups().map(headerGroup => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map(header => (
-                      <th key={header.id} style={{ minWidth: "100px", verticalAlign: "top" }}>
+                      <th
+                        key={header.id}
+                        style={{
+                          minWidth: "120px",
+                          verticalAlign: "top",
+                          padding: "12px 8px",
+                          backgroundColor: "#f8f9fa",
+                        }}
+                      >
                         {/* Column Header with Sorting */}
                         <div
                           className={
-                            header.column.getCanSort() ? "cursor-pointer user-select-none" : ""
+                            header.column.getCanSort()
+                              ? "cursor-pointer user-select-none fw-semibold"
+                              : "fw-semibold"
                           }
                           onClick={header.column.getToggleSortingHandler()}
-                          style={{ whiteSpace: "nowrap" }}
+                          style={{ whiteSpace: "nowrap", marginBottom: "8px" }}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
-                          {header.column.getIsSorted() === "asc" && <BsSortDown className="ms-1" />}
-                          {header.column.getIsSorted() === "desc" && <BsSortUp className="ms-1" />}
+                          {header.column.getIsSorted() === "asc" && (
+                            <BsSortDown className="ms-2 text-primary" />
+                          )}
+                          {header.column.getIsSorted() === "desc" && (
+                            <BsSortUp className="ms-2 text-primary" />
+                          )}
                         </div>
                         {/* Client-side Column Filter Input */}
                         {header.column.getCanFilter() && (
@@ -751,15 +824,20 @@ function DataTable() {
               <tbody>
                 {table.getRowModel().rows.length === 0 ? (
                   <tr>
-                    <td colSpan={columnDefs.length} className="text-center text-muted py-4">
-                      No rows match your column filters
+                    <td colSpan={columnDefs.length} className="text-center text-muted py-5">
+                      <div className="py-3">
+                        <p className="mb-1 fw-medium">No rows match your column filters</p>
+                        <p className="mb-0 small text-secondary">
+                          Try adjusting your filter criteria
+                        </p>
+                      </div>
                     </td>
                   </tr>
                 ) : (
                   table.getRowModel().rows.map(row => (
                     <tr key={row.id}>
                       {row.getVisibleCells().map(cell => (
-                        <td key={cell.id}>
+                        <td key={cell.id} style={{ padding: "10px 8px" }}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       ))}
@@ -774,9 +852,26 @@ function DataTable() {
 
       {/* No data returned from API */}
       {!isLoading && !error && shouldFetch && tableData.length === 0 && (
-        <div className="text-center p-5 text-muted">
-          <p className="fs-5">No data found for the selected filters</p>
-          <p className="text-secondary">Try adjusting your date range or cycle IDs</p>
+        <div className="text-center py-5 my-5">
+          <div className="mb-4">
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-muted"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </div>
+          <h4 className="mb-3">No data found</h4>
+          <p className="text-muted mb-1">No data found for the selected filters</p>
+          <p className="text-secondary small">Try adjusting your date range or cycle IDs</p>
         </div>
       )}
     </div>
