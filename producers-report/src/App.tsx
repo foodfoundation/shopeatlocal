@@ -6,16 +6,18 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   flexRender,
   SortingState,
   ColumnFiltersState,
   ColumnDef,
+  Column,
+  FilterFn,
 } from "@tanstack/react-table";
 import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import { BsSortUp, BsSortDown } from "react-icons/bs";
 import { json2csv } from "json-2-csv";
+import { parseISO, format, isValid, isSameDay, isAfter, isBefore } from "date-fns";
 
 // Types
 interface SalesRecord {
@@ -58,6 +60,91 @@ interface FetchDataParams {
   cycleIds: string;
 }
 
+// Filter input types
+type FilterInputType = "text" | "number" | "numberRange" | "date";
+
+// Number range filter value type
+type NumberRangeFilterValue = [number | "", number | ""];
+
+// Extend column meta to include filter type
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData, TValue> {
+    filterType?: FilterInputType;
+  }
+}
+
+// Custom filter function for numbers (exact match or starts with)
+const numberFilter: FilterFn<SalesRecord> =
+  (type: "exact" | "startsWith") => (row, columnId, filterValue) => {
+    if (filterValue === "" || filterValue === null || filterValue === undefined) return true;
+    if (type === "exact") {
+      return String(value) === String(filterValue);
+    }
+    if (type === "startsWith") {
+      return String(value).startsWith(String(filterValue));
+    }
+  };
+
+// Custom filter function for number range (from - to)
+const numberRangeFilter: FilterFn<SalesRecord> = (row, columnId, filterValue) => {
+  const value = row.getValue(columnId) as number;
+  const [min, max] = (filterValue as NumberRangeFilterValue) || ["", ""];
+
+  // If no filter values, show all
+  if (
+    (min === "" || min === null || min === undefined) &&
+    (max === "" || max === null || max === undefined)
+  ) {
+    return true;
+  }
+
+  // Check min bound
+  if (min !== "" && min !== null && min !== undefined) {
+    if (value < Number(min)) return false;
+  }
+
+  // Check max bound
+  if (max !== "" && max !== null && max !== undefined) {
+    if (value > Number(max)) return false;
+  }
+
+  return true;
+};
+
+// Custom filter function for dates using date-fns
+const dateFilter: FilterFn<SalesRecord> = (row, columnId, filterValue) => {
+  if (!filterValue) return true;
+
+  const cellValue = row.getValue(columnId) as string;
+  if (!cellValue) return false;
+
+  const cellDate = parseISO(cellValue);
+  const filterDate = parseISO(filterValue as string);
+
+  if (!isValid(cellDate) || !isValid(filterDate)) return false;
+
+  return isSameDay(cellDate, filterDate);
+};
+
+const dateRangeFilter: FilterFn<SalesRecord> =
+  (type: "from" | "to") => (row, columnId, filterValue) => {
+    if (!filterValue) return true;
+    if (type === "from") {
+      const cellValue = row.getValue(columnId) as string;
+      if (!cellValue) return false;
+      const cellDate = parseISO(cellValue);
+      const filterDate = parseISO(filterValue as string);
+      return isValid(cellDate) && isValid(filterDate) && isAfter(cellDate, filterDate);
+    }
+    if (type === "to") {
+      const cellValue = row.getValue(columnId) as string;
+      if (!cellValue) return false;
+      const cellDate = parseISO(cellValue);
+      const filterDate = parseISO(filterValue as string);
+      return isValid(cellDate) && isValid(filterDate) && isBefore(cellDate, filterDate);
+    }
+  };
+
 // Query Client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,15 +169,17 @@ const getBeginningOfMonth = (): string => {
 // Store the initial date to avoid recalculation
 const INITIAL_START_DATE = getBeginningOfMonth();
 
-// Fetch function - loads all data with limit 5000
-const fetchData = async ({
-  startDate,
-  endDate,
-  cycleIds,
-}: FetchDataParams): Promise<SalesRecord[]> => {
+// Fetch a single page of data
+const fetchPage = async (
+  page: number,
+  limit: number,
+  startDate: string,
+  endDate: string,
+  cycleIds: string,
+): Promise<ApiResponse> => {
   const params = new URLSearchParams({
-    page: "1",
-    limit: "5000", // Load all data
+    page: String(page),
+    limit: String(limit),
   });
 
   if (startDate) params.append("startDate", startDate);
@@ -103,18 +192,60 @@ const fetchData = async ({
     throw new Error("Failed to fetch data");
   }
 
-  const result: ApiResponse = await response.json();
-  return result.data || [];
+  return response.json();
 };
 
-// Column Definitions with proper filter functions
+// Fetch all data using pagination
+const fetchData = async ({
+  startDate,
+  endDate,
+  cycleIds,
+}: FetchDataParams): Promise<SalesRecord[]> => {
+  const PAGE_SIZE = 2000; // Records per page
+
+  // First, fetch page 1 to get total pages and total records
+  const firstPage = await fetchPage(1, PAGE_SIZE, startDate, endDate, cycleIds);
+  const { totalPages, totalRecords } = firstPage.pagination;
+
+  // Check if data exceeds maximum allowed records
+  const MAX_RECORDS = 50000;
+  if (totalRecords > MAX_RECORDS) {
+    throw new Error(
+      `Too many records (${totalRecords.toLocaleString()}). Maximum allowed is ${MAX_RECORDS.toLocaleString()}. Please refine your filters to narrow down the results.`,
+    );
+  }
+
+  const allData: SalesRecord[] = [...(firstPage.data || [])];
+
+  // If there are more pages, fetch them in parallel
+  if (totalPages > 1) {
+    const remainingPages = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
+
+    const pagePromises = remainingPages.map(page =>
+      fetchPage(page, PAGE_SIZE, startDate, endDate, cycleIds),
+    );
+
+    const results = await Promise.all(pagePromises);
+
+    for (const result of results) {
+      if (result.data) {
+        allData.push(...result.data);
+      }
+    }
+  }
+
+  return allData;
+};
+
+// Column Definitions with filter types
 const columnDefs: ColumnDef<SalesRecord>[] = [
   {
     accessorKey: "QtyDeliv",
     header: "Quantity",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberRangeFilter,
+    meta: { filterType: "numberRange" },
   },
   {
     accessorKey: "saleSource",
@@ -122,6 +253,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "location",
@@ -129,48 +261,55 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "SaleNom",
     header: "Nominal Sale",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberRangeFilter,
+    meta: { filterType: "numberRange" },
   },
   {
     accessorKey: "TaxSale",
     header: "Sale Tax",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberRangeFilter,
+    meta: { filterType: "numberRange" },
   },
   {
     accessorKey: "FeeCoop",
     header: "Market Fee",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberRangeFilter,
+    meta: { filterType: "numberRange" },
   },
   {
     accessorKey: "FeeCoopForgiv",
     header: "Market-Fee Forgiv",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberRangeFilter,
+    meta: { filterType: "numberRange" },
   },
   {
     accessorKey: "IDCyc",
     header: "Cycle",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberRangeFilter,
+    meta: { filterType: "numberRange" },
   },
   {
     accessorKey: "WhenStartCyc",
     header: "Cycle Start",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: dateRangeFilter("from"),
+    meta: { filterType: "date" },
     cell: ({ getValue }) => {
       const value = getValue() as string;
       return value ? new Date(value).toLocaleDateString() : "";
@@ -181,7 +320,8 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     header: "Cycle End",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: dateRangeFilter("to"),
+    meta: { filterType: "date" },
     cell: ({ getValue }) => {
       const value = getValue() as string;
       return value ? new Date(value).toLocaleDateString() : "";
@@ -192,14 +332,16 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     header: "Variety",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberFilter("exact"),
+    meta: { filterType: "number" },
   },
   {
     accessorKey: "IDProduct",
     header: "Product ID",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberFilter("exact"),
+    meta: { filterType: "number" },
   },
   {
     accessorKey: "NameProduct",
@@ -207,6 +349,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "NameCat",
@@ -214,6 +357,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "NameSubcat",
@@ -221,13 +365,15 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "IDProducer",
     header: "Producer ID",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberFilter,
+    meta: { filterType: "number" },
   },
   {
     accessorKey: "Producer",
@@ -235,13 +381,15 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "IDMemb",
     header: "Customer ID",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: "includesString",
+    filterFn: numberFilter("exact"),
+    meta: { filterType: "number" },
   },
   {
     accessorKey: "CustomerName",
@@ -249,6 +397,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "CustEmail",
@@ -256,6 +405,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
   {
     accessorKey: "CustPhone",
@@ -263,11 +413,91 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     filterFn: "includesString",
+    meta: { filterType: "text" },
   },
 ];
 
+// Number Range Filter Input Component
+function NumberRangeFilterInput({ column }: { column: Column<SalesRecord, unknown> }) {
+  const filterValue = (column.getFilterValue() as NumberRangeFilterValue) || ["", ""];
+
+  return (
+    <div className="d-flex flex-column gap-1 mt-1">
+      <input
+        type="number"
+        className="form-control form-control-sm"
+        placeholder="From"
+        value={filterValue[0]}
+        onChange={e => {
+          const val = e.target.value === "" ? "" : Number(e.target.value);
+          column.setFilterValue([val, filterValue[1]]);
+        }}
+        style={{ minWidth: "60px" }}
+      />
+      <input
+        type="number"
+        className="form-control form-control-sm"
+        placeholder="To"
+        value={filterValue[1]}
+        onChange={e => {
+          const val = e.target.value === "" ? "" : Number(e.target.value);
+          column.setFilterValue([filterValue[0], val]);
+        }}
+        style={{ minWidth: "60px" }}
+      />
+    </div>
+  );
+}
+
+// Filter Input Component
+function ColumnFilterInput({ column }: { column: Column<SalesRecord, unknown> }) {
+  const filterType = column.columnDef.meta?.filterType || "text";
+  const filterValue = column.getFilterValue();
+
+  if (filterType === "numberRange") {
+    return <NumberRangeFilterInput column={column} />;
+  }
+
+  if (filterType === "number") {
+    return (
+      <input
+        type="number"
+        className="form-control form-control-sm mt-1"
+        value={(filterValue ?? "") as string}
+        onChange={e => column.setFilterValue(e.target.value)}
+        placeholder="Filter..."
+        style={{ minWidth: "70px" }}
+      />
+    );
+  }
+
+  if (filterType === "date") {
+    return (
+      <input
+        type="date"
+        className="form-control form-control-sm mt-1"
+        value={(filterValue ?? "") as string}
+        onChange={e => column.setFilterValue(e.target.value)}
+        style={{ minWidth: "130px" }}
+      />
+    );
+  }
+
+  // Default: text input
+  return (
+    <input
+      type="text"
+      className="form-control form-control-sm mt-1"
+      value={(filterValue ?? "") as string}
+      onChange={e => column.setFilterValue(e.target.value)}
+      placeholder="Filter..."
+      style={{ minWidth: "80px" }}
+    />
+  );
+}
+
 function DataTable() {
-  // Filter states - with default start date
+  // Filter states for API call - with default start date
   const [startDate, setStartDate] = useState(INITIAL_START_DATE);
   const [endDate, setEndDate] = useState("");
   const [cycleIds, setCycleIds] = useState("");
@@ -282,16 +512,15 @@ function DataTable() {
     cycleIds: "",
   });
 
-  // Table states
+  // Table states for client-side sorting and filtering
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  // Fetch data with Tanstack Query - only when enabled
+  // Fetch data with TanStack Query - only when enabled
   const {
     data: allData,
     isLoading,
     error,
-    refetch,
   } = useQuery({
     queryKey: [
       "salesData",
@@ -303,9 +532,10 @@ function DataTable() {
     enabled: shouldFetch,
   });
 
+  // Memoize table data
   const tableData = useMemo(() => allData || [], [allData]);
 
-  // Table instance with client-side pagination
+  // TanStack Table instance - NO pagination, client-side filtering and sorting
   const table = useReactTable({
     data: tableData,
     columns: columnDefs,
@@ -317,15 +547,10 @@ function DataTable() {
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 50,
-      },
-    },
+    getFilteredRowModel: getFilteredRowModel(), // Client-side filtering
   });
 
+  // Apply server-side filters (date range, cycle IDs) and fetch data
   const handleApplyFilters = () => {
     setAppliedFilters({
       startDate,
@@ -333,10 +558,10 @@ function DataTable() {
       cycleIds,
     });
     setShouldFetch(true);
-    table.setPageIndex(0);
-    setColumnFilters([]);
+    setColumnFilters([]); // Clear client-side column filters
   };
 
+  // Clear all filters
   const handleClearFilters = () => {
     setStartDate(INITIAL_START_DATE);
     setEndDate("");
@@ -346,14 +571,18 @@ function DataTable() {
       endDate: "",
       cycleIds: "",
     });
-    table.setPageIndex(0);
     setColumnFilters([]);
     setShouldFetch(false);
   };
 
+  // Clear only client-side column filters
+  const handleClearColumnFilters = () => {
+    setColumnFilters([]);
+  };
+
+  // Export all filtered data to CSV
   const createCsv = () => {
     try {
-      // Export all filtered data (not just current page)
       const filteredData = table.getFilteredRowModel().rows.map(row => row.original);
 
       if (!filteredData || filteredData.length === 0) {
@@ -376,16 +605,13 @@ function DataTable() {
     }
   };
 
-  const currentPage = table.getState().pagination.pageIndex + 1;
-  const pageSize = table.getState().pagination.pageSize;
-  const totalFilteredRows = table.getFilteredRowModel().rows.length;
-  const totalPages = table.getPageCount();
-  const startRow = totalFilteredRows > 0 ? (currentPage - 1) * pageSize + 1 : 0;
-  const endRow = Math.min(currentPage * pageSize, totalFilteredRows);
+  const totalRows = tableData.length;
+  const filteredRows = table.getFilteredRowModel().rows.length;
+  const hasColumnFilters = columnFilters.length > 0;
 
   return (
     <div className="App">
-      {/* Filter Section */}
+      {/* Server-side Filter Section (Date Range & Cycle IDs) */}
       <div className="p-3 bg-light border-bottom">
         <div className="row g-3 align-items-end">
           <div className="col-md-3">
@@ -441,79 +667,32 @@ function DataTable() {
       <div className="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
         <div>
           <span className="text-muted">
-            Showing {startRow} to {endRow} of {totalFilteredRows} records
-            {totalFilteredRows < tableData.length && (
-              <span> (filtered from {tableData.length} total)</span>
-            )}
+            Showing {filteredRows} of {totalRows} records
+            {hasColumnFilters && <span className="text-info ms-2">(column filters applied)</span>}
           </span>
         </div>
-        <button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={createCsv}
-          disabled={isLoading || tableData.length === 0}
-        >
-          Export CSV ({totalFilteredRows} records)
-        </button>
-      </div>
-
-      {/* Pagination Controls */}
-      <div className="d-flex flex-row justify-content-between align-items-center p-2 bg-light">
         <div>
-          <label className="me-2">Records per page:</label>
-          <select
-            className="form-select form-select-sm d-inline-block w-auto"
-            value={pageSize}
-            onChange={e => table.setPageSize(Number(e.target.value))}
-            disabled={isLoading}
-          >
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-            <option value={200}>200</option>
-            <option value={500}>500</option>
-          </select>
-        </div>
-        <div className="btn-group" role="group">
+          {hasColumnFilters && (
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-secondary me-2"
+              onClick={handleClearColumnFilters}
+            >
+              Clear Column Filters
+            </button>
+          )}
           <button
             type="button"
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
+            className="btn btn-outline-primary"
+            onClick={createCsv}
+            disabled={isLoading || filteredRows === 0}
           >
-            First
-          </button>
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </button>
-          <button type="button" className="btn btn-sm btn-outline-secondary" disabled>
-            Page {currentPage} of {totalPages || 1}
-          </button>
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </button>
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => table.setPageIndex(Math.max(0, totalPages - 1))}
-            disabled={!table.getCanNextPage()}
-          >
-            Last
+            Export CSV ({filteredRows} records)
           </button>
         </div>
       </div>
 
-      {/* Loading/Error States */}
+      {/* Loading State */}
       {isLoading && (
         <div className="text-center p-5">
           <div className="spinner-border" role="status">
@@ -523,6 +702,7 @@ function DataTable() {
         </div>
       )}
 
+      {/* Error State */}
       {error && (
         <div className="alert alert-danger m-3" role="alert">
           Error loading data: {(error as Error).message}
@@ -537,43 +717,31 @@ function DataTable() {
         </div>
       )}
 
-      {/* Table */}
+      {/* Data Table */}
       {!isLoading && !error && shouldFetch && tableData.length > 0 && (
         <div className="reports">
-          <div className="table-responsive">
-            <table className="table table-striped table-hover">
+          <div className="table-responsive" style={{ maxHeight: "calc(100vh - 250px)" }}>
+            <table className="table table-striped table-hover table-sm">
               <thead className="table-light sticky-top">
                 {table.getHeaderGroups().map(headerGroup => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map(header => (
-                      <th key={header.id} style={{ minWidth: "120px" }}>
+                      <th key={header.id} style={{ minWidth: "100px", verticalAlign: "top" }}>
+                        {/* Column Header with Sorting */}
                         <div
                           className={
                             header.column.getCanSort() ? "cursor-pointer user-select-none" : ""
                           }
                           onClick={header.column.getToggleSortingHandler()}
+                          style={{ whiteSpace: "nowrap" }}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
-                          {header.column.getIsSorted() === "asc" ? (
-                            <span className="ms-1">
-                              <BsSortDown />
-                            </span>
-                          ) : header.column.getIsSorted() === "desc" ? (
-                            <span className="ms-1">
-                              <BsSortUp />
-                            </span>
-                          ) : null}
+                          {header.column.getIsSorted() === "asc" && <BsSortDown className="ms-1" />}
+                          {header.column.getIsSorted() === "desc" && <BsSortUp className="ms-1" />}
                         </div>
+                        {/* Client-side Column Filter Input */}
                         {header.column.getCanFilter() && (
-                          <div className="mt-1">
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              value={(header.column.getFilterValue() ?? "") as string}
-                              onChange={e => header.column.setFilterValue(e.target.value)}
-                              placeholder="Filter..."
-                            />
-                          </div>
+                          <ColumnFilterInput column={header.column} />
                         )}
                       </th>
                     ))}
@@ -584,7 +752,7 @@ function DataTable() {
                 {table.getRowModel().rows.length === 0 ? (
                   <tr>
                     <td colSpan={columnDefs.length} className="text-center text-muted py-4">
-                      No rows match your filters!
+                      No rows match your column filters
                     </td>
                   </tr>
                 ) : (
