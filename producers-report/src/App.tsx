@@ -225,13 +225,8 @@ const fetchData = async ({
   if (totalPages > 1) {
     const remainingPages = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
 
-    const pagePromises = remainingPages.map(page =>
-      fetchPage(page, PAGE_SIZE, startDate, endDate, cycleFrom, cycleTo),
-    );
-
-    const results = await Promise.all(pagePromises);
-
-    for (const result of results) {
+    for (const page of remainingPages) {
+      const result = await fetchPage(page, PAGE_SIZE, startDate, endDate, cycleFrom, cycleTo);
       if (result.data) {
         allData.push(...result.data);
       }
