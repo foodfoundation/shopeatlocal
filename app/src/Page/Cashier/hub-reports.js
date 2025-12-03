@@ -29,9 +29,10 @@ export async function wHandGetData(aReq, aResp) {
     const limit = parseInt(aReq.query.limit) || 50;
     const startDate = aReq.query.startDate;
     const endDate = aReq.query.endDate;
-    const cycleIds = aReq.query.cycleIds; // Can be comma-separated string
+    const cycleFrom = aReq.query.cycleFrom ? parseInt(aReq.query.cycleFrom) : null;
+    const cycleTo = aReq.query.cycleTo ? parseInt(aReq.query.cycleTo) : null;
 
-    const result = await wGetHubReport({ page, limit, startDate, endDate, cycleIds });
+    const result = await wGetHubReport({ page, limit, startDate, endDate, cycleFrom, cycleTo });
     aResp.json(result);
   } catch (error) {
     console.error("Error fetching hub report data:", error);
@@ -45,12 +46,13 @@ export async function wHandGetData(aReq, aResp) {
  *  @param {number} options.limit - Number of records per page
  *  @param {string} options.startDate - Start date filter (ISO format)
  *  @param {string} options.endDate - End date filter (ISO format)
- *  @param {string} options.cycleIds - Comma-separated cycle IDs
+ *  @param {number} options.cycleFrom - Minimum cycle ID filter
+ *  @param {number} options.cycleTo - Maximum cycle ID filter
  *  @returns {Promise<Object>} Object containing data array, pagination info, and metadata
  *  @description Aggregates sales data including quantities, fees, taxes, and product details
  */
 const wGetHubReport = async function (options = {}) {
-  const { page = 1, limit = 50, startDate, endDate, cycleIds } = options;
+  const { page = 1, limit = 50, startDate, endDate, cycleFrom, cycleTo } = options;
   const offset = (page - 1) * limit;
 
   // Build WHERE clause conditions
@@ -67,12 +69,14 @@ const wGetHubReport = async function (options = {}) {
     params.push(endDate);
   }
 
-  // Add cycle ID filter if provided
-  if (cycleIds) {
-    const cycleIdArray = cycleIds.split(",").map(id => id.trim());
-    const placeholders = cycleIdArray.map(() => "?").join(",");
-    whereConditions.push(`Cyc.IDCyc IN (${placeholders})`);
-    params.push(...cycleIdArray);
+  // Add cycle ID range filter if provided
+  if (cycleFrom !== null && cycleFrom !== undefined) {
+    whereConditions.push("Cyc.IDCyc >= ?");
+    params.push(cycleFrom);
+  }
+  if (cycleTo !== null && cycleTo !== undefined) {
+    whereConditions.push("Cyc.IDCyc <= ?");
+    params.push(cycleTo);
   }
 
   const whereClause = whereConditions.join(" AND ");
@@ -233,7 +237,8 @@ const wGetHubReport = async function (options = {}) {
     filters: {
       startDate: startDate || null,
       endDate: endDate || null,
-      cycleIds: cycleIds || null,
+      cycleFrom: cycleFrom || null,
+      cycleTo: cycleTo || null,
     },
   };
 };
