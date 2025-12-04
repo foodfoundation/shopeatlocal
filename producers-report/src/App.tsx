@@ -112,21 +112,6 @@ const numberRangeFilter: FilterFn<SalesRecord> = (row, columnId, filterValue) =>
   return true;
 };
 
-// Custom filter function for dates using date-fns
-const dateFilter: FilterFn<SalesRecord> = (row, columnId, filterValue) => {
-  if (!filterValue) return true;
-
-  const cellValue = row.getValue(columnId) as string;
-  if (!cellValue) return false;
-
-  const cellDate = parseISO(cellValue);
-  const filterDate = parseISO(filterValue as string);
-
-  if (!isValid(cellDate) || !isValid(filterDate)) return false;
-
-  return isSameDay(cellDate, filterDate);
-};
-
 const dateRangeFilter: (type: "from" | "to") => FilterFn<SalesRecord> =
   (type: "from" | "to") => (row, columnId, filterValue) => {
     if (!filterValue) return true;
@@ -135,14 +120,20 @@ const dateRangeFilter: (type: "from" | "to") => FilterFn<SalesRecord> =
       if (!cellValue) return false;
       const cellDate = parseISO(cellValue);
       const filterDate = parseISO(filterValue as string);
-      return isValid(cellDate) && isValid(filterDate) && isAfter(cellDate, filterDate);
+      return (
+        (isValid(cellDate) && isValid(filterDate) && isAfter(cellDate, filterDate)) ||
+        isSameDay(cellDate, filterDate)
+      );
     }
     if (type === "to") {
       const cellValue = row.getValue(columnId) as string;
       if (!cellValue) return false;
       const cellDate = parseISO(cellValue);
       const filterDate = parseISO(filterValue as string);
-      return isValid(cellDate) && isValid(filterDate) && isBefore(cellDate, filterDate);
+      return (
+        (isValid(cellDate) && isValid(filterDate) && isBefore(cellDate, filterDate)) ||
+        isSameDay(cellDate, filterDate)
+      );
     }
     return true;
   };
