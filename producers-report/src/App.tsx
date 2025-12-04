@@ -726,7 +726,7 @@ function DataTable() {
           >
             <span className="visually-hidden" />
           </div>
-          <p className="text-muted fs-5 fw-medium" />
+          <p className="text-muted fs-5 fw-medium">Loading data...</p>
         </div>
       )}
 
