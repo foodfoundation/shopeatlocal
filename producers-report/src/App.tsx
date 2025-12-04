@@ -555,6 +555,16 @@ function DataTable() {
 
   // Apply server-side filters (date range, cycle range) and fetch data
   const handleApplyFilters = () => {
+    // Validate date range
+    if (startDate && endDate && isAfter(parseISO(startDate), parseISO(endDate))) {
+      alert("Start date must be before or equal to end date");
+      return;
+    }
+    // Validate cycle range
+    if (cycleFrom && cycleTo && parseInt(cycleFrom) > parseInt(cycleTo)) {
+      alert("Cycle from must be less than or equal to cycle to");
+      return;
+    }
     setAppliedFilters({
       startDate,
       endDate,
