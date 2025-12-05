@@ -287,7 +287,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
-    size: 100,
+    size: 130,
   },
   {
     accessorKey: "TaxSale",
@@ -364,7 +364,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
-    size: 100,
+    size: 120,
   },
   {
     accessorKey: "NameProduct",
@@ -859,19 +859,26 @@ function DataTable() {
                       <div
                         className={
                           header.column.getCanSort()
-                            ? "cursor-pointer user-select-none fw-semibold"
-                            : "fw-semibold"
+                            ? "cursor-pointer user-select-none fw-semibold d-flex justify-content-between align-items-center"
+                            : "fw-semibold d-flex justify-content-between align-items-center"
                         }
                         onClick={header.column.getToggleSortingHandler()}
-                        style={{ whiteSpace: "nowrap", marginBottom: "8px" }}
+                        style={{ whiteSpace: "nowrap", marginBottom: "8px", paddingRight: "4px" }}
                       >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {header.column.getIsSorted() === "asc" && (
-                          <BsSortDown className="ms-2 text-primary" />
-                        )}
-                        {header.column.getIsSorted() === "desc" && (
-                          <BsSortUp className="ms-2 text-primary" />
-                        )}
+                        <span>
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </span>
+                        <span>
+                          {header.column.getIsSorted() === "asc" && (
+                            <BsSortUp
+                              className="text-primary"
+                              style={{ transform: "scaleY(-1)" }}
+                            />
+                          )}
+                          {header.column.getIsSorted() === "desc" && (
+                            <BsSortDown className="ms-2 text-primary" />
+                          )}
+                        </span>
                       </div>
                       {/* Client-side Column Filter Input */}
                       {header.column.getCanFilter() && <ColumnFilterInput column={header.column} />}
