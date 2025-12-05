@@ -871,7 +871,7 @@ function DataTable() {
                         <span>
                           {header.column.getIsSorted() === "asc" && (
                             <BsSortUp
-                              className="text-primary"
+                              className="ms-2 text-primary"
                               style={{ transform: "scaleY(-1)" }}
                             />
                           )}
