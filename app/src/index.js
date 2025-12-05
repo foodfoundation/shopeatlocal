@@ -428,6 +428,52 @@ async function WareMulterImgErr(aReq, aResp, aNext) {
   WareMulterImg(aReq, aResp, oNext);
 }
 
+/** CSV file upload configuration
+ *  Storage: Memory (buffer)
+ *  Size limit: 5MB for CSV files
+ */
+const OptsMulterCSV = {
+  storage: gMulter.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (aReq, aFile, aDone) => {
+    // Accept only CSV files
+    if (aFile.mimetype === 'text/csv' || aFile.originalname.endsWith('.csv')) {
+      aDone(null, true);
+    } else {
+      aDone(new Error('Only CSV files are allowed'));
+    }
+  }
+};
+
+const GenMulterCSV = gMulter(OptsMulterCSV);
+const WareMulterCSV = GenMulterCSV.single('csvFile');
+
+/** Handles CSV upload processing
+ *  @param {Request} aReq - Express request
+ *  @param {Response} aResp - Express response
+ *  @param {Function} aNext - Next middleware
+ */
+async function WareMulterCSVErr(aReq, aResp, aNext) {
+  function oNext(aErr) {
+    if (aErr) {
+      let oMsgLog = "Cannot upload CSV file";
+      if (aErr instanceof MulterError) oMsgLog += `: multer error '${aErr.code}'`;
+      aReq.Err(oMsgLog);
+
+      const oCkSize = aErr instanceof MulterError && aErr.code === "LIMIT_FILE_SIZE";
+      const oMsgFlash = oCkSize
+        ? "CSV file cannot be larger than 5MB."
+        : aErr.message || "Unknown error.";
+      aResp.Show_Flash("danger", "Could not upload file!", oMsgFlash);
+    }
+    aNext();
+  }
+
+  WareMulterCSV(aReq, aResp, oNext);
+}
+
+App.use(WareBodyEncURL);
+
 // ----------------------
 // Fix Express 'redirect'
 // ----------------------
@@ -1427,6 +1473,19 @@ App.route("/co-op-on-site-sales-by-variety-export-sales")
   .all(WareCkUser)
   .all(WareCkStaff)
   .get(NextOnExcept(coopOnsiteSalesByVarietyExportSalesGet));
+
+import {
+  wHandGet as uploadProducerDisbursementsGet,
+  wHandPost as uploadProducerDisbursementsPost,
+} from "./Page/ProducerAdmin/upload-producer-disbursements.js";
+
+App.route("/upload-producer-disbursements")
+  .all(WareMulterCSVErr)
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .get(NextOnExcept(uploadProducerDisbursementsGet))
+  .post(NextOnExcept(uploadProducerDisbursementsPost));
 
 // Site admin
 // ----------
