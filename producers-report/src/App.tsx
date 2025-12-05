@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import { useState, useMemo } from "react";
 import {
   useReactTable,
@@ -75,15 +73,17 @@ declare module "@tanstack/react-table" {
 }
 
 // Custom filter function for numbers (exact match or starts with)
-const numberFilter: FilterFn<SalesRecord> =
+const numberFilter: (type: "exact" | "startsWith") => FilterFn<SalesRecord> =
   (type: "exact" | "startsWith") => (row, columnId, filterValue) => {
     if (filterValue === "" || filterValue === null || filterValue === undefined) return true;
+    const value = row.getValue(columnId) as number;
     if (type === "exact") {
       return String(value) === String(filterValue);
     }
     if (type === "startsWith") {
       return String(value).startsWith(String(filterValue));
     }
+    return true;
   };
 
 // Custom filter function for number range (from - to)
@@ -127,7 +127,7 @@ const dateFilter: FilterFn<SalesRecord> = (row, columnId, filterValue) => {
   return isSameDay(cellDate, filterDate);
 };
 
-const dateRangeFilter: FilterFn<SalesRecord> =
+const dateRangeFilter: (type: "from" | "to") => FilterFn<SalesRecord> =
   (type: "from" | "to") => (row, columnId, filterValue) => {
     if (!filterValue) return true;
     if (type === "from") {
@@ -144,6 +144,7 @@ const dateRangeFilter: FilterFn<SalesRecord> =
       const filterDate = parseISO(filterValue as string);
       return isValid(cellDate) && isValid(filterDate) && isBefore(cellDate, filterDate);
     }
+    return true;
   };
 
 // Query Client
@@ -371,7 +372,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     header: "Producer ID",
     enableSorting: true,
     enableColumnFilter: true,
-    filterFn: numberFilter,
+    filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
   },
   {
