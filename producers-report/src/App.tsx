@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -11,6 +11,7 @@ import {
   Column,
   FilterFn,
 } from "@tanstack/react-table";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import { BsSortUp, BsSortDown } from "react-icons/bs";
@@ -650,6 +651,18 @@ function DataTable() {
   const filteredRows = table.getFilteredRowModel().rows.length;
   const hasColumnFilters = columnFilters.length > 0;
 
+  // Virtualization setup
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const { rows } = table.getRowModel();
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => tableContainerRef.current,
+    estimateSize: () => 50, // Estimated row height
+    overscan: 5, // Reduced overscan for better measurement performance
+    measureElement: element => element.getBoundingClientRect().height, // Measure actual height
+  });
+
   return (
     <div className="App">
       {/* Server-side Filter Section (Date Range & Cycle Range) */}
@@ -804,79 +817,96 @@ function DataTable() {
         </div>
       )}
 
-      {/* Data Table */}
+      {/* Data Table with Virtualization */}
       {!isLoading && !error && shouldFetch && tableData.length > 0 && (
         <div className="reports">
           <div
-            className="table-responsive"
+            ref={tableContainerRef}
             style={{ maxHeight: "calc(100vh - 260px)", overflow: "auto" }}
           >
-            <table className="table table-striped table-hover table-sm mb-0">
-              <thead className="table-light sticky-top" style={{ top: 0, zIndex: 10 }}>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <th
-                        key={header.id}
+            <div className="virtual-table">
+              {/* Header */}
+              <div className="virtual-table-header">
+                {table.getHeaderGroups().map(headerGroup =>
+                  headerGroup.headers.map(header => (
+                    <div
+                      key={header.id}
+                      className="virtual-table-header-cell"
+                      style={{ width: "180px", minWidth: "180px" }}
+                    >
+                      {/* Column Header with Sorting */}
+                      <div
+                        className={
+                          header.column.getCanSort()
+                            ? "cursor-pointer user-select-none fw-semibold"
+                            : "fw-semibold"
+                        }
+                        onClick={header.column.getToggleSortingHandler()}
+                        style={{ whiteSpace: "nowrap", marginBottom: "8px" }}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.column.getIsSorted() === "asc" && (
+                          <BsSortDown className="ms-2 text-primary" />
+                        )}
+                        {header.column.getIsSorted() === "desc" && (
+                          <BsSortUp className="ms-2 text-primary" />
+                        )}
+                      </div>
+                      {/* Client-side Column Filter Input */}
+                      {header.column.getCanFilter() && <ColumnFilterInput column={header.column} />}
+                    </div>
+                  )),
+                )}
+              </div>
+
+              {/* Body */}
+              <div
+                className="virtual-table-body"
+                style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
+              >
+                {rows.length === 0 ? (
+                  <div className="text-center text-muted py-5">
+                    <div className="py-3">
+                      <p className="mb-1 fw-medium">No rows match your column filters</p>
+                      <p className="mb-0 small text-secondary">
+                        Try adjusting your filter criteria
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  rowVirtualizer.getVirtualItems().map(virtualRow => {
+                    const row = rows[virtualRow.index];
+                    const isEvenRow = virtualRow.index % 2 === 0;
+                    return (
+                      <div
+                        key={row.id}
+                        data-index={virtualRow.index}
+                        ref={rowVirtualizer.measureElement}
+                        className="virtual-table-row"
                         style={{
-                          minWidth: "120px",
-                          verticalAlign: "top",
-                          padding: "12px 8px",
-                          backgroundColor: "#f8f9fa",
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          transform: `translateY(${virtualRow.start}px)`,
+                          backgroundColor: isEvenRow ? "#fff" : "rgba(0, 0, 0, 0.025)",
                         }}
                       >
-                        {/* Column Header with Sorting */}
-                        <div
-                          className={
-                            header.column.getCanSort()
-                              ? "cursor-pointer user-select-none fw-semibold"
-                              : "fw-semibold"
-                          }
-                          onClick={header.column.getToggleSortingHandler()}
-                          style={{ whiteSpace: "nowrap", marginBottom: "8px" }}
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {header.column.getIsSorted() === "asc" && (
-                            <BsSortDown className="ms-2 text-primary" />
-                          )}
-                          {header.column.getIsSorted() === "desc" && (
-                            <BsSortUp className="ms-2 text-primary" />
-                          )}
-                        </div>
-                        {/* Client-side Column Filter Input */}
-                        {header.column.getCanFilter() && (
-                          <ColumnFilterInput column={header.column} />
-                        )}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.length === 0 ? (
-                  <tr>
-                    <td colSpan={visibleColumns.length} className="text-center text-muted py-5">
-                      <div className="py-3">
-                        <p className="mb-1 fw-medium">No rows match your column filters</p>
-                        <p className="mb-0 small text-secondary">
-                          Try adjusting your filter criteria
-                        </p>
+                        {row.getVisibleCells().map(cell => (
+                          <div
+                            key={cell.id}
+                            className="virtual-table-cell"
+                            style={{ width: "180px", minWidth: "180px" }}
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                        ))}
                       </div>
-                    </td>
-                  </tr>
-                ) : (
-                  table.getRowModel().rows.map(row => (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map(cell => (
-                        <td key={cell.id} style={{ padding: "10px 8px" }}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
+                    );
+                  })
                 )}
-              </tbody>
-            </table>
+              </div>
+            </div>
           </div>
         </div>
       )}

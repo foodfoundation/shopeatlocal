@@ -89,3 +89,66 @@
 .gap-3 {
   gap: 1rem;
 }
+
+/* Virtualized table - use flexbox for consistent column alignment */
+.virtual-table {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: 100%;
+}
+
+.virtual-table-header {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.virtual-table-header-cell {
+  flex: 0 0 auto;
+  padding: 12px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid #dee2e6;
+  border-right: 1px solid #e9ecef;
+}
+
+.virtual-table-header-cell:last-child {
+  border-right: none;
+}
+
+.virtual-table-body {
+  position: relative;
+}
+
+.virtual-table-row {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  align-items: stretch; /* Ensure all cells in a row are same height */
+}
+
+.virtual-table-row:hover {
+  background-color: rgba(13, 110, 253, 0.08) !important;
+}
+
+.virtual-table-cell {
+  flex: 0 0 auto;
+  padding: 12px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  border-right: 1px solid #f5f5f5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  display: flex;
+  align-items: center;
+  white-space: normal; /* Allow text to wrap */
+  box-sizing: border-box;
+}
+
+.virtual-table-cell:last-child {
+  border-right: none;
+}
