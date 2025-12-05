@@ -994,6 +994,30 @@ App.route("/web-order-picklist-export")
   .all(WareCkProducer)
   .get(NextOnExcept(__wHandGetPicklist));
 
+import {
+  wHandGet as onsiteOrderSummaryGet,
+  wHandGetExport as onsiteOrderSummaryExport,
+  wHandGetPicklist as onsiteOrderSummaryPicklist,
+} from "./Page/Producer/onsite-order-summary.js";
+
+App.route("/onsite-order-summary/:IDProducerSel(\\d{1,4})?")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkProducer)
+  .get(NextOnExcept(onsiteOrderSummaryGet));
+
+App.route("/onsite-order-summary-export")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkProducer)
+  .get(NextOnExcept(onsiteOrderSummaryExport));
+
+App.route("/onsite-order-picklist-export")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkProducer)
+  .get(NextOnExcept(onsiteOrderSummaryPicklist));
+
 import { wHandGet as webOrderLabelsGet } from "./Page/Producer/web-order-labels.js";
 
 App.route("/web-order-labels")
