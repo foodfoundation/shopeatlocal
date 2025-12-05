@@ -261,6 +261,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 80,
   },
   {
     accessorKey: "saleSource",
@@ -269,6 +270,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 80,
   },
   {
     accessorKey: "location",
@@ -285,6 +287,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 100,
   },
   {
     accessorKey: "TaxSale",
@@ -293,6 +296,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 100,
   },
   {
     accessorKey: "FeeCoop",
@@ -301,6 +305,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 100,
   },
   {
     accessorKey: "FeeCoopForgiv",
@@ -317,6 +322,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 80,
   },
   {
     accessorKey: "WhenStartCyc",
@@ -349,6 +355,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 100,
   },
   {
     accessorKey: "IDProduct",
@@ -357,6 +364,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 100,
   },
   {
     accessorKey: "NameProduct",
@@ -365,6 +373,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 220,
   },
   {
     accessorKey: "NameCat",
@@ -373,6 +382,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 250,
   },
   {
     accessorKey: "NameSubcat",
@@ -389,6 +399,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 100,
   },
   {
     accessorKey: "Producer",
@@ -405,6 +416,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 100,
   },
   {
     accessorKey: "CustomerName",
@@ -421,6 +433,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 300,
   },
   {
     accessorKey: "CustPhone",
@@ -568,6 +581,11 @@ function DataTable() {
   const table = useReactTable({
     data: tableData,
     columns: visibleColumns,
+    defaultColumn: {
+      size: 180, // Default column width
+      minSize: 120,
+      maxSize: 500,
+    },
     state: {
       sorting,
       columnFilters,
@@ -832,7 +850,10 @@ function DataTable() {
                     <div
                       key={header.id}
                       className="virtual-table-header-cell"
-                      style={{ width: "180px", minWidth: "180px" }}
+                      style={{
+                        width: `${header.getSize()}px`,
+                        minWidth: `${header.getSize()}px`,
+                      }}
                     >
                       {/* Column Header with Sorting */}
                       <div
@@ -896,7 +917,10 @@ function DataTable() {
                           <div
                             key={cell.id}
                             className="virtual-table-cell"
-                            style={{ width: "180px", minWidth: "180px" }}
+                            style={{
+                              width: `${cell.column.getSize()}px`,
+                              minWidth: `${cell.column.getSize()}px`,
+                            }}
                           >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </div>
