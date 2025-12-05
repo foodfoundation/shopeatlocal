@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -11,6 +11,7 @@ import {
   Column,
   FilterFn,
 } from "@tanstack/react-table";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import { BsSortUp, BsSortDown } from "react-icons/bs";
@@ -260,6 +261,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 80,
   },
   {
     accessorKey: "saleSource",
@@ -268,6 +270,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 80,
   },
   {
     accessorKey: "location",
@@ -284,6 +287,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 130,
   },
   {
     accessorKey: "TaxSale",
@@ -292,6 +296,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 100,
   },
   {
     accessorKey: "FeeCoop",
@@ -300,6 +305,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 100,
   },
   {
     accessorKey: "FeeCoopForgiv",
@@ -316,6 +322,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberRangeFilter,
     meta: { filterType: "numberRange" },
+    size: 80,
   },
   {
     accessorKey: "WhenStartCyc",
@@ -348,6 +355,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 100,
   },
   {
     accessorKey: "IDProduct",
@@ -356,6 +364,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 120,
   },
   {
     accessorKey: "NameProduct",
@@ -364,6 +373,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 220,
   },
   {
     accessorKey: "NameCat",
@@ -372,6 +382,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 250,
   },
   {
     accessorKey: "NameSubcat",
@@ -388,6 +399,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 100,
   },
   {
     accessorKey: "Producer",
@@ -404,6 +416,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: numberFilter("exact"),
     meta: { filterType: "number" },
+    size: 100,
   },
   {
     accessorKey: "CustomerName",
@@ -420,6 +433,7 @@ const columnDefs: ColumnDef<SalesRecord>[] = [
     enableColumnFilter: true,
     filterFn: "includesString",
     meta: { filterType: "text" },
+    size: 300,
   },
   {
     accessorKey: "CustPhone",
@@ -567,6 +581,11 @@ function DataTable() {
   const table = useReactTable({
     data: tableData,
     columns: visibleColumns,
+    defaultColumn: {
+      size: 180, // Default column width
+      minSize: 120,
+      maxSize: 500,
+    },
     state: {
       sorting,
       columnFilters,
@@ -649,6 +668,18 @@ function DataTable() {
   const totalRows = tableData.length;
   const filteredRows = table.getFilteredRowModel().rows.length;
   const hasColumnFilters = columnFilters.length > 0;
+
+  // Virtualization setup
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const { rows } = table.getRowModel();
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => tableContainerRef.current,
+    estimateSize: () => 50, // Estimated row height
+    overscan: 5, // Reduced overscan for better measurement performance
+    measureElement: element => element.getBoundingClientRect().height, // Measure actual height
+  });
 
   return (
     <div className="App">
@@ -804,79 +835,109 @@ function DataTable() {
         </div>
       )}
 
-      {/* Data Table */}
+      {/* Data Table with Virtualization */}
       {!isLoading && !error && shouldFetch && tableData.length > 0 && (
         <div className="reports">
           <div
-            className="table-responsive"
+            ref={tableContainerRef}
             style={{ maxHeight: "calc(100vh - 260px)", overflow: "auto" }}
           >
-            <table className="table table-striped table-hover table-sm mb-0">
-              <thead className="table-light sticky-top" style={{ top: 0, zIndex: 10 }}>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <th
-                        key={header.id}
-                        style={{
-                          minWidth: "120px",
-                          verticalAlign: "top",
-                          padding: "12px 8px",
-                          backgroundColor: "#f8f9fa",
-                        }}
+            <div className="virtual-table">
+              {/* Header */}
+              <div className="virtual-table-header">
+                {table.getHeaderGroups().map(headerGroup =>
+                  headerGroup.headers.map(header => (
+                    <div
+                      key={header.id}
+                      className="virtual-table-header-cell"
+                      style={{
+                        width: `${header.getSize()}px`,
+                        minWidth: `${header.getSize()}px`,
+                      }}
+                    >
+                      {/* Column Header with Sorting */}
+                      <div
+                        className={
+                          header.column.getCanSort()
+                            ? "cursor-pointer user-select-none fw-semibold d-flex justify-content-between align-items-center"
+                            : "fw-semibold d-flex justify-content-between align-items-center"
+                        }
+                        onClick={header.column.getToggleSortingHandler()}
+                        style={{ whiteSpace: "nowrap", marginBottom: "8px", paddingRight: "4px" }}
                       >
-                        {/* Column Header with Sorting */}
-                        <div
-                          className={
-                            header.column.getCanSort()
-                              ? "cursor-pointer user-select-none fw-semibold"
-                              : "fw-semibold"
-                          }
-                          onClick={header.column.getToggleSortingHandler()}
-                          style={{ whiteSpace: "nowrap", marginBottom: "8px" }}
-                        >
+                        <span>
                           {flexRender(header.column.columnDef.header, header.getContext())}
+                        </span>
+                        <span>
                           {header.column.getIsSorted() === "asc" && (
-                            <BsSortDown className="ms-2 text-primary" />
+                            <BsSortUp
+                              className="ms-2 text-primary"
+                              style={{ transform: "scaleY(-1)" }}
+                            />
                           )}
                           {header.column.getIsSorted() === "desc" && (
-                            <BsSortUp className="ms-2 text-primary" />
+                            <BsSortDown className="ms-2 text-primary" />
                           )}
-                        </div>
-                        {/* Client-side Column Filter Input */}
-                        {header.column.getCanFilter() && (
-                          <ColumnFilterInput column={header.column} />
-                        )}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.length === 0 ? (
-                  <tr>
-                    <td colSpan={visibleColumns.length} className="text-center text-muted py-5">
-                      <div className="py-3">
-                        <p className="mb-1 fw-medium">No rows match your column filters</p>
-                        <p className="mb-0 small text-secondary">
-                          Try adjusting your filter criteria
-                        </p>
+                        </span>
                       </div>
-                    </td>
-                  </tr>
-                ) : (
-                  table.getRowModel().rows.map(row => (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map(cell => (
-                        <td key={cell.id} style={{ padding: "10px 8px" }}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
+                      {/* Client-side Column Filter Input */}
+                      {header.column.getCanFilter() && <ColumnFilterInput column={header.column} />}
+                    </div>
+                  )),
                 )}
-              </tbody>
-            </table>
+              </div>
+
+              {/* Body */}
+              <div
+                className="virtual-table-body"
+                style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
+              >
+                {rows.length === 0 ? (
+                  <div className="text-center text-muted py-5">
+                    <div className="py-3">
+                      <p className="mb-1 fw-medium">No rows match your column filters</p>
+                      <p className="mb-0 small text-secondary">
+                        Try adjusting your filter criteria
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  rowVirtualizer.getVirtualItems().map(virtualRow => {
+                    const row = rows[virtualRow.index];
+                    const isEvenRow = virtualRow.index % 2 === 0;
+                    return (
+                      <div
+                        key={row.id}
+                        data-index={virtualRow.index}
+                        ref={rowVirtualizer.measureElement}
+                        className="virtual-table-row"
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          transform: `translateY(${virtualRow.start}px)`,
+                          backgroundColor: isEvenRow ? "#fff" : "rgba(0, 0, 0, 0.025)",
+                        }}
+                      >
+                        {row.getVisibleCells().map(cell => (
+                          <div
+                            key={cell.id}
+                            className="virtual-table-cell"
+                            style={{
+                              width: `${cell.column.getSize()}px`,
+                              minWidth: `${cell.column.getSize()}px`,
+                            }}
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
