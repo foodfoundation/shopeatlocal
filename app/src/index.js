@@ -811,13 +811,22 @@ App.route("/producer")
   .all(WareCkProducer)
   .get(NextOnExcept(producerGet));
 
-import { wHandGet as producerReportsGet } from "./Page/Producer/producer-reports.js";
+import {
+  wHandGet as producerReportsGet,
+  wHandGetData as producerReportsGetData,
+} from "./Page/Producer/producer-reports.js";
 
 App.route("/producer-reports")
   .all(WaresPostRoute)
   .all(WareCkUser)
   .all(WareCkProducer)
   .get(NextOnExcept(producerReportsGet));
+
+App.route("/producer-reports/data")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkProducer)
+  .get(NextOnExcept(producerReportsGetData));
 
 import {
   wHandGet as hubReportsGet,

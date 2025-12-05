@@ -8,6 +8,15 @@
 
 <link rel="stylesheet" href="{{hPrefixStatic 'producers-report-assets/index.css'}}">
 
+<script type="application/javascript">
+  // Configuration for the React app
+  window.ReportsConfig = {
+    apiEndpoint: '/hub-reports/data',
+    // Show all columns for hub view
+    hiddenColumns: []
+  };
+</script>
+
 <div class="p-4">
   <div id="root"></div>
   <script src="{{hPrefixStatic 'producers-report-assets/index.js'}}"></script>

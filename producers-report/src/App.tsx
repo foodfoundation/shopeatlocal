@@ -15,7 +15,29 @@ import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-quer
 import "./App.css";
 import { BsSortUp, BsSortDown } from "react-icons/bs";
 import { json2csv } from "json-2-csv";
-import { parseISO, format, isValid, isSameDay, isAfter, isBefore } from "date-fns";
+import { parseISO, isValid, isSameDay, isAfter, isBefore } from "date-fns";
+
+// Configuration from window (set by the hosting page)
+interface ReportsConfig {
+  apiEndpoint: string;
+  hiddenColumns: string[];
+}
+
+declare global {
+  interface Window {
+    ReportsConfig?: ReportsConfig;
+  }
+}
+
+// Get configuration from window or use defaults
+const getConfig = (): ReportsConfig => {
+  return (
+    window.ReportsConfig || {
+      apiEndpoint: "",
+      hiddenColumns: [],
+    }
+  );
+};
 
 // Types
 interface SalesRecord {
@@ -171,6 +193,7 @@ const fetchPage = async (
   cycleFrom: string,
   cycleTo: string,
 ): Promise<ApiResponse> => {
+  const config = getConfig();
   const params = new URLSearchParams({
     page: String(page),
     limit: String(limit),
@@ -181,7 +204,7 @@ const fetchPage = async (
   if (cycleFrom) params.append("cycleFrom", cycleFrom);
   if (cycleTo) params.append("cycleTo", cycleTo);
 
-  const response = await fetch(`/hub-reports/data?${params.toString()}`);
+  const response = await fetch(`${config.apiEndpoint}?${params.toString()}`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch data");
@@ -529,10 +552,21 @@ function DataTable() {
   // Memoize table data
   const tableData = useMemo(() => allData || [], [allData]);
 
+  // Filter columns based on config
+  const config = getConfig();
+  const visibleColumns = useMemo(
+    () =>
+      columnDefs.filter(col => {
+        const accessorKey = "accessorKey" in col ? (col.accessorKey as string) : "";
+        return !config.hiddenColumns.includes(accessorKey);
+      }),
+    [config.hiddenColumns],
+  );
+
   // TanStack Table instance - NO pagination, client-side filtering and sorting
   const table = useReactTable({
     data: tableData,
-    columns: columnDefs,
+    columns: visibleColumns,
     state: {
       sorting,
       columnFilters,
@@ -821,7 +855,7 @@ function DataTable() {
               <tbody>
                 {table.getRowModel().rows.length === 0 ? (
                   <tr>
-                    <td colSpan={columnDefs.length} className="text-center text-muted py-5">
+                    <td colSpan={visibleColumns.length} className="text-center text-muted py-5">
                       <div className="py-3">
                         <p className="mb-1 fw-medium">No rows match your column filters</p>
                         <p className="mb-0 small text-secondary">
