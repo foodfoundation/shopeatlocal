@@ -523,9 +523,7 @@ import { wHandGet as distinguishedMembersGet } from "./Page/Home/distinguished-m
 
 App.route("/acknowledgments").all(WaresPostRoute).get(NextOnExcept(acknowledgementsGet));
 
-App.route("/distinguished-members")
-  .all(WaresPostRoute)
-  .get(NextOnExcept(distinguishedMembersGet));
+App.route("/distinguished-members").all(WaresPostRoute).get(NextOnExcept(distinguishedMembersGet));
 
 // New member registration
 // -----------------------
@@ -813,7 +811,10 @@ App.route("/producer")
   .all(WareCkProducer)
   .get(NextOnExcept(producerGet));
 
-import { wHandGet as producerReportsGet } from "./Page/Producer/producer-reports.js";
+import {
+  wHandGet as producerReportsGet,
+  wHandGetData as producerReportsGetData,
+} from "./Page/Producer/producer-reports.js";
 
 App.route("/producer-reports")
   .all(WaresPostRoute)
@@ -821,13 +822,28 @@ App.route("/producer-reports")
   .all(WareCkProducer)
   .get(NextOnExcept(producerReportsGet));
 
-import { wHandGet as hubReportsGet } from "./Page/Cashier/hub-reports.js";
+App.route("/producer-reports/data")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkProducer)
+  .get(NextOnExcept(producerReportsGetData));
+
+import {
+  wHandGet as hubReportsGet,
+  wHandGetData as hubReportsGetData,
+} from "./Page/Cashier/hub-reports.js";
 
 App.route("/hub-reports")
   .all(WaresPostRoute)
   .all(WareCkUser)
   .all(WareCkStaff)
   .get(NextOnExcept(hubReportsGet));
+
+App.route("/hub-reports/data")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .get(NextOnExcept(hubReportsGetData));
 
 import {
   wHandGet as editAboutProducerGet,
