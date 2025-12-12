@@ -90,6 +90,13 @@
   gap: 1rem;
 }
 
+/* Cycle icon styling */
+.cycle-icon {
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #0d6efd;
+}
+
 /* Virtualized table - use flexbox for consistent column alignment */
 .virtual-table {
   display: flex;
