@@ -14,7 +14,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
-import { BsSortUp, BsSortDown } from "react-icons/bs";
+import { BsSortUp, BsSortDown, BsArrowRepeat } from "react-icons/bs";
 import { json2csv } from "json-2-csv";
 import { parseISO, isValid, isSameDay, isAfter, isBefore } from "date-fns";
 
@@ -22,6 +22,8 @@ import { parseISO, isValid, isSameDay, isAfter, isBefore } from "date-fns";
 interface ReportsConfig {
   apiEndpoint: string;
   hiddenColumns: string[];
+  setInitialStartDate: boolean;
+  currentCycleId: string;
 }
 
 declare global {
@@ -36,6 +38,8 @@ const getConfig = (): ReportsConfig => {
     window.ReportsConfig || {
       apiEndpoint: "",
       hiddenColumns: [],
+      setInitialStartDate: true,
+      currentCycleId: "",
     }
   );
 };
@@ -183,7 +187,8 @@ const getBeginningOfMonth = (): string => {
 };
 
 // Store the initial date to avoid recalculation
-const INITIAL_START_DATE = getBeginningOfMonth();
+const config = getConfig();
+const INITIAL_START_DATE = config.setInitialStartDate ? getBeginningOfMonth() : "";
 
 // Fetch a single page of data
 const fetchPage = async (
@@ -194,7 +199,6 @@ const fetchPage = async (
   cycleFrom: string,
   cycleTo: string,
 ): Promise<ApiResponse> => {
-  const config = getConfig();
   const params = new URLSearchParams({
     page: String(page),
     limit: String(limit),
@@ -567,7 +571,6 @@ function DataTable() {
   const tableData = useMemo(() => allData || [], [allData]);
 
   // Filter columns based on config
-  const config = getConfig();
   const visibleColumns = useMemo(
     () =>
       columnDefs.filter(col => {
@@ -705,7 +708,14 @@ function DataTable() {
             />
           </div>
           <div className="col-md-2">
-            <label className="form-label fw-semibold mb-1">Cycle From</label>
+            <label className="form-label fw-semibold mb-1 d-flex justify-content-between align-items-center">
+              <span>Cycle From</span>
+              <BsArrowRepeat
+                className="cycle-icon"
+                title="Set to current cycle"
+                onClick={() => setCycleFrom(config.currentCycleId)}
+              />
+            </label>
             <input
               type="number"
               className="form-control"

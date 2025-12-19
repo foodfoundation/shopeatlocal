@@ -14,7 +14,9 @@
   window.ReportsConfig = {
     apiEndpoint: '/producer-reports/data',
     // Hide producer columns since this is a producer-specific view
-    hiddenColumns: ['IDProducer', 'Producer']
+    hiddenColumns: ['IDProducer', 'Producer'],
+    setInitialStartDate: false,
+    currentCycleId: "{{CycCurr.IDCyc}}",
   };
 </script>
 
