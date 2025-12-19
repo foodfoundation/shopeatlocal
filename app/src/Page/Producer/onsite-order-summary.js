@@ -30,6 +30,12 @@ export async function wHandGetExport(aReq, aResp) {
   const oIDProducer = aResp.locals.CredSelImperUser.IDProducer;
   aResp.locals.Producer = await wProducerFromID(oIDProducer);
 
+  if (!aResp.locals.Producer) {
+    aResp.status(404);
+    aResp.render("Misc/404");
+    return;
+  }
+
   const arrayOfExportData = await wIts(oIDProducer);
   for (const dataRow of arrayOfExportData) {
     if (!dataRow.CkAllowPublicName) {
