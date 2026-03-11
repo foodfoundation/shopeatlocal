@@ -341,3 +341,23 @@ export const donateDetailsFields = [
     fieldset: 'donateDetails',
   }),
 ]
+
+export const registerDetailsFields = [
+  defineField({
+    name: 'RegisterButtonText',
+    title: 'Register Button Text',
+    description: 'Text for the register button.',
+    type: 'string',
+    fieldset: 'registerDetails',
+    validation: (Rule) => Rule.max(10).error('Text is too long'),
+  }),
+  defineField({
+    name: 'HomePageRegisterButtonText',
+    title: 'Home Page Register Button Text',
+    description:
+      'Text for the register button on the home page: next to the logo and the shop name.',
+    type: 'string',
+    fieldset: 'registerDetails',
+    validation: (Rule) => Rule.max(25).error('Text is too long'),
+  }),
+]
