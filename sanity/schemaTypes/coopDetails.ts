@@ -6,6 +6,7 @@ import {
   externalWebsitesFields,
   mainImages,
   mainInfoFileds,
+  registerDetailsFields,
   socialMediaFields,
 } from '../schemaFields/coopDetailsFields'
 
@@ -49,6 +50,11 @@ export const coopDetails = defineType(
         name: 'donateDetails',
         options: {collapsible: true, collapsed: true},
       },
+      {
+        title: 'Register Details',
+        name: 'registerDetails',
+        options: {collapsible: true, collapsed: true},
+      },
     ],
     fields: [
       ...mainInfoFileds,
@@ -57,6 +63,7 @@ export const coopDetails = defineType(
       ...mainImages,
       ...socialMediaFields,
       ...donateDetailsFields,
+      ...registerDetailsFields,
     ],
   },
   {strict: false},

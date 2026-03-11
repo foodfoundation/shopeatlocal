@@ -8,8 +8,8 @@ import {structureTool} from 'sanity/structure'
 import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
-  name: 'cultivativeDemo',
-  title: 'Cultivative Demo',
+  name: 'harvesthubames',
+  title: 'Harvesthub AMES',
 
   projectId: process.env.SANITY_STUDIO_API_PROJECT_ID ?? '',
   dataset: process.env.SANITY_STUDIO_API_DATASET ?? '',
