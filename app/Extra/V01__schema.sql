@@ -9,8 +9,143 @@
 
 
 -- Dumping database structure for shopeatlocal
-CREATE DATABASE IF NOT EXISTS `shopeatlocal` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `shopeatlocal`;
+CREATE DATABASE IF NOT EXISTS `harvesthub-prod` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `harvesthub-prod`;
+
+CREATE TABLE IF NOT EXISTS `Loc` (
+  `CdLoc` varchar(12) NOT NULL,
+  `NameLoc` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CdTypeLoc` enum('Central','Satel','Deliv') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Satel',
+  `Addr` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Instruct` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CkActiv` tinyint NOT NULL,
+  `CkReqDeactiv` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`CdLoc`),
+  UNIQUE KEY `NameLoc` (`NameLoc`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `Cyc` (
+  `IDCyc` int NOT NULL AUTO_INCREMENT,
+  `WhenStartCyc` datetime NOT NULL,
+  `WhenStartShop` datetime NOT NULL,
+  `WhenEndShop` datetime NOT NULL,
+  `WhenStartDeliv` datetime NOT NULL,
+  `WhenEndDeliv` datetime NOT NULL,
+  `WhenStartPickup` datetime NOT NULL,
+  `WhenEndPickup` datetime NOT NULL,
+  `WhenEndCyc` datetime NOT NULL,
+  PRIMARY KEY (`IDCyc`),
+  UNIQUE KEY `WhenStart` (`WhenStartCyc`) USING BTREE,
+  CONSTRAINT `cCyc_OrderDates` CHECK (((`WhenStartShop` >= `WhenStartCyc`) and (`WhenEndShop` > `WhenStartShop`) and (`WhenStartDeliv` >= `WhenEndShop`) and (`WhenEndDeliv` > `WhenStartDeliv`) and (`WhenStartPickup` >= `WhenEndDeliv`) and (`WhenEndPickup` > `WhenStartPickup`) and (`WhenEndCyc` >= `WhenEndPickup`)))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `Memb` (
+  `IDMemb` int NOT NULL AUTO_INCREMENT,
+  `NameLogin` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `HashPass` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `HashPassLeg` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CkLock` tinyint NOT NULL DEFAULT '0',
+  `CdRegMemb` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pend',
+  `CkFounder` tinyint(1) NOT NULL DEFAULT '0',
+  `CdRegEBT` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Avail',
+  `CdRegVolun` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Avail',
+  `CkShowProducer` tinyint NOT NULL DEFAULT '0',
+  `CdStaff` enum('StaffSuper','StaffMgr','StaffAccts','StaffDistrib','NotStaff') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NotStaff',
+  `WhenFeeMembLast` datetime DEFAULT NULL,
+  `CdLocLast` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'CENTRAL',
+  `NameBus` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Name1First` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Name1Last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Name2First` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Name2Last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Addr1` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Addr2` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `City` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `St` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Zip` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `InstructDeliv` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CkAllowMail` tinyint(1) NOT NULL DEFAULT '0',
+  `DistDeliv` float DEFAULT NULL,
+  `Phone1` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CkAllowPhone1MsgCart` tinyint(1) NOT NULL DEFAULT '0',
+  `Phone2` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CkAllowPhone2MsgCart` tinyint(1) DEFAULT NULL,
+  `Email1` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CkAllowEmail1RemindShop` tinyint(1) NOT NULL DEFAULT '0',
+  `CkAllowEmail1News` tinyint(1) NOT NULL DEFAULT '0',
+  `Email2` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CkAllowEmail2RemindShop` tinyint(1) DEFAULT NULL,
+  `CkAllowEmail2News` tinyint(1) DEFAULT NULL,
+  `HowHear` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `DtlHowHear` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `CkMigrate` tinyint NOT NULL DEFAULT '0',
+  `WhenReg` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CkAllowPublicName` tinyint(1) NOT NULL DEFAULT '1',
+  `CyclesUsed` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`IDMemb`) USING BTREE,
+  UNIQUE KEY `kMemb-NameLogin-Uniq` (`NameLogin`) USING BTREE,
+  KEY `kMemb-CdLocLast` (`CdLocLast`) USING BTREE,
+  CONSTRAINT `kMemb-CdLocLast` FOREIGN KEY (`CdLocLast`) REFERENCES `Loc` (`CdLoc`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `Producer` (
+  `IDProducer` int NOT NULL AUTO_INCREMENT,
+  `IDMemb` int NOT NULL,
+  `CdProducer` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CdRegProducer` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pend',
+  `CkListProducer` tinyint NOT NULL DEFAULT '0',
+  `NameImgProducer` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `NameBus` varchar(80) DEFAULT NULL,
+  `Addr1` varchar(80) NOT NULL,
+  `Addr2` varchar(80) DEFAULT NULL,
+  `City` varchar(50) NOT NULL,
+  `St` varchar(2) NOT NULL,
+  `Zip` varchar(10) NOT NULL,
+  `InstructDeliv` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CkShowAddr` tinyint NOT NULL DEFAULT '0',
+  `Phone1` varchar(13) NOT NULL,
+  `CkShowPhone1` tinyint NOT NULL DEFAULT '0',
+  `Phone2` varchar(13) DEFAULT NULL,
+  `CkShowPhone2` tinyint NOT NULL DEFAULT '0',
+  `Email` varchar(80) NOT NULL,
+  `Web` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `AboutStory` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `AboutProducts` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `AboutPract` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `PractGen` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `CdProductMeat` enum('None','Live','Cuts') NOT NULL DEFAULT 'None',
+  `DtlProcessMeatCut` text,
+  `DtlPestDiseaseLandSoil` text,
+  `DtlLivestockFeed` text,
+  `CkFeedsByprodAnimal` tinyint NOT NULL DEFAULT '0',
+  `CkHormone` tinyint NOT NULL DEFAULT '0',
+  `CkAntibiotic` tinyint NOT NULL DEFAULT '0',
+  `DtlAcquisAnimal` text,
+  `DtlInfoAddition` text,
+  `CkCertOrganic` tinyint NOT NULL DEFAULT '0',
+  `CkCertNaturGrown` tinyint NOT NULL DEFAULT '0',
+  `CkCertAnimalWelfare` tinyint NOT NULL DEFAULT '0',
+  `CkCertFairTrade` tinyint NOT NULL DEFAULT '0',
+  `CkLicenseEggHand` tinyint NOT NULL DEFAULT '0',
+  `CkLicenseHomeFoodEstab` tinyint NOT NULL DEFAULT '0',
+  `CkLicenseKitch` tinyint NOT NULL DEFAULT '0',
+  `CkInsurLiab` tinyint NOT NULL DEFAULT '0',
+  `DtlCertOther` text,
+  `Notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `CkMigrate` tinyint NOT NULL DEFAULT '0',
+  `WhenReg` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `WhenEdit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Facebook` varchar(200) DEFAULT NULL,
+  `Instagram` varchar(200) DEFAULT NULL,
+  `YourWebsite` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`IDProducer`) USING BTREE,
+  UNIQUE KEY `IDMemb` (`IDMemb`),
+  UNIQUE KEY `CdProducer` (`CdProducer`),
+  UNIQUE KEY `NameBusUNIQUE` (`NameBus`) USING BTREE,
+  FULLTEXT KEY `NameBusFULLTEXT` (`NameBus`),
+  CONSTRAINT `kProducer-IDMemb` FOREIGN KEY (`IDMemb`) REFERENCES `Memb` (`IDMemb`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `Cart` (
   `IDCart` int NOT NULL AUTO_INCREMENT,
@@ -65,6 +200,17 @@ CREATE TABLE IF NOT EXISTS `Cat` (
   FULLTEXT KEY `NameCat` (`NameCat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS `Subcat` (
+  `IDSubcat` int NOT NULL AUTO_INCREMENT,
+  `IDCat` int NOT NULL,
+  `NameSubcat` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CkTaxSale` tinyint NOT NULL,
+  `CkEBT` tinyint NOT NULL,
+  PRIMARY KEY (`IDSubcat`) USING BTREE,
+  UNIQUE KEY `IDCat_NameSubcat` (`IDCat`,`NameSubcat`) USING BTREE,
+  FULLTEXT KEY `NameSubcat` (`NameSubcat`),
+  CONSTRAINT `kSubcat-IDCat` FOREIGN KEY (`IDCat`) REFERENCES `Cat` (`IDCat`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `CatProducer` (
   `IDProducer` int NOT NULL,
@@ -73,22 +219,6 @@ CREATE TABLE IF NOT EXISTS `CatProducer` (
   KEY `kCatProducer-IDCat` (`IDCat`) USING BTREE,
   CONSTRAINT `kCatProducer-IDCat` FOREIGN KEY (`IDCat`) REFERENCES `Cat` (`IDCat`),
   CONSTRAINT `kCatProducer-IDProducer` FOREIGN KEY (`IDProducer`) REFERENCES `Producer` (`IDProducer`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-CREATE TABLE IF NOT EXISTS `Cyc` (
-  `IDCyc` int NOT NULL AUTO_INCREMENT,
-  `WhenStartCyc` datetime NOT NULL,
-  `WhenStartShop` datetime NOT NULL,
-  `WhenEndShop` datetime NOT NULL,
-  `WhenStartDeliv` datetime NOT NULL,
-  `WhenEndDeliv` datetime NOT NULL,
-  `WhenStartPickup` datetime NOT NULL,
-  `WhenEndPickup` datetime NOT NULL,
-  `WhenEndCyc` datetime NOT NULL,
-  PRIMARY KEY (`IDCyc`),
-  UNIQUE KEY `WhenStart` (`WhenStartCyc`) USING BTREE,
-  CONSTRAINT `cCyc_OrderDates` CHECK (((`WhenStartShop` >= `WhenStartCyc`) and (`WhenEndShop` > `WhenStartShop`) and (`WhenStartDeliv` >= `WhenEndShop`) and (`WhenEndDeliv` > `WhenStartDeliv`) and (`WhenStartPickup` >= `WhenEndDeliv`) and (`WhenEndPickup` > `WhenStartPickup`) and (`WhenEndCyc` >= `WhenEndPickup`)))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -198,6 +328,79 @@ CREATE TABLE IF NOT EXISTS `InvcShopWeb` (
   PRIMARY KEY (`IDInvcShopWeb`),
   UNIQUE KEY `IDCart` (`IDCart`),
   CONSTRAINT `kInvcShopWeb-IDCart` FOREIGN KEY (`IDCart`) REFERENCES `Cart` (`IDCart`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `Product` (
+  `IDProduct` int NOT NULL AUTO_INCREMENT,
+  `IDProducer` int NOT NULL,
+  `NameProduct` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Descrip` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `NameImgProduct` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `IDSubcat` int NOT NULL,
+  `CdStor` enum('NON','REF','DAIR','EGGS','FROZ','PLNT') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CkAttrVegan` tinyint NOT NULL DEFAULT '0',
+  `CkAttrVeget` tinyint NOT NULL DEFAULT '0',
+  `CkAttrGlutenFreeCert` tinyint NOT NULL DEFAULT '0',
+  `CkAttrFairTradeCert` tinyint NOT NULL DEFAULT '0',
+  `CkAttrOrganCert` tinyint NOT NULL DEFAULT '0',
+  `CkAttrNaturGrownCert` tinyint NOT NULL DEFAULT '0',
+  `CkAttrNaturGrownSelf` tinyint NOT NULL DEFAULT '0',
+  `CkAttrIntegPestMgmtSelf` tinyint NOT NULL DEFAULT '0',
+  `CkAttrAnimWelfareCert` tinyint NOT NULL DEFAULT '0',
+  `CkAttrFreeRgSelf` tinyint NOT NULL DEFAULT '0',
+  `CkAttrCageFreeSelf` tinyint NOT NULL DEFAULT '0',
+  `CkAttrGrassFedSelf` tinyint NOT NULL DEFAULT '0',
+  `CkAttrHormAntibFreeSelf` tinyint NOT NULL DEFAULT '0',
+  `CkMigrate` tinyint NOT NULL DEFAULT '0',
+  `WhenCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `WhenEdit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CkExcludeProducerFee` tinyint NOT NULL DEFAULT '0',
+  `CkExcludeConsumerFee` tinyint NOT NULL DEFAULT '0',
+  `CkAttrLocalSelf` tinyint NOT NULL DEFAULT '0',
+  `CkAttrRaisedCertOrgan` tinyint NOT NULL DEFAULT '0',
+  `CkAttrCert100GrassFed` tinyint NOT NULL DEFAULT '0',
+  `CkAttrPasturedSelf` tinyint NOT NULL DEFAULT '0',
+  `CkAttrVeganCert` tinyint NOT NULL DEFAULT '0',
+  `CkAttrRealOrganic` tinyint NOT NULL DEFAULT '0',
+  `CkAttrRegenOrganCert` tinyint NOT NULL DEFAULT '0',
+  `CkAttrCertBiodynamic` tinyint NOT NULL DEFAULT '0',
+  `CkAttrGlutenFree` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`IDProduct`),
+  KEY `kProduct-IDProducer` (`IDProducer`),
+  KEY `kProduct-IDSubcat` (`IDSubcat`) USING BTREE,
+  FULLTEXT KEY `Descrip` (`Descrip`),
+  FULLTEXT KEY `NameProduct` (`NameProduct`),
+  FULLTEXT KEY `NameProduct_Descrip` (`NameProduct`,`Descrip`),
+  CONSTRAINT `kProduct-IDProducer` FOREIGN KEY (`IDProducer`) REFERENCES `Producer` (`IDProducer`),
+  CONSTRAINT `kProduct-IDSubcat` FOREIGN KEY (`IDSubcat`) REFERENCES `Subcat` (`IDSubcat`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `Vty` (
+  `IDVty` int NOT NULL AUTO_INCREMENT,
+  `IDProduct` int NOT NULL,
+  `Kind` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Size` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `WgtMin` float DEFAULT NULL,
+  `WgtMax` float DEFAULT NULL,
+  `CkInvtMgd` tinyint NOT NULL DEFAULT '0',
+  `CkInvtMgdNext` tinyint NOT NULL DEFAULT '0',
+  `CkListWeb` tinyint NOT NULL DEFAULT '0',
+  `CkListOnsite` tinyint NOT NULL DEFAULT '0',
+  `CkArchiv` tinyint NOT NULL DEFAULT '0',
+  `QtyOffer` int unsigned NOT NULL DEFAULT '0',
+  `PriceNomWeb` decimal(9,2) unsigned NOT NULL,
+  `PriceNomWebNext` decimal(9,2) unsigned NOT NULL,
+  `QtyOnsite` int unsigned NOT NULL DEFAULT '0',
+  `PriceNomOnsite` decimal(9,2) unsigned NOT NULL,
+  `CkMigrate` tinyint NOT NULL DEFAULT '0',
+  `WhenCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `WhenEdit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Upc` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`IDVty`),
+  UNIQUE KEY `Upc_UNIQUE` (`Upc`),
+  KEY `kVty-IDProduct` (`IDProduct`),
+  FULLTEXT KEY `Size_Kind` (`Size`,`Kind`),
+  CONSTRAINT `kVty-IDProduct` FOREIGN KEY (`IDProduct`) REFERENCES `Product` (`IDProduct`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -532,18 +735,6 @@ BEGIN
 END//
 DELIMITER ;
 
-CREATE TABLE IF NOT EXISTS `Loc` (
-  `CdLoc` varchar(12) NOT NULL,
-  `NameLoc` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `CdTypeLoc` enum('Central','Satel','Deliv') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Satel',
-  `Addr` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Instruct` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `CkActiv` tinyint NOT NULL,
-  `CkReqDeactiv` tinyint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`CdLoc`),
-  UNIQUE KEY `NameLoc` (`NameLoc`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 CREATE TABLE IF NOT EXISTS `Login` (
   `IDLogin` int NOT NULL AUTO_INCREMENT,
@@ -555,167 +746,11 @@ CREATE TABLE IF NOT EXISTS `Login` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE IF NOT EXISTS `Memb` (
-  `IDMemb` int NOT NULL AUTO_INCREMENT,
-  `NameLogin` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `HashPass` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `HashPassLeg` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `CkLock` tinyint NOT NULL DEFAULT '0',
-  `CdRegMemb` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pend',
-  `CkFounder` tinyint(1) NOT NULL DEFAULT '0',
-  `CdRegEBT` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Avail',
-  `CdRegVolun` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Avail',
-  `CkShowProducer` tinyint NOT NULL DEFAULT '0',
-  `CdStaff` enum('StaffSuper','StaffMgr','StaffAccts','StaffDistrib','NotStaff') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NotStaff',
-  `WhenFeeMembLast` datetime DEFAULT NULL,
-  `CdLocLast` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'FRAN',
-  `NameBus` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Name1First` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Name1Last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Name2First` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Name2Last` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Addr1` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Addr2` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `City` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `St` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Zip` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `InstructDeliv` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `CkAllowMail` tinyint(1) NOT NULL DEFAULT '0',
-  `DistDeliv` float DEFAULT NULL,
-  `Phone1` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `CkAllowPhone1MsgCart` tinyint(1) NOT NULL DEFAULT '0',
-  `Phone2` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `CkAllowPhone2MsgCart` tinyint(1) DEFAULT NULL,
-  `Email1` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `CkAllowEmail1RemindShop` tinyint(1) NOT NULL DEFAULT '0',
-  `CkAllowEmail1News` tinyint(1) NOT NULL DEFAULT '0',
-  `Email2` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `CkAllowEmail2RemindShop` tinyint(1) DEFAULT NULL,
-  `CkAllowEmail2News` tinyint(1) DEFAULT NULL,
-  `HowHear` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `DtlHowHear` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `CkMigrate` tinyint NOT NULL DEFAULT '0',
-  `WhenReg` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CkAllowPublicName` tinyint(1) NOT NULL DEFAULT '1',
-  `CyclesUsed` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`IDMemb`) USING BTREE,
-  UNIQUE KEY `kMemb-NameLogin-Uniq` (`NameLogin`) USING BTREE,
-  KEY `kMemb-CdLocLast` (`CdLocLast`) USING BTREE,
-  CONSTRAINT `kMemb-CdLocLast` FOREIGN KEY (`CdLocLast`) REFERENCES `Loc` (`CdLoc`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-CREATE TABLE IF NOT EXISTS `Producer` (
-  `IDProducer` int NOT NULL AUTO_INCREMENT,
-  `IDMemb` int NOT NULL,
-  `CdProducer` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `CdRegProducer` enum('Avail','Pend','Approv','Susp') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pend',
-  `CkListProducer` tinyint NOT NULL DEFAULT '0',
-  `NameImgProducer` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `NameBus` varchar(80) DEFAULT NULL,
-  `Addr1` varchar(80) NOT NULL,
-  `Addr2` varchar(80) DEFAULT NULL,
-  `City` varchar(50) NOT NULL,
-  `St` varchar(2) NOT NULL,
-  `Zip` varchar(10) NOT NULL,
-  `InstructDeliv` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `CkShowAddr` tinyint NOT NULL DEFAULT '0',
-  `Phone1` varchar(13) NOT NULL,
-  `CkShowPhone1` tinyint NOT NULL DEFAULT '0',
-  `Phone2` varchar(13) DEFAULT NULL,
-  `CkShowPhone2` tinyint NOT NULL DEFAULT '0',
-  `Email` varchar(80) NOT NULL,
-  `Web` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `AboutStory` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `AboutProducts` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `AboutPract` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `PractGen` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `CdProductMeat` enum('None','Live','Cuts') NOT NULL DEFAULT 'None',
-  `DtlProcessMeatCut` text,
-  `DtlPestDiseaseLandSoil` text,
-  `DtlLivestockFeed` text,
-  `CkFeedsByprodAnimal` tinyint NOT NULL DEFAULT '0',
-  `CkHormone` tinyint NOT NULL DEFAULT '0',
-  `CkAntibiotic` tinyint NOT NULL DEFAULT '0',
-  `DtlAcquisAnimal` text,
-  `DtlInfoAddition` text,
-  `CkCertOrganic` tinyint NOT NULL DEFAULT '0',
-  `CkCertNaturGrown` tinyint NOT NULL DEFAULT '0',
-  `CkCertAnimalWelfare` tinyint NOT NULL DEFAULT '0',
-  `CkCertFairTrade` tinyint NOT NULL DEFAULT '0',
-  `CkLicenseEggHand` tinyint NOT NULL DEFAULT '0',
-  `CkLicenseHomeFoodEstab` tinyint NOT NULL DEFAULT '0',
-  `CkLicenseKitch` tinyint NOT NULL DEFAULT '0',
-  `CkInsurLiab` tinyint NOT NULL DEFAULT '0',
-  `DtlCertOther` text,
-  `Notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `CkMigrate` tinyint NOT NULL DEFAULT '0',
-  `WhenReg` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `WhenEdit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Facebook` varchar(200) DEFAULT NULL,
-  `Instagram` varchar(200) DEFAULT NULL,
-  `YourWebsite` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`IDProducer`) USING BTREE,
-  UNIQUE KEY `IDMemb` (`IDMemb`),
-  UNIQUE KEY `CdProducer` (`CdProducer`),
-  UNIQUE KEY `NameBusUNIQUE` (`NameBus`) USING BTREE,
-  FULLTEXT KEY `NameBusFULLTEXT` (`NameBus`),
-  CONSTRAINT `kProducer-IDMemb` FOREIGN KEY (`IDMemb`) REFERENCES `Memb` (`IDMemb`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 CREATE TABLE `ProducerLabelHistory` (
   `Id` int NOT NULL AUTO_INCREMENT,
   `ProducerId` int DEFAULT NULL,
   `LabelType` tinyint DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-CREATE TABLE IF NOT EXISTS `Product` (
-  `IDProduct` int NOT NULL AUTO_INCREMENT,
-  `IDProducer` int NOT NULL,
-  `NameProduct` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Descrip` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `NameImgProduct` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `IDSubcat` int NOT NULL,
-  `CdStor` enum('NON','REF','DAIR','EGGS','FROZ','PLNT') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `CkAttrVegan` tinyint NOT NULL DEFAULT '0',
-  `CkAttrVeget` tinyint NOT NULL DEFAULT '0',
-  `CkAttrGlutenFreeCert` tinyint NOT NULL DEFAULT '0',
-  `CkAttrFairTradeCert` tinyint NOT NULL DEFAULT '0',
-  `CkAttrOrganCert` tinyint NOT NULL DEFAULT '0',
-  `CkAttrNaturGrownCert` tinyint NOT NULL DEFAULT '0',
-  `CkAttrNaturGrownSelf` tinyint NOT NULL DEFAULT '0',
-  `CkAttrIntegPestMgmtSelf` tinyint NOT NULL DEFAULT '0',
-  `CkAttrAnimWelfareCert` tinyint NOT NULL DEFAULT '0',
-  `CkAttrFreeRgSelf` tinyint NOT NULL DEFAULT '0',
-  `CkAttrCageFreeSelf` tinyint NOT NULL DEFAULT '0',
-  `CkAttrGrassFedSelf` tinyint NOT NULL DEFAULT '0',
-  `CkAttrHormAntibFreeSelf` tinyint NOT NULL DEFAULT '0',
-  `CkMigrate` tinyint NOT NULL DEFAULT '0',
-  `WhenCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `WhenEdit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CkExcludeProducerFee` tinyint NOT NULL DEFAULT '0',
-  `CkExcludeConsumerFee` tinyint NOT NULL DEFAULT '0',
-  `CkAttrLocalSelf` tinyint NOT NULL DEFAULT '0',
-  `CkAttrRaisedCertOrgan` tinyint NOT NULL DEFAULT '0',
-  `CkAttrCert100GrassFed` tinyint NOT NULL DEFAULT '0',
-  `CkAttrPasturedSelf` tinyint NOT NULL DEFAULT '0',
-  `CkAttrVeganCert` tinyint NOT NULL DEFAULT '0',
-  `CkAttrRealOrganic` tinyint NOT NULL DEFAULT '0',
-  `CkAttrRegenOrganCert` tinyint NOT NULL DEFAULT '0',
-  `CkAttrCertBiodynamic` tinyint NOT NULL DEFAULT '0',
-  `CkAttrGlutenFree` tinyint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`IDProduct`),
-  KEY `kProduct-IDProducer` (`IDProducer`),
-  KEY `kProduct-IDSubcat` (`IDSubcat`) USING BTREE,
-  FULLTEXT KEY `Descrip` (`Descrip`),
-  FULLTEXT KEY `NameProduct` (`NameProduct`),
-  FULLTEXT KEY `NameProduct_Descrip` (`NameProduct`,`Descrip`),
-  CONSTRAINT `kProduct-IDProducer` FOREIGN KEY (`IDProducer`) REFERENCES `Producer` (`IDProducer`),
-  CONSTRAINT `kProduct-IDSubcat` FOREIGN KEY (`IDSubcat`) REFERENCES `Subcat` (`IDSubcat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -767,18 +802,6 @@ CREATE TABLE IF NOT EXISTS `StApp` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE IF NOT EXISTS `Subcat` (
-  `IDSubcat` int NOT NULL AUTO_INCREMENT,
-  `IDCat` int NOT NULL,
-  `NameSubcat` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `CkTaxSale` tinyint NOT NULL,
-  `CkEBT` tinyint NOT NULL,
-  PRIMARY KEY (`IDSubcat`) USING BTREE,
-  UNIQUE KEY `IDCat_NameSubcat` (`IDCat`,`NameSubcat`) USING BTREE,
-  FULLTEXT KEY `NameSubcat` (`NameSubcat`),
-  CONSTRAINT `kSubcat-IDCat` FOREIGN KEY (`IDCat`) REFERENCES `Cat` (`IDCat`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 CREATE TABLE IF NOT EXISTS `Transact` (
   `IDTransact` int NOT NULL AUTO_INCREMENT,
@@ -801,35 +824,6 @@ CREATE TABLE IF NOT EXISTS `Transact` (
   CONSTRAINT `kTransact-IDMemb` FOREIGN KEY (`IDMemb`) REFERENCES `Memb` (`IDMemb`),
   CONSTRAINT `kTransact-IDMembStaffCreate` FOREIGN KEY (`IDMembStaffCreate`) REFERENCES `Memb` (`IDMemb`),
   CONSTRAINT `kTransact-IDProducer` FOREIGN KEY (`IDProducer`) REFERENCES `Producer` (`IDProducer`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-CREATE TABLE IF NOT EXISTS `Vty` (
-  `IDVty` int NOT NULL AUTO_INCREMENT,
-  `IDProduct` int NOT NULL,
-  `Kind` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Size` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `WgtMin` float DEFAULT NULL,
-  `WgtMax` float DEFAULT NULL,
-  `CkInvtMgd` tinyint NOT NULL DEFAULT '0',
-  `CkInvtMgdNext` tinyint NOT NULL DEFAULT '0',
-  `CkListWeb` tinyint NOT NULL DEFAULT '0',
-  `CkListOnsite` tinyint NOT NULL DEFAULT '0',
-  `CkArchiv` tinyint NOT NULL DEFAULT '0',
-  `QtyOffer` int unsigned NOT NULL DEFAULT '0',
-  `PriceNomWeb` decimal(9,2) unsigned NOT NULL,
-  `PriceNomWebNext` decimal(9,2) unsigned NOT NULL,
-  `QtyOnsite` int unsigned NOT NULL DEFAULT '0',
-  `PriceNomOnsite` decimal(9,2) unsigned NOT NULL,
-  `CkMigrate` tinyint NOT NULL DEFAULT '0',
-  `WhenCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `WhenEdit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Upc` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`IDVty`),
-  UNIQUE KEY `Upc_UNIQUE` (`Upc`),
-  KEY `kVty-IDProduct` (`IDProduct`),
-  FULLTEXT KEY `Size_Kind` (`Size`,`Kind`),
-  CONSTRAINT `kVty-IDProduct` FOREIGN KEY (`IDProduct`) REFERENCES `Product` (`IDProduct`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
