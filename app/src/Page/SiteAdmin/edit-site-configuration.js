@@ -34,7 +34,7 @@ export async function wHandPost(aReq, aResp) {
     },
     FeeInvtIt: {
       Conv: _Conv.Gen.Num,
-      Valid: _Valid.Gen.Qty,
+      Valid: _Valid.Gen.Price,
     },
     FracFeeCoopProducer: {
       Conv: _Conv.Gen.Num,
