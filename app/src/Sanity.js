@@ -98,11 +98,11 @@ const queryEmailTemplates = client => async () => {
   };
 };
 
-const queryProducerContent = client => async coopParams => {
+const queryProducerContent = client => async () => {
   const producerContent = await client.fetch('*[_type == "producer"][0]');
   const registrationTerms = producerContent?.registrationTerms
-    ? generateContentHtml(producerContent.registrationTerms, { CoopParams: coopParams })
-    : renderTemplateHtml(`<p></p>`, { CoopParams: coopParams });
+    ? generateContentHtml(producerContent.registrationTerms)
+    : `<p></p>`;
 
   return {
     registrationTerms,
@@ -212,8 +212,8 @@ const queryStaticPageContent = client => async slug => {
   };
 };
 
-const generateContentHtml = (content, templateData) => {
-  const html = toHTML(content, {
+const generateContentHtml = content =>
+  toHTML(content, {
     components: {
       block: ({ children, value }) => {
         switch (value.style) {
@@ -257,15 +257,6 @@ const generateContentHtml = (content, templateData) => {
       },
     },
   });
-  return templateData ? renderTemplateHtml(html, templateData) : html;
-};
-
-const renderTemplateHtml = (template, templateData) => {
-  if (!template) {
-    return template;
-  }
-  return Handlebars.compile(template)(templateData);
-};
 
 const transformSanityImageToUrl = urlFor => sanitySchemas => {
   Object.entries(sanitySchemas).forEach(([key, value]) => {
