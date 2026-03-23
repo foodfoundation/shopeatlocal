@@ -1,6 +1,7 @@
 import imageUrlBuilder from "@sanity/image-url";
 import { toHTML } from "@portabletext/to-html";
 import { createClient } from "@sanity/client";
+import Handlebars from "handlebars";
 
 import { Sanity } from "../Cfg.js";
 
@@ -13,6 +14,7 @@ const getSanityClient = () => {
     queryCoopParamsFromSanity: queryCoopParamsFromSanity(sanityClientInstance),
     queryInformationTemplates: queryInformationTemplates(sanityClientInstance),
     queryEmailTemplates: queryEmailTemplates(sanityClientInstance),
+    queryProducerContent: queryProducerContent(sanityClientInstance),
     queryTermsAndConditionsPageContent: queryTermsAndConditionsPageContent(sanityClientInstance),
     queryProductTypesPageMetadata: queryProductTypesPageMetadata(sanityClientInstance),
     queryProductTypesPageContent: queryProductTypesPageContent(sanityClientInstance),
@@ -93,6 +95,17 @@ const queryEmailTemplates = client => async () => {
 
   return {
     ...registrationEmail,
+  };
+};
+
+const queryProducerContent = client => async coopParams => {
+  const producerContent = await client.fetch('*[_type == "producer"][0]');
+  const registrationTerms = producerContent?.registrationTerms
+    ? generateContentHtml(producerContent.registrationTerms, { CoopParams: coopParams })
+    : renderTemplateHtml(`<p></p>`, { CoopParams: coopParams });
+
+  return {
+    registrationTerms,
   };
 };
 
@@ -199,8 +212,8 @@ const queryStaticPageContent = client => async slug => {
   };
 };
 
-const generateContentHtml = content =>
-  toHTML(content, {
+const generateContentHtml = (content, templateData) => {
+  const html = toHTML(content, {
     components: {
       block: ({ children, value }) => {
         switch (value.style) {
@@ -244,6 +257,15 @@ const generateContentHtml = content =>
       },
     },
   });
+  return templateData ? renderTemplateHtml(html, templateData) : html;
+};
+
+const renderTemplateHtml = (template, templateData) => {
+  if (!template) {
+    return template;
+  }
+  return Handlebars.compile(template)(templateData);
+};
 
 const transformSanityImageToUrl = urlFor => sanitySchemas => {
   Object.entries(sanitySchemas).forEach(([key, value]) => {

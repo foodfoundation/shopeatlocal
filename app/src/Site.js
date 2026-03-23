@@ -95,6 +95,7 @@ export async function wReady() {
     sanityClient.queryProductTypesPageContent(),
     sanityClient.queryStaticPagesMetadata(),
   ]);
+  const producerContent = await sanityClient.queryProducerContent(coopDataTemaptes);
 
   const coopData = {
     ...coopDataTemaptes,
@@ -102,6 +103,7 @@ export async function wReady() {
     ...emailTemplates,
     isProductTypesPageDefined: productTypesPageMetadata.isDefined,
     staticPages: staticPagesMetadata,
+    producer: producerContent,
   };
 
   Copy_Props(CoopParams, coopData);
