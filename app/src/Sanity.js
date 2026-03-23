@@ -1,7 +1,6 @@
 import imageUrlBuilder from "@sanity/image-url";
 import { toHTML } from "@portabletext/to-html";
 import { createClient } from "@sanity/client";
-import Handlebars from "handlebars";
 
 import { Sanity } from "../Cfg.js";
 
