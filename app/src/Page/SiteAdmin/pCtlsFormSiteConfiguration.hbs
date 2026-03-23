@@ -4,6 +4,19 @@
 
 <div class="form-row">
 	<div class="form-group col-md">
+		<div class="custom-control custom-checkbox mt-2">
+			<input id="CkShowDistinguishedMembersPage" name="CkShowDistinguishedMembersPage"
+				type="checkbox" {{hAttrCk CkShowDistinguishedMembersPage false}}
+				class="custom-control-input">
+			<label for="CkShowDistinguishedMembersPage" class="custom-control-label">
+				Show distinguished members page
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-md">
 		<label for="CtMonthTrialMembNew">New member tial length in months</label>
 		<input name="CtMonthTrialMembNew" value="{{CtMonthTrialMembNew}}" type="number"
 			class="form-control">

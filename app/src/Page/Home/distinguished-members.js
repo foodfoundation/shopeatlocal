@@ -1,5 +1,5 @@
 import { queryDistinguishedMembers } from "../../Db.js";
-import { CoopParams } from "../../Site.js";
+import { CoopParams, Site } from "../../Site.js";
 
 const TAG_GROUPS = [
   {
@@ -43,6 +43,13 @@ function selectGroup(tagsLower) {
 }
 
 export async function wHandGet(aReq, aResp) {
+  if (!Site.CkShowDistinguishedMembersPage) {
+    aResp.locals.Title = "Page not found";
+    aResp.status(404);
+    aResp.render("Misc/404");
+    return;
+  }
+
   const distinguishedMembers = await queryDistinguishedMembers();
 
   const sections = TAG_GROUPS.map(group => ({ ...group, members: [] }));

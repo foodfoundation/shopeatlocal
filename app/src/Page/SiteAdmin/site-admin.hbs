@@ -46,6 +46,12 @@
 			<h5>Market management</h5>
 
 			<div class="d-flex flex-row justify-content-between">
+				<div>Distinguished members page</div>
+				<div>
+					<strong>{{#if CkShowDistinguishedMembersPage}}Visible{{else}}Hidden{{/if}}</strong>
+				</div>
+			</div>
+			<div class="d-flex flex-row justify-content-between">
 				<div>Member trial length</div>
 				<div>
 					<strong>{{CtMonthTrialMembNew}} month{{#if (hCkGreater CtMonthTrialMembNew 1)}}s{{/if}}{{#if (hCkEq CtMonthTrialMembNew 0)}}s{{/if}}</strong>

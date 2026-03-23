@@ -327,11 +327,13 @@
 				</li>
 				{{/if}}
 
+				{{#if (hSite "CkShowDistinguishedMembersPage")}}
 				<li class="nav-item {{hTextIfView "Home/distinguished-members" "active"}}">
 					<a href="/distinguished-members" class="nav-link double">
 						Distinguished<br>members
 					</a>
 				</li>
+				{{/if}}
 
 				{{#if CoopParams.staticPages}}
 					{{#each CoopParams.staticPages}}
