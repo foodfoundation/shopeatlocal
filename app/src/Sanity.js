@@ -13,6 +13,7 @@ const getSanityClient = () => {
     queryCoopParamsFromSanity: queryCoopParamsFromSanity(sanityClientInstance),
     queryInformationTemplates: queryInformationTemplates(sanityClientInstance),
     queryEmailTemplates: queryEmailTemplates(sanityClientInstance),
+    queryProducerContent: queryProducerContent(sanityClientInstance),
     queryTermsAndConditionsPageContent: queryTermsAndConditionsPageContent(sanityClientInstance),
     queryProductTypesPageMetadata: queryProductTypesPageMetadata(sanityClientInstance),
     queryProductTypesPageContent: queryProductTypesPageContent(sanityClientInstance),
@@ -93,6 +94,17 @@ const queryEmailTemplates = client => async () => {
 
   return {
     ...registrationEmail,
+  };
+};
+
+const queryProducerContent = client => async () => {
+  const producerContent = await client.fetch('*[_type == "producer"][0]');
+  const registrationTerms = producerContent?.registrationTerms
+    ? generateContentHtml(producerContent.registrationTerms)
+    : `<p></p>`;
+
+  return {
+    registrationTerms,
   };
 };
 

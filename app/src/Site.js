@@ -88,12 +88,14 @@ export async function wReady() {
     emailTemplates,
     productTypesPageMetadata,
     staticPagesMetadata,
+    producerContent,
   ] = await Promise.all([
     sanityClient.queryCoopParamsFromSanity(),
     sanityClient.queryInformationTemplates(),
     sanityClient.queryEmailTemplates(),
     sanityClient.queryProductTypesPageContent(),
     sanityClient.queryStaticPagesMetadata(),
+    sanityClient.queryProducerContent(),
   ]);
 
   const coopData = {
@@ -102,6 +104,7 @@ export async function wReady() {
     ...emailTemplates,
     isProductTypesPageDefined: productTypesPageMetadata.isDefined,
     staticPages: staticPagesMetadata,
+    producer: producerContent,
   };
 
   Copy_Props(CoopParams, coopData);
