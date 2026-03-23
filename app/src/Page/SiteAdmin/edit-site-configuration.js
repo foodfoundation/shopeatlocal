@@ -19,6 +19,7 @@ export async function wHandGet(aReq, aResp) {
 
 export async function wHandPost(aReq, aResp) {
   const fields = {
+    CkShowDistinguishedMembersPage: {},
     CtMonthTrialMembNew: {
       Conv: _Conv.Gen.Num,
       Valid: _Valid.Gen.Qty,
