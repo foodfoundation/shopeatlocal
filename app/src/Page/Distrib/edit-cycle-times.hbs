@@ -55,8 +55,12 @@
 			</div>
 		</div>
 	</div>
+	<hr>
 	<div>
-		<h4>Current cycle length: {{QtyCycleLengthDays}} days</h4>
+		<h4>Cycle length: {{QtyCycleLengthDays}} days</h4>
+		<div class="col-lg mb-2 mb-lg-0 pl-0">
+			<strong>Note:</strong> If you've edited the cycle length in the site admin, the new cycle length will be active after the next cycle.
+		</div>
 	</div>
 
 	<hr>
@@ -89,7 +93,7 @@
 
 					<hr class="my-2"> {{!-- {{the header ends here}} --}}
 
-					{{>Distrib/pInputsCyc this}} {{!-- {{This *includes* another handlebare module/partial pInputsCyc.hbs -- Since this is in the foreach
+					{{>Distrib/pInputsCyc this CkCurr=@first}} {{!-- {{This *includes* another handlebare module/partial pInputsCyc.hbs -- Since this is in the foreach
 					it renders for both current and next cycles }} --}}
 				</div>
 			</div>
@@ -380,8 +384,10 @@
 
 	function syncWhenEndCycNextFromStart(oEdStartNext) {
 		const oEdEndNext = $("div.Next input.WhenEndCyc");
+		const oEdEndNextHidden = $("div.Next input.WhenEndCycHidden");
 		const oWhenEndNext = addDaysToDateTimeLocal(oEdStartNext.val(), QtyCycleLengthDays);
 		oEdEndNext.val(oWhenEndNext);
+		oEdEndNextHidden.val(oWhenEndNext);
 	}
 
 	$("div.Curr input.WhenEndCyc").on("input", function (aEvt) {

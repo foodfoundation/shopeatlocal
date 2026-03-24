@@ -84,8 +84,13 @@
 	<div class="form-group col-md-6">
 		<label for="WhenEndCyc{{IDCyc}}">Cycle end</label>
 		<input name="WhenEndCyc{{IDCyc}}" id="WhenEndCyc{{IDCyc}}" type="datetime-local"
-			placeholder="yyyy-mm-ddTHH:mm" value="{{hTextDateTimeInput WhenEndCyc}}"
+			placeholder="yyyy-mm-ddTHH:mm" {{#unless CkCurr}}disabled{{/unless}} value="{{hTextDateTimeInput WhenEndCyc}}"
 			class="WhenEndCyc form-control {{#if MsgFailWhenEndCyc}}is-invalid{{/if}}">
+		{{#unless CkCurr}}
+		<input type="hidden" name="WhenEndCyc{{IDCyc}}" value="{{hTextDateTimeInput WhenEndCyc}}"
+			class="WhenEndCycHidden">
+		<small class="form-text">The cycle end is auto calculated from the cycle start and the cycle length.</small>
+		{{/unless}}
 		{{hDivMsgFail MsgFailWhenEndCyc}}
 	</div>
 </div>
