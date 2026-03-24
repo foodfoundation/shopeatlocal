@@ -53,32 +53,6 @@ export const PayPalClientSecret = "paypal_client_secret";
 /** The number of failed logins that will cause an IP to be blocked. */
 export const CtFailLoginBlock = 10;
 
-/** The minimum cycle length, in days. 'Next' cycles are added automatically, so
- *  this must not be set to a very short value, or a large number of cycles
- *  could be created in some circumstances. */
-//
-// This same requirement is enforced by a constraint in the database, which must
-// be updated if the minimum changes:
-//
-//   ALTER TABLE Cyc
-//   ADD CONSTRAINT cCyc_OrderDates CHECK (
-//     (WhenStartShop >= WhenStartCyc)
-//     AND (WhenEndShop > WhenStartShop)
-//     AND (WhenStartDeliv >= WhenEndShop)
-//     AND (WhenEndDeliv > WhenStartDeliv)
-//     AND (WhenStartPickup >= WhenEndDeliv)
-//     AND (WhenEndPickup > WhenStartPickup)
-//     AND (WhenEndCyc >= WhenEndPickup)
-//     AND (DATEDIFF(WhenEndCyc, WhenStartCyc) >= 7)
-//   );
-//
-// To drop the original constraint:
-//
-//   ALTER TABLE Cyc
-//   DROP CONSTRAINT cCyc_OrderDates;
-//
-export const MinLenCycDays = 7;
-
 /** The number of non-product search results to display per page. */
 export const CtResultSearchListPage = 20;
 
