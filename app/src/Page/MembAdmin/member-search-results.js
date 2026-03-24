@@ -77,7 +77,8 @@ function SummsParam(aParams) {
   oAdd("Zip");
 
   if (aParams.CkTrialMemb) oSumms.push({ Lbl: "Current trial members" });
-  if (aParams.CkPendMemb) oSumms.push({ Lbl: "Trial completed and pending" });
+  if (aParams.CkPendMembTrialCompleted) oSumms.push({ Lbl: "Trial completed and pending" });
+  if (aParams.CkPendMemb) oSumms.push({ Lbl: "Pending members" });
   if (aParams.CkPendEBT) oSumms.push({ Lbl: "Pending EBT registration" });
   if (aParams.CkPendVolun) oSumms.push({ Lbl: "Pending volunteer registration" });
   if (aParams.CkWithItsCart) oSumms.push({ Lbl: "With items in cart" });

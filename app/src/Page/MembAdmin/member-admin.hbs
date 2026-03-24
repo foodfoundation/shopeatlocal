@@ -7,6 +7,7 @@
 		<div class="col-md">
 			<h5 class="mb-3">Member stats</h5>
 
+			{{#if isTrialEnabled}}
 			<div>
 				<a class="LinkLblPg" href="/member-search-results?CkTrialMemb=true">
 					Current trial members
@@ -15,8 +16,16 @@
 			</div>
 
 			<div>
-				<a class="LinkLblPg" href="/member-search-results?CkPendMemb=true">
+				<a class="LinkLblPg" href="/member-search-results?CkPendMembTrialCompleted=true">
 					Trial completed and pending
+				</a>
+				&times; <span class="LblPg">{{CtPendMembTrialCompleted}}</span>
+			</div>
+			{{/if}}
+
+			<div>
+				<a class="LinkLblPg" href="/member-search-results?CkPendMemb=true">
+					Pending members
 				</a>
 				&times; <span class="LblPg">{{CtMembPend}}</span>
 			</div>
