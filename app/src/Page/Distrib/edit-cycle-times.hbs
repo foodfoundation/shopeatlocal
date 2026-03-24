@@ -357,14 +357,43 @@
 		$("#InstructWhen").removeClass("d-none");
 	}
 
+	const QtyCycleLengthDays = Number({{QtyCycleLengthDays}});
+
+	function addDaysToDateTimeLocal(aTextDateTime, aQtyDays) {
+		if (!aTextDateTime) return "";
+		const oWhen = new Date(aTextDateTime);
+		if (Number.isNaN(oWhen.getTime())) return "";
+		oWhen.setDate(oWhen.getDate() + aQtyDays);
+		const oPad = oVal => String(oVal).padStart(2, "0");
+		return (
+			oWhen.getFullYear() +
+			"-" +
+			oPad(oWhen.getMonth() + 1) +
+			"-" +
+			oPad(oWhen.getDate()) +
+			"T" +
+			oPad(oWhen.getHours()) +
+			":" +
+			oPad(oWhen.getMinutes())
+		);
+	}
+
+	function syncWhenEndCycNextFromStart(oEdStartNext) {
+		const oEdEndNext = $("div.Next input.WhenEndCyc");
+		const oWhenEndNext = addDaysToDateTimeLocal(oEdStartNext.val(), QtyCycleLengthDays);
+		oEdEndNext.val(oWhenEndNext);
+	}
+
 	$("div.Curr input.WhenEndCyc").on("input", function (aEvt) {
 		const oEdEndCurr = $(this);
 		const oEdStartNext = $("div.Next input.WhenStartCyc");
 		oEdStartNext.val(oEdEndCurr.val());
+		syncWhenEndCycNextFromStart(oEdStartNext);
 	});
 	$("div.Next input.WhenStartCyc").on("input", function (aEvt) {
 		const oEdStartNext = $(this);
 		const oEdEndCurr = $("div.Curr input.WhenEndCyc");
 		oEdEndCurr.val(oEdStartNext.val());
+		syncWhenEndCycNextFromStart(oEdStartNext);
 	});
 </script>
