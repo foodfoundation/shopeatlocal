@@ -612,6 +612,10 @@ export async function wExec_EndCyc(aConn, _aCycPrev, aCycCurr, _aCycNext) {
 		LIMIT 1`;
   const [currentTimes] = await aConn.wExecPrep(currentTimesSQL);
 
+  if (currentTimes.length < 1) {
+    throw new Error("EvtCyc wExec_EndCyc: No existing cycle found to base new cycle on");
+  }
+
   const currentCycleTime = currentTimes[0];
   const whenStartCyc = currentCycleTime.WhenStartCyc;
   const whenStartShop = currentCycleTime.WhenStartShop;
@@ -624,42 +628,45 @@ export async function wExec_EndCyc(aConn, _aCycPrev, aCycCurr, _aCycNext) {
 
   const cycleLength = Site.QtyCycleLength;
 
-  let newStartCycUTC = moment
+  const newStartCycUTC = moment
     .utc(whenStartCyc)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
 
-  let newStartShopUTC = moment
+  const newStartShopUTC = moment
     .utc(whenStartShop)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
 
-  let newEndShopUTC = moment
+  const newEndShopUTC = moment
     .utc(whenEndShop)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
   
-  let newStartDelivUTC = moment
+  const newStartDelivUTC = moment
     .utc(whenStartDeliv)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
 
-  let newEndDelivUTC = moment
+  const newEndDelivUTC = moment
     .utc(whenEndDeliv)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
 
-  let newStartPickupUTC = moment
+  const newStartPickupUTC = moment
     .utc(whenStartPickup)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
 
-  let newEndPickupUTC = moment
+  const newEndPickupUTC = moment
     .utc(whenEndPickup)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
 
-  let newEndCycUTC = moment.utc(whenEndCyc).add(cycleLength, "weeks").format("YYYY-MM-DD HH:mm:ss");
+  const newEndCycUTC = moment
+    .utc(whenEndCyc)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
 
   const oSQLInsCyc = `INSERT INTO Cyc (WhenStartCyc, WhenStartShop, WhenEndShop, WhenStartDeliv,
 			WhenEndDeliv, WhenStartPickup, WhenEndPickup, WhenEndCyc)
