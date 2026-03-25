@@ -377,4 +377,20 @@ export const registerDetailsFields = [
     fieldset: 'registerDetails',
     validation: (Rule) => Rule.max(50).error('Text is too long'),
   }),
+  defineField({
+    name: 'RegisterPageHideApplyEBT',
+    title: 'Register Page Hide Apply EBT',
+    description:
+      'Whether to hide the apply EBT section on the register page.',
+    type: 'boolean',
+    fieldset: 'registerDetails',
+  }),
+  defineField({
+    name: 'RegisterPageHideApplyVolunteer',
+    title: 'Register Page Hide Apply Volunteer',
+    description:
+      'Whether to hide the apply volunteer section on the register page.',
+    type: 'boolean',
+    fieldset: 'registerDetails',
+  }),
 ]
