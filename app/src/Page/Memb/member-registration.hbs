@@ -280,7 +280,7 @@
 				</select>
 			</div>
 			<div class="form-group col-md-8">
-				<label for="DtlHowHear">{{CoopParams.RegisterPageTellUsMore}}</label>
+				<label for="DtlHowHear">{{CoopParams.RegisterPageTellUsMore}}{{#if CoopParams.RegisterPageTellUsMoreRequired}} *{{/if}} </label>
 				<input id="DtlHowHear" name="DtlHowHear" {{#if CoopParams.RegisterPageTellUsMoreRequired}}required{{/if}} value="{{DtlHowHear}}"
 					maxlength="200" autocomplete="off" class="form-control {{#if MsgFailDtlHowHear}}is-invalid{{/if}}">
 				{{hDivMsgFail MsgFailDtlHowHear}}
