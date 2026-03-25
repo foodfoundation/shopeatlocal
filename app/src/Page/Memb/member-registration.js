@@ -70,7 +70,7 @@ export async function wHandPost(aReq, aResp) {
     CkAllowEmail2News: {},
     CkAllowPublicName: {},
     HowHear: { Valid: false },
-    DtlHowHear: { CkRequire: true },
+    DtlHowHear: { CkRequire: CoopParams.RegisterPageTellUsMoreRequired },
     CkApplyEBT: { Store: false },
     CkApplyVolun: { Store: false },
     CkReadTOS: { Valid: oValid_CkReadTOS, Store: false },

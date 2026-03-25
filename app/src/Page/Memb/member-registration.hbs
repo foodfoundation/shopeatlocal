@@ -280,8 +280,8 @@
 				</select>
 			</div>
 			<div class="form-group col-md-8">
-				<label for="DtlHowHear">Please tell us more* - referrals will receive a thank you coupon</label>
-				<input id="DtlHowHear" name="DtlHowHear" required value="{{DtlHowHear}}"
+				<label for="DtlHowHear">{{CoopParams.RegisterPageTellUsMore}}</label>
+				<input id="DtlHowHear" name="DtlHowHear" {{#if CoopParams.RegisterPageTellUsMoreRequired}}required{{/if}} value="{{DtlHowHear}}"
 					maxlength="200" autocomplete="off" class="form-control {{#if MsgFailDtlHowHear}}is-invalid{{/if}}">
 				{{hDivMsgFail MsgFailDtlHowHear}}
 			</div>
