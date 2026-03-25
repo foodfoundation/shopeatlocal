@@ -5,8 +5,7 @@
 import { Unroll, wExec, Roll, CkFail, Fill, Retry, wUpdOne } from "../../Form.js";
 import { wConnNew, wCycCurr, wCycNext, wStApp, wAdd_EvtApp, Conn } from "../../Db.js";
 import { DiffDays } from "../../Util.js";
-import { MinLenCycDays } from "../../../Cfg.js";
-import { CoopParams } from "../../Site.js";
+import { CoopParams, Site } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   //this is the GET when the page is called
@@ -75,6 +74,8 @@ export async function wHandGet(aReq, aResp) {
       //loops through each of the phase names, to find the ones where the date is in the past
       oDataCycCurr["CkPast" + oName] = true; //if the date is int he past, it sets a new field in the object called CkPast+name to true
   });
+  aResp.locals.QtyCycleLength = Site.QtyCycleLength;
+  aResp.locals.QtyCycleLengthDays = Site.QtyCycleLength * 7;
 
   aResp.render("Distrib/edit-cycle-times"); //I think this renders the handlebar/view
 }
@@ -178,6 +179,8 @@ export async function wHandPost(aReq, aResp) {
       Fill(oCycCurrJoin, oFldsCycCurr);
       oCycCurrJoin.Flds = oFldsCycCurr;
 
+      const MinLenCycDays = Site.QtyCycleLength * 7;
+
       // It should not be possible for any 'next' time to have passed, but we
       // will use the same pattern:
       const oCycNextJoin = { ...oCycNext };
@@ -212,6 +215,11 @@ export async function wHandPost(aReq, aResp) {
         if (oLenCycDays < MinLenCycDays)
           aCyc.Flds.WhenEndCyc.MsgFail = `The cycle must be at least ${MinLenCycDays} days long.`;
       });
+
+      const nextCycleLength = DiffDays(oCycNextJoin.WhenEndCyc, oCycNextJoin.WhenStartCyc);
+      if (nextCycleLength > MinLenCycDays) {
+        oCycNextJoin.Flds.WhenEndCyc.MsgFail = `The cycle must be at most ${MinLenCycDays} days long.`;
+      }
 
       /*if (oCycNextJoin.WhenStartCyc.getTime()
         !== oCycCurrJoin.WhenEndCyc.getTime())

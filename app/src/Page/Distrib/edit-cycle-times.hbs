@@ -55,10 +55,16 @@
 			</div>
 		</div>
 	</div>
+	<hr>
+	<div>
+		<h4>Cycle length: {{QtyCycleLengthDays}} days</h4>
+		<div class="col-lg mb-2 mb-lg-0 pl-0">
+			<strong>Note:</strong> If you've edited the cycle length in the site admin, the new cycle length will be active after the next cycle.
+		</div>
+	</div>
 
 	<hr>
 	<div>
-		
 	</div>
 	<div id="cycle-change-button">
 		<button id="change-cycle" class="btn btn-primary" onclick="doubleCheck({{{json this}}}); ">Advance to Next Phase</button>
@@ -87,7 +93,7 @@
 
 					<hr class="my-2"> {{!-- {{the header ends here}} --}}
 
-					{{>Distrib/pInputsCyc this}} {{!-- {{This *includes* another handlebare module/partial pInputsCyc.hbs -- Since this is in the foreach
+					{{>Distrib/pInputsCyc this CkCurr=@first}} {{!-- {{This *includes* another handlebare module/partial pInputsCyc.hbs -- Since this is in the foreach
 					it renders for both current and next cycles }} --}}
 				</div>
 			</div>
@@ -355,14 +361,45 @@
 		$("#InstructWhen").removeClass("d-none");
 	}
 
+	const QtyCycleLengthDays = Number({{QtyCycleLengthDays}});
+
+	function addDaysToDateTimeLocal(aTextDateTime, aQtyDays) {
+		if (!aTextDateTime) return "";
+		const oWhen = new Date(aTextDateTime);
+		if (Number.isNaN(oWhen.getTime())) return "";
+		oWhen.setDate(oWhen.getDate() + aQtyDays);
+		const oPad = oVal => String(oVal).padStart(2, "0");
+		return (
+			oWhen.getFullYear() +
+			"-" +
+			oPad(oWhen.getMonth() + 1) +
+			"-" +
+			oPad(oWhen.getDate()) +
+			"T" +
+			oPad(oWhen.getHours()) +
+			":" +
+			oPad(oWhen.getMinutes())
+		);
+	}
+
+	function syncWhenEndCycNextFromStart(oEdStartNext) {
+		const oEdEndNext = $("div.Next input.WhenEndCyc");
+		const oEdEndNextHidden = $("div.Next input.WhenEndCycHidden");
+		const oWhenEndNext = addDaysToDateTimeLocal(oEdStartNext.val(), QtyCycleLengthDays);
+		oEdEndNext.val(oWhenEndNext);
+		oEdEndNextHidden.val(oWhenEndNext);
+	}
+
 	$("div.Curr input.WhenEndCyc").on("input", function (aEvt) {
 		const oEdEndCurr = $(this);
 		const oEdStartNext = $("div.Next input.WhenStartCyc");
 		oEdStartNext.val(oEdEndCurr.val());
+		syncWhenEndCycNextFromStart(oEdStartNext);
 	});
 	$("div.Next input.WhenStartCyc").on("input", function (aEvt) {
 		const oEdStartNext = $(this);
 		const oEdEndCurr = $("div.Curr input.WhenEndCyc");
 		oEdEndCurr.val(oEdStartNext.val());
+		syncWhenEndCycNextFromStart(oEdStartNext);
 	});
 </script>

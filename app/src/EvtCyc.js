@@ -606,58 +606,67 @@ export async function wExec_EndCyc(aConn, _aCycPrev, aCycCurr, _aCycNext) {
   //make 1 call to get all times
 
   const currentTimesSQL = `SELECT 
-		WhenStartCyc
+		*
 		FROM Cyc
 		ORDER BY IDCyc DESC
 		LIMIT 1`;
-  let [currentTimes] = await aConn.wExecPrep(currentTimesSQL);
-  console.log("current times: ", currentTimes);
-  console.log(currentTimes[0].WhenStartCyc);
-  let currentStartCyc = currentTimes[0].WhenStartCyc;
-  var startingDate = moment(currentStartCyc).add(2, "weeks").format("YYYY-MM-DD HH:mm:ss");
-  console.log("startingdate: ", startingDate);
+  const [currentTimes] = await aConn.wExecPrep(currentTimesSQL);
 
-  let newStartCycCT = moment(startingDate).format("YYYY-MM-DD 12:00:00");
-  console.log("newStartCycCT: ", newStartCycCT);
-  let newStartCycUTC = tz(newStartCycCT, "America/Chicago").utc().format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newStartCycUTC: ", newStartCycUTC);
+  if (currentTimes.length < 1) {
+    throw new Error("EvtCyc wExec_EndCyc: No existing cycle found to base new cycle on");
+  }
 
-  let newStartShopCT = moment(startingDate).format("YYYY-MM-DD 12:00:00");
-  console.log("newStartShopCT: ", newStartShopCT);
-  let newStartShopUTC = tz(newStartShopCT, "America/Chicago").utc().format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newStartShopUTC: ", newStartShopUTC);
+  const currentCycleTime = currentTimes[0];
+  const whenStartCyc = currentCycleTime.WhenStartCyc;
+  const whenStartShop = currentCycleTime.WhenStartShop;
+  const whenEndShop = currentCycleTime.WhenEndShop;
+  const whenStartDeliv = currentCycleTime.WhenStartDeliv;
+  const whenEndDeliv = currentCycleTime.WhenEndDeliv;
+  const whenStartPickup = currentCycleTime.WhenStartPickup;
+  const whenEndPickup = currentCycleTime.WhenEndPickup;
+  const whenEndCyc = currentCycleTime.WhenEndCyc;
 
-  let newEndShopCT = moment(startingDate).add(1, "weeks").format("YYYY-MM-DD 23:59:00");
-  console.log("newEndShopCT: ", newEndShopCT);
-  let newEndShopUTC = tz(newEndShopCT, "America/Chicago").utc().format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newEndShopUTC: ", newEndShopUTC);
+  const cycleLength = Site.QtyCycleLength;
 
-  let newStartDelivCT = moment(newEndShopCT).add(1, "hour").format("YYYY-MM-DD HH:mm:ss");
-  console.log("newStartDelivCT: ", newStartDelivCT);
-  let newStartDelivUTC = tz(newStartDelivCT, "America/Chicago").utc().format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newStartDelivUTC: ", newStartDelivUTC);
+  const newStartCycUTC = moment
+    .utc(whenStartCyc)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
 
-  let newEndDelivCT = moment(newStartDelivCT).add(3, "days").format("YYYY-MM-DD 10:45:00");
-  console.log("newEndDelivCT: ", newEndDelivCT);
-  let newEndDelivUTC = tz(newEndDelivCT, "America/Chicago").utc().format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newEndDelivUTC: ", newEndDelivUTC);
+  const newStartShopUTC = moment
+    .utc(whenStartShop)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
 
-  let newStartPickupCT = newEndDelivCT;
-  console.log("newStartPickupCT: ", newStartPickupCT);
-  let newStartPickupUTC = tz(newStartPickupCT, "America/Chicago")
-    .utc()
-    .format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newStartPickupUTC: ", newStartPickupUTC);
+  const newEndShopUTC = moment
+    .utc(whenEndShop)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
+  
+  const newStartDelivUTC = moment
+    .utc(whenStartDeliv)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
 
-  let newEndPickupCT = moment(newEndDelivCT).add(2, "days").format("YYYY-MM-DD 16:00:00");
-  console.log("newEndPickupCT: ", newEndPickupCT);
-  let newEndPickupUTC = tz(newEndPickupCT, "America/Chicago").utc().format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newEndPickupUTC: ", newEndPickupUTC);
+  const newEndDelivUTC = moment
+    .utc(whenEndDeliv)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
 
-  let newEndCycCT = moment(newEndPickupCT).add(1, "days").format("YYYY-MM-DD 00:00:00");
-  console.log("newEndCycCT: ", newEndCycCT);
-  let newEndCycUTC = tz(newEndCycCT, "America/Chicago").utc().format("YYYY-MM-DD HH:mm:ss"); //.toISOString();//.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-  console.log("newEndCycUTC: ", newEndCycUTC);
+  const newStartPickupUTC = moment
+    .utc(whenStartPickup)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
+
+  const newEndPickupUTC = moment
+    .utc(whenEndPickup)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
+
+  const newEndCycUTC = moment
+    .utc(whenEndCyc)
+    .add(cycleLength, "weeks")
+    .format("YYYY-MM-DD HH:mm:ss");
 
   const oSQLInsCyc = `INSERT INTO Cyc (WhenStartCyc, WhenStartShop, WhenEndShop, WhenStartDeliv,
 			WhenEndDeliv, WhenStartPickup, WhenEndPickup, WhenEndCyc)

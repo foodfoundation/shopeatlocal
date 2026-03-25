@@ -1761,6 +1761,7 @@ export async function getProductRowFromIDItCartOnSite(idItCartOnsite, aConn) {
 export async function querySiteConfigurations() {
   const sql = `
 				SELECT
+					QtyCycleLength,
 					CkShowDistinguishedMembersPage,
 					CtMonthTrialMembNew,
 					FeeMembInit,
