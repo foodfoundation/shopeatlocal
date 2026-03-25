@@ -4,12 +4,13 @@
 
 import { Conn, queryMemberTagAssignmentCountByTagName } from "../../Db.js";
 import { PathQuery, NamesParamMemb } from "../../Search.js";
-import { CoopParams } from "../../Site.js";
+import { CoopParams, Site } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
   // Would be much faster to consolidate these queries: [OPTIMIZE]
   aResp.locals.trialMembersCount = await trialMembersCount();
   aResp.locals.CtMembPend = await wCtMembPend();
+  aResp.locals.CtPendMembTrialCompleted = await wCtPendMembTrialCompleted();
   aResp.locals.CtEBTPend = await wCtEBTPend();
   aResp.locals.CtVolunPend = await wCtVolunPend();
   aResp.locals.CtMembWithItsCart = await wCtMembWithItsCart();
@@ -21,6 +22,7 @@ export async function wHandGet(aReq, aResp) {
   aResp.locals.CtMembStaff = await wCtMembStaff();
   aResp.locals.CtMembWholesale = await wCtMembWholesale();
   aResp.locals.memberTags = await queryMemberTagAssignmentCountByTagName();
+  aResp.locals.isTrialEnabled = Site.CtMonthTrialMembNew > 0;
 
   aResp.locals.Title = `${CoopParams.CoopNameShort} member admin`;
   aResp.render("MembAdmin/member-admin");
@@ -36,9 +38,16 @@ export function HandPost(aReq, aResp) {
 }
 
 async function wCtMembPend() {
-  const oSQL = `SELECT COUNT(*) AS Ct FROM Memb WHERE CdRegMemb = 'Pend' AND CyclesUsed = 2 AND WhenFeeMembLast IS NOT NULL`;
+  const oSQL = `SELECT COUNT(*) AS Ct FROM Memb WHERE CdRegMemb = 'Pend'`;
   const [oRows] = await Conn.wExecPrep(oSQL);
   if (!oRows.length) throw Error("wCtMembPend: Cannot get count");
+  return oRows[0].Ct;
+}
+
+async function wCtPendMembTrialCompleted() {
+  const oSQL = `SELECT COUNT(*) AS Ct FROM Memb WHERE CdRegMemb = 'Pend' AND CyclesUsed = 2 AND WhenFeeMembLast IS NOT NULL`;
+  const [oRows] = await Conn.wExecPrep(oSQL);
+  if (!oRows.length) throw Error("wCtPendMembTrialCompleted: Cannot get count");
   return oRows[0].Ct;
 }
 

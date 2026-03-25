@@ -349,7 +349,7 @@ export const registerDetailsFields = [
     description: 'Text for the register button.',
     type: 'string',
     fieldset: 'registerDetails',
-    validation: (Rule) => Rule.max(10).error('Text is too long'),
+    validation: (Rule) => Rule.max(20).error('Text is too long'),
   }),
   defineField({
     name: 'HomePageRegisterButtonText',
@@ -358,6 +358,39 @@ export const registerDetailsFields = [
       'Text for the register button on the home page: next to the logo and the shop name.',
     type: 'string',
     fieldset: 'registerDetails',
-    validation: (Rule) => Rule.max(25).error('Text is too long'),
+    validation: (Rule) => Rule.max(40).error('Text is too long'),
+  }),
+  defineField({
+    name: 'RegisterPageTellUsMoreRequired',
+    title: 'Register Page Tell Us More Required',
+    description:
+      'Whether the tell us more section is required on the register page.',
+    type: 'boolean',
+    fieldset: 'registerDetails',
+  }),
+  defineField({
+    name: 'RegisterPageTellUsMore',
+    title: 'Register Page Tell Us More',
+    description:
+      'Text for the register page: tell us more section.',
+    type: 'string',
+    fieldset: 'registerDetails',
+    validation: (Rule) => Rule.max(50).error('Text is too long'),
+  }),
+  defineField({
+    name: 'RegisterPageHideApplyEBT',
+    title: 'Register Page Hide Apply EBT',
+    description:
+      'Whether to hide the apply EBT section on the register page.',
+    type: 'boolean',
+    fieldset: 'registerDetails',
+  }),
+  defineField({
+    name: 'RegisterPageHideApplyVolunteer',
+    title: 'Register Page Hide Apply Volunteer',
+    description:
+      'Whether to hide the apply volunteer section on the register page.',
+    type: 'boolean',
+    fieldset: 'registerDetails',
   }),
 ]

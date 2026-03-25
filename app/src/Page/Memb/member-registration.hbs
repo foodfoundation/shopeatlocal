@@ -280,39 +280,47 @@
 				</select>
 			</div>
 			<div class="form-group col-md-8">
-				<label for="DtlHowHear">Please tell us more* - referrals will receive a thank you coupon</label>
-				<input id="DtlHowHear" name="DtlHowHear" required value="{{DtlHowHear}}"
+				<label for="DtlHowHear">{{CoopParams.RegisterPageTellUsMore}}{{#if CoopParams.RegisterPageTellUsMoreRequired}} *{{/if}} </label>
+				<input id="DtlHowHear" name="DtlHowHear" {{#if CoopParams.RegisterPageTellUsMoreRequired}}required{{/if}} value="{{DtlHowHear}}"
 					maxlength="200" autocomplete="off" class="form-control {{#if MsgFailDtlHowHear}}is-invalid{{/if}}">
 				{{hDivMsgFail MsgFailDtlHowHear}}
 			</div>
 		</div>
 
-		<div class="form-row">
-			<div class="form-group col">
-				<div class="custom-control custom-checkbox">
-					<input id="CkApplyEBT" name="CkApplyEBT" type="checkbox"
-						{{hAttrCk CkApplyEBT false}} class="custom-control-input">
-					<label for="CkApplyEBT" class="custom-control-label">
-						I would like to make {{CoopParams.CoopNameShort}} purchases with
-						<!-- TODO: Akos extract this? -->
-						<a href="https://dhs.iowa.gov/food-assistance/eligibility"
-							tabindex="-1">EBT</a>
-					</label>
+		{{#if CoopParams.RegisterPageHideApplyEBT}}
+			<input type="hidden" name="CkApplyEBT" value="">
+		{{else}}
+			<div class="form-row">
+				<div class="form-group col">
+					<div class="custom-control custom-checkbox">
+						<input id="CkApplyEBT" name="CkApplyEBT" type="checkbox"
+							{{hAttrCk CkApplyEBT false}} class="custom-control-input">
+						<label for="CkApplyEBT" class="custom-control-label">
+							I would like to make {{CoopParams.CoopNameShort}} purchases with
+							<!-- TODO: Akos extract this? -->
+							<a href="https://dhs.iowa.gov/food-assistance/eligibility"
+								tabindex="-1">EBT</a>
+						</label>
+					</div>
 				</div>
 			</div>
-		</div>
+		{{/if}}
 
-		<div class="form-row">
-			<div class="form-group col">
-				<div class="custom-control custom-checkbox">
-					<input id="CkApplyVolun" name="CkApplyVolun" type="checkbox"
-						{{hAttrCk CkApplyVolun false}} class="custom-control-input">
-					<label for="CkApplyVolun" class="custom-control-label">
-						I would like to volunteer at {{CoopParams.CoopNameShort}}
-					</label>
+		{{#if CoopParams.RegisterPageHideApplyVolunteer}}
+			<input type="hidden" name="CkApplyVolun" value="">
+		{{else}}
+			<div class="form-row">
+				<div class="form-group col">
+					<div class="custom-control custom-checkbox">
+						<input id="CkApplyVolun" name="CkApplyVolun" type="checkbox"
+							{{hAttrCk CkApplyVolun false}} class="custom-control-input">
+						<label for="CkApplyVolun" class="custom-control-label">
+							I would like to volunteer at {{CoopParams.CoopNameShort}}
+						</label>
+					</div>
 				</div>
 			</div>
-		</div>
+		{{/if}}
 		
 		<div class="form-row">
 			<div class="form-group col">

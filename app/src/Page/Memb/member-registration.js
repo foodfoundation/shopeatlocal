@@ -7,9 +7,9 @@ import { wCredFromIDMemb } from "../../Cred.js";
 import { wHash } from "../../Pass.js";
 import { wAdd_Login } from "../../Auth.js";
 import { PageAfterEditMemb } from "../../Util.js";
-import { Conn } from "../../Db.js";
+import { Conn, wAdd_Transact, wUpd_WhenFeeMembLast } from "../../Db.js";
 import { wSend } from "../../Email.js";
-import { CoopParams } from "../../Site.js";
+import { CoopParams, Site } from "../../Site.js"; 
 
 import _ from "lodash";
 
@@ -70,7 +70,7 @@ export async function wHandPost(aReq, aResp) {
     CkAllowEmail2News: {},
     CkAllowPublicName: {},
     HowHear: { Valid: false },
-    DtlHowHear: { CkRequire: true },
+    DtlHowHear: { CkRequire: CoopParams.RegisterPageTellUsMoreRequired },
     CkApplyEBT: { Store: false },
     CkApplyVolun: { Store: false },
     CkReadTOS: { Valid: oValid_CkReadTOS, Store: false },
@@ -135,6 +135,13 @@ export async function wHandPost(aReq, aResp) {
   const oIDMemb = await wIns("Memb", oFlds, oParamsEx);
   if (!oIDMemb) {
     throw Error("wHandPost: Could not create member record");
+  }
+
+  // If not trial month, charge the membership fee
+  // -------------------
+  if (Site.CtMonthTrialMembNew < 1) {
+    await wAdd_Transact(oIDMemb, "FeeMembInit", Site.FeeMembInit, 0, null, null);
+    await wUpd_WhenFeeMembLast(oIDMemb);
   }
 
   // Login as new member
