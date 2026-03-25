@@ -253,6 +253,9 @@ export async function wWarePhase(aReq, aResp, aNext) {
   Add_PropsCyc(aResp, oNow, "Deliv", false);
   Add_PropsCyc(aResp, oNow, "Pickup", false);
 
+  aResp.locals.FlagShop = true;
+  aResp.locals.IsShoppingSuspended = false;
+
   aNext();
 }
 

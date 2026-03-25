@@ -18,11 +18,24 @@
 			or meet <a href="/producers">our producers</a>.
 		</p>
 	{{else}}
-		<h1 class="display-4 font-size-250">The cart is closed</h1>
-		<p class="lead">
-			You will be able to shop when the cart opens on
-			{{hTextDateTimeLong WhenStartShopNext}}.
-		</p>
+		{{#if IsShoppingSuspended}}
+			<h1 class="display-4 font-size-250">Your membership is not active!</h1>
+			<p class="lead">
+				You haven't paid your membership fee yet.
+				<br>
+				Please contact us at
+				<a href="mailto:{{CoopParams.HelpEmail}}" target="_top">
+					{{CoopParams.HelpEmail}}
+				</a>
+				to resolve this issue.
+			</p>
+		{{else}}
+			<h1 class="display-4 font-size-250">The cart is closed</h1>
+			<p class="lead">
+				You will be able to shop when the cart opens on
+				{{hTextDateTimeLong WhenStartShopNext}}.
+			</p>
+		{{/if}}
 	{{/if}}
 </div>
 

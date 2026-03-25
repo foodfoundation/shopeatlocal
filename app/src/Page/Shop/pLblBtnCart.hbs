@@ -17,7 +17,10 @@
     {{else}}
         {{hDeterminerUser CredSelImperUser true}} cart is<br>empty
     {{/if}}
-
 {{else}}
+    {{#if IsShoppingSuspended}}
+    Shopping is currently suspended
+    {{else}}
     The cart is<br>closed
+    {{/if}}
 {{/if}}
