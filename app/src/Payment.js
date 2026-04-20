@@ -28,8 +28,21 @@ async function generateAccessToken() {
       body: "grant_type=client_credentials",
       headers: {
         Authorization: `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
       },
     });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(
+        "paypal_error_auth",
+        "PayPal token endpoint returned error:",
+        response.status,
+        errText,
+      );
+      throw new Error(`PayPal token endpoint returned ${response.status}: ${errText}`);
+    }
 
     const data = await response.json();
     return data.access_token;
