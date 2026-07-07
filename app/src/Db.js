@@ -1800,7 +1800,8 @@ export async function wUpd_SquareCheckout(aIDSquareCheckout, aData, aConn) {
 		SET ${oSets.join(", ")}
 		WHERE IDSquareCheckout = :IDSquareCheckout`;
   const [oRows] = await aConn.wExecPrep(oSQL, oParams);
-  if (oRows.affectedRows != 1) throw Error("Db wUpd_SquareCheckout: Cannot update checkout");
+  // affectedRows counts *changed* rows; a matched no-op update is still success.
+  if (oRows.affectedRows > 1) throw Error("Db wUpd_SquareCheckout: Cannot update checkout");
 }
 
 export async function wFinalize_SquareCheckout(aCheckout, aOpts, aConn) {
@@ -1838,6 +1839,18 @@ export async function wFinalize_SquareCheckout(aCheckout, aOpts, aConn) {
   return oIDTransact;
 }
 
+export async function wSquareWebhookEventFromSquareEventID(aSquareEventID, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareWebhookEvent
+		WHERE SquareEventID = :SquareEventID`;
+  const [oRows] = await aConn.wExecPrep(oSQL, { SquareEventID: aSquareEventID });
+  return oRows.length ? oRows[0] : null;
+}
+
+/** Inserts a Square webhook event if it has not been seen before. Returns whether
+ *  the row was newly inserted and the current row state (including CkProcessed). */
 export async function wAdd_SquareWebhookEvent(aData, aConn) {
   if (!aConn) aConn = Conn;
 
@@ -1857,7 +1870,11 @@ export async function wAdd_SquareWebhookEvent(aData, aConn) {
     ...aData,
   };
   const [oRows] = await aConn.wExecPrep(oSQL, oParams);
-  return oRows.insertId || null;
+  const oEvent = await wSquareWebhookEventFromSquareEventID(aData.SquareEventID, aConn);
+  return {
+    CkInserted: oRows.affectedRows === 1,
+    Event: oEvent,
+  };
 }
 
 export async function wMark_SquareWebhookEventProcessed(aSquareEventID, aData, aConn) {

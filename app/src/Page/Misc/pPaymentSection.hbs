@@ -66,7 +66,7 @@
 	(function () {
 		const payURL = "{{URL}}";
 		{{#if CkPollBalance}}
-		const payBalStart = {{Bal}};
+		const payBalStart = {{#if (hCkNotNull Bal)}}{{Bal}}{{else}}0{{/if}};
 		const payPollBalance = true;
 		{{else}}
 		const payPollBalance = false;
@@ -87,8 +87,12 @@
 		function showCheckoutResult(isError, message) {
 			const container = document.getElementById("checkout-result-message");
 			const alertClass = isError ? "alert-danger" : "alert-success";
-			container.innerHTML =
-				`<div class="alert ${alertClass}" role="alert">${message}</div>`;
+			container.innerHTML = "";
+			const div = document.createElement("div");
+			div.className = `alert ${alertClass}`;
+			div.setAttribute("role", "alert");
+			div.textContent = message;
+			container.appendChild(div);
 		}
 
 		function updateBalanceDisplay(data) {

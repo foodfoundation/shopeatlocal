@@ -67,11 +67,12 @@ CREATE TABLE IF NOT EXISTS `SquareMemberPaymentProfileEvent` (
 
 CREATE TABLE IF NOT EXISTS `SquareCheckout` (
   `IDSquareCheckout` int NOT NULL AUTO_INCREMENT,
-  `IDMemb` int NOT NULL,
-  `IDMembStaffCreate` int NOT NULL,
+  `IDMemb` int DEFAULT NULL,
+  `IDMembStaffCreate` int DEFAULT NULL,
   `IDSquareTerminal` int DEFAULT NULL,
   `IDSquareMemberPaymentProfile` int DEFAULT NULL,
   `IDTransact` int DEFAULT NULL,
+  `IDInvc` int DEFAULT NULL,
   `CdTypeSquareCheckout` enum('Terminal','Cash','AutoCharge','WebCard') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `CdStatusSquareCheckout` enum('Pending','InProgress','Completed','Canceled','Failed') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pending',
   `AmtMoney` decimal(9,2) NOT NULL,
@@ -94,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `SquareCheckout` (
   UNIQUE KEY `uqSquareCheckout-SquareTerminalCheckoutID` (`SquareTerminalCheckoutID`),
   UNIQUE KEY `uqSquareCheckout-SquarePaymentID` (`SquarePaymentID`),
   UNIQUE KEY `uqSquareCheckout-IDTransact` (`IDTransact`),
+  KEY `kSquareCheckout-IDInvc` (`IDInvc`),
   KEY `kSquareCheckout-IDMemb` (`IDMemb`),
   KEY `kSquareCheckout-IDMembStaffCreate` (`IDMembStaffCreate`),
   KEY `kSquareCheckout-IDSquareTerminal` (`IDSquareTerminal`),

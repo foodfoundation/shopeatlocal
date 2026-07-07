@@ -615,10 +615,10 @@
 				throw new Error(errorMessage);
 			}
 
-			squareResultMessage(false);
 			if (paymentData?.checkout?.CdStatusSquareCheckout === "Failed") {
 				throw new Error("Square rejected the payment.");
 			}
+			squareResultMessage(false);
 		}
 		catch (error) {
 			console.error(error);

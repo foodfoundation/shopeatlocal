@@ -32,7 +32,7 @@ export async function wHandGet(aReq, aResp) {
     state: oMemb.St || undefined,
     countryCode: "US",
     postalCode: oMemb.Zip || undefined,
-  });
+  }).replace(/</g, "\\u003c");
   aResp.locals.SquarePaymentProfile = await wSquareMemberPaymentProfileFromIDMemb(oIDMemb);
 
   aResp.locals.Bal = oMemb.BalMoney + oMemb.BalEBT;

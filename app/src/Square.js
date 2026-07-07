@@ -720,7 +720,7 @@ export async function wHandleSquareWebhook(aReq, aResp) {
     oObject.device_code?.id ||
     null;
 
-  await wAdd_SquareWebhookEvent({
+  const oAdd = await wAdd_SquareWebhookEvent({
     SquareEventID: oEventID,
     CdTypeSquareWebhookEvent: oEvent.type,
     SquareMerchantID: oEvent.merchant_id || null,
@@ -729,6 +729,11 @@ export async function wHandleSquareWebhook(aReq, aResp) {
     PayloadJSON: jsonString(oEvent),
     WhenEvent: oEvent.created_at ? new Date(oEvent.created_at) : null,
   });
+
+  if (!oAdd.CkInserted && oAdd.Event?.CkProcessed) {
+    aResp.status(200).json({ ok: true });
+    return;
+  }
 
   try {
     await wProcessSquareWebhookEvent(oEvent);
