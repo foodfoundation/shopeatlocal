@@ -1,4 +1,4 @@
-import { PayPalClientId, PayPalClientSecret, PayPalBaseUrl } from "../Cfg.js";
+import * as Cfg from "../Cfg.js";
 
 /** PayPal API Integration Module
  *  @module Payment
@@ -8,9 +8,9 @@ import { PayPalClientId, PayPalClientSecret, PayPalBaseUrl } from "../Cfg.js";
  *  @see {@link https://developer.paypal.com/docs/api}
  */
 
-const payPalClientId = PayPalClientId;
-const payPalClientSecret = PayPalClientSecret;
-const payPalBaseUrl = PayPalBaseUrl;
+const payPalClientId = Cfg.PayPalClientId;
+const payPalClientSecret = Cfg.PayPalClientSecret;
+const payPalBaseUrl = Cfg.PayPalBaseUrl;
 
 /** OAuth2 token generation for PayPal API access
  *  @async

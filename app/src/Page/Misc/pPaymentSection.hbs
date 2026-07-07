@@ -1,0 +1,235 @@
+{{!-- pPaymentSection.hbs
+//    ------------------
+//    Reusable Square payment section (auto charge, Square terminal, cash).
+//    Expects to be invoked with a payment context object as its context, e.g.
+//    {{>Misc/pPaymentSection Pay}}, where Pay is built by
+//    Square.wPaymentSectionLocals. --}}
+
+<h5>Payment</h5>
+
+{{#if CkShowBalance}}
+<div class="d-flex flex-row justify-content-between mb-2">
+	<div>Current balance</div>
+	<div id="pay-section-bal" class="font-weight-bold">{{hTextCurrOrOrig Bal}}</div>
+</div>
+{{/if}}
+
+<div class="form-group">
+	<label for="AmtMoney">Amount to collect</label>
+	<input type="number" id="AmtMoney" class="form-control" min="0.01"
+		step="0.01" value="{{hTextFixedOrOrig AmtDefault 2}}" required>
+</div>
+
+<div id="checkout-result-message" class="mb-3"></div>
+
+{{#if CkShowAutoCharge}}
+{{#if CkAutoCharge}}
+<button id="auto-charge-button" type="button"
+	class="btn btn-primary btn-block mb-2">
+	Auto charge
+</button>
+<div class="text-muted font-size-90 mb-3">
+	Saved card:
+	{{SquarePaymentProfile.CardBrand}}
+	ending in {{SquarePaymentProfile.CardLast4}}
+</div>
+{{/if}}
+{{/if}}
+
+<h6 class="text-muted">Square Terminal</h6>
+{{#if SquareTerminals}}
+<div class="form-group">
+	<label for="IDSquareTerminal">Terminal</label>
+	<select id="IDSquareTerminal" class="form-control">
+		{{#each SquareTerminals}}
+		<option value="{{IDSquareTerminal}}">{{Name}}</option>
+		{{/each}}
+	</select>
+</div>
+<button id="terminal-checkout-button" type="button"
+	class="btn btn-outline-primary btn-block mb-3">
+	Send to Square terminal
+</button>
+{{else}}
+<div class="alert alert-warning">
+	No active paired Square terminals are available.
+</div>
+{{/if}}
+
+<h6 class="text-muted">Cash</h6>
+<button id="cash-checkout-button" type="button"
+	class="btn btn-outline-primary btn-block">
+	Record cash with Square
+</button>
+
+<script>
+	(function () {
+		const payURL = "{{URL}}";
+		{{#if CkPollBalance}}
+		const payBalStart = {{Bal}};
+		const payPollBalance = true;
+		{{else}}
+		const payPollBalance = false;
+		{{/if}}
+		const payPollIntervalMs = 2000;
+		const payPollMaxAttempts = 90;
+		let payPollTimer = null;
+		let payPollAttempts = 0;
+
+		function checkoutAmount() {
+			const amount = Number(document.getElementById("AmtMoney").value);
+			if (!Number.isFinite(amount) || amount <= 0) {
+				throw new Error("Enter a valid positive payment amount.");
+			}
+			return amount.toFixed(2);
+		}
+
+		function showCheckoutResult(isError, message) {
+			const container = document.getElementById("checkout-result-message");
+			const alertClass = isError ? "alert-danger" : "alert-success";
+			container.innerHTML =
+				`<div class="alert ${alertClass}" role="alert">${message}</div>`;
+		}
+
+		function updateBalanceDisplay(data) {
+			const sectionBal = document.getElementById("pay-section-bal");
+			if (sectionBal && data.TextBal) sectionBal.textContent = data.TextBal;
+
+			const moneyBal = document.querySelector('[data-pay-bal="money"]');
+			if (moneyBal && data.TextBalMoney) moneyBal.textContent = data.TextBalMoney;
+
+			const ebtBal = document.querySelector('[data-pay-bal="ebt"]');
+			if (ebtBal && data.TextBalEBT) ebtBal.textContent = data.TextBalEBT;
+
+			const totalBal = document.querySelector('[data-pay-bal="total"]');
+			if (totalBal && data.TextBal) totalBal.textContent = data.TextBal;
+		}
+
+		function stopBalancePoll() {
+			if (payPollTimer) {
+				clearInterval(payPollTimer);
+				payPollTimer = null;
+			}
+		}
+
+		async function pollBalanceOnce(idSquareCheckout) {
+			let url = payURL + "/balance";
+			if (idSquareCheckout) url += `?IDSquareCheckout=${idSquareCheckout}`;
+			const response = await fetch(url, OptsFetchCSRF());
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data?.error || "Balance poll failed.");
+			}
+			return data;
+		}
+
+		function startBalancePoll(idSquareCheckout) {
+			if (!payPollBalance) return;
+
+			stopBalancePoll();
+			payPollAttempts = 0;
+
+			payPollTimer = setInterval(async () => {
+				payPollAttempts += 1;
+				try {
+					const data = await pollBalanceOnce(idSquareCheckout);
+					if (!data.CkHasBalance) {
+						stopBalancePoll();
+						return;
+					}
+
+					updateBalanceDisplay(data);
+
+					const balChanged = Math.abs(Number(data.Bal) - payBalStart) > 0.001;
+					const checkoutStatus = data.checkout?.CdStatusSquareCheckout;
+					const checkoutDone = Boolean(data.checkout?.CkComplete);
+
+					if (balChanged) {
+						stopBalancePoll();
+						showCheckoutResult(false, "Payment recorded. Balance updated.");
+					}
+					else if (checkoutStatus === "Failed") {
+						stopBalancePoll();
+						showCheckoutResult(true, "Square payment failed.");
+					}
+					else if (checkoutStatus === "Canceled") {
+						stopBalancePoll();
+						showCheckoutResult(true, "Square payment was canceled.");
+					}
+					else if (checkoutDone) {
+						stopBalancePoll();
+					}
+					else if (payPollAttempts >= payPollMaxAttempts) {
+						stopBalancePoll();
+					}
+				}
+				catch (error) {
+					if (payPollAttempts >= payPollMaxAttempts) stopBalancePoll();
+				}
+			}, payPollIntervalMs);
+		}
+
+		async function postCheckout(suffix, body, button) {
+			const originalText = button.textContent;
+			try {
+				button.disabled = true;
+				button.textContent = "Processing...";
+				const response = await fetch(payURL + suffix, {
+					...OptsFetchCSRF(),
+					method: "POST",
+					body: JSON.stringify(body),
+				});
+				const data = await response.json();
+				if (!response.ok) {
+					throw new Error(data?.error || JSON.stringify(data));
+				}
+				showCheckoutResult(
+					false,
+					"Square payment was started. Waiting for balance update...",
+				);
+				startBalancePoll(data.checkout?.IDSquareCheckout);
+			}
+			catch (error) {
+				showCheckoutResult(true, error.message || error);
+			}
+			finally {
+				button.disabled = false;
+				button.textContent = originalText;
+			}
+		}
+
+		document.getElementById("terminal-checkout-button")?.addEventListener("click", function () {
+			try {
+				postCheckout(
+					"/square-terminal",
+					{
+						AmtMoney: checkoutAmount(),
+						IDSquareTerminal: document.getElementById("IDSquareTerminal").value,
+					},
+					this,
+				);
+			}
+			catch (error) {
+				showCheckoutResult(true, error.message || error);
+			}
+		});
+
+		document.getElementById("cash-checkout-button")?.addEventListener("click", function () {
+			try {
+				postCheckout("/square-cash", { AmtMoney: checkoutAmount() }, this);
+			}
+			catch (error) {
+				showCheckoutResult(true, error.message || error);
+			}
+		});
+
+		document.getElementById("auto-charge-button")?.addEventListener("click", function () {
+			try {
+				postCheckout("/square-auto-charge", { AmtMoney: checkoutAmount() }, this);
+			}
+			catch (error) {
+				showCheckoutResult(true, error.message || error);
+			}
+		});
+	})();
+</script>

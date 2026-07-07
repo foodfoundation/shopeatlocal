@@ -3,6 +3,7 @@
 // On-site Checkout Summary page controller
 
 import { Conn } from "../../Db.js";
+import { wPaymentAmtDefault, wPaymentSectionLocals } from "../../Square.js";
 import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
@@ -16,8 +17,38 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.InvcMemb = oInvc;
 
+  const oBal = oInvc.IDMemb ? oInvc.BalMoney + oInvc.BalEBT : null;
+  aResp.locals.Pay = await wPaymentSectionLocals({
+    IDMemb: oInvc.IDMemb ?? null,
+    URL: `/on-site-checkout-summary/${oInvc.IDInvcShopOnsite}`,
+    Bal: oBal,
+    AmtDefault: wPaymentAmtDefault({
+      IDMemb: oInvc.IDMemb,
+      Bal: oBal,
+      AmtInvc: oInvc.Ttl,
+    }),
+  });
+
   aResp.locals.Title = `${CoopParams.CoopNameShort} on-site checkout summary`;
   aResp.render("Onsite/on-site-checkout-summary");
+}
+
+/** Prepares the payment context used by the shared Square checkout handlers.
+ *  On-site invoices may have no member (non-member cart); auto charge is not
+ *  offered in that case, but terminal and cash payments still work. */
+export async function wWarePayCtx(aReq, aResp, aNext) {
+  const oIDInvc = parseInt(aReq.params.IDInvcShopOnsite);
+  const oInvc = await wInvcMembFromIDInvc(oIDInvc);
+  if (!oInvc) {
+    aResp.status(404).json({ error: "Invoice not found." });
+    return;
+  }
+  aResp.locals.PayCtx = {
+    IDMemb: oInvc.IDMemb ?? null,
+    IDMembStaffCreate: aResp.locals.CredUser.IDMemb,
+    IDInvc: oInvc.IDInvcShopOnsite,
+  };
+  aNext();
 }
 
 async function wInvcMembFromIDInvc(aIDInvc) {

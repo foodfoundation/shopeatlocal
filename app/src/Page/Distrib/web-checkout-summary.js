@@ -3,6 +3,7 @@
 // Web Checkout Summary page controller
 
 import { Conn } from "../../Db.js";
+import { wPaymentAmtDefault, wPaymentSectionLocals } from "../../Square.js";
 import { CoopParams } from "../../Site.js";
 
 export async function wHandGet(aReq, aResp) {
@@ -16,8 +17,37 @@ export async function wHandGet(aReq, aResp) {
 
   aResp.locals.InvcMemb = oInvc;
 
+  const oBal = oInvc.BalMoney + oInvc.BalEBT;
+  aResp.locals.Pay = await wPaymentSectionLocals({
+    IDMemb: oInvc.IDMemb,
+    URL: `/web-checkout-summary/${oInvc.IDInvcShopWeb}`,
+    Bal: oBal,
+    AmtDefault: wPaymentAmtDefault({
+      IDMemb: oInvc.IDMemb,
+      Bal: oBal,
+      AmtInvc: oInvc.Ttl,
+    }),
+  });
+
   aResp.locals.Title = `${CoopParams.CoopNameShort} web checkout summary`;
   aResp.render("Distrib/web-checkout-summary");
+}
+
+/** Prepares the payment context used by the shared Square checkout handlers,
+ *  resolving the member from the invoice and linking payments to it. */
+export async function wWarePayCtx(aReq, aResp, aNext) {
+  const oIDInvc = parseInt(aReq.params.IDInvcShopWeb);
+  const oInvc = await wInvcMembFromIDInvc(oIDInvc);
+  if (!oInvc) {
+    aResp.status(404).json({ error: "Invoice not found." });
+    return;
+  }
+  aResp.locals.PayCtx = {
+    IDMemb: oInvc.IDMemb,
+    IDMembStaffCreate: aResp.locals.CredUser.IDMemb,
+    IDInvc: oInvc.IDInvcShopWeb,
+  };
+  aNext();
 }
 
 async function wInvcMembFromIDInvc(aIDInvc) {

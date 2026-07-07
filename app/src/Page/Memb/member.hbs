@@ -232,6 +232,22 @@
 				<h6 class="mb-3 text-muted">
 					Pay online
 				</h6>
+				<div class="mb-3">
+					<div class="custom-control custom-radio custom-control-inline">
+						<input type="radio" id="paymentMethodPaypal" name="paymentMethod"
+							class="custom-control-input" value="paypal" checked>
+						<label class="custom-control-label" for="paymentMethodPaypal">
+							PayPal
+						</label>
+					</div>
+					<div class="custom-control custom-radio custom-control-inline">
+						<input type="radio" id="paymentMethodSquare" name="paymentMethod"
+							class="custom-control-input" value="square">
+						<label class="custom-control-label" for="paymentMethodSquare">
+							Square
+						</label>
+					</div>
+				</div>
 				<div class="d-flex flex-row justify-content-between mb-2">
 					<div class="d-flex align-items-center">
 						Enter the amount (USD):
@@ -241,9 +257,61 @@
 						<input type="number" id="paymentAmount" class="form-control" placeholder="Amount (USD)" {{#if (hCkGreater Bal 0)}}value="{{hTextFixedOrOrig Bal 2}}"{{/if}} required>
 					</div>
 				</div>
-				<div>
+				<div id="paypal-payment-section">
 					<div id="paypal-button-container"></div>
 					<div id="paypal-result-message"></div>
+				</div>
+				<div id="square-payment-section" class="d-none">
+					<div id="square-card-container" class="mb-3"></div>
+					<button id="square-pay-button" type="button" class="btn btn-primary btn-block">
+						Pay with Square
+					</button>
+					<div id="square-result-message" class="mt-2"></div>
+
+					<div id="square-auto-charge-section" class="mt-4">
+						<h6 class="mb-3 text-muted">
+							Auto charge setup
+						</h6>
+						{{#if SquarePaymentProfile.SquareCardID}}
+						<div class="alert alert-info">
+							Saved card:
+							<strong>{{SquarePaymentProfile.CardBrand}} ending in {{SquarePaymentProfile.CardLast4}}</strong>.
+							Auto charge is
+							<strong>{{#if SquarePaymentProfile.CkAutoCharge}}enabled{{else}}disabled{{/if}}</strong>.
+						</div>
+						{{/if}}
+						<p class="text-muted font-size-90">
+							Use the Square card form above to save or replace your payment
+							method. By enabling auto charge, you authorize staff to charge your
+							saved Square payment method for your member balance or other
+							approved market charges.
+						</p>
+						<div class="custom-control custom-checkbox mb-2">
+							<input type="checkbox" id="square-auto-charge-consent"
+								class="custom-control-input" {{#if SquarePaymentProfile.CkAutoCharge}}checked{{/if}}>
+							<label class="custom-control-label" for="square-auto-charge-consent">
+								Enable auto charge for this saved Square payment method
+							</label>
+						</div>
+						<button id="square-save-card-button" type="button"
+							class="btn btn-outline-primary btn-block">
+							Save payment method
+						</button>
+						{{#if SquarePaymentProfile.SquareCardID}}
+						{{#if SquarePaymentProfile.CkAutoCharge}}
+						<button id="square-disable-auto-charge-button" type="button"
+							class="btn btn-outline-secondary btn-block mt-2">
+							Disable auto charge
+						</button>
+						{{else}}
+						<button id="square-enable-auto-charge-button" type="button"
+							class="btn btn-outline-secondary btn-block mt-2">
+							Enable auto charge
+						</button>
+						{{/if}}
+						{{/if}}
+						<div id="square-setup-result-message" class="mt-2"></div>
+					</div>
 				</div>
 			</div>
 			{{else}} {{!-- else "paypalUpdate" --}}
@@ -300,7 +368,14 @@
 
 {{#if (hCkFeatureFlag "paypalUpdate")}}
 <script src="https://www.paypal.com/sdk/js?client-id={{PayPalClientId}}&currency=USD&enable-funding=venmo&disable-funding=paylater"></script>
+<script src="{{SquareWebSdkUrl}}"></script>
 <script>
+	const squareAppId = "{{SquareAppId}}";
+	const squareLocationId = "{{SquareLocationId}}";
+	const squareBillingContact = {{{SquareBillingContactJSON}}};
+	const paymentDescription = '{{hDescPayPal Memb}}';
+	let squareCard = null;
+
 	window.paypal
 		.Buttons({
 			style: {
@@ -309,7 +384,6 @@
 			async createOrder() {
 				try {
 					const paymentAmount = document.getElementById('paymentAmount').value;
-					const description = '{{hDescPayPal Memb}}';
 					if (!paymentAmount || isNaN(paymentAmount) || paymentAmount <= 0) {
 						alert('Please enter a valid payment amount.');
 						return;
@@ -319,7 +393,7 @@
 						method: 'POST',
 						body: JSON.stringify({
 							amount: paymentAmount,
-							description, 
+							description: paymentDescription,
 						}),
 					});
 					
@@ -378,6 +452,22 @@
 				}
 			},
 		}).render("#paypal-button-container");
+
+	function setPaymentMethodVisibility() {
+		const method = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+		const paypalSection = document.getElementById("paypal-payment-section");
+		const squareSection = document.getElementById("square-payment-section");
+		if (!paypalSection || !squareSection) return;
+
+		if (method === "square") {
+			paypalSection.classList.add("d-none");
+			squareSection.classList.remove("d-none");
+		}
+		else {
+			squareSection.classList.add("d-none");
+			paypalSection.classList.remove("d-none");
+		}
+	}
 	
 	function resultMessage(isError = false, errorMessage = "") {
 		const container = document.querySelector("#paypal-result-message");
@@ -415,6 +505,250 @@
 			</div>`;
 		container.innerHTML = isLoading ? loadingHTML : "";
 	}
+
+	function squareResultMessage(isError = false, errorMessage = "") {
+		const container = document.querySelector("#square-result-message");
+		if (!container) return;
+
+		const message = isError
+			? `<strong>Payment Failed!</strong> ${errorMessage}`
+			: "<strong>Payment submitted.</strong> Your balance will update after Square confirms the payment.";
+		const alertTypeClass = isError ? "alert-danger" : "alert-success";
+		container.innerHTML =
+			`<div class="alert alert-dismissible mb-0 ${alertTypeClass}" style="border-radius: 5px;" role="alert">
+				${message}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>`;
+
+		if (!isError) {
+			document.getElementById("paymentAmount").value = "";
+		}
+	}
+
+	function squareSetupResultMessage(isError = false, message = "") {
+		const container = document.querySelector("#square-setup-result-message");
+		if (!container) return;
+
+		const alertTypeClass = isError ? "alert-danger" : "alert-success";
+		const text = isError
+			? `<strong>Setup failed.</strong> ${message}`
+			: `<strong>Payment method saved.</strong> ${message}`;
+		container.innerHTML =
+			`<div class="alert alert-dismissible mb-0 ${alertTypeClass}" style="border-radius: 5px;" role="alert">
+				${text}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>`;
+	}
+
+	function textSquareTokenizationErrors(errors) {
+		if (!errors || !errors.length) return "Card tokenization failed.";
+		return errors
+			.map(error => error.detail || error.message || error.code || JSON.stringify(error))
+			.join("; ");
+	}
+
+	async function initSquareCard() {
+		try {
+			if (!window.Square) {
+				squareResultMessage(true, "Square Web Payments SDK failed to load.");
+				return;
+			}
+			if (!squareAppId || !squareLocationId) {
+				squareResultMessage(true, "Square is not configured. Missing app ID or location ID.");
+				return;
+			}
+			const payments = window.Square.payments(squareAppId, squareLocationId);
+			squareCard = await payments.card();
+			await squareCard.attach("#square-card-container");
+		}
+		catch (error) {
+			console.error(error);
+			squareResultMessage(true, `Could not initialize Square card form: ${error.message || error}`);
+		}
+	}
+
+	async function handleSquarePayment() {
+		try {
+			const paymentAmount = document.getElementById("paymentAmount").value;
+			if (!paymentAmount || isNaN(paymentAmount) || paymentAmount <= 0) {
+				alert("Please enter a valid payment amount.");
+				return;
+			}
+			if (!squareCard) {
+				squareResultMessage(true, "Square card form is not ready.");
+				return;
+			}
+
+			const button = document.getElementById("square-pay-button");
+			button.disabled = true;
+			button.textContent = "Processing...";
+
+			const tokenResult = await squareCard.tokenize();
+			if (tokenResult.status !== "OK") {
+				console.error("square_tokenize_errors", tokenResult.errors);
+				throw new Error(textSquareTokenizationErrors(tokenResult.errors));
+			}
+
+			const response = await fetch("/payment/create-square-payment/", {
+				...OptsFetchCSRF(),
+				method: "POST",
+				body: JSON.stringify({
+					sourceId: tokenResult.token,
+					amount: paymentAmount,
+					description: paymentDescription,
+				}),
+			});
+			console.log(JSON.stringify(response));
+			const paymentData = await response.json();
+
+			button.disabled = false;
+			button.textContent = "Pay with Square";
+
+			if (!response.ok) {
+				const errorMessage = paymentData?.errors?.map(o => o.detail).join("; ")
+					|| paymentData?.error
+					|| JSON.stringify(paymentData);
+				throw new Error(errorMessage);
+			}
+
+			squareResultMessage(false);
+			if (paymentData?.checkout?.CdStatusSquareCheckout === "Failed") {
+				throw new Error("Square rejected the payment.");
+			}
+		}
+		catch (error) {
+			console.error(error);
+			const button = document.getElementById("square-pay-button");
+			if (button) {
+				button.disabled = false;
+				button.textContent = "Pay with Square";
+			}
+			squareResultMessage(true, `Could not complete transaction: ${error.message || error}`);
+		}
+	}
+
+	async function handleSquareSaveCard() {
+		const button = document.getElementById("square-save-card-button");
+		try {
+			if (!squareCard) {
+				squareSetupResultMessage(true, "Square card form is not ready.");
+				return;
+			}
+			button.disabled = true;
+			button.textContent = "Saving...";
+
+			const tokenResult = await squareCard.tokenize({
+				intent: "STORE",
+				billingContact: squareBillingContact,
+				customerInitiated: true,
+				sellerKeyedIn: false,
+			});
+			if (tokenResult.status !== "OK") {
+				console.error("square_store_tokenize_errors", tokenResult.errors);
+				throw new Error(textSquareTokenizationErrors(tokenResult.errors));
+			}
+
+			const response = await fetch("/payment/square-save-member-card", {
+				...OptsFetchCSRF(),
+				method: "POST",
+				body: JSON.stringify({
+					sourceId: tokenResult.token,
+					autoCharge: document.getElementById("square-auto-charge-consent")?.checked,
+				}),
+			});
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data?.error || JSON.stringify(data));
+			}
+
+			squareSetupResultMessage(false, "Refresh the page to see the updated saved card details.");
+		}
+		catch (error) {
+			console.error(error);
+			squareSetupResultMessage(true, error.message || error);
+		}
+		finally {
+			if (button) {
+				button.disabled = false;
+				button.textContent = "Save payment method";
+			}
+		}
+	}
+
+	async function handleSquareDisableAutoCharge() {
+		const button = document.getElementById("square-disable-auto-charge-button");
+		try {
+			button.disabled = true;
+			button.textContent = "Disabling...";
+			const response = await fetch("/payment/square-disable-member-auto-charge", {
+				...OptsFetchCSRF(),
+				method: "POST",
+				body: JSON.stringify({}),
+			});
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data?.error || JSON.stringify(data));
+			}
+			const consent = document.getElementById("square-auto-charge-consent");
+			if (consent) consent.checked = false;
+			squareSetupResultMessage(false, "Auto charge was disabled.");
+		}
+		catch (error) {
+			console.error(error);
+			squareSetupResultMessage(true, error.message || error);
+		}
+		finally {
+			if (button) {
+				button.disabled = false;
+				button.textContent = "Disable auto charge";
+			}
+		}
+	}
+
+	async function handleSquareEnableAutoCharge() {
+		const button = document.getElementById("square-enable-auto-charge-button");
+		try {
+			button.disabled = true;
+			button.textContent = "Enabling...";
+			const response = await fetch("/payment/square-enable-member-auto-charge", {
+				...OptsFetchCSRF(),
+				method: "POST",
+				body: JSON.stringify({}),
+			});
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data?.error || JSON.stringify(data));
+			}
+			const consent = document.getElementById("square-auto-charge-consent");
+			if (consent) consent.checked = true;
+			squareSetupResultMessage(false, "Auto charge was enabled. Refresh the page to see the updated status.");
+		}
+		catch (error) {
+			console.error(error);
+			squareSetupResultMessage(true, error.message || error);
+		}
+		finally {
+			if (button) {
+				button.disabled = false;
+				button.textContent = "Enable auto charge";
+			}
+		}
+	}
+
+	document.querySelectorAll('input[name="paymentMethod"]').forEach(oEl => {
+		oEl.addEventListener("change", setPaymentMethodVisibility);
+	});
+	setPaymentMethodVisibility();
+
+	document.getElementById("square-pay-button")?.addEventListener("click", handleSquarePayment);
+	document.getElementById("square-save-card-button")?.addEventListener("click", handleSquareSaveCard);
+	document.getElementById("square-disable-auto-charge-button")?.addEventListener("click", handleSquareDisableAutoCharge);
+	document.getElementById("square-enable-auto-charge-button")?.addEventListener("click", handleSquareEnableAutoCharge);
+	initSquareCard();
 
 </script>
 {{/if}}

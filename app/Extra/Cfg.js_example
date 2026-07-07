@@ -50,6 +50,15 @@ export const PayPalBaseUrl = "https://api-m.sandbox.paypal.com";
 export const PayPalClientId = "paypal_client_id";
 export const PayPalClientSecret = "paypal_client_secret";
 
+// Square API credentials
+// Use "sandbox" for development and "production" for live payments.
+export const SquareEnvironmentName = "sandbox";
+export const SquareAppId = "sandbox_square_app_id";
+export const SquareAccessToken = "sandbox_square_access_token";
+export const SquareLocationId = "sandbox_square_location_id";
+export const SquareWebhookSignatureKey = "sandbox_square_webhook_signature_key";
+export const SquareWebhookNotificationUrl = "https://example.org/payment/square-webhook";
+
 /** The number of failed logins that will cause an IP to be blocked. */
 export const CtFailLoginBlock = 10;
 
