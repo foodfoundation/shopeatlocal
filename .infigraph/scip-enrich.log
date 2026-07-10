@@ -1,0 +1,7 @@
+error: unexpected argument '--languages' found
+
+  tip: to pass '--languages' as a value, use '-- --languages'
+
+Usage: infigraph scip-enrich <LANGUAGES>
+
+For more information, try '--help'.

@@ -1,0 +1,251 @@
+{{!-- quickbooks.hbs
+//    --------------
+//    QuickBooks Online integration dashboard --}}
+
+<div class="container-lg py-4">
+	<h2>QuickBooks Online</h2>
+
+	{{#unless CkFeatureEnabled}}
+	<div class="alert alert-warning">
+		The QuickBooks integration feature flag is off in this environment.
+		Connection and queue data are shown, but nothing will post.
+	</div>
+	{{/unless}}
+
+	{{#unless CkConfigured}}
+	<div class="alert alert-danger">
+		QuickBooks credentials are not configured on this server. Set the
+		client ID, client secret, redirect URI, and token-encryption key, then
+		restart.
+	</div>
+	{{/unless}}
+
+	{{!-- Connection health --}}
+	<div class="card mb-4">
+		<div class="card-header d-flex justify-content-between align-items-center">
+			<span>Connection</span>
+			{{#if (hCkStaffMgrFromUser)}}
+			<span>
+				{{#if CkConnected}}
+				<form action="/quickbooks/disconnect" method="POST" class="d-inline"
+					onsubmit="return confirm('Disconnect QuickBooks? Queued work pauses until you reconnect.')">
+					<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+					<button type="submit" class="btn btn-sm btn-outline-danger">Disconnect</button>
+				</form>
+				{{else}}
+				<form action="/quickbooks/connect" method="POST" class="d-inline">
+					<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+					<button type="submit" class="btn btn-sm btn-primary"
+						{{#unless CkConfigured}}disabled{{/unless}}>
+						Connect to QuickBooks
+					</button>
+				</form>
+				{{/if}}
+			</span>
+			{{/if}}
+		</div>
+		<div class="card-body">
+			{{#if Connection}}
+			<dl class="row mb-0">
+				<dt class="col-sm-4">Status</dt>
+				<dd class="col-sm-8">
+					{{#if CkConnected}}
+					<span class="badge badge-success">Connected</span>
+					{{else}}
+					<span class="badge badge-danger">{{Connection.CdStatusQuickBooksConnection}}</span>
+					— reconnect to resume sync; queued work is retained.
+					{{/if}}
+				</dd>
+				<dt class="col-sm-4">Company</dt>
+				<dd class="col-sm-8">{{#if Connection.CompanyName}}{{Connection.CompanyName}}{{else}}<span class="text-muted">Unknown</span>{{/if}}</dd>
+				<dt class="col-sm-4">Realm / environment</dt>
+				<dd class="col-sm-8"><code>{{Connection.RealmID}}</code> ({{Connection.EnvironmentName}})</dd>
+				<dt class="col-sm-4">Access token expires</dt>
+				<dd class="col-sm-8">{{hTextDateTimeMed Connection.WhenAccessTokenExpires}}</dd>
+				<dt class="col-sm-4">Refresh token expires</dt>
+				<dd class="col-sm-8">{{hTextDateTimeMed Connection.WhenRefreshTokenExpires}}</dd>
+				<dt class="col-sm-4">Last successful post</dt>
+				<dd class="col-sm-8">
+					{{#if WhenLastPosted}}{{hTextDateTimeMed WhenLastPosted}}{{else}}<span class="text-muted">Never</span>{{/if}}
+				</dd>
+			</dl>
+			{{else}}
+			<p class="text-muted mb-0">
+				No QuickBooks company is connected ({{EnvironmentName}} environment).
+				A staff manager can connect one with the button above.
+			</p>
+			{{/if}}
+		</div>
+	</div>
+
+	{{#if Connection}}
+	{{!-- Setup / bootstrap --}}
+	<div class="card mb-4">
+		<div class="card-header d-flex justify-content-between align-items-center">
+			<span>Company setup</span>
+			{{#if (hCkStaffMgrFromUser)}}
+			<span>
+				<form action="/quickbooks/bootstrap" method="POST" class="d-inline">
+					<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+					<input type="hidden" name="Action" value="DryRun">
+					<button type="submit" class="btn btn-sm btn-secondary"
+						{{#unless CkConnected}}disabled{{/unless}}>Dry run</button>
+				</form>
+				<form action="/quickbooks/bootstrap" method="POST" class="d-inline">
+					<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+					<input type="hidden" name="Action" value="Run">
+					<button type="submit" class="btn btn-sm btn-primary"
+						{{#unless CkConnected}}disabled{{/unless}}>Run bootstrap</button>
+				</form>
+			</span>
+			{{/if}}
+		</div>
+		<div class="card-body">
+			{{#if CkSetupValid}}
+			<p class="mb-2"><span class="badge badge-success">Complete</span>
+				All accounts, classes, items, and the member customer are mapped.</p>
+			{{else}}
+			<p class="mb-2"><span class="badge badge-warning">Incomplete</span>
+				Missing: {{#each MissingRoles}}<code>{{this}}</code> {{/each}}</p>
+			{{/if}}
+
+			{{#if EntityMaps}}
+			<details>
+				<summary>Mapped entities ({{hLen EntityMaps}})</summary>
+				<div class="table-responsive mt-2">
+					<table class="table table-sm table-striped mb-0">
+						<thead><tr><th>Role</th><th>Key</th><th>Type</th><th>QuickBooks ID</th><th>Name</th></tr></thead>
+						<tbody>
+							{{#each EntityMaps}}
+							<tr>
+								<td><code>{{CdRole}}</code></td>
+								<td>{{LocalKey}}</td>
+								<td>{{CdTypeQuickBooksEntity}}</td>
+								<td>{{QuickBooksID}}</td>
+								<td>{{Name}}</td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</details>
+			{{/if}}
+		</div>
+	</div>
+
+	{{!-- Cutover and posting --}}
+	<div class="card mb-4">
+		<div class="card-header">Cutover &amp; posting</div>
+		<div class="card-body">
+			{{#if (hCkStaffMgrFromUser)}}
+			<form action="/quickbooks/cutover" method="POST" class="form-inline">
+				<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+				<label class="mr-2" for="IDCycCutover">Cutover cycle</label>
+				<select id="IDCycCutover" name="IDCycCutover" class="custom-select custom-select-sm mr-3">
+					<option value="">(unchanged)</option>
+					{{#each Cycs}}
+					<option value="{{IDCyc}}">
+						{{IDCyc}} — ends {{hTextDateMed WhenEndCyc}}{{#if CkFuture}} (future){{/if}}
+					</option>
+					{{/each}}
+				</select>
+				<div class="custom-control custom-checkbox mr-3">
+					<input type="checkbox" class="custom-control-input" id="CkPostingEnabled"
+						name="CkPostingEnabled" {{#if Connection.CkPostingEnabled}}checked{{/if}}>
+					<label class="custom-control-label" for="CkPostingEnabled">Posting enabled</label>
+				</div>
+				<button type="submit" class="btn btn-sm btn-primary">Save</button>
+			</form>
+			<p class="text-muted font-size-90 mt-2 mb-0">
+				Only cycles at or after the cutover cycle post to QuickBooks; earlier
+				records are suppressed. Review dry-run previews on queued jobs before
+				enabling posting.
+			</p>
+			{{else}}
+			<p class="mb-0">
+				Cutover cycle:
+				{{#if Connection.IDCycCutover}}<strong>{{Connection.IDCycCutover}}</strong>{{else}}<span class="text-muted">not set</span>{{/if}}
+				&middot; Posting:
+				{{#if Connection.CkPostingEnabled}}<span class="badge badge-success">Enabled</span>{{else}}<span class="badge badge-secondary">Disabled</span>{{/if}}
+			</p>
+			{{/if}}
+		</div>
+	</div>
+
+	{{!-- Sync queue --}}
+	<div class="card mb-4">
+		<div class="card-header d-flex justify-content-between align-items-center">
+			<span>Sync queue</span>
+			<form action="/quickbooks/run" method="POST" class="d-inline">
+				<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+				<button type="submit" class="btn btn-sm btn-secondary">Run sync now</button>
+			</form>
+		</div>
+		<div class="card-body">
+			<p>
+				<span class="badge badge-secondary">Pending {{JobCounts.Pending}}</span>
+				<span class="badge badge-info">Claimed {{JobCounts.Claimed}}</span>
+				<span class="badge badge-success">Posted {{JobCounts.Posted}}</span>
+				<span class="badge badge-warning">Blocked {{JobCounts.Blocked}}</span>
+				<span class="badge badge-danger">Failed {{JobCounts.Failed}}</span>
+				<span class="badge badge-light">Skipped {{JobCounts.Skipped}}</span>
+			</p>
+
+			{{#unless Jobs}}
+			<p class="text-muted mb-0">No sync jobs yet. Jobs are created when
+				cycles complete and when payments are recorded.</p>
+			{{else}}
+			<div class="table-responsive">
+				<table class="table table-sm table-striped mb-0">
+					<thead>
+						<tr>
+							<th>ID</th><th>Type</th><th>Source</th><th>Status</th>
+							<th>Attempts</th><th>Updated</th><th>Error</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{#each Jobs}}
+						<tr>
+							<td><a href="/quickbooks/job/{{IDQuickBooksSyncJob}}">{{IDQuickBooksSyncJob}}</a></td>
+							<td>{{CdTypeQuickBooksSyncJob}}</td>
+							<td><code>{{SourceKey}}</code></td>
+							<td>{{CdStatusQuickBooksSyncJob}}</td>
+							<td>{{CtAttempt}}</td>
+							<td>{{hTextDateTimeMed WhenUpdate}}</td>
+							<td class="font-size-90 text-danger">{{#if Error}}{{Error}}{{/if}}</td>
+						</tr>
+						{{/each}}
+					</tbody>
+				</table>
+			</div>
+			{{/unless}}
+		</div>
+	</div>
+
+	{{!-- Audit events --}}
+	<div class="card mb-4">
+		<div class="card-header">Recent integration events</div>
+		<div class="card-body">
+			{{#unless Events}}
+			<p class="text-muted mb-0">No events recorded.</p>
+			{{else}}
+			<div class="table-responsive">
+				<table class="table table-sm table-striped mb-0">
+					<thead><tr><th>When</th><th>Type</th><th>Job</th><th>Detail</th></tr></thead>
+					<tbody>
+						{{#each Events}}
+						<tr>
+							<td>{{hTextDateTimeMed WhenCreate}}</td>
+							<td>{{CdTypeQuickBooksEvent}}</td>
+							<td>{{#if IDQuickBooksSyncJob}}<a href="/quickbooks/job/{{IDQuickBooksSyncJob}}">{{IDQuickBooksSyncJob}}</a>{{/if}}</td>
+							<td class="font-size-90"><code>{{hJSON DetailJSON}}</code></td>
+						</tr>
+						{{/each}}
+					</tbody>
+				</table>
+			</div>
+			{{/unless}}
+		</div>
+	</div>
+	{{/if}}
+</div>

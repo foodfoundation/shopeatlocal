@@ -21,6 +21,7 @@
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
     "helmet": "^3.23.3",
+    "intuit-oauth": "^4.2.3",
     "lodash": "^4.17.21",
     "luxon": "^1.27.0",
     "moment": "^2.30.1",
@@ -51,9 +52,10 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest",
+    "test": "bun test",
     "dev": "nodemon -i sessions src/index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "quickbooks:bootstrap": "node scripts/bootstrap-quickbooks.js"
   },
   "repository": {
     "type": "git",

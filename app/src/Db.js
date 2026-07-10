@@ -11,6 +11,7 @@ import { wHash } from "./Pass.js";
 import { Add_CkExcludeConsumerFee, SummCart } from "./Util.js";
 import { Site } from "./Site.js";
 import { Db } from "../Cfg.js";
+import { wEnqueueTransact } from "./QuickBooks/Outbox.js";
 
 import { createPool, escape } from "mysql2";
 import _ from "lodash";
@@ -1554,7 +1555,20 @@ export async function wAdd_Transact(
   };
   const [oRows] = await aConn.wExecPrep(oSQL, oParams);
   if (oRows.affectedRows != 1) throw Error("Db wAdd_Transact: Cannot insert transaction");
-  
+
+  // Every new ledger entry passes through here, so QuickBooks sync work is
+  // enqueued in the same transaction as the Transact insert:
+  await wEnqueueTransact(
+    oRows.insertId,
+    {
+      CdTypeTransact: aCdTypeTransact,
+      CdMethPay: aOpts.CdMethPay,
+      IDProducer: aOpts.IDProducer,
+      WhenCreate: new Date(),
+    },
+    aConn,
+  );
+
   return oRows.insertId;
 }
 
@@ -1773,7 +1787,10 @@ export async function wSquareCheckoutFromSquarePaymentID(aSquarePaymentID, aConn
   return oRows.length ? oRows[0] : null;
 }
 
-export async function wSquareCheckoutFromSquareTerminalCheckoutID(aSquareTerminalCheckoutID, aConn) {
+export async function wSquareCheckoutFromSquareTerminalCheckoutID(
+  aSquareTerminalCheckoutID,
+  aConn,
+) {
   if (!aConn) aConn = Conn;
 
   const oSQL = `SELECT *

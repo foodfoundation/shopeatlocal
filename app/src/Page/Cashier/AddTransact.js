@@ -7,8 +7,8 @@
  *  Transaction type determined by IDProducerSel or IDMembSel parameter.
  */
 
-import { wExec, CkFail, Retry, wIns } from "../../Form.js";
-import { wTransactFromID, wProducerFromID, wMembFromID } from "../../Db.js";
+import { wExec, CkFail, Retry } from "../../Form.js";
+import { wTransactFromID, wProducerFromID, wMembFromID, wAdd_Transact } from "../../Db.js";
 import { CoopParams } from "../../Site.js";
 
 /** GET handler for transaction form
@@ -174,13 +174,20 @@ export async function wHandPost(aReq, aResp) {
   const oIDMembUser = aResp.locals.CredUser.IDMemb;
   if (!oIDMembUser) throw Error("AddTransact wHandPost: Cannot get user ID");
 
-  const oParamsEx = {
-    IDMemb: oIDMemb,
-    IDProducer: oIDProducer,
-    IDMembStaffCreate: oIDMembUser,
-  };
-
-  const oIDTransact = await wIns("Transact", oFlds, oParamsEx);
+  // All new ledger entries pass through wAdd_Transact so downstream work
+  // (such as QuickBooks sync enqueueing) happens on a single path:
+  const oIDTransact = await wAdd_Transact(
+    oIDMemb,
+    oFlds.CdTypeTransact.ValCook,
+    oFlds.AmtMoney ? oFlds.AmtMoney.ValCook : 0.0,
+    oFlds.AmtEBT ? oFlds.AmtEBT.ValCook : 0.0,
+    oIDMembUser,
+    {
+      IDProducer: oIDProducer,
+      CdMethPay: oFlds.CdMethPay ? oFlds.CdMethPay.ValCook : null,
+      Note: oFlds.Note.ValCook ?? null,
+    },
+  );
   if (!oIDTransact) throw Error("AddTransact wHandPost: Could not create transaction record");
 
   // Go to Transaction Detail

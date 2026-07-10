@@ -66,6 +66,7 @@ import {
 } from "../Cfg.js";
 import { extname } from "path";
 import { Storage } from "./Storage.js";
+import { Start as QuickBooksWorkerStart } from "./QuickBooks/Worker.js";
 
 const App = gExpr();
 
@@ -1472,6 +1473,84 @@ App.route("/accounting-summary-export")
   .all(WareCkStaff)
   .get(NextOnExcept(accountingSummaryExportGet));
 
+// QuickBooks Online integration
+// -----------------------------
+// Accounting staff can view the dashboard, run sync, and retry jobs; staff
+// managers control the connection, bootstrap, cutover, and reversals.
+
+import {
+  wHandGet as quickbooksGet,
+  wHandGetCallback as quickbooksCallbackGet,
+  wHandGetJob as quickbooksJobGet,
+  wHandPostBootstrap as quickbooksBootstrapPost,
+  wHandPostConnect as quickbooksConnectPost,
+  wHandPostCutover as quickbooksCutoverPost,
+  wHandPostDisconnect as quickbooksDisconnectPost,
+  wHandPostJobRetry as quickbooksJobRetryPost,
+  wHandPostJobReverse as quickbooksJobReversePost,
+  wHandPostRun as quickbooksRunPost,
+} from "./Page/Cashier/quickbooks.js";
+
+App.route("/quickbooks")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .get(NextOnExcept(quickbooksGet));
+
+App.route("/quickbooks/connect")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .post(NextOnExcept(quickbooksConnectPost));
+
+App.route("/quickbooks/callback")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .get(NextOnExcept(quickbooksCallbackGet));
+
+App.route("/quickbooks/disconnect")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .post(NextOnExcept(quickbooksDisconnectPost));
+
+App.route("/quickbooks/bootstrap")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .post(NextOnExcept(quickbooksBootstrapPost));
+
+App.route("/quickbooks/cutover")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .post(NextOnExcept(quickbooksCutoverPost));
+
+App.route("/quickbooks/run")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .post(NextOnExcept(quickbooksRunPost));
+
+App.route("/quickbooks/job/:IDJob(\\d{1,10})")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .get(NextOnExcept(quickbooksJobGet));
+
+App.route("/quickbooks/job/:IDJob(\\d{1,10})/retry")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .post(NextOnExcept(quickbooksJobRetryPost));
+
+App.route("/quickbooks/job/:IDJob(\\d{1,10})/reverse")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .post(NextOnExcept(quickbooksJobReversePost));
+
 import {
   wHandGet as shopperChargesGet,
   wHandGetExportWeb as shopperChargesWebExportGet,
@@ -2186,6 +2265,10 @@ App.use((aReq, aResp) => {
   await _wReady();
 
   await wAdd_EvtApp("StartApp", null, null, null);
+
+  // The QuickBooks sync worker starts after database/site readiness; it is a
+  // no-op unless the feature flag and credentials are configured:
+  QuickBooksWorkerStart();
 
   App.listen(PortServ, HostServ, () => {
     console.log(`Listening on port ${PortServ}...`);
