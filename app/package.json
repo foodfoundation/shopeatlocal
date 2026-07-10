@@ -55,7 +55,8 @@
     "test": "bun test",
     "dev": "nodemon -i sessions src/index.js",
     "lint": "eslint .",
-    "quickbooks:bootstrap": "node scripts/bootstrap-quickbooks.js"
+    "quickbooks:bootstrap": "node scripts/bootstrap-quickbooks.js",
+    "quickbooks:migrate-history": "node scripts/migrate-quickbooks-history.js"
   },
   "repository": {
     "type": "git",
