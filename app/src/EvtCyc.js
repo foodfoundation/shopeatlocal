@@ -8,6 +8,8 @@ import { wCreate } from "./InvcProducerOnsite.js";
 import { wExec as _wExec } from "./Checkout.js";
 import { wSend } from "./Email.js";
 import { wAdd_Transact, Conn, updateSetCycleCount, wUpd_WhenFeeMembLast } from "./Db.js";
+import { wEnqueueCycEnd } from "./QuickBooks/Outbox.js";
+import { wProducersInCyc } from "./QuickBooks/Accounting.js";
 import { TextIDCyc } from "./Util.js";
 import { Site, CoopParams } from "./Site.js";
 import moment from "moment";
@@ -580,6 +582,13 @@ export async function wExec_EndCyc(aConn, _aCycPrev, aCycCurr, _aCycNext) {
 
   await wCreate_InvcsProducerOnsite(aConn, aCycCurr);
   await wAdd_TransactsInvcProducerOnsite(aConn, aCycCurr);
+
+  // Enqueue QuickBooks sync work for the completed cycle in this same
+  // transaction, now that all producer invoices and earnings exist and before
+  // the cycle advances:
+  const oIDsProducerQuickBooks = await wProducersInCyc(aCycCurr.IDCyc, aConn);
+  await wEnqueueCycEnd(aCycCurr.IDCyc, oIDsProducerQuickBooks, aConn);
+
   await wUpd_PricesVty(aConn);
   await wUpd_CkInvtMgdVty(aConn);
   await wDeact_Locs(aConn);
@@ -642,7 +651,7 @@ export async function wExec_EndCyc(aConn, _aCycPrev, aCycCurr, _aCycNext) {
     .utc(whenEndShop)
     .add(cycleLength, "weeks")
     .format("YYYY-MM-DD HH:mm:ss");
-  
+
   const newStartDelivUTC = moment
     .utc(whenStartDeliv)
     .add(cycleLength, "weeks")

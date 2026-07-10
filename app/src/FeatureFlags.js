@@ -2,9 +2,11 @@
 const FeatureFlags = {
   testEnv: {
     paypalUpdate: true,
+    quickbooksOnline: true,
   },
   prodEnv: {
     paypalUpdate: true,
+    quickbooksOnline: false,
   },
 };
 

@@ -59,6 +59,28 @@ export const SquareLocationId = "sandbox_square_location_id";
 export const SquareWebhookSignatureKey = "sandbox_square_webhook_signature_key";
 export const SquareWebhookNotificationUrl = "https://example.org/payment/square-webhook";
 
+// QuickBooks Online integration
+// Use "sandbox" for development and "production" for the live company.
+// The redirect URI must also be registered on the Intuit developer portal.
+export const QuickBooksEnvironmentName =
+  process.env["QUICKBOOKS_ENVIRONMENT"] || "sandbox";
+export const QuickBooksClientId =
+  process.env["QUICKBOOKS_CLIENT_ID"] || "quickbooks_client_id";
+export const QuickBooksClientSecret =
+  process.env["QUICKBOOKS_CLIENT_SECRET"] || "quickbooks_client_secret";
+export const QuickBooksRedirectUri =
+  process.env["QUICKBOOKS_REDIRECT_URI"] || URLBase + "/quickbooks/callback";
+/** 64 hex characters (32 bytes) used to AES-256-GCM encrypt stored OAuth
+    tokens. Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" */
+export const QuickBooksTokenKey = process.env["QUICKBOOKS_TOKEN_KEY"] || "";
+/** Milliseconds between sync worker polls. */
+export const QuickBooksSyncIntervalMs = Number(
+  process.env["QUICKBOOKS_SYNC_INTERVAL_MS"] || 60_000,
+);
+/** Comma-separated e-mail addresses alerted when sync work becomes blocked,
+    fails terminally, or the connection expires. */
+export const QuickBooksAlertEmails = process.env["QUICKBOOKS_ALERT_EMAILS"] || "";
+
 /** The number of failed logins that will cause an IP to be blocked. */
 export const CtFailLoginBlock = 10;
 
