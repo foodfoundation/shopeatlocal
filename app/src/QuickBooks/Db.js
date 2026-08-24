@@ -281,7 +281,6 @@ export async function wClaim_SyncJobs(aCt, aLeaseSec, aDateBatchMax) {
 			WHERE CdStatusQuickBooksSyncJob IN ('Pending', 'Claimed')
 				AND (WhenNextRetry IS NULL OR WhenNextRetry <= UTC_TIMESTAMP())
 				AND (WhenLeaseExpires IS NULL OR WhenLeaseExpires < UTC_TIMESTAMP())
-				AND (DateBatch IS NULL OR DateBatch < :DateBatchMax)
 			ORDER BY IDQuickBooksSyncJob
 			LIMIT ${Number(aCt)}
 			FOR UPDATE SKIP LOCKED`;

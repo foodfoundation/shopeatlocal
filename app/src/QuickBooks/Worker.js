@@ -170,6 +170,7 @@ export async function wRunBatch() {
 }
 
 async function wTick() {
+  console.log("tick tack tick tack");
   if (CkTickBusy) return;
   CkTickBusy = true;
 
@@ -182,6 +183,7 @@ async function wTick() {
     if (!oLockRows[0]?.Ck) return;
 
     try {
+      console.log("running batch");
       await wRunBatch();
     } finally {
       await oConn.wExec(`SELECT RELEASE_LOCK('${NameLock}')`);
