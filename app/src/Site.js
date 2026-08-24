@@ -7,6 +7,7 @@
 import { wSite, wLocs, wCats, wSubcats } from "./Db.js";
 import { Copy_Props } from "./Util.js";
 import { getSanityClient } from "./Sanity.js";
+import { wLoadInvoiceLogo } from "./SVGLogoTextGrey.js";
 
 /** @type {Object} Global site configuration */
 export const Site = {};
@@ -108,4 +109,5 @@ export async function wReady() {
   };
 
   Copy_Props(CoopParams, coopData);
+  await wLoadInvoiceLogo();
 }

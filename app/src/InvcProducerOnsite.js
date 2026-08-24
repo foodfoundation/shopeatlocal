@@ -3,7 +3,7 @@
 // On-site producer invoice generation
 
 import gAsstPDF from "./AsstPDF.js";
-import { Wth, Data } from "./SVGLogoTextGrey.js";
+import { drawInvoiceLogo } from "./SVGLogoTextGrey.js";
 import { wMembFromID } from "./Db.js";
 import {
   NameRndAlphaNum,
@@ -23,7 +23,6 @@ import { Storage } from "./Storage.js";
 import { PassThrough } from "stream";
 
 import gPDFKit from "pdfkit";
-import gSVGPDFKit from "svg-to-pdfkit";
 import _ from "lodash";
 
 /** Creates and stores a producer invoice PDF document
@@ -93,9 +92,7 @@ export async function wCreate(aConn, aCyc, aProducer, aCdCartType) {
   const oTitleText = `${oCdInvcType === "Wholesale" ? "WHOLESALE" : "ON-SITE"} PRODUCER INVOICE`;
   oAsst.WriteLine(oTitleText);
 
-  const oX = 8.0 * 72 - Wth;
-  const oY = 0.5 * 72 + 3;
-  gSVGPDFKit(oDoc, Data, oX, oY, {});
+  drawInvoiceLogo(oDoc, oAsst.BoundRight, 0.5 * 72 + 3);
 
   oAsst.Set_SizeFont(oSizeFontMain);
   oAsst.Next(0.25);

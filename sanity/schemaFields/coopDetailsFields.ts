@@ -267,6 +267,17 @@ export const mainImages = [
     },
     validation: (Rule) => Rule.required(),
   }),
+  defineField({
+    name: 'InvoiceLogo',
+    title: 'Invoice Logo Image',
+    description: 'Logo image for invoices. It should be a rectangular image. Only SVG is supported.',
+    type: 'image',
+    fieldset: 'mainImages',
+    options: {
+      accept: 'image/svg+xml',
+    },
+    validation: (Rule) => Rule.required(),
+  }),
 ]
 
 export const socialMediaFields = [
