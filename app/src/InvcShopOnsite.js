@@ -3,7 +3,7 @@
 // On-site shopper invoice generation
 
 import gAsstPDF from "./AsstPDF.js";
-import { Wth, Data } from "./SVGLogoTextGrey.js";
+import { drawInvoiceLogo } from "./SVGLogoTextGrey.js";
 import {
   NameRndAlphaNum,
   TextIDInvcShopOnsite,
@@ -24,7 +24,6 @@ import { CoopParams } from "./Site.js";
 import { PassThrough } from "stream";
 
 import gPDFKit from "pdfkit";
-import gSVGPDFKit from "svg-to-pdfkit";
 
 /** Generates and stores onsite shopper invoice
  *  @param {Connection} aConn - Database connection with active transaction
@@ -112,9 +111,7 @@ export async function wCreate(
   const oTitleText = `${aCdCartType === "Wholesale" ? "WHOLESALE" : "ON-SITE"} SHOPPER INVOICE`;
   oAsst.WriteLine(oTitleText);
 
-  const oX = 10.5 * 72 - Wth;
-  const oY = 0.5 * 72 + 3;
-  gSVGPDFKit(oDoc, Data, oX, oY, {});
+  drawInvoiceLogo(oDoc, oAsst.BoundRight, 0.5 * 72 + 3);
 
   oAsst.Set_SizeFont(oSizeFontMain);
   oAsst.Next(0.25);
