@@ -127,6 +127,7 @@ export async function wHandPost(aReq, aResp) {
       case "Credit":
       case "Debit":
       case "PayPal":
+      case "Square":
       case "GiftCert":
       case "Coupon":
         delete oFlds.AmtEBT;

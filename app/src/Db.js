@@ -528,6 +528,7 @@ export const CdsMethPay = Object.freeze({
   Credit: { Text: "Credit card" },
   Debit: { Text: "Debit card" },
   PayPal: { Text: "PayPal" },
+  Square: { Text: "Square" },
   GiftCert: { Text: "Gift certificate" },
   Coupon: { Text: "Coupon" },
   Cash: { Text: "Cash" },
@@ -1555,6 +1556,341 @@ export async function wAdd_Transact(
   if (oRows.affectedRows != 1) throw Error("Db wAdd_Transact: Cannot insert transaction");
   
   return oRows.insertId;
+}
+
+// Square payments
+// ---------------
+
+export async function wSquareTerminals(aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareTerminal
+		ORDER BY CkActive DESC, Name`;
+  const [oRows] = await aConn.wExecPrep(oSQL);
+  return oRows;
+}
+
+export async function wSquareTerminalsActive(aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareTerminal
+		WHERE CkActive IS TRUE
+			AND CdStatusSquareTerminal = 'Paired'
+			AND SquareDeviceID IS NOT NULL
+		ORDER BY Name`;
+  const [oRows] = await aConn.wExecPrep(oSQL);
+  return oRows;
+}
+
+export async function wSquareTerminalFromID(aIDSquareTerminal, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareTerminal
+		WHERE IDSquareTerminal = :IDSquareTerminal`;
+  const [oRows] = await aConn.wExecPrep(oSQL, { IDSquareTerminal: aIDSquareTerminal });
+  return oRows.length ? oRows[0] : null;
+}
+
+export async function wAdd_SquareTerminal(aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `INSERT INTO SquareTerminal (
+			Name, SquareLocationID, SquareDeviceCodeID, SquareDeviceCode,
+			SquareDeviceID, CdStatusSquareTerminal, IDMembStaffCreate,
+			IDMembStaffUpdate
+		)
+		VALUES (
+			:Name, :SquareLocationID, :SquareDeviceCodeID, :SquareDeviceCode,
+			:SquareDeviceID, :CdStatusSquareTerminal, :IDMembStaffCreate,
+			:IDMembStaffUpdate
+		)`;
+  const oParams = {
+    SquareDeviceID: null,
+    CdStatusSquareTerminal: "Pending",
+    IDMembStaffUpdate: aData.IDMembStaffCreate,
+    ...aData,
+  };
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
+  if (oRows.affectedRows != 1) throw Error("Db wAdd_SquareTerminal: Cannot insert terminal");
+  return oRows.insertId;
+}
+
+export async function wUpd_SquareTerminal(aIDSquareTerminal, aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSets = [];
+  const oParams = { IDSquareTerminal: aIDSquareTerminal };
+  for (const oName of Object.keys(aData)) {
+    oSets.push(`${oName} = :${oName}`);
+    oParams[oName] = aData[oName];
+  }
+  if (!oSets.length) return;
+
+  const oSQL = `UPDATE SquareTerminal
+		SET ${oSets.join(", ")}
+		WHERE IDSquareTerminal = :IDSquareTerminal`;
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
+  if (oRows.affectedRows != 1) throw Error("Db wUpd_SquareTerminal: Cannot update terminal");
+}
+
+export async function wSquareMemberPaymentProfileFromIDMemb(aIDMemb, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareMemberPaymentProfile
+		WHERE IDMemb = :IDMemb`;
+  const [oRows] = await aConn.wExecPrep(oSQL, { IDMemb: aIDMemb });
+  return oRows.length ? oRows[0] : null;
+}
+
+export async function wUpsert_SquareMemberPaymentProfile(aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `INSERT INTO SquareMemberPaymentProfile (
+			IDMemb, SquareCustomerID, SquareCardID, CardBrand, CardLast4,
+			CardExpMonth, CardExpYear, CkAutoCharge, WhenAutoChargeConsent,
+			WhenAutoChargeDisable, WhenCardCreate, WhenCardDisable
+		)
+		VALUES (
+			:IDMemb, :SquareCustomerID, :SquareCardID, :CardBrand, :CardLast4,
+			:CardExpMonth, :CardExpYear, :CkAutoCharge, :WhenAutoChargeConsent,
+			:WhenAutoChargeDisable, :WhenCardCreate, :WhenCardDisable
+		)
+		ON DUPLICATE KEY UPDATE
+			SquareCustomerID = VALUES(SquareCustomerID),
+			SquareCardID = VALUES(SquareCardID),
+			CardBrand = VALUES(CardBrand),
+			CardLast4 = VALUES(CardLast4),
+			CardExpMonth = VALUES(CardExpMonth),
+			CardExpYear = VALUES(CardExpYear),
+			CkAutoCharge = VALUES(CkAutoCharge),
+			WhenAutoChargeConsent = VALUES(WhenAutoChargeConsent),
+			WhenAutoChargeDisable = VALUES(WhenAutoChargeDisable),
+			WhenCardCreate = VALUES(WhenCardCreate),
+			WhenCardDisable = VALUES(WhenCardDisable)`;
+  const oParams = {
+    SquareCardID: null,
+    CardBrand: null,
+    CardLast4: null,
+    CardExpMonth: null,
+    CardExpYear: null,
+    CkAutoCharge: 0,
+    WhenAutoChargeConsent: null,
+    WhenAutoChargeDisable: null,
+    WhenCardCreate: null,
+    WhenCardDisable: null,
+    ...aData,
+  };
+  await aConn.wExecPrep(oSQL, oParams);
+  return await wSquareMemberPaymentProfileFromIDMemb(aData.IDMemb, aConn);
+}
+
+export async function wAdd_SquareMemberPaymentProfileEvent(aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `INSERT INTO SquareMemberPaymentProfileEvent (
+			IDSquareMemberPaymentProfile, IDMemb, CdEventSquareMemberPaymentProfile,
+			SquareCustomerID, SquareCardID, IDMembStaffCreate, Note
+		)
+		VALUES (
+			:IDSquareMemberPaymentProfile, :IDMemb, :CdEventSquareMemberPaymentProfile,
+			:SquareCustomerID, :SquareCardID, :IDMembStaffCreate, :Note
+		)`;
+  const oParams = {
+    SquareCustomerID: null,
+    SquareCardID: null,
+    IDMembStaffCreate: null,
+    Note: null,
+    ...aData,
+  };
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
+  if (oRows.affectedRows != 1)
+    throw Error("Db wAdd_SquareMemberPaymentProfileEvent: Cannot insert event");
+  return oRows.insertId;
+}
+
+export async function wAdd_SquareCheckout(aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `INSERT INTO SquareCheckout (
+			IDMemb, IDMembStaffCreate, IDInvc, IDSquareTerminal,
+			IDSquareMemberPaymentProfile, CdTypeSquareCheckout,
+			CdStatusSquareCheckout, AmtMoney, AmtCashTendered, SquareLocationID,
+			SquareIdempotencyKey, SquareTerminalCheckoutID, SquarePaymentID,
+			SquareOrderID, SquareReceiptURL, SquareStatus, SquareResponseJSON,
+			SquareErrorJSON
+		)
+		VALUES (
+			:IDMemb, :IDMembStaffCreate, :IDInvc, :IDSquareTerminal,
+			:IDSquareMemberPaymentProfile, :CdTypeSquareCheckout,
+			:CdStatusSquareCheckout, :AmtMoney, :AmtCashTendered, :SquareLocationID,
+			:SquareIdempotencyKey, :SquareTerminalCheckoutID, :SquarePaymentID,
+			:SquareOrderID, :SquareReceiptURL, :SquareStatus, :SquareResponseJSON,
+			:SquareErrorJSON
+		)`;
+  const oParams = {
+    IDMemb: null,
+    IDMembStaffCreate: null,
+    IDInvc: null,
+    IDSquareTerminal: null,
+    IDSquareMemberPaymentProfile: null,
+    CdStatusSquareCheckout: "Pending",
+    AmtCashTendered: null,
+    SquareTerminalCheckoutID: null,
+    SquarePaymentID: null,
+    SquareOrderID: null,
+    SquareReceiptURL: null,
+    SquareStatus: null,
+    SquareResponseJSON: null,
+    SquareErrorJSON: null,
+    ...aData,
+  };
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
+  if (oRows.affectedRows != 1) throw Error("Db wAdd_SquareCheckout: Cannot insert checkout");
+  return oRows.insertId;
+}
+
+export async function wSquareCheckoutFromID(aIDSquareCheckout, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareCheckout
+		WHERE IDSquareCheckout = :IDSquareCheckout`;
+  const [oRows] = await aConn.wExecPrep(oSQL, { IDSquareCheckout: aIDSquareCheckout });
+  return oRows.length ? oRows[0] : null;
+}
+
+export async function wSquareCheckoutFromSquarePaymentID(aSquarePaymentID, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareCheckout
+		WHERE SquarePaymentID = :SquarePaymentID`;
+  const [oRows] = await aConn.wExecPrep(oSQL, { SquarePaymentID: aSquarePaymentID });
+  return oRows.length ? oRows[0] : null;
+}
+
+export async function wSquareCheckoutFromSquareTerminalCheckoutID(aSquareTerminalCheckoutID, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareCheckout
+		WHERE SquareTerminalCheckoutID = :SquareTerminalCheckoutID`;
+  const [oRows] = await aConn.wExecPrep(oSQL, {
+    SquareTerminalCheckoutID: aSquareTerminalCheckoutID,
+  });
+  return oRows.length ? oRows[0] : null;
+}
+
+export async function wUpd_SquareCheckout(aIDSquareCheckout, aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSets = [];
+  const oParams = { IDSquareCheckout: aIDSquareCheckout };
+  for (const oName of Object.keys(aData)) {
+    oSets.push(`${oName} = :${oName}`);
+    oParams[oName] = aData[oName];
+  }
+  if (!oSets.length) return;
+
+  const oSQL = `UPDATE SquareCheckout
+		SET ${oSets.join(", ")}
+		WHERE IDSquareCheckout = :IDSquareCheckout`;
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
+  // affectedRows counts *changed* rows; a matched no-op update is still success.
+  if (oRows.affectedRows > 1) throw Error("Db wUpd_SquareCheckout: Cannot update checkout");
+}
+
+export async function wFinalize_SquareCheckout(aCheckout, aOpts, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oCheckout =
+    typeof aCheckout === "object" ? aCheckout : await wSquareCheckoutFromID(aCheckout, aConn);
+  if (!oCheckout) throw Error("Db wFinalize_SquareCheckout: Cannot find checkout");
+  if (oCheckout.IDTransact) return oCheckout.IDTransact;
+
+  const oCdMethPay = oCheckout.CdTypeSquareCheckout === "Cash" ? "Cash" : "Square";
+  const oNote = aOpts?.Note || `Square ${oCheckout.CdTypeSquareCheckout} payment`;
+  const oIDTransact = await wAdd_Transact(
+    oCheckout.IDMemb,
+    "PayRecv",
+    -Math.abs(oCheckout.AmtMoney),
+    0,
+    oCheckout.IDMembStaffCreate,
+    { CdMethPay: oCdMethPay, Note: oNote, IDInvc: oCheckout.IDInvc ?? null },
+    aConn,
+  );
+
+  await wUpd_SquareCheckout(
+    oCheckout.IDSquareCheckout,
+    {
+      IDTransact: oIDTransact,
+      CdStatusSquareCheckout: "Completed",
+      SquareStatus: aOpts?.SquareStatus || "COMPLETED",
+      LastSquareWebhookEventID: aOpts?.SquareEventID || null,
+      WhenComplete: new Date(),
+    },
+    aConn,
+  );
+
+  return oIDTransact;
+}
+
+export async function wSquareWebhookEventFromSquareEventID(aSquareEventID, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `SELECT *
+		FROM SquareWebhookEvent
+		WHERE SquareEventID = :SquareEventID`;
+  const [oRows] = await aConn.wExecPrep(oSQL, { SquareEventID: aSquareEventID });
+  return oRows.length ? oRows[0] : null;
+}
+
+/** Inserts a Square webhook event if it has not been seen before. Returns whether
+ *  the row was newly inserted and the current row state (including CkProcessed). */
+export async function wAdd_SquareWebhookEvent(aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `INSERT IGNORE INTO SquareWebhookEvent (
+			SquareEventID, CdTypeSquareWebhookEvent, SquareMerchantID,
+			SquareEnvironment, SquareObjectID, PayloadJSON, WhenEvent
+		)
+		VALUES (
+			:SquareEventID, :CdTypeSquareWebhookEvent, :SquareMerchantID,
+			:SquareEnvironment, :SquareObjectID, :PayloadJSON, :WhenEvent
+		)`;
+  const oParams = {
+    SquareMerchantID: null,
+    SquareEnvironment: null,
+    SquareObjectID: null,
+    WhenEvent: null,
+    ...aData,
+  };
+  const [oRows] = await aConn.wExecPrep(oSQL, oParams);
+  const oEvent = await wSquareWebhookEventFromSquareEventID(aData.SquareEventID, aConn);
+  return {
+    CkInserted: oRows.affectedRows === 1,
+    Event: oEvent,
+  };
+}
+
+export async function wMark_SquareWebhookEventProcessed(aSquareEventID, aData, aConn) {
+  if (!aConn) aConn = Conn;
+
+  const oSQL = `UPDATE SquareWebhookEvent
+		SET CkProcessed = :CkProcessed,
+			WhenProcessed = CURRENT_TIMESTAMP,
+			Error = :Error
+		WHERE SquareEventID = :SquareEventID`;
+  const oParams = {
+    SquareEventID: aSquareEventID,
+    CkProcessed: aData.Error ? 0 : 1,
+    Error: aData.Error || null,
+  };
+  await aConn.wExecPrep(oSQL, oParams);
 }
 
 // On-site

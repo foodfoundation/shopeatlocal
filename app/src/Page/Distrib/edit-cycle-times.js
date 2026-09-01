@@ -7,6 +7,8 @@ import { wConnNew, wCycCurr, wCycNext, wStApp, wAdd_EvtApp, Conn } from "../../D
 import { DiffDays } from "../../Util.js";
 import { CoopParams, Site } from "../../Site.js";
 
+const numberOfWeek = 7;
+
 export async function wHandGet(aReq, aResp) {
   //this is the GET when the page is called
   aResp.locals.Title = `${CoopParams.CoopNameShort} edit cycle times`;
@@ -75,7 +77,7 @@ export async function wHandGet(aReq, aResp) {
       oDataCycCurr["CkPast" + oName] = true; //if the date is int he past, it sets a new field in the object called CkPast+name to true
   });
   aResp.locals.QtyCycleLength = Site.QtyCycleLength;
-  aResp.locals.QtyCycleLengthDays = Site.QtyCycleLength * 7;
+  aResp.locals.QtyCycleLengthDays = Site.QtyCycleLength * numberOfWeek;
 
   aResp.render("Distrib/edit-cycle-times"); //I think this renders the handlebar/view
 }
@@ -179,7 +181,7 @@ export async function wHandPost(aReq, aResp) {
       Fill(oCycCurrJoin, oFldsCycCurr);
       oCycCurrJoin.Flds = oFldsCycCurr;
 
-      const MinLenCycDays = Site.QtyCycleLength * 7;
+      const MinLenCycDays = Site.QtyCycleLength * numberOfWeek;
 
       // It should not be possible for any 'next' time to have passed, but we
       // will use the same pattern:

@@ -101,20 +101,20 @@
 		<div class="col-4">
 			<div class="d-flex flex-row justify-content-between">
 				<div>Money</div>
-				<div class="text-right pl-4">{{hTextCurrOrErr BalMoney}}</div>
+				<div class="text-right pl-4" data-pay-bal="money">{{hTextCurrOrErr BalMoney}}</div>
 			</div>
 			<div class="d-flex flex-row justify-content-between">
 				<div>EBT</div>
-				<div class="text-right pl-4">{{hTextCurrOrErr BalEBT}}</div>
+				<div class="text-right pl-4" data-pay-bal="ebt">{{hTextCurrOrErr BalEBT}}</div>
 			</div>
 			<hr class="my-1">
 			<div class="d-flex flex-row justify-content-between font-weight-bold">
 				<div>Total</div>
-				<div class="text-right pl-4">{{hTextCurrOrErr (hSum BalMoney BalEBT)}}</div>
+				<div class="text-right pl-4" data-pay-bal="total">{{hTextCurrOrErr (hSum BalMoney BalEBT)}}</div>
 			</div>
 		</div>
 		{{else}}
-		<div class="col-4 text-md-right font-weight-bold">
+		<div class="col-4 text-md-right font-weight-bold" data-pay-bal="total">
 			{{hTextCurrOrErr (hSum BalMoney BalEBT)}}
 		</div>
 		{{/if}}
@@ -126,4 +126,10 @@
 	</div>
 	{{/if}}
 	{{/with}}
+
+	{{#if Pay}}
+	<hr>
+
+	{{>Misc/pPaymentSection Pay}}
+	{{/if}}
 </div>

@@ -1,0 +1,91 @@
+{{!-- square-terminals.hbs
+//    --------------------
+//    Square terminal administration --}}
+
+<div class="container-md py-4">
+	<h2>Square terminals</h2>
+
+	<p>
+		Create a pairing code, then enter that code on the Square Terminal using
+		the device-code sign-in flow. Pairing codes expire quickly, but a paired
+		terminal can be reused for checkout.
+	</p>
+
+	<form action="/square-terminals" method="POST" class="mb-4" novalidate
+		onsubmit="Disab_Form()">
+		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
+		<input type="hidden" name="Action" value="Create">
+		<div class="form-row align-items-end">
+			<div class="form-group col-md-8">
+				<label for="Name">Terminal name</label>
+				<input id="Name" name="Name" class="form-control" maxlength="100"
+					required placeholder="Front counter terminal">
+			</div>
+			<div class="form-group col-md-4">
+				<button type="submit" class="btn btn-primary btn-block">
+					Create pairing code
+				</button>
+			</div>
+		</div>
+	</form>
+
+	{{#unless SquareTerminals}}
+	<div class="alert alert-info">No Square terminals have been linked yet.</div>
+	{{else}}
+	<div class="table-responsive">
+		<table class="table table-sm table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Status</th>
+					<th>Pairing code</th>
+					<th>Device ID</th>
+					<th>Active</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each SquareTerminals}}
+				<tr>
+					<td>{{Name}}</td>
+					<td>{{CdStatusSquareTerminal}}</td>
+					<td>
+						{{#if SquareDeviceCode}}
+						<code>{{SquareDeviceCode}}</code>
+						{{else}}
+						<span class="text-muted">None</span>
+						{{/if}}
+					</td>
+					<td class="font-size-90">
+						{{#if SquareDeviceID}}{{SquareDeviceID}}{{else}}<span class="text-muted">Not paired</span>{{/if}}
+					</td>
+					<td>{{#if CkActive}}Yes{{else}}No{{/if}}</td>
+					<td class="text-right">
+						<form action="/square-terminals" method="POST" class="d-inline">
+							<input type="hidden" name="_csrf" value="{{../TokCSRF}}">
+							<input type="hidden" name="IDSquareTerminal"
+								value="{{IDSquareTerminal}}">
+							<input type="hidden" name="Action" value="Refresh">
+							<button type="submit" class="btn btn-sm btn-secondary">
+								Refresh
+							</button>
+						</form>
+						{{#if CkActive}}
+						<form action="/square-terminals" method="POST" class="d-inline">
+							<input type="hidden" name="_csrf" value="{{../TokCSRF}}">
+							<input type="hidden" name="IDSquareTerminal"
+								value="{{IDSquareTerminal}}">
+							<input type="hidden" name="Action" value="Disable">
+							<button type="submit" class="btn btn-sm btn-outline-danger">
+								Disable
+							</button>
+						</form>
+						{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/unless}}
+</div>

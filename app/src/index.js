@@ -35,7 +35,21 @@ import {
   wReady,
   wAdd_EvtApp,
 } from "./Db.js";
-import { wHandlePaypalCreateOrder, wHandlePaypalCaptureOrder } from "./Payment.js";
+import {
+  wHandlePaypalCreateOrder,
+  wHandlePaypalCaptureOrder,
+} from "./Payment.js";
+import {
+  wHandleSquareAutoChargeCheckout,
+  wHandleSquareCashCheckout,
+  wHandleSquarePaymentBalance,
+  wHandleSquareCreatePayment,
+  wHandleSquareDisableMemberAutoCharge,
+  wHandleSquareEnableMemberAutoCharge,
+  wHandleSquareSaveMemberCard,
+  wHandleSquareTerminalCheckout,
+  wHandleSquareWebhook,
+} from "./Square.js";
 import { CoopParams, wReady as _wReady } from "./Site.js";
 import { TextIDMemb, NameRndAlphaNum } from "./Util.js";
 import {
@@ -342,13 +356,14 @@ App.use(NextOnExcept(wWarePhase));
 // 'body-parser' is deprecated now? [TO DO]
 
 import bodyParser from "body-parser";
-const { urlencoded, json } = bodyParser;
+const { urlencoded, json, raw } = bodyParser;
 
 const WareBodyEncURL = urlencoded({
   extended: false,
   parameterLimit: 2000,
 });
 const WareBodyJSON = json();
+const WareBodyRawJSON = raw({ type: "application/json" });
 
 App.use(WareBodyEncURL);
 
@@ -558,6 +573,34 @@ App.route("/payment/create-paypal-orders/")
 App.route("/payment/capture-paypal-order/:orderID")
   .all(WaresPostRoute)
   .post(NextOnExcept(wHandlePaypalCaptureOrder));
+
+App.route("/payment/create-square-payment/")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .post(WareBodyJSON)
+  .post(NextOnExcept(wHandleSquareCreatePayment));
+
+App.route("/payment/square-save-member-card")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .post(WareBodyJSON)
+  .post(NextOnExcept(wHandleSquareSaveMemberCard));
+
+App.route("/payment/square-disable-member-auto-charge")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .post(WareBodyJSON)
+  .post(NextOnExcept(wHandleSquareDisableMemberAutoCharge));
+
+App.route("/payment/square-enable-member-auto-charge")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .post(WareBodyJSON)
+  .post(NextOnExcept(wHandleSquareEnableMemberAutoCharge));
+
+App.route("/payment/square-webhook")
+  .post(WareBodyRawJSON)
+  .post(NextOnExcept(wHandleSquareWebhook));
 
 // Password reset
 // --------------
@@ -1297,13 +1340,44 @@ App.route("/shopper-checkout/:IDMembSel(\\d{1,5})")
   .get(NextOnExcept(shopperCheckoutGet))
   .post(NextOnExcept(shopperCheckoutPost));
 
-import { wHandGet as webCheckoutSummaryGet } from "./Page/Distrib/web-checkout-summary.js";
+import { wHandGet as webCheckoutSummaryGet, wWarePayCtx as webCheckoutSummaryPayCtx } from "./Page/Distrib/web-checkout-summary.js";
 
 App.route("/web-checkout-summary/:IDInvcShopWeb(\\d{1,6})")
   .all(WaresPostRoute)
   .all(WareCkUser)
   .all(WareCkStaff)
   .get(NextOnExcept(webCheckoutSummaryGet));
+
+App.route("/web-checkout-summary/:IDInvcShopWeb(\\d{1,6})/square-terminal")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(webCheckoutSummaryPayCtx))
+  .post(NextOnExcept(wHandleSquareTerminalCheckout));
+
+App.route("/web-checkout-summary/:IDInvcShopWeb(\\d{1,6})/square-cash")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(webCheckoutSummaryPayCtx))
+  .post(NextOnExcept(wHandleSquareCashCheckout));
+
+App.route("/web-checkout-summary/:IDInvcShopWeb(\\d{1,6})/square-auto-charge")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(webCheckoutSummaryPayCtx))
+  .post(NextOnExcept(wHandleSquareAutoChargeCheckout));
+
+App.route("/web-checkout-summary/:IDInvcShopWeb(\\d{1,6})/balance")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .all(NextOnExcept(webCheckoutSummaryPayCtx))
+  .get(NextOnExcept(wHandleSquarePaymentBalance));
 
 import { wHandGet as pickupProgressGet } from "./Page/Distrib/pickup-progress.js";
 
@@ -1476,12 +1550,54 @@ import {
   wHandPost as addTransactionPost,
 } from "./Page/Cashier/AddTransact.js";
 
+import {
+  wHandGet as memberPaymentGet,
+  wWarePayCtx as memberPaymentPayCtx,
+} from "./Page/Cashier/member-payment.js";
+
 App.route("/add-member-transaction/:IDMembSel(\\d{1,5})")
   .all(WaresPostRoute)
   .all(WareCkUser)
   .all(WareCkStaffAccts)
   .get(NextOnExcept(addTransactionGet))
   .post(NextOnExcept(addTransactionPost));
+
+App.route("/member-payment/:IDMembSel(\\d{1,5})")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .get(NextOnExcept(memberPaymentGet));
+
+App.route("/member-payment/:IDMembSel(\\d{1,5})/square-terminal")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(memberPaymentPayCtx))
+  .post(NextOnExcept(wHandleSquareTerminalCheckout));
+
+App.route("/member-payment/:IDMembSel(\\d{1,5})/square-cash")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(memberPaymentPayCtx))
+  .post(NextOnExcept(wHandleSquareCashCheckout));
+
+App.route("/member-payment/:IDMembSel(\\d{1,5})/square-auto-charge")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(memberPaymentPayCtx))
+  .post(NextOnExcept(wHandleSquareAutoChargeCheckout));
+
+App.route("/member-payment/:IDMembSel(\\d{1,5})/balance")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffAccts)
+  .all(NextOnExcept(memberPaymentPayCtx))
+  .get(NextOnExcept(wHandleSquarePaymentBalance));
 
 App.route("/add-producer-transaction/:IDProducerSel(\\d{1,4})")
   .all(WaresPostRoute)
@@ -1541,6 +1657,18 @@ App.route("/site-admin")
   .all(WareCkStaff)
   .get(NextOnExcept(siteAdminGet))
   .post(NextOnExcept(siteAdminPost));
+
+import {
+  wHandGet as squareTerminalsGet,
+  wHandPost as squareTerminalsPost,
+} from "./Page/SiteAdmin/square-terminals.js";
+
+App.route("/square-terminals")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaffMgr)
+  .get(NextOnExcept(squareTerminalsGet))
+  .post(NextOnExcept(squareTerminalsPost));
 
 import {
   wHandGet as editSiteConfigurationGet,
@@ -1863,13 +1991,47 @@ App.route("/on-site-checkout")
   .get(NextOnExcept(onsiteCheckoutGet))
   .post(NextOnExcept(onsiteCheckoutPost));
 
-import { wHandGet as onsiteCheckoutSummaryGet } from "./Page/Onsite/on-site-checkout-summary.js";
+import {
+  wHandGet as onsiteCheckoutSummaryGet,
+  wWarePayCtx as onsiteCheckoutSummaryPayCtx,
+} from "./Page/Onsite/on-site-checkout-summary.js";
 
 App.route("/on-site-checkout-summary/:IDInvcShopOnsite(\\d{1,6})")
   .all(WaresPostRoute)
   .all(WareCkUser)
   .all(WareCkStaff)
   .get(NextOnExcept(onsiteCheckoutSummaryGet));
+
+App.route("/on-site-checkout-summary/:IDInvcShopOnsite(\\d{1,6})/square-terminal")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(onsiteCheckoutSummaryPayCtx))
+  .post(NextOnExcept(wHandleSquareTerminalCheckout));
+
+App.route("/on-site-checkout-summary/:IDInvcShopOnsite(\\d{1,6})/square-cash")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(onsiteCheckoutSummaryPayCtx))
+  .post(NextOnExcept(wHandleSquareCashCheckout));
+
+App.route("/on-site-checkout-summary/:IDInvcShopOnsite(\\d{1,6})/square-auto-charge")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .post(WareBodyJSON)
+  .all(NextOnExcept(onsiteCheckoutSummaryPayCtx))
+  .post(NextOnExcept(wHandleSquareAutoChargeCheckout));
+
+App.route("/on-site-checkout-summary/:IDInvcShopOnsite(\\d{1,6})/balance")
+  .all(WaresPostRoute)
+  .all(WareCkUser)
+  .all(WareCkStaff)
+  .all(NextOnExcept(onsiteCheckoutSummaryPayCtx))
+  .get(NextOnExcept(wHandleSquarePaymentBalance));
 
 import {
   wHandGet as onsiteShopperInvoicesGet,

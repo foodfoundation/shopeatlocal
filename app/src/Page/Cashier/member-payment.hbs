@@ -1,0 +1,40 @@
+{{!-- member-payment.hbs
+//    -----------------
+//    Staff member payment view --}}
+
+<div class="container-md py-4">
+	<div class="d-sm-flex flex-row align-items-center">
+		<div>
+			<h2>Member payment</h2>
+			<div class="lead">
+				Member {{hTextIDMemb Memb.IDMemb}}
+				<strong>{{Memb.Name1First}} {{Memb.Name1Last}}</strong>
+				{{#if Memb.NameBus}}({{Memb.NameBus}}){{/if}}
+			</div>
+		</div>
+		<div class="ml-sm-auto mt-3 mt-sm-0">
+			<a class="btn btn-secondary" href="/member-detail/{{Memb.IDMemb}}">
+				Member detail
+			</a>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="row">
+		<div class="col-lg-5">
+			{{>Misc/pPaymentSection Pay}}
+		</div>
+
+		<div class="col-lg-7">
+			<hr class="d-lg-none">
+			<h5>Notes</h5>
+			<p>
+				Card and app/contactless payments are sent to a paired Square Terminal.
+				Cash payments are recorded in Square and then posted to the member ledger.
+				Completed Square payments update the member balance through the Square
+				webhook finalization flow.
+			</p>
+		</div>
+	</div>
+</div>
