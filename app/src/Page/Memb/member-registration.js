@@ -9,7 +9,7 @@ import { wAdd_Login } from "../../Auth.js";
 import { PageAfterEditMemb } from "../../Util.js";
 import { Conn, wAdd_Transact, wUpd_WhenFeeMembLast } from "../../Db.js";
 import { wSend } from "../../Email.js";
-import { CoopParams, Site } from "../../Site.js"; 
+import { CoopParams, Site } from "../../Site.js";
 
 import _ from "lodash";
 
@@ -31,6 +31,7 @@ export function Prep(aReq, aResp, aNext) {
 export function HandGet(aReq, aResp) {
   aResp.locals.Title = `${CoopParams.CoopNameShort} member registration`;
   aResp.locals.CoopParams = CoopParams;
+  aResp.locals.ShowSkipMembTrial = Site.CtMonthTrialMembNew >= 1;
   aResp.render("Memb/member-registration");
 }
 
@@ -73,6 +74,7 @@ export async function wHandPost(aReq, aResp) {
     DtlHowHear: { CkRequire: CoopParams.RegisterPageTellUsMoreRequired },
     CkApplyEBT: { Store: false },
     CkApplyVolun: { Store: false },
+    CkSkipMembTrial: { Store: false },
     CkReadTOS: { Valid: oValid_CkReadTOS, Store: false },
   };
   await wExec(aReq.body, oFlds);
@@ -137,9 +139,9 @@ export async function wHandPost(aReq, aResp) {
     throw Error("wHandPost: Could not create member record");
   }
 
-  // If not trial month, charge the membership fee
-  // -------------------
-  if (Site.CtMonthTrialMembNew < 1) {
+  // Charge the membership fee when there is no trial or the member opts out
+  // ----------------------------------------------------------------------
+  if (Site.CtMonthTrialMembNew < 1 || oFlds.CkSkipMembTrial.ValCook) {
     await wAdd_Transact(oIDMemb, "FeeMembInit", Site.FeeMembInit, 0, null, null);
     await wUpd_WhenFeeMembLast(oIDMemb);
   }

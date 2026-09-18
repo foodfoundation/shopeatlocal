@@ -306,6 +306,22 @@
 			</div>
 		{{/if}}
 
+		{{#if ShowSkipMembTrial}}
+		<div class="form-row">
+			<div class="form-group col">
+				<div class="custom-control custom-checkbox">
+					<input id="CkSkipMembTrial" name="CkSkipMembTrial" type="checkbox"
+						{{hAttrCk CkSkipMembTrial false}} class="custom-control-input">
+					<label for="CkSkipMembTrial" class="custom-control-label">
+						Skip the trial period and charge the initial membership fee now
+					</label>
+				</div>
+			</div>
+		</div>
+		{{else}}
+			<input type="hidden" name="CkSkipMembTrial" value="false">
+		{{/if}}
+
 		{{#if CoopParams.RegisterPageHideApplyVolunteer}}
 			<input type="hidden" name="CkApplyVolun" value="">
 		{{else}}
@@ -321,7 +337,8 @@
 				</div>
 			</div>
 		{{/if}}
-		
+
+
 		<div class="form-row">
 			<div class="form-group col">
 				<div class="custom-control custom-checkbox">
