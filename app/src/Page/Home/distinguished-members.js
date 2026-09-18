@@ -1,24 +1,7 @@
 import { queryDistinguishedMembers } from "../../Db.js";
 import { CoopParams, Site } from "../../Site.js";
 
-const TAG_GROUPS = [
-  {
-    key: "farmers friend",
-    heading: "Farmers' friends",
-  },
-  {
-    key: "sustaining steward",
-    heading: "Sustaining stewards",
-  },
-  {
-    key: "community cultivator",
-    heading: "Community cultivators",
-  },
-];
-
 const ANONYMOUS_TAG = "keep anonymous";
-
-const normalizeTag = tag => tag.trim().toLowerCase();
 
 function deriveMemberName(member) {
   const primaryName = [member.Name1First, member.Name1Last].filter(Boolean).join(" ").trim();
@@ -32,16 +15,6 @@ function deriveMemberName(member) {
   return `Member ${member.IDMemb}`;
 }
 
-function selectGroup(tagsLower) {
-  for (const group of TAG_GROUPS) {
-    const candidates = new Set([group.key].map(tag => tag.toLowerCase()));
-    for (const tag of tagsLower) {
-      if (candidates.has(tag)) return group;
-    }
-  }
-  return null;
-}
-
 export async function wHandGet(aReq, aResp) {
   if (!Site.CkShowDistinguishedMembersPage) {
     aResp.locals.Title = "Page not found";
@@ -50,33 +23,20 @@ export async function wHandGet(aReq, aResp) {
     return;
   }
 
-  const distinguishedMembers = await queryDistinguishedMembers();
-
-  const sections = TAG_GROUPS.map(group => ({ ...group, members: [] }));
-  const sectionsByKey = sections.reduce((acc, section) => {
-    acc[section.key] = section;
-    return acc;
-  }, {});
+  const distinguishedMembers = await queryDistinguishedMembers(ANONYMOUS_TAG);
+  const sectionsByTagId = new Map();
 
   for (const member of distinguishedMembers) {
-    const tagsLower = member.Tags
-      ? Array.from(
-          new Set(
-            member.Tags.split("||")
-              .map(tag => tag && tag.trim())
-              .filter(Boolean)
-              .map(normalizeTag),
-          ),
-        )
-      : [];
+    let section = sectionsByTagId.get(member.IDMemberTag);
+    if (!section) {
+      section = {
+        heading: member.DisplayName,
+        members: [],
+      };
+      sectionsByTagId.set(member.IDMemberTag, section);
+    }
 
-    const group = selectGroup(tagsLower);
-    if (!group) continue;
-
-    const section = sectionsByKey[group.key];
-    if (!section) continue;
-
-    const isAnonymous = tagsLower.includes(ANONYMOUS_TAG);
+    const isAnonymous = Boolean(member.IsAnonymous);
     const displayName = isAnonymous ? "Anonymous member" : deriveMemberName(member);
 
     section.members.push({
@@ -86,6 +46,7 @@ export async function wHandGet(aReq, aResp) {
     });
   }
 
+  const sections = Array.from(sectionsByTagId.values());
   sections.forEach(section => {
     section.members.sort((a, b) => {
       if (a.isAnonymous && !b.isAnonymous) return 1;
@@ -94,9 +55,7 @@ export async function wHandGet(aReq, aResp) {
     });
   });
 
-  const populatedSections = sections.filter(section => section.members.length > 0);
-
   aResp.locals.Title = `${CoopParams.CoopNameShort} distinguished members`;
-  aResp.locals.Sections = populatedSections;
+  aResp.locals.Sections = sections;
   aResp.render("Home/distinguished-members");
 }
