@@ -360,7 +360,7 @@ export const registerDetailsFields = [
     description: 'Text for the register button.',
     type: 'string',
     fieldset: 'registerDetails',
-    validation: (Rule) => Rule.max(20).error('Text is too long'),
+    validation: (Rule) => Rule.max(25).error('Text is too long'),
   }),
   defineField({
     name: 'HomePageRegisterButtonText',

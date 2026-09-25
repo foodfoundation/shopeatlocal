@@ -28,10 +28,37 @@ export function Prep(aReq, aResp, aNext) {
   aNext();
 }
 
+function CkTrialAllowed() {
+  return Site.CtMonthTrialMembNew >= 1;
+}
+
+/** 'choice', 'join', or 'trial'. A trial is never selected when one is not allowed. */
+function ModeReg(aReq) {
+  if (!CkTrialAllowed()) return "join";
+  if (String(aReq.query.trial ?? "") === "1") return "trial";
+  if (String(aReq.query.join ?? "") === "1") return "join";
+  return "choice";
+}
+
+/** Form and link target. The trial query is omitted when a trial is not allowed. */
+function PathReg(aMode) {
+  if (!CkTrialAllowed()) return "/member-registration";
+  if (aMode === "trial") return "/member-registration?trial=1";
+  if (aMode === "join") return "/member-registration?join=1";
+  return "/member-registration";
+}
+
 export function HandGet(aReq, aResp) {
+  if (aReq.method === "GET" && !CkTrialAllowed() && aReq.query.trial != null) {
+    aResp.redirect(303, "/member-registration");
+    return;
+  }
+
+  const oMode = ModeReg(aReq);
   aResp.locals.Title = `${CoopParams.CoopNameShort} member registration`;
   aResp.locals.CoopParams = CoopParams;
-  aResp.locals.ShowSkipMembTrial = Site.CtMonthTrialMembNew >= 1;
+  aResp.locals.ModeReg = oMode;
+  aResp.locals.PathReg = PathReg(oMode);
   aResp.render("Memb/member-registration");
 }
 
@@ -74,7 +101,6 @@ export async function wHandPost(aReq, aResp) {
     DtlHowHear: { CkRequire: CoopParams.RegisterPageTellUsMoreRequired },
     CkApplyEBT: { Store: false },
     CkApplyVolun: { Store: false },
-    CkSkipMembTrial: { Store: false },
     CkReadTOS: { Valid: oValid_CkReadTOS, Store: false },
   };
   await wExec(aReq.body, oFlds);
@@ -139,9 +165,10 @@ export async function wHandPost(aReq, aResp) {
     throw Error("wHandPost: Could not create member record");
   }
 
-  // Charge the membership fee when there is no trial or the member opts out
-  // ----------------------------------------------------------------------
-  if (Site.CtMonthTrialMembNew < 1 || oFlds.CkSkipMembTrial.ValCook) {
+  // Join now charges the initial fee. A trial does not. The page chooses this;
+  // a posted checkbox cannot.
+  const oCkSkipMembTrial = ModeReg(aReq) !== "trial";
+  if (Site.CtMonthTrialMembNew < 1 || oCkSkipMembTrial) {
     await wAdd_Transact(oIDMemb, "FeeMembInit", Site.FeeMembInit, 0, null, null);
     await wUpd_WhenFeeMembLast(oIDMemb);
   }
