@@ -48,7 +48,9 @@ const queryRegistrationPage = client => async () => {
 
   return {
     memberRegistrationText: html(registrationPage?.memberRegistrationText),
-    memberRegistrationTextTrialMembership: html(registrationPage?.memberRegistrationTextTrialMembership),
+    memberRegistrationTextTrialMembership: html(
+      registrationPage?.memberRegistrationTextTrialMembership,
+    ),
     memberRegistrationTextChoicePage: html(registrationPage?.memberRegistrationTextChoicePage),
     memberRegistrationChoicePageJoinNowButtonText:
       registrationPage?.memberRegistrationChoicePageJoinNowButtonText ?? "",
