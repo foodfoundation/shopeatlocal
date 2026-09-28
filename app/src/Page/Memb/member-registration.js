@@ -57,11 +57,8 @@ export function HandGet(aReq, aResp) {
   const oMode = ModeReg(aReq);
   aResp.locals.Title = `${CoopParams.CoopNameShort} member registration`;
   aResp.locals.CoopParams = CoopParams;
-<<<<<<< HEAD
-=======
   aResp.locals.ModeReg = oMode;
   aResp.locals.PathReg = PathReg(oMode);
->>>>>>> b05a513 (create a choice page for the join now vs trial page)
   aResp.render("Memb/member-registration");
 }
 
