@@ -10,6 +10,7 @@ import { PageAfterEditMemb } from "../../Util.js";
 import { Conn } from "../../Db.js";
 import { wSend } from "../../Email.js";
 import { CoopParams } from "../../Site.js";
+import { Site } from "../../Site.js";
 
 import _ from "lodash";
 
