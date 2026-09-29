@@ -46,7 +46,7 @@ const queryRegistrationPage = client => async () => {
   const html = content => (content ? generateContentHtml(content) : "");
 
   return {
-    memberRegistrationText: html(registrationPage?.memberRegistrationText),
+    memberRegistrationTextJoinNow: html(registrationPage?.memberRegistrationTextJoinNow),
     memberRegistrationTextTrialMembership: html(
       registrationPage?.memberRegistrationTextTrialMembership,
     ),

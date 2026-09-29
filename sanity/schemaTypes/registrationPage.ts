@@ -23,7 +23,7 @@ export const registrationPage = defineType(
         },
       }),
       contentField({
-        name: 'memberRegistrationText',
+        name: 'memberRegistrationTextJoinNow',
         title: 'Member registration text for join now',
         description: 'Welcome text to display on the member registration page for join now',
       }),
