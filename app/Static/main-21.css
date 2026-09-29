@@ -1822,6 +1822,49 @@ a:hover.btn.header-button-orange {
   color: #000 !important;
 }
 
+/* Back control sits on the left edge of the registration intro, outside the
+   centered container. Negative margin cancels jumbotron horizontal padding. */
+.jumbotron > .registration-back {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  text-align: left;
+}
+
+@media (min-width: 576px) {
+  .jumbotron > .registration-back {
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+}
+
+.jumbotron > .registration-back button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: hsl(181, 96%, 23%);
+  cursor: pointer;
+}
+
+.jumbotron > .registration-back button:hover,
+.jumbotron > .registration-back button:focus {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  outline: none;
+  text-decoration: none;
+  color: hsl(181, 90%, 36%);
+}
+
 /* ------------
 // Print styles
 // ------------ */

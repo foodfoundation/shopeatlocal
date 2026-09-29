@@ -3,6 +3,13 @@
 //    Member registration view --}}
 
 <div class="jumbotron py-5">
+	{{#unless (hCkEq ModeReg "choice")}}
+		<div class="registration-back">
+			<button type="button" onclick="history.back()">
+				&lt; Back
+			</button>
+		</div>
+	{{/unless}}
 	<div class="container">
 		{{#if (hCkEq ModeReg "choice")}}
 			{{{CoopParams.memberRegistrationTextChoicePage}}}
