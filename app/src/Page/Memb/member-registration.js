@@ -11,6 +11,8 @@ import { Conn } from "../../Db.js";
 import { wSend } from "../../Email.js";
 import { CoopParams } from "../../Site.js";
 import { Site } from "../../Site.js";
+import { wAdd_Transact } from "../../Transact.js";
+import { wUpd_WhenFeeMembLast } from "../../Memb.js";
 
 import _ from "lodash";
 

@@ -375,7 +375,7 @@ export const registerDetailsFields = [
       'Text for the register page: tell us more section.',
     type: 'string',
     fieldset: 'registerDetails',
-    validation: (Rule) => Rule.max(50).error('Text is too long'),
+    validation: (Rule) => Rule.max(100).error('Text is too long'),
   }),
   defineField({
     name: 'RegisterPageHideApplyEBT',
