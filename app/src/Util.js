@@ -5,6 +5,7 @@
 import { PhaseCycLess, getProductRow } from "./Db.js";
 import { TimeZoneUser, DocumentStoragePrefix, MembershipTags } from "../Cfg.js";
 import { Locs, Site } from "./Site.js";
+import { FracFeeCoopShopMemb } from "./ReservedMemberTags.js";
 
 import { DateTime } from "luxon";
 import { join } from "path";
@@ -759,6 +760,7 @@ export function SummCart(aCart, aItsCart, aMemb) {
     aMemb.DistDeliv,
     oCkRegWholesale,
     aMemb.TagIDs,
+    aMemb.Tags,
   );
 
   return {
@@ -870,6 +872,7 @@ export function TtlsCart(
   aDistDeliv,
   aCkRegWholesale,
   aMembTagIds,
+  aMembTags,
 ) {
   const oTtls = {
     Its: cloneDeep(aItsCart),
@@ -882,11 +885,12 @@ export function TtlsCart(
     TtlEBT: 0,
   };
   const oEbtCustomer = !!aCkRegEBT;
-  const oMembTagIds = aMembTagIds ?? [];
-
-  const oMemberFracFeeCoopShop =
-    MembershipTags.find(oMemberTag => oMembTagIds.includes(oMemberTag.tagId))?.fracFeeCoopShop ??
-    Site.FracFeeCoopShop;
+  const oMemberFracFeeCoopShop = FracFeeCoopShopMemb({
+    aTags: aMembTags,
+    aTagIDs: aMembTagIds,
+    aMembershipTags: MembershipTags,
+    aFracFeeCoopShopSite: Site.FracFeeCoopShop,
+  });
 
   /** Uses properties in aIt with names that begin with aPrefixName to create
    *  and then increment totals in oTtls. */
