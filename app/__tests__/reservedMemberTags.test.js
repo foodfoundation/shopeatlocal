@@ -1,4 +1,10 @@
-import { FracFeeCoopShopMemb, TagFullCoopFee, TagNoCoopFee } from "../src/ReservedMemberTags.js";
+import {
+  FracFeeCoopShopMemb,
+  ResolveFeeCoopShopMemb,
+  TagFullCoopFee,
+  TagNoCoopFee,
+} from "../src/ReservedMemberTags.js";
+import { calculateEffCoopFeeMemb } from "../src/Util.js";
 
 describe("FracFeeCoopShopMemb", () => {
   const aFracFeeCoopShopSite = 0.15;
@@ -30,5 +36,40 @@ describe("FracFeeCoopShopMemb", () => {
   it("falls back to the site fee", () => {
     expect(Frac([], [])).toBe(aFracFeeCoopShopSite);
     expect(Frac(undefined, undefined)).toBe(aFracFeeCoopShopSite);
+  });
+});
+
+describe("reserved fee tag precedence over wholesale fees", () => {
+  const aFracFeeCoopShopSite = 0.15;
+  const aMembershipTags = [{ tagId: 1, fracFeeCoopShop: 0.05 }];
+
+  function WholesaleFee(aTags, aTagIDs = []) {
+    const oResolution = ResolveFeeCoopShopMemb({
+      aTags,
+      aTagIDs,
+      aMembershipTags,
+      aFracFeeCoopShopSite,
+    });
+
+    return calculateEffCoopFeeMemb({
+      aIsEbtCustomer: false,
+      aIsWholesaleCustomer: true,
+      aIsWholeSaleItem: true,
+      aFracFeeCoopWholesaleMemb: 0.02,
+      aMemberFrecFeeCoopShop: oResolution.fracFeeCoopShop,
+      aHasReservedFeeCoopShopTag: oResolution.hasReservedFeeTag,
+    }).feeCoopShopEff;
+  }
+
+  it("applies 'no coop fee' instead of the wholesale fee", () => {
+    expect(WholesaleFee([TagNoCoopFee])).toBe(0);
+  });
+
+  it("applies 'full coop fee' instead of the wholesale fee", () => {
+    expect(WholesaleFee([TagFullCoopFee])).toBe(aFracFeeCoopShopSite);
+  });
+
+  it("still gives wholesale precedence over configured MembershipTags overrides", () => {
+    expect(WholesaleFee([], [1])).toBe(0.02);
   });
 });

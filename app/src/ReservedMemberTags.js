@@ -15,7 +15,8 @@ export function NormalizeTag(aTag) {
     .toLowerCase();
 }
 
-/** Returns the shopper co-op fee fraction for a member. Precedence:
+/** Resolves the shopper co-op fee fraction and whether a reserved fee tag set
+ *  it. Reserved fee tags also take precedence over wholesale fees. Precedence:
  *  'no coop fee', 'full coop fee', configured MembershipTags override, then
  *  the site default.
  *  @param {Object} aOpts
@@ -24,14 +25,26 @@ export function NormalizeTag(aTag) {
  *  @param {Array<Object>} aOpts.aMembershipTags - Configured MembershipTags
  *  @param {number} aOpts.aFracFeeCoopShopSite - Site.FracFeeCoopShop
  */
-export function FracFeeCoopShopMemb({ aTags, aTagIDs, aMembershipTags, aFracFeeCoopShopSite }) {
+export function ResolveFeeCoopShopMemb({ aTags, aTagIDs, aMembershipTags, aFracFeeCoopShopSite }) {
   const oTags = (aTags ?? []).map(NormalizeTag);
-  if (oTags.includes(TagNoCoopFee)) return 0;
-  if (oTags.includes(TagFullCoopFee)) return aFracFeeCoopShopSite;
+  if (oTags.includes(TagNoCoopFee)) {
+    return { fracFeeCoopShop: 0, hasReservedFeeTag: true };
+  }
+  if (oTags.includes(TagFullCoopFee)) {
+    return { fracFeeCoopShop: aFracFeeCoopShopSite, hasReservedFeeTag: true };
+  }
 
   const oTagIDs = aTagIDs ?? [];
   const oConfigured = (aMembershipTags ?? []).find(
     oMemberTag => oTagIDs.includes(oMemberTag.tagId) && oMemberTag.fracFeeCoopShop != null,
   );
-  return oConfigured ? oConfigured.fracFeeCoopShop : aFracFeeCoopShopSite;
+  return {
+    fracFeeCoopShop: oConfigured ? oConfigured.fracFeeCoopShop : aFracFeeCoopShopSite,
+    hasReservedFeeTag: false,
+  };
+}
+
+/** Returns only the resolved shopper co-op fee fraction. */
+export function FracFeeCoopShopMemb(aOpts) {
+  return ResolveFeeCoopShopMemb(aOpts).fracFeeCoopShop;
 }
