@@ -1553,7 +1553,7 @@ export async function wAdd_Transact(
   };
   const [oRows] = await aConn.wExecPrep(oSQL, oParams);
   if (oRows.affectedRows != 1) throw Error("Db wAdd_Transact: Cannot insert transaction");
-  
+
   return oRows.insertId;
 }
 

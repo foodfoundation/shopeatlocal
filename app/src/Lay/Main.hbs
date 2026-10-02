@@ -24,7 +24,7 @@
 		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
 		crossorigin="anonymous">
 
-	<link rel="stylesheet" href="{{hPrefixStatic 'main-20.css'}}">
+	<link rel="stylesheet" href="{{hPrefixStatic 'main-21.css'}}">
 
 	{{!-- Bootstrap scripts
 	//    ----------------- --}}
@@ -272,7 +272,7 @@
 					<a target="_blank"  class="btn header-button-orange ml-2"
 						href="/member-registration"
 					>
-						Start free trial!
+						{{CoopParams.RegisterButtonText}}
 					</a>
 				</div>
 			</div>
@@ -696,7 +696,7 @@
 						{{else}}
 						<br>
 						<a href="/member-registration">
-							Start free trial!
+							{{CoopParams.RegisterButtonText}}
 						</a>
 						{{/if}}
 					</div>

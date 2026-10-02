@@ -167,6 +167,7 @@ export const NamesParamMemb = [
   "Zip",
   "CkTrialMemb",
   "CkPendMemb",
+  "CkPendMembTrialCompleted",
   "CkPendEBT",
   "CkPendVolun",
   "CkWithItsCart",
@@ -259,7 +260,11 @@ export async function wMembs(aParams, aCkExport) {
   if (aParams.CkTrialMemb !== undefined)
     oWheres.push("CdRegMemb = 'Pend' AND CyclesUsed <= 2 AND WhenFeeMembLast IS NULL");
 
-  if (aParams.CkPendMemb !== undefined)
+  if (aParams.CkPendMemb !== undefined) {
+    oWheres.push("CdRegMemb = 'Pend'");
+  }
+
+  if (aParams.CkPendMembTrialCompleted !== undefined)
     oWheres.push("CdRegMemb = 'Pend' AND CyclesUsed = 2 AND WhenFeeMembLast IS NOT NULL");
 
   if (aParams.CkPendEBT !== undefined) oWheres.push("CdRegEBT = 'Pend'");

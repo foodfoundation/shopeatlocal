@@ -632,6 +632,7 @@ async function wDataInvc(aMemb, aCart, aConn) {
     aMemb.DistDeliv,
     oCkRegWholesale,
     aMemb.TagIDs,
+    aMemb.Tags,
   );
 
   // Structure items by producer
