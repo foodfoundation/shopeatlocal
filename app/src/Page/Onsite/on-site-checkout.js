@@ -153,6 +153,7 @@ async function wDataCartPend(aIDSess) {
       oCdCartType === "Retail" && (!!oCartPend.CkEBTNonMemb || oMembShop?.CdRegEBT === "Approv");
 
     const oMembTagIds = oMembShop?.TagIDs ?? [];
+    const oMembTags = oMembShop?.Tags ?? [];
 
     oIts = await wItsCartOnsitePend(aIDSess);
     oIts = await Add_CkExcludeConsumerFee(oIts);
@@ -165,6 +166,7 @@ async function wDataCartPend(aIDSess) {
       null,
       oIsWholesaleElig,
       oMembTagIds,
+      oMembTags,
     );
 
     // TtlsCart does not add producer fees:

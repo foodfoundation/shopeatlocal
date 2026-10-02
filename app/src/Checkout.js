@@ -84,6 +84,7 @@ export async function wExec(aConn, aIDMemb, aItsPickup, aVtysByID, aCdStatCart) 
     oMemb.DistDeliv,
     oCkRegWholesale,
     oMemb.TagIDs,
+    oMemb.Tags,
   );
 
   // Update cart records
