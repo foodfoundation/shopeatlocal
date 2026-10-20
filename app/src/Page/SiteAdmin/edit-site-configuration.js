@@ -33,7 +33,7 @@ export async function wHandPost(aReq, aResp) {
     },
     FeeInvtIt: {
       Conv: _Conv.Gen.Num,
-      Valid: _Valid.Gen.Qty,
+      Valid: _Valid.Gen.Frac,
     },
     FracFeeCoopProducer: {
       Conv: _Conv.Gen.Num,
@@ -72,6 +72,7 @@ export async function wHandPost(aReq, aResp) {
   await wExec(aReq.body, fields);
   if (CkFail(fields)) {
     Retry(aResp, fields);
+    console.log(JSON.stringify(fields, null, 2));
     await wHandGet(aReq, aResp);
     return;
   }

@@ -56,10 +56,19 @@
 				{{/if}}
 
 				{{#each Vtys}}
+				{{#if (hCkOr (hCkLessEq ../Vtys.length 3) (hCkLess @index 3))}}
 				<div class="d-flex flex-row justify-content-between" id="CardFooterTblVty{{IDVty}}">
 					{{>Shop/pCardFooterTblVtyShop this}}
 				</div>
+				{{/if}}
 				{{/each}}
+				{{#if (hCkGreater Vtys.length 3)}}
+				<div class="text-center mt-2">
+					<a href="/product/{{IDProduct}}" class="btn btn-outline-primary btn-sm">
+						Show all ({{Vtys.length}} varieties)
+					</a>
+				</div>
+				{{/if}}
 			</div>
 		</div>
 	</div>

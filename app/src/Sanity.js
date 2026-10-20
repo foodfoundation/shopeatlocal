@@ -12,6 +12,7 @@ const getSanityClient = () => {
   return {
     queryCoopParamsFromSanity: queryCoopParamsFromSanity(sanityClientInstance),
     queryInformationTemplates: queryInformationTemplates(sanityClientInstance),
+    queryRegistrationPage: queryRegistrationPage(sanityClientInstance),
     queryEmailTemplates: queryEmailTemplates(sanityClientInstance),
     queryTermsAndConditionsPageContent: queryTermsAndConditionsPageContent(sanityClientInstance),
     queryProductTypesPageMetadata: queryProductTypesPageMetadata(sanityClientInstance),
@@ -35,12 +36,33 @@ const queryCoopParamsFromSanity = client => async () => {
 const queryInformationTemplates = client => async () => {
   const informationTemplates = await client.fetch('*[_type == "informationTemplates"][0]');
 
-  const memberRegistrationHtml = generateContentHtml(informationTemplates.memberRegistrationText);
-  const shoppingCartInformationText = informationTemplates.shoppingCartInformationText;
+  return {
+    shoppingCartInformationText: informationTemplates?.shoppingCartInformationText,
+  };
+};
+
+const queryRegistrationPage = client => async () => {
+  const registrationPage = await client.fetch('*[_type == "registrationPage"][0]');
+  const html = content => (content ? generateContentHtml(content) : "");
 
   return {
-    memberRegistrationText: memberRegistrationHtml,
-    shoppingCartInformationText,
+    memberRegistrationTextJoinNow: html(registrationPage?.memberRegistrationTextJoinNow),
+    memberRegistrationTextTrialMembership: html(
+      registrationPage?.memberRegistrationTextTrialMembership,
+    ),
+    memberRegistrationTextChoicePage: html(registrationPage?.memberRegistrationTextChoicePage),
+    memberRegistrationChoicePageJoinNowButtonText:
+      registrationPage?.memberRegistrationChoicePageJoinNowButtonText ?? "",
+    memberRegistrationChoicePageJoinNowButtonExplanationText:
+      registrationPage?.memberRegistrationChoicePageJoinNowButtonExplanationText ?? "",
+    memberRegistrationChoicePageTrialMembershipButtonText:
+      registrationPage?.memberRegistrationChoicePageTrialMembershipButtonText ?? "",
+    memberRegistrationChoicePageTrialMembershipButtonExplanationText:
+      registrationPage?.memberRegistrationChoicePageTrialMembershipButtonExplanationText ?? "",
+    memberRegistrationJoinNowSubmitButtonText:
+      registrationPage?.memberRegistrationJoinNowSubmitButtonText ?? "",
+    memberRegistrationTrialMembershipSubmitButtonText:
+      registrationPage?.memberRegistrationTrialMembershipSubmitButtonText ?? "",
   };
 };
 

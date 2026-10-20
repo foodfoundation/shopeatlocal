@@ -1,5 +1,6 @@
 import { queryDistinguishedMembers } from "../../Db.js";
 import { CoopParams } from "../../Site.js";
+import { NormalizeTag, TagKeepAnonymous } from "../../ReservedMemberTags.js";
 
 const TAG_GROUPS = [
   {
@@ -15,10 +16,6 @@ const TAG_GROUPS = [
     heading: "Community cultivators",
   },
 ];
-
-const ANONYMOUS_TAG = "keep anonymous";
-
-const normalizeTag = tag => tag.trim().toLowerCase();
 
 function deriveMemberName(member) {
   const primaryName = [member.Name1First, member.Name1Last].filter(Boolean).join(" ").trim();
@@ -58,7 +55,7 @@ export async function wHandGet(aReq, aResp) {
             member.Tags.split("||")
               .map(tag => tag && tag.trim())
               .filter(Boolean)
-              .map(normalizeTag),
+              .map(NormalizeTag),
           ),
         )
       : [];
@@ -69,7 +66,7 @@ export async function wHandGet(aReq, aResp) {
     const section = sectionsByKey[group.key];
     if (!section) continue;
 
-    const isAnonymous = tagsLower.includes(ANONYMOUS_TAG);
+    const isAnonymous = tagsLower.includes(TagKeepAnonymous);
     const displayName = isAnonymous ? "Anonymous member" : deriveMemberName(member);
 
     section.members.push({

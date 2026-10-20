@@ -76,6 +76,7 @@ export async function wHandGet(aReq, aResp) {
       oMemb.DistDeliv,
       oCkWholesale,
       oMemb.TagIDs,
+      oMemb.Tags,
     );
     // To avoid confusion later. TtlsCart copies the items into its result:
     delete oMemb.Its;
