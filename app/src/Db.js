@@ -1828,45 +1828,36 @@ export async function queryAllMemberTagAssignments() {
   return memberTagAssignments;
 }
 
-export async function queryDistinguishedMembers() {
+export async function queryDistinguishedMembers(anonymousTag) {
   const sql = `
-			SELECT
+			SELECT DISTINCT
 				Memb.IDMemb,
 				Memb.Name1First,
 				Memb.Name1Last,
 				Memb.Name2First,
 				Memb.Name2Last,
 				Memb.NameBus,
-				GROUP_CONCAT(DISTINCT MTAll.Tag ORDER BY MTAll.Tag SEPARATOR '||') AS Tags
+				MemberTags.IDMemberTag,
+				MemberTags.DisplayName,
+				EXISTS (
+					SELECT 1
+					FROM MemberTagAssignments AS AnonymousAssignment
+					JOIN MemberTags AS AnonymousTag
+						ON AnonymousTag.IDMemberTag = AnonymousAssignment.IDMemberTag
+					WHERE AnonymousAssignment.IDMemb = Memb.IDMemb
+						AND LOWER(AnonymousTag.Tag) = :anonymousTag
+				) AS IsAnonymous
 			FROM
-				Memb
-			JOIN MemberTagAssignments AS MTAFilter ON (MTAFilter.IDMemb = Memb.IDMemb)
-			JOIN MemberTags AS MTFilter ON (MTFilter.IDMemberTag = MTAFilter.IDMemberTag)
-			LEFT JOIN MemberTagAssignments AS MTAAll ON (MTAAll.IDMemb = Memb.IDMemb)
-			LEFT JOIN MemberTags AS MTAll ON (MTAll.IDMemberTag = MTAAll.IDMemberTag)
-			WHERE LOWER(MTFilter.Tag) IN (
-				:tagFarmersFriend,
-				:tagSustainabilitySteward,
-				:tagSustainingSteward,
-				:tagCommunityCultivator
-			)
-			GROUP BY
-				Memb.IDMemb,
-				Memb.Name1First,
-				Memb.Name1Last,
-				Memb.Name2First,
-				Memb.Name2Last,
-				Memb.NameBus
+				MemberTagAssignments
+			JOIN MemberTags
+				ON MemberTags.IDMemberTag = MemberTagAssignments.IDMemberTag
+			JOIN Memb
+				ON Memb.IDMemb = MemberTagAssignments.IDMemb
+			WHERE MemberTags.DisplayName IS NOT NULL
+			ORDER BY MemberTags.IDMemberTag
 			`;
 
-  const params = {
-    tagFarmersFriend: "farmers friend",
-    tagSustainabilitySteward: "sustainability steward",
-    tagSustainingSteward: "sustaining steward",
-    tagCommunityCultivator: "community cultivator",
-  };
-
-  const [rows] = await Conn.wExecPrep(sql, params);
+  const [rows] = await Conn.wExecPrep(sql, { anonymousTag });
   return rows;
 }
 export async function queryMemberTagAssignmentCountByTagName() {
