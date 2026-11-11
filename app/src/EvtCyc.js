@@ -541,7 +541,7 @@ async function wLock_MembsCheckoutMiss(aConn) {
 		JOIN Cart USING (IDMemb)
 		JOIN StApp USING (IDCyc)
 		WHERE CdStatCart = 'Pend'
-		FOR SHARE`;
+		LOCK IN SHARE MODE`;
   const [oRows] = await aConn.wExecPrep(oSQL);
   return oRows;
 }

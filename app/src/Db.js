@@ -591,7 +591,7 @@ export async function wStApp(aConn) {
 export async function wLock_StApp(aConn) {
   const oSQL = `SELECT *
 		FROM StApp
-		FOR SHARE`;
+		LOCK IN SHARE MODE`;
   const [oRows] = await aConn.wExecPrep(oSQL);
   if (oRows.length !== 1) throw Error("Db wLock_StApp: Invalid state count");
   // To avoid confusion. This field exists only to meet the primary key
@@ -621,7 +621,7 @@ export async function wLock_CycStApp(aConn) {
   const oSQL = `SELECT *
 		FROM Cyc
 		JOIN StApp USING (IDCyc)
-		FOR SHARE`;
+		LOCK IN SHARE MODE`;
   const [oRows] = await aConn.wExecPrep(oSQL);
   if (oRows.length !== 1) throw Error("Db wLock_CycStApp: Invalid cycle count");
   return oRows[0];

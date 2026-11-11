@@ -281,7 +281,7 @@ export async function wLockUpd_WgtLblOrdWeb(aConn, aIDVty) {
 			AND (Vty.CkInvtMgd IS FALSE)
 			AND (Vty.IDVty = ?)
 		ORDER BY ItCart.NoteShop, ItCart.IDItCart, Cart.IDCart
-		FOR SHARE`;
+		LOCK IN SHARE MODE`;
   const [oIts] = await aConn.wExecPrep(oSQLIts, [aIDVty]);
 
   // Replace weight records
