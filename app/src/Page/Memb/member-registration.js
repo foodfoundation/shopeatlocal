@@ -2,7 +2,14 @@
 // ----------------------
 // Member registration controllers
 
-import { wExec, CkFail, Retry, wIns } from "../../Form.js";
+import { wExec, CkFail, Retry, wIns, Fill } from "../../Form.js";
+import {
+  TurnstileSiteKey,
+  wCkTurnstile,
+  TokTimeFormNew,
+  CkTokTimeForm,
+  CkHoneypot,
+} from "../../BotCheck.js";
 import { wCredFromIDMemb } from "../../Cred.js";
 import { wHash } from "../../Pass.js";
 import { wAdd_Login } from "../../Auth.js";
@@ -31,6 +38,8 @@ export function Prep(aReq, aResp, aNext) {
 export function HandGet(aReq, aResp) {
   aResp.locals.Title = `${CoopParams.CoopNameShort} member registration`;
   aResp.locals.CoopParams = CoopParams;
+  aResp.locals.TurnstileSiteKey = TurnstileSiteKey;
+  aResp.locals.TokTimeForm = TokTimeFormNew();
   aResp.render("Memb/member-registration");
 }
 
@@ -76,6 +85,21 @@ export async function wHandPost(aReq, aResp) {
     CkReadTOS: { Valid: oValid_CkReadTOS, Store: false },
   };
   await wExec(aReq.body, oFlds);
+
+  const oCkBot =
+    !CkHoneypot(aReq.body) ||
+    !CkTokTimeForm(aReq.body.TokTimeForm) ||
+    !(await wCkTurnstile(aReq.body["cf-turnstile-response"], aReq.ip, "signup"));
+  if (oCkBot) {
+    Fill(aResp.locals, oFlds);
+    aResp.Show_Flash(
+      "danger",
+      "Verification failed",
+      "Please wait a moment and submit the form again.",
+    );
+    HandGet(aReq, aResp);
+    return;
+  }
 
   // Form-level validation
   // ---------------------
@@ -178,10 +202,10 @@ function CdRegFromCk(aCk) {
 }
 
 async function checkMembForExistingUser(email, phone) {
-  const oSQL = `SELECT * FROM Memb WHERE Memb.Email1 = '${email}' OR Memb.Phone1 = ${phone}`;
-  console.log(oSQL);
-  const oParams = {};
+  const oSQL = `SELECT COUNT(*) AS Ct
+		FROM Memb
+		WHERE Email1 = :Email1 OR Phone1 = :Phone1`;
+  const oParams = { Email1: email, Phone1: phone };
   const [oRows] = await Conn.wExecPrep(oSQL, oParams);
-
-  return oRows.length;
+  return oRows[0].Ct;
 }
