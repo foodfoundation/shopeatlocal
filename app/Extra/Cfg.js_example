@@ -170,4 +170,11 @@ export const MembershipTags = [
   },
 ];
 
+// Cloudflare Turnstile (optional). Leave any of these empty to disable it.
+// The site key is public. The secret must never be committed.
+export const TurnstileSiteKey = "0x4AAAAAAGIw4hushFKssPdE";
+export const TurnstileSecret = "";
+/** Frontend hostnames accepted from siteverify. Never list localhost in production. */
+export const TurnstileHostnames = [];
+
 

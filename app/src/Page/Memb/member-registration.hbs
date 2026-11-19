@@ -16,6 +16,12 @@
 
 		<input type="hidden" name="_csrf" value="{{TokCSRF}}">
 
+		<input type="hidden" name="TokTimeForm" value="{{TokTimeForm}}">
+		<div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+			<label for="UrlHomepage">Leave this field empty</label>
+			<input id="UrlHomepage" name="UrlHomepage" type="text" value="" tabindex="-1" autocomplete="off">
+		</div>
+
 		<div class="form-row">
 			<div class="form-group col-md-4">
 				<label for="NameLogin">Username *</label>
@@ -353,6 +359,13 @@
 		</div>
 
 		<hr>
+
+		{{#if TurnstileSiteKey}}
+			<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+			<div class="d-flex justify-content-end mb-3">
+				<div class="cf-turnstile" data-sitekey="{{TurnstileSiteKey}}" data-action="signup"></div>
+			</div>
+		{{/if}}
 
 		<div class="d-flex">
 			<button type="submit" class="btn btn-primary ml-auto">Save</button>
